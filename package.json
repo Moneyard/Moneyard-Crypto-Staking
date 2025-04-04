@@ -1,0 +1,19 @@
+{
+  "name": "moneyard-crypto-staking",
+  "version": "1.0.0",
+  "description": "Crypto staking platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
+    "dotenv": "^10.0.0"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
