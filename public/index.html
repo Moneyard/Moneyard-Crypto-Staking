@@ -3,23 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard | Login & Register</title>
+  <title>Moneyard | Login & Sign Up</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+    .form-box {
+      background-color: #e6f7ff;
+      border: 2px solid #00bfa5;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+    input {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #00bfa5;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #009e87;
+    }
+    .hidden {
+      display: none;
+    }
+    .link {
+      margin-top: 10px;
+      color: #0077cc;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to Moneyard</h1>
 
-  <h2>Register</h2>
-  <input type="text" id="register-username" placeholder="Username" />
-  <input type="password" id="register-password" placeholder="Password" />
-  <button id="register-btn">Register</button>
+  <!-- Sign Up Box -->
+  <div id="signup-box" class="form-box">
+    <h2>Sign Up</h2>
+    <input type="text" id="register-username" placeholder="Username" />
+    <input type="password" id="register-password" placeholder="Password" />
+    <input type="text" id="reference-code" placeholder="Reference Code (Optional)" />
+    <button id="register-btn">Create Account</button>
+  </div>
 
-  <h2>Login</h2>
-  <input type="text" id="login-username" placeholder="Username" />
-  <input type="password" id="login-password" placeholder="Password" />
-  <button id="login-btn">Login</button>
+  <!-- Login Box -->
+  <div id="login-box" class="form-box hidden">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login-btn">Login</button>
+    <div class="link" onclick="alert('Feature coming soon')">Forgot Password?</div>
+  </div>
 
   <script>
-    document.getElementById('register-btn').addEventListener('click', async () => {
+    const registerBtn = document.getElementById('register-btn');
+    const loginBtn = document.getElementById('login-btn');
+
+    registerBtn.addEventListener('click', async () => {
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
 
@@ -31,9 +87,15 @@
 
       const data = await response.json();
       alert(data.message || data.error);
+
+      if (data.message) {
+        // Hide sign up and show login
+        document.getElementById('signup-box').classList.add('hidden');
+        document.getElementById('login-box').classList.remove('hidden');
+      }
     });
 
-    document.getElementById('login-btn').addEventListener('click', async () => {
+    loginBtn.addEventListener('click', async () => {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
