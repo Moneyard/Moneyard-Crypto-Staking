@@ -1,79 +1,70 @@
-/* Basic page setup */
+/* Body and Background */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f0f4f8;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  flex-direction: column;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  color: #333;
+  text-align: center;
+  padding: 50px;
+}
+
+/* Container for Centering */
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #f4f4f4;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Container */
+.form-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 2.5rem;
+  color: #2e8b57; /* Green color for title */
 }
 
-/* Form styling */
-.form-container {
-  background-color: white;
-  padding: 20px;
-  margin: 20px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 300px;
-}
-
-.form-container h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 15px;
-}
-
+/* Input Fields */
 input {
-  margin: 10px 0;
-  padding: 10px;
   width: 100%;
-  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
 }
 
+/* Buttons */
 button {
-  padding: 10px 20px;
-  background-color: #28a745;
-  border: none;
+  width: 100%;
+  padding: 10px;
+  background-color: #2e8b57; /* Green color */
   color: white;
-  font-size: 16px;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  width: 100%;
+  font-size: 16px;
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: #276b43;
 }
 
-/* Adding space between sections */
-.form-container:not(:last-child) {
-  margin-bottom: 30px;
+/* Link Styling */
+a {
+  color: #007bff; /* Blue color for links */
+  text-decoration: none;
 }
 
-/* Adding styles for responsiveness */
-@media screen and (max-width: 600px) {
-  .form-container {
-    width: 90%;
-  }
+a:hover {
+  text-decoration: underline;
+}
 
-  h1 {
-    font-size: 2rem;
-  }
-
-  input, button {
-    font-size: 16px;
-  }
+p {
+  font-size: 14px;
+  color: #666;
 }
