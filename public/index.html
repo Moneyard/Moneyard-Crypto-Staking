@@ -48,7 +48,7 @@
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
 
-      console.log('Registering user with username:', username);
+      console.log('Attempting to register user with username:', username);
 
       const response = await fetch('https://your-heroku-app-url/register', {
         method: 'POST',
@@ -73,7 +73,7 @@
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
-      console.log('Logging in with username:', username);
+      console.log('Attempting to log in with username:', username);
 
       const response = await fetch('https://your-heroku-app-url/login', {
         method: 'POST',
@@ -85,9 +85,9 @@
       console.log('Login response:', data);
 
       if (data.token) {
-        localStorage.setItem('token', data.token);  // Store token
-        alert('Login successful! Token: ' + data.token);
-        // Redirect or show the deposit form here
+        localStorage.setItem('token', data.token);  // Save token to localStorage
+        alert('Login successful!');
+        // Optionally, redirect or display deposit section here
       } else {
         alert('Error: ' + data.error);
       }
@@ -105,13 +105,18 @@
         return;
       }
 
-      console.log('Depositing amount:', amount);
+      if (!amount || amount <= 0) {
+        alert('Please enter a valid deposit amount.');
+        return;
+      }
+
+      console.log('Attempting to deposit:', amount);
 
       const response = await fetch('https://your-heroku-app-url/deposit', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`  // Send token in header for authentication
         },
         body: JSON.stringify({ amount }),
       });
