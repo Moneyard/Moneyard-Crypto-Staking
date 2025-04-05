@@ -4,49 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #00bfa5;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      padding: 30px;
+      text-align: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #005f99;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Moneyard Dashboard</h1>
+  <header>
+    <h1>Welcome to Your Moneyard Dashboard</h1>
+  </header>
 
-  <h2>Deposit</h2>
-  <input type="number" id="deposit-amount" placeholder="Amount" />
-  <button id="deposit-btn">Deposit</button>
-
-  <h2>Transaction History</h2>
-  <ul id="transaction-history"></ul>
+  <div class="container">
+    <p>You are now logged in.</p>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
 
   <script>
-    const token = localStorage.getItem('token');
-
-    document.getElementById('deposit-btn').addEventListener('click', async () => {
-      const amount = parseFloat(document.getElementById('deposit-amount').value);
-      const response = await fetch('/deposit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, amount }),
-      });
-      const data = await response.json();
-      alert(data.message);
-      loadTransactions();
-    });
-
-    async function loadTransactions() {
-      const response = await fetch('/transactions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-      });
-      const data = await response.json();
-      const list = document.getElementById('transaction-history');
-      list.innerHTML = '';
-      data.transactions.forEach(tx => {
-        const item = document.createElement('li');
-        item.textContent = `${tx.type} - $${tx.amount} on ${tx.timestamp}`;
-        list.appendChild(item);
-      });
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
     }
 
-    loadTransactions();
+    // Redirect to login if token doesn't exist
+    if (!localStorage.getItem('token')) {
+      alert('Please login first');
+      window.location.href = 'index.html';
+    }
   </script>
 </body>
 </html>
