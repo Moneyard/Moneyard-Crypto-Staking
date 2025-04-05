@@ -20,7 +20,7 @@ const db = new sqlite3.Database('./moneyard.db', (err) => {
   }
 });
 
-// Create users and balances tables
+// Create tables if not already created
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -46,11 +46,14 @@ app.post('/register', async (req, res) => {
 
   db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function (err) {
     if (err) {
+      console.error('Error during registration:', err);
       return res.status(500).json({ error: 'Failed to register user' });
     }
+
     const userId = this.lastID;
     db.run('INSERT INTO balances (user_id) VALUES (?)', [userId], function (err) {
       if (err) {
+        console.error('Error initializing balance:', err);
         return res.status(500).json({ error: 'Failed to initialize balance' });
       }
       res.status(201).json({ message: 'User registered successfully' });
@@ -64,6 +67,7 @@ app.post('/login', (req, res) => {
 
   db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
     if (err || !row) {
+      console.error('Error during login:', err || 'User not found');
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
@@ -94,9 +98,15 @@ app.post('/deposit', (req, res) => {
 
     db.run('UPDATE balances SET balance = balance + ? WHERE user_id = ?', [amount, userId], function (err) {
       if (err) {
+        console.error('Error during deposit:', err);
         return res.status(500).json({ error: 'Failed to update balance' });
       }
-      res.status(200).json({ message: 'Deposit successful', newBalance: amount });
+      db.get('SELECT balance FROM balances WHERE user_id = ?', [userId], (err, row) => {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to fetch updated balance' });
+        }
+        res.status(200).json({ message: 'Deposit successful', newBalance: row.balance });
+      });
     });
   });
 });
