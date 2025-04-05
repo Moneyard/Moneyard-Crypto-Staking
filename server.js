@@ -5,7 +5,7 @@ const app = express();
 // Serve static files directly from the root directory
 app.use(express.static(path.join(__dirname)));
 
-// Set the view engine and route for the home page
+// Route for the homepage
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
