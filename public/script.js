@@ -1,50 +1,40 @@
-document.getElementById('show-login').addEventListener('click', () => {
-  document.getElementById('signup-box').classList.add('hidden');
-  document.getElementById('login-box').classList.remove('hidden');
+// Toggle visibility of forms
+document.getElementById("show-login").addEventListener("click", function() {
+    document.getElementById("signup-form").style.display = "none";
+    document.getElementById("login-form").style.display = "block";
 });
 
-document.getElementById('show-signup').addEventListener('click', () => {
-  document.getElementById('login-box').classList.add('hidden');
-  document.getElementById('signup-box').classList.remove('hidden');
+document.getElementById("show-signup").addEventListener("click", function() {
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("signup-form").style.display = "block";
 });
 
-document.getElementById('register-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('register-username').value;
-  const password = document.getElementById('register-password').value;
-
-  const response = await fetch('/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-  });
-
-  const data = await response.json();
-  alert(data.message || data.error);
-
-  if (data.message) {
-    document.getElementById('register-form').reset();
-    document.getElementById('signup-box').classList.add('hidden');
-    document.getElementById('login-box').classList.remove('hidden');
-  }
+document.getElementById("show-forgot-password").addEventListener("click", function() {
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("forgot-password-form").style.display = "block";
 });
 
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
+document.getElementById("back-to-login").addEventListener("click", function() {
+    document.getElementById("forgot-password-form").style.display = "none";
+    document.getElementById("login-form").style.display = "block";
+});
 
-  const response = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-  });
+// Form submission (you can add actual API calls here later)
+document.getElementById("signup").addEventListener("submit", function(e) {
+    e.preventDefault();
+    alert("Sign Up Successful!");
+    document.getElementById("signup-form").style.display = "none";
+    document.getElementById("login-form").style.display = "block";
+});
 
-  const data = await response.json();
-  alert(data.message || data.error);
+document.getElementById("login").addEventListener("submit", function(e) {
+    e.preventDefault();
+    alert("Login Successful!");
+});
 
-  if (data.token) {
-    localStorage.setItem('token', data.token);
-    window.location.href = '/dashboard.html'; // Create this later if needed
-  }
+document.getElementById("forgot-password").addEventListener("submit", function(e) {
+    e.preventDefault();
+    alert("Password reset link sent!");
+    document.getElementById("forgot-password-form").style.display = "none";
+    document.getElementById("login-form").style.display = "block";
 });
