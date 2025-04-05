@@ -43,9 +43,7 @@
   <script>
     // Register form handler
     document.getElementById('register-form').addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent form from submitting normally
-      console.log("Register form submitted");
-
+      console.log("Register button clicked");
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
 
@@ -59,14 +57,12 @@
 
       const data = await response.json();
       console.log('Register response:', data);
-      alert(data.message); // Show response message from backend
+      alert(data.message);  // Show response message from backend
     });
 
     // Login form handler
     document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent form from submitting normally
-      console.log("Login form submitted");
-
+      console.log("Login button clicked");
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
@@ -84,7 +80,6 @@
       if (data.token) {
         console.log("Login successful! Token:", data.token);
         alert('Login successful!');
-        // Store token or redirect to another page (if applicable)
       } else {
         console.log("Login failed:", data.error);
         alert('Error: ' + data.error);
@@ -93,11 +88,9 @@
 
     // Deposit form handler
     document.getElementById('deposit-form').addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent form from submitting normally
-      console.log("Deposit form submitted");
-
+      console.log("Deposit button clicked");
       const amount = document.getElementById('deposit-amount').value;
-      const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+      const token = localStorage.getItem('token');  // Assuming the token is saved in localStorage
 
       if (!token) {
         alert("You must be logged in to make a deposit.");
