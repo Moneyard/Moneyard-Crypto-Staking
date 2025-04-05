@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moneyard - User Registration & Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard - User Registration, Login & Deposit</title>
 </head>
 <body>
   <h1>Welcome to Moneyard</h1>
@@ -34,81 +34,64 @@
 
   <!-- Deposit Form -->
   <h2>Deposit</h2>
-  <form id="deposit-form" style="display:none;">
-    <label>Amount to Deposit:</label>
+  <form id="deposit-form">
+    <label>Amount:</label>
     <input type="number" id="deposit-amount" required><br><br>
     <button type="submit">Deposit</button>
   </form>
 
-  <h3 id="balance-message" style="display:none;"></h3>
-
   <script>
-    let token = ''; // This will store the JWT token once the user logs in
+    const baseUrl = window.location.origin;
 
-    // Register form handler
-    document.getElementById('register-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
+    // Register form
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
 
-      const response = await fetch('https://your-heroku-app-url/register', {
+      const res = await fetch(`${baseUrl}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password })
       });
-
-      const data = await response.json();
-      alert(data.message);  // Show response message from backend
+      const data = await res.json();
+      alert(data.message || data.error);
     });
 
-    // Login form handler
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
+    // Login form
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
-      const response = await fetch('https://your-heroku-app-url/login', {
+      const res = await fetch(`${baseUrl}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password })
       });
-
-      const data = await response.json();
+      const data = await res.json();
 
       if (data.token) {
-        token = data.token; // Save token for future requests
+        localStorage.setItem('token', data.token);
         alert('Login successful!');
-        document.getElementById('deposit-form').style.display = 'block'; // Show deposit form
       } else {
-        alert('Error: ' + data.error);
+        alert('Login failed: ' + data.error);
       }
     });
 
-    // Deposit form handler
-    document.getElementById('deposit-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
+    // Deposit form
+    document.getElementById('deposit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('deposit-amount').value);
+      const token = localStorage.getItem('token');
 
-      const amount = document.getElementById('deposit-amount').value;
-
-      const response = await fetch('https://your-heroku-app-url/deposit', {
+      const res = await fetch(`${baseUrl}/deposit`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Include the token in the authorization header
-        },
-        body: JSON.stringify({ amount })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, amount })
       });
-
-      const data = await response.json();
-
-      if (data.message) {
-        document.getElementById('balance-message').textContent = `Deposit successful! Your new balance is $${data.balance}`;
-        document.getElementById('balance-message').style.display = 'block';
-      } else {
-        alert('Error: ' + data.error);
-      }
+      const data = await res.json();
+      alert(data.message || data.error);
     });
   </script>
 </body>
