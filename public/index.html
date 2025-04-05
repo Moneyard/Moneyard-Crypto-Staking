@@ -1,91 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moneyard - Login / Signup</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard | Login & Register</title>
 </head>
 <body>
   <h1>Welcome to Moneyard</h1>
 
-  <div id="forms">
-    <!-- Signup Form -->
-    <h2>Sign Up</h2>
-    <form id="signup-form">
-      <label>Username:</label>
-      <input type="text" id="signup-username" required><br><br>
-      <label>Password:</label>
-      <input type="password" id="signup-password" required><br><br>
-      <button type="submit">Sign Up</button>
-    </form>
+  <h2>Register</h2>
+  <input type="text" id="register-username" placeholder="Username" />
+  <input type="password" id="register-password" placeholder="Password" />
+  <button id="register-btn">Register</button>
 
-    <hr>
-
-    <!-- Login Form -->
-    <h2>Login</h2>
-    <form id="login-form">
-      <label>Username:</label>
-      <input type="text" id="login-username" required><br><br>
-      <label>Password:</label>
-      <input type="password" id="login-password" required><br><br>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-
-  <div id="dashboard" style="display:none;">
-    <h2>Dashboard</h2>
-    <p>Welcome back!</p>
-    <input type="number" id="deposit-amount" placeholder="Enter deposit amount">
-    <button onclick="makeDeposit()">Deposit</button>
-  </div>
+  <h2>Login</h2>
+  <input type="text" id="login-username" placeholder="Username" />
+  <input type="password" id="login-password" placeholder="Password" />
+  <button id="login-btn">Login</button>
 
   <script>
-    let token = null;
+    document.getElementById('register-btn').addEventListener('click', async () => {
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
 
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('signup-username').value;
-      const password = document.getElementById('signup-password').value;
-
-      const res = await fetch('/register', {
+      const response = await fetch('/register', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
-      const data = await res.json();
+
+      const data = await response.json();
       alert(data.message || data.error);
     });
 
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    document.getElementById('login-btn').addEventListener('click', async () => {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
-      const res = await fetch('/login', {
+      const response = await fetch('/login', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
-      const data = await res.json();
+
+      const data = await response.json();
       if (data.token) {
-        token = data.token;
-        document.getElementById('forms').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
+        localStorage.setItem('token', data.token);
+        window.location.href = 'dashboard.html';
       } else {
-        alert(data.error || "Login failed");
+        alert(data.error || 'Login failed');
       }
     });
-
-    async function makeDeposit() {
-      const amount = parseFloat(document.getElementById('deposit-amount').value);
-      const res = await fetch('/deposit', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ token, amount })
-      });
-      const data = await res.json();
-      alert(data.message || data.error);
-    }
   </script>
 </body>
 </html>
