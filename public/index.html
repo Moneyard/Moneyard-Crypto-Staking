@@ -7,54 +7,51 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
   <div class="container">
-    <!-- Form Container -->
     <div class="form-container">
-      <h1>Welcome to Moneyard</h1>
-      
       <!-- Sign Up Form -->
-      <div id="signup-form" class="form active">
+      <div id="signup-form">
         <h2>Sign Up</h2>
         <form id="register-form">
-          <input type="text" id="register-username" placeholder="Username" required>
-          <input type="password" id="register-password" placeholder="Password" required>
+          <label>Username:</label>
+          <input type="text" id="register-username" required><br><br>
+          <label>Password:</label>
+          <input type="password" id="register-password" required><br><br>
           <button type="submit">Sign Up</button>
         </form>
-        <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+        <p>Already have an account? <a href="javascript:void(0);" id="go-to-login">Login</a></p>
       </div>
 
       <!-- Login Form -->
-      <div id="login-form" class="form">
+      <div id="login-form" style="display:none;">
         <h2>Login</h2>
-        <form id="login-form">
-          <input type="text" id="login-username" placeholder="Username" required>
-          <input type="password" id="login-password" placeholder="Password" required>
+        <form id="login-form-handler">
+          <label>Username:</label>
+          <input type="text" id="login-username" required><br><br>
+          <label>Password:</label>
+          <input type="password" id="login-password" required><br><br>
           <button type="submit">Login</button>
         </form>
-        <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+        <p>Don't have an account? <a href="javascript:void(0);" id="go-to-signup">Sign Up</a></p>
       </div>
-
     </div>
   </div>
 
   <script>
-    // Toggle between sign up and login forms
-    document.getElementById('show-login').addEventListener('click', function(e) {
-      e.preventDefault();
-      document.getElementById('signup-form').classList.remove('active');
-      document.getElementById('login-form').classList.add('active');
+    // Toggle between Sign Up and Login
+    document.getElementById('go-to-login').addEventListener('click', () => {
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
     });
 
-    document.getElementById('show-signup').addEventListener('click', function(e) {
-      e.preventDefault();
-      document.getElementById('login-form').classList.remove('active');
-      document.getElementById('signup-form').classList.add('active');
+    document.getElementById('go-to-signup').addEventListener('click', () => {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'block';
     });
 
-    // Register form handler
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // Register form submission
+    document.getElementById('register-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
 
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
@@ -67,11 +64,15 @@
 
       const data = await response.json();
       alert(data.message);  // Show response message from backend
+      if (data.message === 'User registered successfully') {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+      }
     });
 
-    // Login form handler
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // Login form submission
+    document.getElementById('login-form-handler').addEventListener('submit', async (event) => {
+      event.preventDefault();
 
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
@@ -85,13 +86,13 @@
       const data = await response.json();
 
       if (data.token) {
-        // Save token (you can store it in localStorage or use it for future requests)
-        alert('Login successful! Token: ' + data.token);
+        alert('Login successful!');
+        // Redirect to dashboard or another page if necessary
+        window.location.href = '/dashboard';  // Example redirection
       } else {
         alert('Error: ' + data.error);
       }
     });
   </script>
-
 </body>
 </html>
