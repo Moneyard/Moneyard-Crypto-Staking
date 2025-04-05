@@ -1,40 +1,37 @@
-// Load environment variables from .env file
-require('dotenv').config();
-
-// Import required modules
 const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
-const authRoutes = require('./routes/authRoutes');
-const transactionRoutes = require('./routes/transactionRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
-
-// Initialize Express app
+const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Middleware to parse JSON bodies
 app.use(express.json());
 
-// API Routes
-app.use('/auth', authRoutes);
-app.use('/transactions', transactionRoutes);
-app.use('/dashboard', dashboardRoutes);
-
-// Test Supabase connection (optional)
-app.get('/test-db', async (req, res) => {
-  const { data, error } = await supabase.from('your_table_name').select('*');
-  if (error) {
-    return res.status(500).json({ error: 'Database connection failed', details: error });
+// SQLite setup
+const db = new sqlite3.Database('./moneyard.db', (err) => {
+  if (err) {
+    console.error('SQLite error:', err.message);
+  } else {
+    console.log('Connected to the moneyard SQLite database.');
   }
-  res.status(200).json({ data });
 });
 
-// Set up server to listen on specified port
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Example table creation
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE,
+      password TEXT
+    )
+  `);
+});
+
+// Example route
+app.get('/', (req, res) => {
+  res.send('Welcome to Moneyard (SQLite version)');
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
