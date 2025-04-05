@@ -1,116 +1,113 @@
-/* Global Styles */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #ffffff; /* White background */
+/* Reset some basic styles */
+* {
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  box-sizing: border-box;
 }
 
+/* Set background color and font properties */
+body {
+  background-color: #f9f9f9; /* White background */
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  padding: 20px;
+}
+
+/* Center the form container */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  min-height: 100vh;
 }
 
+/* Form container box */
 .form-container {
+  background-color: #fff; /* White background for the form */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
-  padding: 20px;
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-/* Header */
+/* Form headings */
 h1 {
-  text-align: center;
-  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
   margin-bottom: 20px;
 }
 
-/* Form Styles */
+/* Input fields */
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Submit buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #3498db; /* Blue color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9; /* Darker blue when hovered */
+}
+
+/* Link styles for switching forms */
+p a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+/* Toggling active form display */
 .form {
   display: none;
-  flex-direction: column;
 }
 
 .form.active {
-  display: flex;
+  display: block;
 }
 
-form h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-form label {
-  color: #333;
-  margin-bottom: 5px;
-}
-
-form input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-form button {
-  background-color: #4CAF50; /* Green background for buttons */
-  color: white;
-  border: none;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-form button:hover {
-  background-color: #45a049; /* Darker green for hover effect */
-}
-
-form p {
-  text-align: center;
-  color: #555;
-}
-
-form a {
-  color: #4CAF50; /* Green color for the links */
-  text-decoration: none;
-  font-weight: bold;
-}
-
-form a:hover {
-  text-decoration: underline;
-}
-
-form p a {
-  color: #4CAF50; /* Green color for the links */
-  font-weight: bold;
-  text-decoration: none;
-}
-
-form p a:hover {
-  text-decoration: underline;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
+/* Responsiveness */
+@media screen and (max-width: 600px) {
   .form-container {
-    padding: 15px;
+    padding: 20px;
     width: 90%;
   }
 
-  form input, form button {
-    font-size: 14px;
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  input[type="text"], input[type="password"], button {
+    font-size: 1rem;
   }
 }
