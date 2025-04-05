@@ -41,22 +41,28 @@
 
   <script>
     // Toggle between Sign Up and Login forms
-    document.getElementById('to-login').addEventListener('click', function() {
+    document.getElementById('to-login').addEventListener('click', function(event) {
+      event.preventDefault();
       document.getElementById('signup-form').style.display = 'none';
       document.getElementById('login-form').style.display = 'block';
+      console.log('Switched to Login Form');
     });
 
-    document.getElementById('to-signup').addEventListener('click', function() {
+    document.getElementById('to-signup').addEventListener('click', function(event) {
+      event.preventDefault();
       document.getElementById('login-form').style.display = 'none';
       document.getElementById('signup-form').style.display = 'block';
+      console.log('Switched to Sign Up Form');
     });
 
     // Sign Up form handler
     document.getElementById('register-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-      
+
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
+      
+      console.log('Attempting to Register:', { username, password });
 
       const response = await fetch('https://your-heroku-app-url/register', {
         method: 'POST',
@@ -65,7 +71,16 @@
       });
 
       const data = await response.json();
-      alert(data.message);  // Show response message from backend
+      console.log('Register Response:', data);
+
+      if (data.message) {
+        alert(data.message);
+        // If registration successful, show login form
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+      } else {
+        alert('Error: ' + data.error);
+      }
     });
 
     // Login form handler
@@ -75,6 +90,8 @@
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
+      console.log('Attempting to Login:', { username, password });
+
       const response = await fetch('https://your-heroku-app-url/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,11 +99,12 @@
       });
 
       const data = await response.json();
+      console.log('Login Response:', data);
 
       if (data.token) {
-        // Redirect to Dashboard (or other actions)
-        alert('Login successful! Token: ' + data.token);
-        window.location.href = "/dashboard";  // Update the path to your dashboard
+        alert('Login successful!');
+        // Redirect to Dashboard
+        window.location.href = "/dashboard";  // Change to the appropriate dashboard path
       } else {
         alert('Error: ' + data.error);
       }
