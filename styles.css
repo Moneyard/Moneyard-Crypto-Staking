@@ -12,7 +12,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; /* Light gray background */
 }
 
 .form-container {
@@ -22,6 +22,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 300px;
   text-align: center;
+  transition: transform 0.3s ease-in-out;
 }
 
 h1 {
@@ -59,19 +60,22 @@ button {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #45a049; /* Slightly darker green */
 }
 
 a {
-  color: #007BFF;
+  color: #007BFF; /* Blue */
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
   text-decoration: underline;
+  color: #0056b3; /* Darker blue */
 }
 
 p {
@@ -87,4 +91,61 @@ form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+#signup-form, #login-form {
+  display: none;
+}
+
+#signup-form.active, #login-form.active {
+  display: block;
+}
+
+h2 {
+  color: #007BFF; /* Blue for title */
+  margin-bottom: 10px;
+}
+
+#register-username, #register-password, #login-username, #login-password {
+  width: 100%;
+  padding: 12px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+#signup-form {
+  display: block; /* Display Sign Up form initially */
+}
+
+#login-form {
+  display: none; /* Display Login form after sign up */
+}
+
+#to-login, #to-signup {
+  font-size: 14px;
+  color: #007BFF;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#to-login:hover, #to-signup:hover {
+  text-decoration: underline;
+}
+
+/* Add some responsiveness */
+@media screen and (max-width: 600px) {
+  .form-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
 }
