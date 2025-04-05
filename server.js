@@ -20,13 +20,22 @@ const db = new sqlite3.Database('./moneyard.db', (err) => {
   }
 });
 
-// Example table creation
+// Example table creation for users
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE,
       password TEXT
+    )
+  `);
+
+  // Create balances table if it doesn't exist
+  db.run(`
+    CREATE TABLE IF NOT EXISTS balances (
+      user_id INTEGER PRIMARY KEY,
+      balance REAL DEFAULT 0,
+      FOREIGN KEY(user_id) REFERENCES users(id)
     )
   `);
 });
@@ -65,6 +74,50 @@ app.post('/login', (req, res) => {
 
     const token = jwt.sign({ id: row.id, username: row.username }, 'your-secret-key', { expiresIn: '1h' });
     res.json({ message: 'Login successful', token });
+  });
+});
+
+// Deposit endpoint
+app.post('/deposit', (req, res) => {
+  const { userId, amount } = req.body;
+
+  // Validate deposit amount
+  if (!userId || !amount || amount <= 0) {
+    return res.status(400).json({ error: 'Invalid deposit amount' });
+  }
+
+  // Check if user exists
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, userRow) => {
+    if (err || !userRow) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if balance record exists for user
+    db.get('SELECT * FROM balances WHERE user_id = ?', [userId], (err, balanceRow) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error checking balance' });
+      }
+
+      let newBalance = balanceRow ? balanceRow.balance + amount : amount;
+
+      if (balanceRow) {
+        // Update balance if user already has one
+        db.run('UPDATE balances SET balance = ? WHERE user_id = ?', [newBalance, userId], function (err) {
+          if (err) {
+            return res.status(500).json({ error: 'Failed to update balance' });
+          }
+          res.status(200).json({ message: 'Deposit successful', newBalance });
+        });
+      } else {
+        // Create balance record for new user
+        db.run('INSERT INTO balances (user_id, balance) VALUES (?, ?)', [userId, amount], function (err) {
+          if (err) {
+            return res.status(500).json({ error: 'Failed to create balance record' });
+          }
+          res.status(200).json({ message: 'Deposit successful', newBalance: amount });
+        });
+      }
+    });
   });
 });
 
