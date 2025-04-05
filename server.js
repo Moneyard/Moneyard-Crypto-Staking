@@ -2,7 +2,7 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
+const path = require('path'); // Import path module to serve static files
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -20,7 +20,7 @@ const db = new sqlite3.Database('./moneyard.db', (err) => {
   }
 });
 
-// Create tables if not already created
+// Example table creation
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -39,35 +39,43 @@ db.serialize(() => {
   `);
 });
 
+// Example route (API)
+app.get('/', (req, res) => {
+  res.send('Welcome to Moneyard (SQLite version)');
+});
+
 // User registration
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log('Register request received:', { username, password });
 
-  db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function (err) {
-    if (err) {
-      console.error('Error during registration:', err);
-      return res.status(500).json({ error: 'Failed to register user' });
-    }
-
-    const userId = this.lastID;
-    db.run('INSERT INTO balances (user_id) VALUES (?)', [userId], function (err) {
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function (err) {
       if (err) {
-        console.error('Error initializing balance:', err);
-        return res.status(500).json({ error: 'Failed to initialize balance' });
+        return res.status(500).json({ error: 'Failed to register user', details: err });
       }
-      res.status(201).json({ message: 'User registered successfully' });
+      // Create an initial balance entry for the new user
+      const userId = this.lastID; // The user ID of the newly registered user
+      db.run('INSERT INTO balances (user_id) VALUES (?)', [userId], function (err) {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to initialize balance' });
+        }
+        res.status(201).json({ message: 'User registered successfully' });
+      });
     });
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to hash password', details: err });
+  }
 });
 
 // User login
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
+  console.log('Login request received:', { username, password });
 
   db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
     if (err || !row) {
-      console.error('Error during login:', err || 'User not found');
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
@@ -96,17 +104,12 @@ app.post('/deposit', (req, res) => {
 
     const userId = decoded.id;
 
+    // Update balance for the user
     db.run('UPDATE balances SET balance = balance + ? WHERE user_id = ?', [amount, userId], function (err) {
       if (err) {
-        console.error('Error during deposit:', err);
         return res.status(500).json({ error: 'Failed to update balance' });
       }
-      db.get('SELECT balance FROM balances WHERE user_id = ?', [userId], (err, row) => {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to fetch updated balance' });
-        }
-        res.status(200).json({ message: 'Deposit successful', newBalance: row.balance });
-      });
+      res.status(200).json({ message: 'Deposit successful', newBalance: amount });
     });
   });
 });
