@@ -10,104 +10,41 @@
   <div class="container">
     <div class="form-container">
       <h1>Welcome to Moneyard</h1>
-      
+
       <!-- Sign Up Form -->
-      <div id="signup-form" class="form">
+      <form id="signup-form" class="form active">
         <h2>Sign Up</h2>
-        <form id="register-form">
-          <label>Username:</label>
-          <input type="text" id="register-username" required><br><br>
-          <label>Password:</label>
-          <input type="password" id="register-password" required><br><br>
-          <button type="submit">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="#" id="to-login">Login here</a></p>
-      </div>
+        <label for="signup-username">Username</label>
+        <input type="text" id="signup-username" required><br>
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" required><br>
+        <button type="submit">Sign Up</button>
+        <p>Already have an account? <a href="#" id="to-login">Login</a></p>
+      </form>
 
       <!-- Login Form -->
-      <div id="login-form" class="form" style="display:none;">
+      <form id="login-form" class="form">
         <h2>Login</h2>
-        <form id="login-form">
-          <label>Username:</label>
-          <input type="text" id="login-username" required><br><br>
-          <label>Password:</label>
-          <input type="password" id="login-password" required><br><br>
-          <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="#" id="to-signup">Sign Up here</a></p>
-      </div>
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" required><br>
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" required><br>
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="#" id="to-signup">Sign Up</a></p>
+      </form>
     </div>
   </div>
 
   <script>
-    // Toggle between Sign Up and Login forms
-    document.getElementById('to-login').addEventListener('click', function(event) {
-      event.preventDefault();
-      document.getElementById('signup-form').style.display = 'none';
-      document.getElementById('login-form').style.display = 'block';
-      console.log('Switched to Login Form');
+    // Form switch functionality
+    document.getElementById('to-login').addEventListener('click', function() {
+      document.getElementById('signup-form').classList.remove('active');
+      document.getElementById('login-form').classList.add('active');
     });
 
-    document.getElementById('to-signup').addEventListener('click', function(event) {
-      event.preventDefault();
-      document.getElementById('login-form').style.display = 'none';
-      document.getElementById('signup-form').style.display = 'block';
-      console.log('Switched to Sign Up Form');
-    });
-
-    // Sign Up form handler
-    document.getElementById('register-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const username = document.getElementById('register-username').value;
-      const password = document.getElementById('register-password').value;
-      
-      console.log('Attempting to Register:', { username, password });
-
-      const response = await fetch('https://your-heroku-app-url/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      console.log('Register Response:', data);
-
-      if (data.message) {
-        alert(data.message);
-        // If registration successful, show login form
-        document.getElementById('signup-form').style.display = 'none';
-        document.getElementById('login-form').style.display = 'block';
-      } else {
-        alert('Error: ' + data.error);
-      }
-    });
-
-    // Login form handler
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-
-      console.log('Attempting to Login:', { username, password });
-
-      const response = await fetch('https://your-heroku-app-url/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      console.log('Login Response:', data);
-
-      if (data.token) {
-        alert('Login successful!');
-        // Redirect to Dashboard
-        window.location.href = "/dashboard";  // Change to the appropriate dashboard path
-      } else {
-        alert('Error: ' + data.error);
-      }
+    document.getElementById('to-signup').addEventListener('click', function() {
+      document.getElementById('login-form').classList.remove('active');
+      document.getElementById('signup-form').classList.add('active');
     });
   </script>
 </body>
