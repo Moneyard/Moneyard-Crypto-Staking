@@ -48,20 +48,17 @@
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
 
-      try {
-        const response = await fetch('https://your-heroku-app-url/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        });
+      console.log('Registering user...', { username, password });
 
-        const data = await response.json();
-        console.log('Register response:', data);
-        alert(data.message);  // Show response message from backend
-      } catch (error) {
-        console.error('Error during registration:', error);
-        alert('Registration failed');
-      }
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      console.log(data);  // Check the response in the console
+      alert(data.message || data.error);
     });
 
     // Login form handler
@@ -71,25 +68,22 @@
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
-      try {
-        const response = await fetch('https://your-heroku-app-url/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        });
+      console.log('Logging in user...', { username, password });
 
-        const data = await response.json();
-        console.log('Login response:', data);
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
 
-        if (data.token) {
-          alert('Login successful! Token: ' + data.token);
-          localStorage.setItem('authToken', data.token); // Store token in localStorage for future requests
-        } else {
-          alert('Error: ' + data.error);
-        }
-      } catch (error) {
-        console.error('Error during login:', error);
-        alert('Login failed');
+      const data = await response.json();
+      console.log(data);  // Check the response in the console
+
+      if (data.token) {
+        alert('Login successful! Token: ' + data.token);
+        localStorage.setItem('token', data.token);  // Store token for deposit
+      } else {
+        alert('Error: ' + data.error);
       }
     });
 
@@ -98,34 +92,19 @@
       event.preventDefault();
 
       const amount = document.getElementById('deposit-amount').value;
-      const token = localStorage.getItem('authToken');  // Get stored token from localStorage
+      const token = localStorage.getItem('token');  // Get the token from localStorage
 
-      if (!token) {
-        alert('You must be logged in to deposit');
-        return;
-      }
+      console.log('Making deposit...', { amount, token });
 
-      try {
-        const response = await fetch('https://your-heroku-app-url/deposit', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json' 
-          },
-          body: JSON.stringify({ token, amount }),
-        });
+      const response = await fetch('/deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, amount }),
+      });
 
-        const data = await response.json();
-        console.log('Deposit response:', data);
-
-        if (data.message) {
-          alert('Deposit successful! New Balance: ' + data.newBalance);
-        } else {
-          alert('Error: ' + data.error);
-        }
-      } catch (error) {
-        console.error('Error during deposit:', error);
-        alert('Deposit failed');
-      }
+      const data = await response.json();
+      console.log(data);  // Check the response in the console
+      alert(data.message || data.error);
     });
   </script>
 </body>
