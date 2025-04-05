@@ -2,10 +2,14 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // Import path module to serve static files
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// Serve static files (HTML, CSS, JS) from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // SQLite setup
 const db = new sqlite3.Database('./moneyard.db', (err) => {
@@ -27,7 +31,7 @@ db.serialize(() => {
   `);
 });
 
-// Example route
+// Example route (API)
 app.get('/', (req, res) => {
   res.send('Welcome to Moneyard (SQLite version)');
 });
@@ -62,6 +66,11 @@ app.post('/login', (req, res) => {
     const token = jwt.sign({ id: row.id, username: row.username }, 'your-secret-key', { expiresIn: '1h' });
     res.json({ message: 'Login successful', token });
   });
+});
+
+// Catch-all route to serve the frontend (index.html) for non-API requests
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {
