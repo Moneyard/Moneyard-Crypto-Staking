@@ -1,113 +1,73 @@
-/* Reset some basic styles */
-* {
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: white;
+  color: #333;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-/* Set background color and font properties */
-body {
-  background-color: #fff; /* White background */
-  font-family: 'Arial', sans-serif;
-  color: #333;
-  padding: 20px;
-}
-
-/* Center the form container */
+/* Container for form */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
+  background-color: white;
 }
 
-/* Form container box */
+/* Form container for SignUp/Login */
 .form-container {
-  background-color: #fff; /* White background for the form */
-  padding: 30px;
+  background-color: #f4f4f4;
+  padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
   text-align: center;
 }
 
-/* Form headings */
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #2c3e50;
-}
-
 h2 {
-  color: #2c3e50;
-  font-size: 1.5rem;
   margin-bottom: 20px;
 }
 
-/* Input fields */
 input[type="text"], input[type="password"] {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  box-sizing: border-box;
 }
 
-/* Submit buttons */
 button {
   width: 100%;
-  padding: 12px;
-  margin-top: 20px;
-  background-color: #3498db; /* Blue color */
+  padding: 10px;
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 1.1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #2980b9; /* Darker blue when hovered */
+  background-color: #45a049;
 }
 
-/* Link styles for switching forms */
-p a {
-  color: #3498db;
+/* Links */
+a {
+  color: #4CAF50;
   text-decoration: none;
 }
 
-p a:hover {
+a:hover {
   text-decoration: underline;
 }
 
-/* Toggling active form display */
-.form {
-  display: none;
-}
-
-.form.active {
+/* Toggle form visibility */
+#login-form, #signup-form {
   display: block;
 }
 
-/* Responsiveness */
-@media screen and (max-width: 600px) {
-  .form-container {
-    padding: 20px;
-    width: 90%;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-  }
-
-  input[type="text"], input[type="password"], button {
-    font-size: 1rem;
-  }
+#login-form {
+  display: none;
 }
