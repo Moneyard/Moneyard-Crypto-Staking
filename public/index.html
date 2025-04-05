@@ -38,60 +38,63 @@
   </div>
 
   <script>
-    // Toggle between Sign Up and Login
-    document.getElementById('go-to-login').addEventListener('click', () => {
-      document.getElementById('signup-form').style.display = 'none';
-      document.getElementById('login-form').style.display = 'block';
-    });
-
-    document.getElementById('go-to-signup').addEventListener('click', () => {
-      document.getElementById('login-form').style.display = 'none';
-      document.getElementById('signup-form').style.display = 'block';
-    });
-
-    // Register form submission
-    document.getElementById('register-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const username = document.getElementById('register-username').value;
-      const password = document.getElementById('register-password').value;
-
-      const response = await fetch('https://your-heroku-app-url/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      alert(data.message);  // Show response message from backend
-      if (data.message === 'User registered successfully') {
+    // Make sure the DOM is loaded before attaching event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle between Sign Up and Login
+      document.getElementById('go-to-login').addEventListener('click', () => {
         document.getElementById('signup-form').style.display = 'none';
         document.getElementById('login-form').style.display = 'block';
-      }
-    });
-
-    // Login form submission
-    document.getElementById('login-form-handler').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-
-      const response = await fetch('https://your-heroku-app-url/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
       });
 
-      const data = await response.json();
+      document.getElementById('go-to-signup').addEventListener('click', () => {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('signup-form').style.display = 'block';
+      });
 
-      if (data.token) {
-        alert('Login successful!');
-        // Redirect to dashboard or another page if necessary
-        window.location.href = '/dashboard';  // Example redirection
-      } else {
-        alert('Error: ' + data.error);
-      }
+      // Register form submission
+      document.getElementById('register-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('register-username').value;
+        const password = document.getElementById('register-password').value;
+
+        const response = await fetch('https://your-heroku-app-url/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+        alert(data.message);  // Show response message from backend
+        if (data.message === 'User registered successfully') {
+          document.getElementById('signup-form').style.display = 'none';
+          document.getElementById('login-form').style.display = 'block';
+        }
+      });
+
+      // Login form submission
+      document.getElementById('login-form-handler').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        const response = await fetch('https://your-heroku-app-url/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (data.token) {
+          alert('Login successful!');
+          // Redirect to dashboard or another page if necessary
+          window.location.href = '/dashboard';  // Example redirection
+        } else {
+          alert('Error: ' + data.error);
+        }
+      });
     });
   </script>
 </body>
