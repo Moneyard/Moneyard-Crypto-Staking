@@ -1,10 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Dashboard</title>
 </head>
 <body>
-  <h1>Welcome to your Dashboard</h1>
-  <p>You have successfully logged in.</p>
+  <h1>Welcome to Your Dashboard</h1>
+
+  <p id="balance">Loading your balance...</p>
+
+  <h2>Make a Deposit</h2>
+  <form id="deposit-form">
+    <label>Amount:</label>
+    <input type="number" id="deposit-amount" required min="1"/><br/><br/>
+    <button type="submit">Deposit</button>
+  </form>
+
+  <br/>
+  <button id="logout-btn">Logout</button>
+
+  <script>
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert('You must be logged in to view this page.');
+      window.location.href = '/';
+    }
+
+    // Fetch balance
+    fetch('/balance', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.balance !== undefined) {
+        document.getElementById('balance').textContent = 'Your balance: $' + data.balance;
+      } else {
+        document.getElementById('balance').textContent = 'Error loading balance';
+      }
+    });
+
+    // Deposit form
+    document.getElementById('deposit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('deposit-amount').value);
+
+      const res = await fetch('/deposit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ token, amount })
+      });
+
+      const data = await res.json();
+      alert(data.message);
+
+      if (data.newBalance !== undefined) {
+        document.getElementById('balance').textContent = 'Your balance: $' + data.newBalance;
+      }
+    });
+
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    });
+  </script>
 </body>
 </html>
