@@ -3,86 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard</title>
+  <title>Moneyard - User Registration & Login</title>
 </head>
 <body>
   <h1>Welcome to Moneyard</h1>
 
+  <!-- Registration Form -->
   <h2>Register</h2>
   <form id="register-form">
-    <input type="text" id="register-username" placeholder="Username" required /><br><br>
-    <input type="password" id="register-password" placeholder="Password" required /><br><br>
+    <label>Username:</label>
+    <input type="text" id="register-username" required><br><br>
+    <label>Password:</label>
+    <input type="password" id="register-password" required><br><br>
     <button type="submit">Register</button>
   </form>
 
+  <hr>
+
+  <!-- Login Form -->
   <h2>Login</h2>
   <form id="login-form">
-    <input type="text" id="login-username" placeholder="Username" required /><br><br>
-    <input type="password" id="login-password" placeholder="Password" required /><br><br>
+    <label>Username:</label>
+    <input type="text" id="login-username" required><br><br>
+    <label>Password:</label>
+    <input type="password" id="login-password" required><br><br>
     <button type="submit">Login</button>
   </form>
 
+  <hr>
+
+  <!-- Deposit button (functionality can be added) -->
   <h2>Deposit</h2>
-  <form id="deposit-form" style="display: none;">
-    <input type="number" id="deposit-amount" placeholder="Amount" required /><br><br>
-    <button type="submit">Deposit</button>
-  </form>
+  <button onclick="alert('Deposit functionality coming soon!')">Deposit</button>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const apiBase = '/'; // Change this to your full Heroku app URL if needed
+    // Register handler
+    document.getElementById('register-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-      document.getElementById('register-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('register-username').value;
-        const password = document.getElementById('register-password').value;
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
 
-        const res = await fetch(apiBase + 'register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-        alert(data.message);
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
       });
 
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('login-username').value;
-        const password = document.getElementById('login-password').value;
+      const data = await response.json();
+      alert(data.message || data.error);
+    });
 
-        const res = await fetch(apiBase + 'login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
+    // Login handler
+    document.getElementById('login-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-        const data = await res.json();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
 
-        if (data.token) {
-          alert('Login successful');
-          localStorage.setItem('token', data.token);
-          document.getElementById('deposit-form').style.display = 'block';
-        } else {
-          alert(data.error || 'Login failed');
-        }
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
       });
 
-      document.getElementById('deposit-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem('token');
-        const amount = document.getElementById('deposit-amount').value;
+      const data = await response.json();
 
-        const res = await fetch(apiBase + 'deposit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, amount })
-        });
-
-        const data = await res.json();
-        alert(data.message);
-      });
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        alert('Login successful!');
+        window.location.href = '/dashboard.html'; // redirect
+      } else {
+        alert(data.error || 'Login failed');
+      }
     });
   </script>
 </body>
