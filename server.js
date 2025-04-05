@@ -2,7 +2,7 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path'); // Import path module to serve static files
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -20,7 +20,7 @@ const db = new sqlite3.Database('./moneyard.db', (err) => {
   }
 });
 
-// Example table creation
+// Create users and balances tables
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -39,11 +39,6 @@ db.serialize(() => {
   `);
 });
 
-// Example route (API)
-app.get('/', (req, res) => {
-  res.send('Welcome to Moneyard (SQLite version)');
-});
-
 // User registration
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
@@ -53,8 +48,7 @@ app.post('/register', async (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to register user' });
     }
-    // Create an initial balance entry for the new user
-    const userId = this.lastID; // The user ID of the newly registered user
+    const userId = this.lastID;
     db.run('INSERT INTO balances (user_id) VALUES (?)', [userId], function (err) {
       if (err) {
         return res.status(500).json({ error: 'Failed to initialize balance' });
@@ -98,7 +92,6 @@ app.post('/deposit', (req, res) => {
 
     const userId = decoded.id;
 
-    // Update balance for the user
     db.run('UPDATE balances SET balance = balance + ? WHERE user_id = ?', [amount, userId], function (err) {
       if (err) {
         return res.status(500).json({ error: 'Failed to update balance' });
