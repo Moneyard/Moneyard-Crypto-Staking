@@ -11,40 +11,88 @@
     <div class="form-container">
       <h1>Welcome to Moneyard</h1>
 
-      <!-- Sign Up Form -->
-      <form id="signup-form" class="form active">
+      <!-- Sign-up Form -->
+      <div class="form active" id="signup-form">
         <h2>Sign Up</h2>
-        <label for="signup-username">Username</label>
-        <input type="text" id="signup-username" required><br>
-        <label for="signup-password">Password</label>
-        <input type="password" id="signup-password" required><br>
-        <button type="submit">Sign Up</button>
-        <p>Already have an account? <a href="#" id="to-login">Login</a></p>
-      </form>
+        <form id="register-form">
+          <label for="signup-username">Username:</label>
+          <input type="text" id="signup-username" required><br><br>
+
+          <label for="signup-password">Password:</label>
+          <input type="password" id="signup-password" required><br><br>
+
+          <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
+      </div>
 
       <!-- Login Form -->
-      <form id="login-form" class="form">
+      <div class="form" id="login-form">
         <h2>Login</h2>
-        <label for="login-username">Username</label>
-        <input type="text" id="login-username" required><br>
-        <label for="login-password">Password</label>
-        <input type="password" id="login-password" required><br>
-        <button type="submit">Login</button>
-        <p>Don't have an account? <a href="#" id="to-signup">Sign Up</a></p>
-      </form>
+        <form id="login-form-action">
+          <label for="login-username">Username:</label>
+          <input type="text" id="login-username" required><br><br>
+
+          <label for="login-password">Password:</label>
+          <input type="password" id="login-password" required><br><br>
+
+          <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="#" id="show-signup">Sign up here</a></p>
+      </div>
     </div>
   </div>
 
   <script>
-    // Form switch functionality
-    document.getElementById('to-login').addEventListener('click', function() {
+    // Handle form toggling between Sign Up and Login
+    document.getElementById('show-login').addEventListener('click', function(e) {
+      e.preventDefault();
       document.getElementById('signup-form').classList.remove('active');
       document.getElementById('login-form').classList.add('active');
     });
 
-    document.getElementById('to-signup').addEventListener('click', function() {
+    document.getElementById('show-signup').addEventListener('click', function(e) {
+      e.preventDefault();
       document.getElementById('login-form').classList.remove('active');
       document.getElementById('signup-form').classList.add('active');
+    });
+
+    // Handle Registration Form Submission
+    document.getElementById('register-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const username = document.getElementById('signup-username').value;
+      const password = document.getElementById('signup-password').value;
+
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      alert(data.message);
+      if (response.ok) {
+        document.getElementById('signup-form').classList.remove('active');
+        document.getElementById('login-form').classList.add('active');
+      }
+    });
+
+    // Handle Login Form Submission
+    document.getElementById('login-form-action').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+      alert(data.message);
+      if (response.ok) {
+        window.location.href = '/dashboard'; // Redirect to dashboard after login
+      }
     });
   </script>
 </body>
