@@ -6,70 +6,47 @@
   <title>Moneyard Dashboard</title>
 </head>
 <body>
-  <h1>Welcome to Your Dashboard</h1>
+  <h1>Welcome to Moneyard Dashboard</h1>
 
-  <p id="balance">Loading your balance...</p>
+  <h2>Deposit</h2>
+  <input type="number" id="deposit-amount" placeholder="Amount" />
+  <button id="deposit-btn">Deposit</button>
 
-  <h2>Make a Deposit</h2>
-  <form id="deposit-form">
-    <label>Amount:</label>
-    <input type="number" id="deposit-amount" required min="1"/><br/><br/>
-    <button type="submit">Deposit</button>
-  </form>
-
-  <br/>
-  <button id="logout-btn">Logout</button>
+  <h2>Transaction History</h2>
+  <ul id="transaction-history"></ul>
 
   <script>
     const token = localStorage.getItem('token');
 
-    if (!token) {
-      alert('You must be logged in to view this page.');
-      window.location.href = '/';
+    document.getElementById('deposit-btn').addEventListener('click', async () => {
+      const amount = parseFloat(document.getElementById('deposit-amount').value);
+      const response = await fetch('/deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, amount }),
+      });
+      const data = await response.json();
+      alert(data.message);
+      loadTransactions();
+    });
+
+    async function loadTransactions() {
+      const response = await fetch('/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const data = await response.json();
+      const list = document.getElementById('transaction-history');
+      list.innerHTML = '';
+      data.transactions.forEach(tx => {
+        const item = document.createElement('li');
+        item.textContent = `${tx.type} - $${tx.amount} on ${tx.timestamp}`;
+        list.appendChild(item);
+      });
     }
 
-    // Fetch balance
-    fetch('/balance', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.balance !== undefined) {
-        document.getElementById('balance').textContent = 'Your balance: $' + data.balance;
-      } else {
-        document.getElementById('balance').textContent = 'Error loading balance';
-      }
-    });
-
-    // Deposit form
-    document.getElementById('deposit-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const amount = parseFloat(document.getElementById('deposit-amount').value);
-
-      const res = await fetch('/deposit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ token, amount })
-      });
-
-      const data = await res.json();
-      alert(data.message);
-
-      if (data.newBalance !== undefined) {
-        document.getElementById('balance').textContent = 'Your balance: $' + data.newBalance;
-      }
-    });
-
-    // Logout button
-    document.getElementById('logout-btn').addEventListener('click', () => {
-      localStorage.removeItem('token');
-      window.location.href = '/';
-    });
+    loadTransactions();
   </script>
 </body>
 </html>
