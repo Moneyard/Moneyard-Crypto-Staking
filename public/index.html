@@ -16,8 +16,9 @@
     alert(data.message);  // Show response message from backend
 
     if (response.ok) {
-      // Redirect to login page after successful registration
-      window.location.href = '/login';
+      // Instead of redirecting, show an alert for testing
+      alert('Redirecting to login...');
+      window.location.href = '/login'; // Redirection to login
     }
   });
 
@@ -37,11 +38,9 @@
     const data = await response.json();
 
     if (data.token) {
-      // Save token (you can store it in localStorage or use it for future requests)
-      alert('Login successful! Token: ' + data.token);
-
-      // Redirect to the deposit page after successful login
-      window.location.href = '/deposit';
+      alert('Login successful! Redirecting to deposit...');
+      // Show an alert first to confirm
+      window.location.href = '/deposit'; // Redirection to deposit page
     } else {
       alert('Error: ' + data.error);
     }
