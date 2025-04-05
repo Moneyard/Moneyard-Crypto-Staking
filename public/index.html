@@ -3,44 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard - User Registration & Login</title>
+  <title>Moneyard | Login & Register</title>
 </head>
 <body>
   <h1>Welcome to Moneyard</h1>
 
-  <!-- Registration Form -->
   <h2>Register</h2>
-  <form id="register-form">
-    <label>Username:</label>
-    <input type="text" id="register-username" required><br><br>
-    <label>Password:</label>
-    <input type="password" id="register-password" required><br><br>
-    <button type="submit">Register</button>
-  </form>
+  <input type="text" id="register-username" placeholder="Username" />
+  <input type="password" id="register-password" placeholder="Password" />
+  <button id="register-btn">Register</button>
 
-  <hr>
-
-  <!-- Login Form -->
   <h2>Login</h2>
-  <form id="login-form">
-    <label>Username:</label>
-    <input type="text" id="login-username" required><br><br>
-    <label>Password:</label>
-    <input type="password" id="login-password" required><br><br>
-    <button type="submit">Login</button>
-  </form>
-
-  <hr>
-
-  <!-- Deposit button (functionality can be added) -->
-  <h2>Deposit</h2>
-  <button onclick="alert('Deposit functionality coming soon!')">Deposit</button>
+  <input type="text" id="login-username" placeholder="Username" />
+  <input type="password" id="login-password" placeholder="Password" />
+  <button id="login-btn">Login</button>
 
   <script>
-    // Register handler
-    document.getElementById('register-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
+    document.getElementById('register-btn').addEventListener('click', async () => {
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
 
@@ -54,10 +33,7 @@
       alert(data.message || data.error);
     });
 
-    // Login handler
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
+    document.getElementById('login-btn').addEventListener('click', async () => {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
 
@@ -68,11 +44,9 @@
       });
 
       const data = await response.json();
-
       if (data.token) {
         localStorage.setItem('token', data.token);
-        alert('Login successful!');
-        window.location.href = '/dashboard.html'; // redirect
+        window.location.href = 'dashboard.html';
       } else {
         alert(data.error || 'Login failed');
       }
