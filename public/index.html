@@ -3,22 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard | Login & Register</title>
+  <title>Moneyard | User Registration & Login</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <h1>Welcome to Moneyard</h1>
 
-  <h2>Register</h2>
-  <input type="text" id="register-username" placeholder="Username" />
-  <input type="password" id="register-password" placeholder="Password" />
-  <button id="register-btn">Register</button>
+  <!-- Registration Form Section -->
+  <div class="form-container">
+    <h2>Register</h2>
+    <input type="text" id="register-username" placeholder="Username" />
+    <input type="password" id="register-password" placeholder="Password" />
+    <button id="register-btn">Register</button>
+  </div>
 
-  <h2>Login</h2>
-  <input type="text" id="login-username" placeholder="Username" />
-  <input type="password" id="login-password" placeholder="Password" />
-  <button id="login-btn">Login</button>
+  <!-- Login Form Section -->
+  <div class="form-container">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login-btn">Login</button>
+  </div>
 
   <script>
+    // Register Form Submission
     document.getElementById('register-btn').addEventListener('click', async () => {
       const username = document.getElementById('register-username').value;
       const password = document.getElementById('register-password').value;
@@ -33,6 +41,7 @@
       alert(data.message || data.error);
     });
 
+    // Login Form Submission
     document.getElementById('login-btn').addEventListener('click', async () => {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
@@ -46,7 +55,7 @@
       const data = await response.json();
       if (data.token) {
         localStorage.setItem('token', data.token);
-        window.location.href = 'dashboard.html';
+        window.location.href = 'dashboard.html'; // Redirect to dashboard
       } else {
         alert(data.error || 'Login failed');
       }
