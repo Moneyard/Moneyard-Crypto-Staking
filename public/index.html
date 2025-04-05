@@ -1,118 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard | Login & Sign Up</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-      color: #333;
-      text-align: center;
-      padding: 40px;
-    }
-    .form-box {
-      background-color: #e6f7ff;
-      border: 2px solid #00bfa5;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 400px;
-      margin: 0 auto 20px;
-    }
-    input {
-      display: block;
-      width: 90%;
-      margin: 10px auto;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #00bfa5;
-      border: none;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    button:hover {
-      background-color: #009e87;
-    }
-    .hidden {
-      display: none;
-    }
-    .link {
-      margin-top: 10px;
-      color: #0077cc;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moneyard - User Registration & Login</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Welcome to Moneyard</h1>
+    <div class="container">
+        <div class="form-box">
+            <!-- Sign Up Form -->
+            <div id="signup-form">
+                <h2>Sign Up</h2>
+                <form id="signup">
+                    <input type="text" placeholder="Username" id="signup-username" required><br>
+                    <input type="email" placeholder="Email" id="signup-email" required><br>
+                    <input type="password" placeholder="Password" id="signup-password" required><br>
+                    <input type="text" placeholder="Reference Code" id="signup-ref-code"><br>
+                    <button type="submit">Sign Up</button>
+                </form>
+                <p>Already have an account? <a href="javascript:void(0);" id="show-login">Log In</a></p>
+            </div>
 
-  <!-- Sign Up Box -->
-  <div id="signup-box" class="form-box">
-    <h2>Sign Up</h2>
-    <input type="text" id="register-username" placeholder="Username" />
-    <input type="password" id="register-password" placeholder="Password" />
-    <input type="text" id="reference-code" placeholder="Reference Code (Optional)" />
-    <button id="register-btn">Create Account</button>
-  </div>
+            <!-- Login Form -->
+            <div id="login-form" style="display: none;">
+                <h2>Log In</h2>
+                <form id="login">
+                    <input type="email" placeholder="Email" id="login-email" required><br>
+                    <input type="password" placeholder="Password" id="login-password" required><br>
+                    <button type="submit">Log In</button>
+                </form>
+                <p><a href="javascript:void(0);" id="show-forgot-password">Forgot Password?</a></p>
+                <p>Don't have an account? <a href="javascript:void(0);" id="show-signup">Sign Up</a></p>
+            </div>
 
-  <!-- Login Box -->
-  <div id="login-box" class="form-box hidden">
-    <h2>Login</h2>
-    <input type="text" id="login-username" placeholder="Username" />
-    <input type="password" id="login-password" placeholder="Password" />
-    <button id="login-btn">Login</button>
-    <div class="link" onclick="alert('Feature coming soon')">Forgot Password?</div>
-  </div>
+            <!-- Forgot Password Form -->
+            <div id="forgot-password-form" style="display: none;">
+                <h2>Forgot Password</h2>
+                <form id="forgot-password">
+                    <input type="email" placeholder="Enter your email" id="forgot-password-email" required><br>
+                    <button type="submit">Submit</button>
+                </form>
+                <p><a href="javascript:void(0);" id="back-to-login">Back to Log In</a></p>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    const registerBtn = document.getElementById('register-btn');
-    const loginBtn = document.getElementById('login-btn');
-
-    registerBtn.addEventListener('click', async () => {
-      const username = document.getElementById('register-username').value;
-      const password = document.getElementById('register-password').value;
-
-      const response = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await response.json();
-      alert(data.message || data.error);
-
-      if (data.message) {
-        // Hide sign up and show login
-        document.getElementById('signup-box').classList.add('hidden');
-        document.getElementById('login-box').classList.remove('hidden');
-      }
-    });
-
-    loginBtn.addEventListener('click', async () => {
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        window.location.href = 'dashboard.html';
-      } else {
-        alert(data.error || 'Login failed');
-      }
-    });
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
