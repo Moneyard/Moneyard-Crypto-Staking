@@ -61,6 +61,62 @@ app.get('/user-summary', (req, res) => {
   );
 });
 
+// API: Get deposit address for selected network
+app.post('/get-deposit-address', (req, res) => {
+  const { userId, network } = req.body;
+  
+  // Simulate getting deposit address based on the network (TRC20/BEP20)
+  const depositAddress = network === 'TRC20' ? 'TXXXXXXX' : network === 'BEP20' ? 'BXXXXXXX' : '';
+
+  if (!depositAddress) {
+    return res.status(400).json({ error: "Invalid network selected." });
+  }
+
+  // In real cases, you would fetch or generate an actual address from the database
+  res.json({ address: depositAddress });
+});
+
+// API: Log withdrawal request
+app.post('/log-withdrawal', (req, res) => {
+  const { userId, amount, address, password } = req.body;
+
+  // Validate inputs
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: 'Invalid withdrawal amount' });
+  }
+  if (!address) {
+    return res.status(400).json({ error: 'Withdrawal address is required' });
+  }
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required for withdrawal' });
+  }
+
+  // Simulate withdrawal logging
+  console.log(`User ${userId} is requesting withdrawal: ${amount} USDT to ${address}`);
+
+  // Here you'd save the withdrawal request to the database for admin approval, etc.
+  // For simplicity, let's assume it's successful.
+  
+  res.json({ message: 'Withdrawal request submitted successfully' });
+});
+
+// API: Get transaction history for the user
+app.get('/get-transaction-history', (req, res) => {
+  const userId = req.query.userId || 1;
+
+  // Simulate fetching transaction history from the database
+  db.all(
+    `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+    [userId],
+    (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to fetch transaction history' });
+      }
+      res.json(rows); // Send back the transaction history
+    }
+  );
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
