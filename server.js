@@ -20,12 +20,15 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
 app.get('/user-summary', (req, res) => {
   const userId = req.query.userId || 1; // Default to userId 1 for now
 
+  console.log('Fetching user summary for userId:', userId);  // Add logging to check the userId
+
   // Get the total deposit amount for the user
   db.get(
     `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = "deposit"`,
     [userId],
     (err, result) => {
       if (err) {
+        console.error('Error fetching total deposit:', err); // Log the error
         return res.status(500).json({ error: err.message });
       }
 
@@ -37,11 +40,14 @@ app.get('/user-summary', (req, res) => {
         [userId],
         (err, withdrawalResult) => {
           if (err) {
+            console.error('Error fetching total withdrawals:', err); // Log the error
             return res.status(500).json({ error: err.message });
           }
 
           const totalWithdrawn = withdrawalResult.totalWithdrawn || 0;
           const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
+
+          console.log('User summary:', { totalDeposit, balance }); // Log the fetched summary
 
           // Return user summary with total deposit and balance
           res.json({
