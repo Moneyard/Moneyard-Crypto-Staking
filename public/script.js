@@ -49,18 +49,18 @@ function getDepositAddress() {
   const network = document.getElementById('network').value;
   let depositAddress = '';
 
-  // Define deposit addresses for selected networks
+  // Match deposit address based on selected network
   if (network === 'Tron') {
     depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
   } else if (network === 'BNB') {
     depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
-  }
-
-  if (depositAddress) {
-    document.getElementById('deposit-address').innerText = `Send USDT to: ${depositAddress}`;
   } else {
     alert("Please select a valid network.");
+    return;
   }
+
+  // Display the deposit address based on the network selected
+  document.getElementById('deposit-address').innerText = `Send USDT to: ${depositAddress}`;
 }
 
 // Log deposit
