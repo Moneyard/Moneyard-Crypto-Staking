@@ -85,3 +85,36 @@ function logDeposit() {
       alert(data.message || data.error);
     });
 }
+
+// Submit withdrawal request
+function submitWithdrawal() {
+  const userId = localStorage.getItem('userId') || 1;
+  const amount = parseFloat(document.getElementById('withdraw-amount').value);
+  const address = document.getElementById('withdraw-address').value;
+  const password = document.getElementById('withdraw-password').value;
+
+  if (!amount || amount <= 0) {
+    alert("Please enter a valid withdrawal amount.");
+    return;
+  }
+
+  if (!address) {
+    alert("Please enter your wallet address.");
+    return;
+  }
+
+  if (!password) {
+    alert("Please enter your security password.");
+    return;
+  }
+
+  fetch('/request-withdrawal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, amount, address, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || data.error);
+    });
+}
