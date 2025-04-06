@@ -44,31 +44,23 @@ function isUserLoggedIn() {
   return userId !== null;
 }
 
-// Fetch deposit address based on selected network (Tron or BNB)
+// Fetch deposit address
 function getDepositAddress() {
-  const network = document.getElementById('network').value;  // Get selected network
-  const userId = localStorage.getItem('userId') || 1;
-
-  // Check if network is selected
-  if (!network) {
-    alert("Please select a network.");
-    return;
-  }
-
-  // Define deposit addresses for the selected networks
+  const network = document.getElementById('network').value;
   let depositAddress = '';
 
+  // Define deposit addresses for selected networks
   if (network === 'Tron') {
     depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
   } else if (network === 'BNB') {
     depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
-  } else {
-    alert("Unsupported network selected.");
-    return;
   }
 
-  // Display the deposit address on the page
-  document.getElementById('deposit-address').innerText = 'Send USDT to: ' + depositAddress;
+  if (depositAddress) {
+    document.getElementById('deposit-address').innerText = `Send USDT to: ${depositAddress}`;
+  } else {
+    alert("Please select a valid network.");
+  }
 }
 
 // Log deposit
