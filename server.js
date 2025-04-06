@@ -132,6 +132,38 @@ app.post('/admin/reject-withdrawal', (req, res) => {
     });
 });
 
+// Admin Routes
+
+// Get all withdrawals (for admin panel)
+app.get('/admin/get-withdrawals', (req, res) => {
+  db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ withdrawals: rows });
+  });
+});
+
+// Update withdrawal status (approve/reject)
+app.post('/admin/update-withdrawal', (req, res) => {
+  const { id, status } = req.body;
+
+  if (!['approved', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status' });
+  }
+
+  db.run(
+    'UPDATE transactions SET status = ? WHERE id = ?',
+    [status, id],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: `Withdrawal ${status}` });
+    }
+  );
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
