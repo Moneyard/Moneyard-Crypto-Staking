@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #FFA500; /* warm orange background */
-  color: #444; /* soft grey text */
+  background: #fff;
+  color: #333;
   margin: 0;
   padding: 20px;
   display: flex;
@@ -9,7 +9,6 @@ body {
   align-items: center;
 }
 
-/* Logo section */
 #logo-section {
   margin-bottom: 30px;
 }
@@ -20,7 +19,6 @@ body {
   cursor: pointer;
 }
 
-/* Form container */
 .form {
   width: 100%;
   max-width: 300px;
@@ -31,61 +29,21 @@ body {
   margin-bottom: 20px;
 }
 
-/* Inputs */
 input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-  color: #28a745; /* green for number/input text */
 }
 
-/* Green styled values */
-#deposit-address,
-#calculated-earnings {
-  color: #28a745;
-  font-weight: bold;
-}
-
-/* Table styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  color: #444;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f0f0f0;
-}
-
-/* Buttons */
 button {
   width: 100%;
   padding: 10px;
-  background-color: #28a745;
+  background-color: #007BFF;
   border: none;
   color: white;
   font-weight: bold;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-/* Select dropdown */
-select {
-  padding: 6px;
-  border-radius: 4px;
-  margin-top: 5px;
 }
