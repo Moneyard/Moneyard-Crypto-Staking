@@ -49,6 +49,11 @@ function getDepositAddress() {
   const network = document.getElementById('network').value;
   const userId = localStorage.getItem('userId') || 1;
 
+  if (!network) {
+    alert("Please select a network.");
+    return;
+  }
+
   fetch('/get-deposit-address', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -61,6 +66,10 @@ function getDepositAddress() {
       } else {
         alert(data.error || "Something went wrong.");
       }
+    })
+    .catch(err => {
+      console.error("Error fetching deposit address:", err);
+      alert("Failed to fetch deposit address.");
     });
 }
 
@@ -81,6 +90,11 @@ function logDeposit() {
     return;
   }
 
+  if (!network) {
+    alert("Please select a network.");
+    return;
+  }
+
   fetch('/log-deposit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -89,6 +103,10 @@ function logDeposit() {
     .then(res => res.json())
     .then(data => {
       alert(data.message || data.error);
+    })
+    .catch(err => {
+      console.error("Error logging deposit:", err);
+      alert("Failed to log deposit.");
     });
 }
 
