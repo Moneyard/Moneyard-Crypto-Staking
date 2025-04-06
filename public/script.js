@@ -142,3 +142,53 @@ function updateWithdrawalStatus(id, status) {
       fetchPendingWithdrawals(); // Refresh table
     });
 }
+
+// === Admin Panel Functions ===
+
+// Fetch all pending withdrawals
+function fetchWithdrawals() {
+  fetch('/admin/get-withdrawals')
+    .then(res => res.json())
+    .then(data => {
+      const tableBody = document.getElementById('withdrawals-body');
+      tableBody.innerHTML = '';
+
+      data.withdrawals.forEach(wd => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${wd.id}</td>
+          <td>${wd.user_id}</td>
+          <td>${wd.amount}</td>
+          <td>${wd.network}</td>
+          <td>${wd.status}</td>
+          <td>${wd.date}</td>
+          <td>
+            <button onclick="updateWithdrawal(${wd.id}, 'approved')">Approve</button>
+            <button onclick="updateWithdrawal(${wd.id}, 'rejected')">Reject</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    });
+}
+
+// Approve or reject a withdrawal
+function updateWithdrawal(id, newStatus) {
+  fetch('/admin/update-withdrawal', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id, status: newStatus })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || "Action completed");
+      fetchWithdrawals(); // Refresh table
+    });
+}
+
+// Auto-load if on admin panel
+if (window.location.pathname.includes('admin.html')) {
+  fetchWithdrawals();
+}
