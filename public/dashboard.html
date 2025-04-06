@@ -9,5 +9,26 @@
 <body>
   <h2>Welcome to your Moneyard Dashboard!</h2>
   <p>You are now logged in.</p>
+
+  <section id="deposit-section">
+    <h3>Deposit Funds</h3>
+    
+    <label for="network">Choose Network:</label>
+    <select id="network">
+      <option value="TRC20">TRC20 (Tron)</option>
+      <option value="BEP20">BEP20 (BNB Smart Chain)</option>
+    </select>
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    
+    <p id="deposit-address" style="margin-top: 10px; font-weight: bold;"></p>
+    
+    <div style="margin-top: 20px;">
+      <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+      <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
+      <button onclick="logDeposit()">Submit Deposit</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
 </body>
 </html>
