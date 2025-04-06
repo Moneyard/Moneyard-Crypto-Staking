@@ -38,31 +38,6 @@ function login() {
   }
 }
 
-// Display user info on dashboard
-function displayUserSummary() {
-  const username = localStorage.getItem('username') || 'User';
-
-  document.getElementById('user-name').innerText = username;
-
-  fetch(`/get-user-summary?userId=${localStorage.getItem('userId') || 1}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('total-staked').innerText = data.totalStaked || '0.00';
-      document.getElementById('total-earnings').innerText = data.totalEarnings || '0.00';
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById('total-staked').innerText = '0.00';
-      document.getElementById('total-earnings').innerText = '0.00';
-    });
-}
-
-// Logout function
-function logout() {
-  localStorage.clear();
-  window.location.href = "index.html";
-}
-
 // Fetch deposit address
 function getDepositAddress() {
   const network = document.getElementById('network').value;
@@ -126,7 +101,28 @@ function calculateEarnings() {
   document.getElementById('calculated-earnings').innerText = earningsMessage;
 }
 
-// Run on dashboard load
-if (window.location.pathname.includes("dashboard.html")) {
-  document.addEventListener("DOMContentLoaded", displayUserSummary);
+// Fetch user summary (username, total deposit, balance)
+function loadUserSummary() {
+  const userId = localStorage.getItem('userId') || 1;
+
+  fetch(`/user-summary?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.totalDeposit !== undefined && data.balance !== undefined) {
+        document.getElementById('user-username').innerText = localStorage.getItem('username');
+        document.getElementById('total-deposit').innerText = `Total Deposit: ${data.totalDeposit.toFixed(2)} USDT`;
+        document.getElementById('balance').innerText = `Balance: ${data.balance.toFixed(2)} USDT`;
+      } else {
+        alert("Failed to load user summary.");
+      }
+    })
+    .catch(err => {
+      console.error("Error loading user summary:", err);
+      alert("Failed to load user summary.");
+    });
 }
+
+// Call loadUserSummary when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+  loadUserSummary();
+});
