@@ -1,59 +1,184 @@
-// server.js
-
 const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // SQLite database setup
-const db = new sqlite3.Database('./moneyard.db');
-
-// Register Route
-app.post('/register', (req, res) => {
-  const { username, password, email } = req.body;
-
-  // Hash password before saving
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
-  // Create new user in the database
-  const query = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
-  db.run(query, [username, hashedPassword, email], function (err) {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to register user' });
-    }
-    res.status(200).json({ message: 'User registered successfully!' });
-  });
+const db = new sqlite3.Database('./database.sqlite', (err) => {
+    if (err) return console.error('Failed to connect to DB:', err);
+    console.log('Connected to SQLite database.');
 });
 
-// Login Route
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+// Create transactions table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        type TEXT,
+        amount REAL,
+        network TEXT,
+        tx_id TEXT,
+        status TEXT,
+        date TEXT
+    )
+`);
 
-  // Fetch user from database
-  const query = 'SELECT * FROM users WHERE username = ?';
-  db.get(query, [username], (err, user) => {
-    if (err || !user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
+// Create withdrawals table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        amount REAL,
+        wallet_address TEXT,
+        password TEXT,
+        status TEXT DEFAULT 'pending',
+        date TEXT
+    )
+`);
 
-    // Check if password is correct
-    const validPassword = bcrypt.compareSync(password, user.password);
-    if (!validPassword) {
-      return res.status(400).json({ error: 'Invalid password' });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign({ username: user.username }, 'secret-key', { expiresIn: '1h' });
-    res.status(200).json({ token });
-  });
+// Static page routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start the server
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Deposit wallet addresses (example)
+const walletAddresses = {
+    TRC20: "TXYZ1234567890TRONADDRESS",
+    BEP20: "0x1234567890BNBADDRESS"
+};
+
+// API: Get deposit address
+app.post('/get-deposit-address', (req, res) => {
+    const { userId, network } = req.body;
+
+    if (!walletAddresses[network]) {
+        return res.status(400).json({ error: 'Invalid network selected' });
+    }
+
+    res.json({ address: walletAddresses[network] });
+});
+
+// API: Log deposit
+app.post('/log-deposit', (req, res) => {
+    const { userId, amount, network, txId } = req.body;
+
+    if (amount < 15 || amount > 1000) {
+        return res.status(400).json({ error: 'Amount must be between 15 and 1000 USDT' });
+    }
+
+    db.run(
+        `INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+         VALUES (?, "deposit", ?, ?, ?, "pending", datetime("now"))`,
+        [userId, amount, network, txId],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: 'Deposit logged, pending confirmation' });
+        }
+    );
+});
+
+// API: Get transaction history for the logged-in user
+app.get('/get-transaction-history', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.all(
+        `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ transactions: rows });
+        }
+    );
+});
+
+// API: Get live staked amount and earnings for a user
+app.get('/get-live-staked', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.all(
+        `SELECT SUM(amount) as total_staked FROM transactions 
+         WHERE user_id = ? AND type = 'deposit' AND status = 'approved'`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            const totalStaked = rows[0].total_staked || 0;
+            const dailyEarnings = totalStaked * 0.08;
+
+            res.json({
+                totalStaked: totalStaked.toFixed(2),
+                dailyEarnings: dailyEarnings.toFixed(2)
+            });
+        }
+    );
+});
+
+// Admin API: Get pending withdrawals
+app.get('/admin/withdrawals', (req, res) => {
+    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
+});
+
+// Admin API: Approve withdrawal
+app.post('/admin/approve-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal approved successfully.' });
+    });
+});
+
+// Admin API: Reject withdrawal
+app.post('/admin/reject-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal rejected successfully.' });
+    });
+});
+
+// Admin: Get all withdrawals for dashboard view
+app.get('/admin/get-withdrawals', (req, res) => {
+    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
+});
+
+// Admin: Update withdrawal status
+app.post('/admin/update-withdrawal', (req, res) => {
+    const { id, status } = req.body;
+
+    if (!['approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    db.run(
+        'UPDATE transactions SET status = ? WHERE id = ?',
+        [status, id],
+        function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: `Withdrawal ${status}` });
+        }
+    );
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
