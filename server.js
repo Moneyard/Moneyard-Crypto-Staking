@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const JWT_SECRET = 'your_jwt_secret_key'; // Replace with a secure key
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,33 +29,6 @@ db.run(`
     )
 `);
 
-// Create transactions table if it doesn't exist
-db.run(`
-    CREATE TABLE IF NOT EXISTS transactions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        type TEXT,
-        amount REAL,
-        network TEXT,
-        tx_id TEXT,
-        status TEXT,
-        date TEXT
-    )
-`);
-
-// Create withdrawals table if it doesn't exist
-db.run(`
-    CREATE TABLE IF NOT EXISTS withdrawals (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        amount REAL,
-        wallet_address TEXT,
-        password TEXT,
-        status TEXT DEFAULT 'pending',
-        date TEXT
-    )
-`);
-
 // Static page routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -64,80 +38,48 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// API: User Signup
+// API: Sign Up
 app.post('/signup', (req, res) => {
     const { username, password, refcode } = req.body;
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) return res.status(500).json({ error: 'Error hashing password' });
 
+    // Hash the password before saving
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) return res.status(500).json({ error: 'Failed to hash password' });
+
+        // Save user to the database
         db.run(
             `INSERT INTO users (username, password, refcode) VALUES (?, ?, ?)`,
-            [username, hashedPassword, refcode || null],
+            [username, hashedPassword, refcode],
             function (err) {
-                if (err) return res.status(500).json({ error: 'Error registering user' });
-                res.status(201).json({ message: 'User registered successfully' });
+                if (err) return res.status(500).json({ error: 'Failed to sign up user' });
+                res.json({ message: 'Sign up successful' });
             }
         );
     });
 });
 
-// API: User Login
+// API: Login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+    // Fetch user from the database
+    db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, user) => {
         if (err) return res.status(500).json({ error: 'Database error' });
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        if (!user) return res.status(400).json({ error: 'User not found' });
 
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) return res.status(500).json({ error: 'Error comparing passwords' });
-            if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
+        // Compare the hashed password
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (err) return res.status(500).json({ error: 'Failed to compare password' });
+            if (!result) return res.status(400).json({ error: 'Invalid password' });
 
-            // Generate a JWT token
-            const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+            // Generate JWT token
+            const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+
+            // Send response with token
             res.json({ message: 'Login successful', token });
         });
     });
 });
-
-// Deposit wallet addresses (example)
-const walletAddresses = {
-    TRC20: "TXYZ1234567890TRONADDRESS",
-    BEP20: "0x1234567890BNBADDRESS"
-};
-
-// API: Get deposit address
-app.post('/get-deposit-address', (req, res) => {
-    const { userId, network } = req.body;
-
-    if (!walletAddresses[network]) {
-        return res.status(400).json({ error: 'Invalid network selected' });
-    }
-
-    res.json({ address: walletAddresses[network] });
-});
-
-// API: Log deposit
-app.post('/log-deposit', (req, res) => {
-    const { userId, amount, network, txId } = req.body;
-
-    if (amount < 15 || amount > 1000) {
-        return res.status(400).json({ error: 'Amount must be between 15 and 1000 USDT' });
-    }
-
-    db.run(
-        `INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-         VALUES (?, "deposit", ?, ?, ?, "pending", datetime("now"))`,
-        [userId, amount, network, txId],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ message: 'Deposit logged, pending confirmation' });
-        }
-    );
-});
-
-// Additional API routes as before...
-// Admin APIs, transaction history, etc.
 
 // Start server
 app.listen(PORT, () => {
