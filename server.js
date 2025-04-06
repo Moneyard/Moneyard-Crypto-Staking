@@ -31,7 +31,7 @@ app.get('/user-summary', (req, res) => {
         return res.status(500).json({ error: err.message });
       }
 
-      const totalDeposit = result ? result.totalDeposit : 0; // Safely handle null results
+      const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0; // Safely handle null results
       console.log('Total deposit:', totalDeposit);  // Log the total deposit
 
       // Get the total withdrawn amount for the user (approved withdrawals)
@@ -44,7 +44,7 @@ app.get('/user-summary', (req, res) => {
             return res.status(500).json({ error: err.message });
           }
 
-          const totalWithdrawn = withdrawalResult ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
+          const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
           console.log('Total withdrawn:', totalWithdrawn);  // Log the total withdrawn
 
           const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
