@@ -109,12 +109,13 @@ function calculateEarnings() {
 
 // Fetch user summary (username, total deposit, balance)
 function loadUserSummary() {
-  if (!isUserLoggedIn()) {
-    console.log('User is not logged in. Skipping user summary load.');
+  const userId = localStorage.getItem('userId');
+  
+  // If userId is not found, do not load the summary
+  if (!userId) {
+    console.log('User is not logged in, skipping summary load');
     return;
   }
-
-  const userId = localStorage.getItem('userId');
 
   fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
@@ -135,7 +136,10 @@ function loadUserSummary() {
 
 // Call loadUserSummary only if user is logged in
 document.addEventListener("DOMContentLoaded", function () {
+  // Only attempt to load the user summary if the user is logged in
   if (isUserLoggedIn()) {
     loadUserSummary();
+  } else {
+    console.log('User is not logged in. Skipping user summary load.');
   }
 });
