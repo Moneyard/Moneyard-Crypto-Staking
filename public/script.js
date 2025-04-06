@@ -100,3 +100,45 @@ function calculateEarnings() {
 
   document.getElementById('calculated-earnings').innerText = earningsMessage;
 }
+
+// Admin: Fetch all pending withdrawals
+function fetchPendingWithdrawals() {
+  fetch('/admin/withdrawals')
+    .then(res => res.json())
+    .then(data => {
+      const table = document.getElementById('admin-withdrawal-table-body');
+      table.innerHTML = ''; // Clear old rows
+      data.withdrawals.forEach(tx => {
+        const row = `
+          <tr>
+            <td>${tx.id}</td>
+            <td>${tx.user_id}</td>
+            <td>${tx.amount}</td>
+            <td>${tx.network}</td>
+            <td>${tx.tx_id || 'N/A'}</td>
+            <td>${tx.status}</td>
+            <td>${tx.date}</td>
+            <td>
+              <button onclick="updateWithdrawalStatus(${tx.id}, 'approved')">Approve</button>
+              <button onclick="updateWithdrawalStatus(${tx.id}, 'rejected')">Reject</button>
+            </td>
+          </tr>
+        `;
+        table.innerHTML += row;
+      });
+    });
+}
+
+// Admin: Update withdrawal status
+function updateWithdrawalStatus(id, status) {
+  fetch('/admin/update-withdrawal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, status })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || 'Status updated');
+      fetchPendingWithdrawals(); // Refresh table
+    });
+}
