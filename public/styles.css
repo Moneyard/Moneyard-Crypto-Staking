@@ -1,3 +1,4 @@
+/* General body style for non-dashboard pages */
 body {
   font-family: Arial, sans-serif;
   background: #fff;
@@ -9,6 +10,69 @@ body {
   align-items: center;
 }
 
+/* Dashboard-specific styles */
+body.dashboard {
+  background-color: #FFA500; /* warm orange */
+  color: #444; /* soft grey for text */
+}
+
+body.dashboard h2,
+body.dashboard h3,
+body.dashboard p,
+body.dashboard label {
+  color: #444;
+}
+
+body.dashboard input[type="number"],
+body.dashboard input[type="text"],
+body.dashboard input[type="password"] {
+  color: #28a745; /* green text for numbers and inputs */
+}
+
+body.dashboard #deposit-address,
+body.dashboard #calculated-earnings {
+  color: #28a745;
+}
+
+body.dashboard table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  color: #444;
+}
+
+body.dashboard th,
+body.dashboard td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+body.dashboard th {
+  background-color: #f0f0f0;
+}
+
+body.dashboard button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+body.dashboard button:hover {
+  background-color: #218838;
+}
+
+body.dashboard select {
+  padding: 6px;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+/* Logo section */
 #logo-section {
   margin-bottom: 30px;
 }
@@ -19,6 +83,7 @@ body {
   cursor: pointer;
 }
 
+/* Form container */
 .form {
   width: 100%;
   max-width: 300px;
@@ -29,6 +94,7 @@ body {
   margin-bottom: 20px;
 }
 
+/* Form inputs */
 input {
   width: 100%;
   padding: 10px;
@@ -37,6 +103,7 @@ input {
   border-radius: 4px;
 }
 
+/* Buttons */
 button {
   width: 100%;
   padding: 10px;
