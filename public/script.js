@@ -1,102 +1,84 @@
-// Toggle between signup and login forms
+// Toggle between Sign Up and Login forms
 function toggleForms() {
   const signupForm = document.getElementById('signup-form');
   const loginForm = document.getElementById('login-form');
 
-  signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-}
-
-// Signup handler
-function signup() {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
-
-  if (username && password) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    alert("Signup successful! Please login.");
-    toggleForms();
+  if (signupForm.style.display === 'none') {
+    signupForm.style.display = 'block';
+    loginForm.style.display = 'none';
   } else {
-    alert("Please fill in all required fields.");
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
   }
 }
 
-// Login handler
+// Handle sign up
+function signup() {
+  const username = document.getElementById('signup-username').value;
+  const password = document.getElementById('signup-password').value;
+  const email = document.getElementById('signup-email').value;
+
+  const data = { username, password, email };
+
+  fetch('/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message) {
+      alert(data.message);
+      toggleForms(); // Switch to login form after successful sign up
+    } else {
+      alert('Error: ' + data.error);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+// Handle login
 function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
 
-  const storedUser = localStorage.getItem('username');
-  const storedPass = localStorage.getItem('password');
+  const data = { username, password };
 
-  if (username === storedUser && password === storedPass) {
-    localStorage.setItem('userId', 1); // Static userId for now
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials. Please try again.");
-  }
-}
-
-// Fetch deposit address
-function getDepositAddress() {
-  const network = document.getElementById('network').value;
-  const userId = localStorage.getItem('userId') || 1;
-
-  fetch('/get-deposit-address', {
+  fetch('/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, network })
+    body: JSON.stringify(data)
   })
-    .then(res => res.json())
-    .then(data => {
-      if (data.address) {
-        document.getElementById('deposit-address').innerText = 'Send USDT to: ' + data.address;
-      } else {
-        alert(data.error || "Something went wrong.");
-      }
-    });
+  .then(response => response.json())
+  .then(data => {
+    if (data.token) {
+      alert('Login successful!');
+      localStorage.setItem('token', data.token); // Store token
+      window.location.href = '/dashboard'; // Redirect to dashboard
+    } else {
+      alert('Error: ' + data.error);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 }
 
-// Log deposit
-function logDeposit() {
-  const userId = localStorage.getItem('userId') || 1;
-  const amount = parseFloat(document.getElementById('deposit-amount').value);
-  const txId = document.getElementById('txId').value;
-  const network = document.getElementById('network').value;
-
-  if (!amount || amount < 15 || amount > 1000) {
-    alert("Enter a valid amount between 15 and 1000 USDT.");
+// Handle password reset request
+function forgotPassword() {
+  const email = prompt('Enter your email for password reset:');
+  
+  if (!email) {
+    alert('Email is required!');
     return;
   }
 
-  if (!txId) {
-    alert("Please enter the transaction ID.");
-    return;
-  }
-
-  fetch('/log-deposit', {
+  fetch('/forgot-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, network, txId })
+    body: JSON.stringify({ email })
   })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
-    });
-}
-
-// Calculate earnings (8% daily)
-function calculateEarnings() {
-  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
-
-  if (!depositAmount || depositAmount < 15 || depositAmount > 1000) {
-    alert("Please enter a valid deposit amount between 15 and 1000 USDT.");
-    return;
-  }
-
-  const dailyEarnings = depositAmount * 0.08; // 8% daily earnings
-  const earningsMessage = `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
-
-  document.getElementById('calculated-earnings').innerText = earningsMessage;
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);
+  })
+  .catch(error => console.error('Error:', error));
 }
