@@ -111,9 +111,9 @@ function loadUserSummary() {
       // Ensure the response contains the correct data
       if (data.totalDeposit !== undefined && data.balance !== undefined) {
         // Display user summary data
-        document.getElementById('user-username').innerText = localStorage.getItem('username');
-        document.getElementById('total-deposit').innerText = `Total Deposit: ${data.totalDeposit.toFixed(2)} USDT`;
-        document.getElementById('balance').innerText = `Balance: ${data.balance.toFixed(2)} USDT`;
+        document.getElementById('summary-username').innerText = localStorage.getItem('username');
+        document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
+        document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
       } else {
         alert("Failed to load user summary.");
       }
