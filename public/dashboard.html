@@ -42,11 +42,23 @@
 
   <hr />
 
-  <section id="calculator-section" style="margin-top: 30px;">
-    <h3>Earnings Calculator</h3>
-    <input type="number" id="calc-amount" placeholder="Enter deposit amount (min 15 USDT)" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calc-result" style="margin-top: 10px; font-weight: bold;"></p>
+  <section id="transaction-history-section" style="margin-top: 30px;">
+    <h3>Transaction History</h3>
+    <table id="transaction-history-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Network</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Transaction rows will be injected here -->
+      </tbody>
+    </table>
   </section>
 
   <script src="script.js"></script>
