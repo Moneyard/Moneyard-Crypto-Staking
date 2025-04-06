@@ -1,82 +1,35 @@
-window.onload = function() {
-  const userId = localStorage.getItem("userId"); // Assumed to be saved in localStorage during login
-  if (!userId) {
-    window.location.href = 'index.html'; // Redirect to login page if no user is logged in
-  }
-  
-  // Fetch user data
-  fetch(`/user/${userId}`)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('user-name').textContent = data.username;
-      document.getElementById('account-balance').textContent = data.balance;
-      loadTransactionHistory(userId);
-    });
+function toggleForms() {
+  const signupForm = document.getElementById('signup-form');
+  const loginForm = document.getElementById('login-form');
 
-  document.getElementById('deposit-btn').addEventListener('click', deposit);
-  document.getElementById('withdraw-btn').addEventListener('click', withdraw);
-  document.getElementById('logout-btn').addEventListener('click', logout);
-};
+  signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
+  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+}
 
-// Deposit function
-function deposit() {
-  const amount = prompt("Enter the amount to deposit (15-1000 USDT):");
-  if (amount >= 15 && amount <= 1000) {
-    const network = prompt("Enter the network (TRC20/BEP20):");
-    fetch("/deposit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        userId: localStorage.getItem("userId"),
-        amount: amount,
-        network: network
-      })
-    })
-      .then(response => response.json())
-      .then(data => alert(data.message));
+function signup() {
+  const username = document.getElementById('signup-username').value;
+  const password = document.getElementById('signup-password').value;
+
+  if (username && password) {
+    localStorage.setItem('username', username);
+    localStorage.setItem('password', password);
+    alert("Signup successful! Please login.");
+    toggleForms();
   } else {
-    alert("Deposit amount must be between 15 and 1000 USDT.");
+    alert("Please fill in all required fields.");
   }
 }
 
-// Withdraw function
-function withdraw() {
-  const amount = prompt("Enter the amount to withdraw:");
-  const password = prompt("Enter your password:");
-  fetch("/withdraw", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      userId: localStorage.getItem("userId"),
-      amount: amount,
-      password: password
-    })
-  })
-    .then(response => response.json())
-    .then(data => alert(data.message));
-}
+function login() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
 
-// Transaction History
-function loadTransactionHistory(userId) {
-  fetch(`/transactions/${userId}`)
-    .then(response => response.json())
-    .then(data => {
-      const transactionsList = document.getElementById("transactions-list");
-      data.transactions.forEach(transaction => {
-        const li = document.createElement("li");
-        li.textContent = `${transaction.type} - ${transaction.amount} USDT on ${transaction.date}`;
-        transactionsList.appendChild(li);
-      });
-    })
-    .catch(err => console.error("Error fetching transactions:", err));
-}
+  const storedUser = localStorage.getItem('username');
+  const storedPass = localStorage.getItem('password');
 
-// Logout
-function logout() {
-  localStorage.removeItem('userId');
-  window.location.href = 'index.html'; // Redirect to login page
+  if (username === storedUser && password === storedPass) {
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid credentials. Please try again.");
+  }
 }
