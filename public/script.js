@@ -1,194 +1,184 @@
-// Toggle between signup and login forms
-function toggleForms() {
-  const signupForm = document.getElementById('signup-form');
-  const loginForm = document.getElementById('login-form');
+const express = require('express');
+const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 
-  signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-}
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Signup handler
-function signup() {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-  if (username && password) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    alert("Signup successful! Please login.");
-    toggleForms();
-  } else {
-    alert("Please fill in all required fields.");
-  }
-}
+// SQLite database setup
+const db = new sqlite3.Database('./database.sqlite', (err) => {
+    if (err) return console.error('Failed to connect to DB:', err);
+    console.log('Connected to SQLite database.');
+});
 
-// Login handler
-function login() {
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
+// Create transactions table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        type TEXT,
+        amount REAL,
+        network TEXT,
+        tx_id TEXT,
+        status TEXT,
+        date TEXT
+    )
+`);
 
-  const storedUser = localStorage.getItem('username');
-  const storedPass = localStorage.getItem('password');
+// Create withdrawals table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        amount REAL,
+        wallet_address TEXT,
+        password TEXT,
+        status TEXT DEFAULT 'pending',
+        date TEXT
+    )
+`);
 
-  if (username === storedUser && password === storedPass) {
-    localStorage.setItem('userId', 1); // Static userId for now
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials. Please try again.");
-  }
-}
+// Static page routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-// Fetch deposit address
-function getDepositAddress() {
-  const network = document.getElementById('network').value;
-  const userId = localStorage.getItem('userId') || 1;
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
 
-  fetch('/get-deposit-address', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, network })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.address) {
-        document.getElementById('deposit-address').innerText = 'Send USDT to: ' + data.address;
-      } else {
-        alert(data.error || "Something went wrong.");
-      }
+// Deposit wallet addresses (example)
+const walletAddresses = {
+    TRC20: "TXYZ1234567890TRONADDRESS",
+    BEP20: "0x1234567890BNBADDRESS"
+};
+
+// API: Get deposit address
+app.post('/get-deposit-address', (req, res) => {
+    const { userId, network } = req.body;
+
+    if (!walletAddresses[network]) {
+        return res.status(400).json({ error: 'Invalid network selected' });
+    }
+
+    res.json({ address: walletAddresses[network] });
+});
+
+// API: Log deposit
+app.post('/log-deposit', (req, res) => {
+    const { userId, amount, network, txId } = req.body;
+
+    if (amount < 15 || amount > 1000) {
+        return res.status(400).json({ error: 'Amount must be between 15 and 1000 USDT' });
+    }
+
+    db.run(
+        `INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+         VALUES (?, "deposit", ?, ?, ?, "pending", datetime("now"))`,
+        [userId, amount, network, txId],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: 'Deposit logged, pending confirmation' });
+        }
+    );
+});
+
+// API: Get transaction history for the logged-in user
+app.get('/get-transaction-history', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.all(
+        `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ transactions: rows });
+        }
+    );
+});
+
+// API: Get live staked amount and earnings for a user
+app.get('/get-live-staked', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.all(
+        `SELECT SUM(amount) as total_staked FROM transactions 
+         WHERE user_id = ? AND type = 'deposit' AND status = 'approved'`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            const totalStaked = rows[0].total_staked || 0;
+            const dailyEarnings = totalStaked * 0.08;
+
+            res.json({
+                totalStaked: totalStaked.toFixed(2),
+                dailyEarnings: dailyEarnings.toFixed(2)
+            });
+        }
+    );
+});
+
+// Admin API: Get pending withdrawals
+app.get('/admin/withdrawals', (req, res) => {
+    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
     });
-}
+});
 
-// Log deposit
-function logDeposit() {
-  const userId = localStorage.getItem('userId') || 1;
-  const amount = parseFloat(document.getElementById('deposit-amount').value);
-  const txId = document.getElementById('txId').value;
-  const network = document.getElementById('network').value;
+// Admin API: Approve withdrawal
+app.post('/admin/approve-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
 
-  if (!amount || amount < 15 || amount > 1000) {
-    alert("Enter a valid amount between 15 and 1000 USDT.");
-    return;
-  }
-
-  if (!txId) {
-    alert("Please enter the transaction ID.");
-    return;
-  }
-
-  fetch('/log-deposit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, network, txId })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal approved successfully.' });
     });
-}
+});
 
-// Calculate earnings (8% daily)
-function calculateEarnings() {
-  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
+// Admin API: Reject withdrawal
+app.post('/admin/reject-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
 
-  if (!depositAmount || depositAmount < 15 || depositAmount > 1000) {
-    alert("Please enter a valid deposit amount between 15 and 1000 USDT.");
-    return;
-  }
-
-  const dailyEarnings = depositAmount * 0.08; // 8% daily earnings
-  const earningsMessage = `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
-
-  document.getElementById('calculated-earnings').innerText = earningsMessage;
-}
-
-// Admin: Fetch all pending withdrawals
-function fetchPendingWithdrawals() {
-  fetch('/admin/withdrawals')
-    .then(res => res.json())
-    .then(data => {
-      const table = document.getElementById('admin-withdrawal-table-body');
-      table.innerHTML = ''; // Clear old rows
-      data.withdrawals.forEach(tx => {
-        const row = `
-          <tr>
-            <td>${tx.id}</td>
-            <td>${tx.user_id}</td>
-            <td>${tx.amount}</td>
-            <td>${tx.network}</td>
-            <td>${tx.tx_id || 'N/A'}</td>
-            <td>${tx.status}</td>
-            <td>${tx.date}</td>
-            <td>
-              <button onclick="updateWithdrawalStatus(${tx.id}, 'approved')">Approve</button>
-              <button onclick="updateWithdrawalStatus(${tx.id}, 'rejected')">Reject</button>
-            </td>
-          </tr>
-        `;
-        table.innerHTML += row;
-      });
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal rejected successfully.' });
     });
-}
+});
+
+// Admin: Get all withdrawals for dashboard view
+app.get('/admin/get-withdrawals', (req, res) => {
+    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
+});
 
 // Admin: Update withdrawal status
-function updateWithdrawalStatus(id, status) {
-  fetch('/admin/update-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, status })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || 'Status updated');
-      fetchPendingWithdrawals(); // Refresh table
-    });
-}
+app.post('/admin/update-withdrawal', (req, res) => {
+    const { id, status } = req.body;
 
-// === Admin Panel Functions ===
+    if (!['approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
 
-// Fetch all pending withdrawals
-function fetchWithdrawals() {
-  fetch('/admin/get-withdrawals')
-    .then(res => res.json())
-    .then(data => {
-      const tableBody = document.getElementById('withdrawals-body');
-      tableBody.innerHTML = '';
+    db.run(
+        'UPDATE transactions SET status = ? WHERE id = ?',
+        [status, id],
+        function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: `Withdrawal ${status}` });
+        }
+    );
+});
 
-      data.withdrawals.forEach(wd => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${wd.id}</td>
-          <td>${wd.user_id}</td>
-          <td>${wd.amount}</td>
-          <td>${wd.network}</td>
-          <td>${wd.status}</td>
-          <td>${wd.date}</td>
-          <td>
-            <button onclick="updateWithdrawal(${wd.id}, 'approved')">Approve</button>
-            <button onclick="updateWithdrawal(${wd.id}, 'rejected')">Reject</button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-    });
-}
-
-// Approve or reject a withdrawal
-function updateWithdrawal(id, newStatus) {
-  fetch('/admin/update-withdrawal', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ id, status: newStatus })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || "Action completed");
-      fetchWithdrawals(); // Refresh table
-    });
-}
-
-// Auto-load if on admin panel
-if (window.location.pathname.includes('admin.html')) {
-  fetchWithdrawals();
-}
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
