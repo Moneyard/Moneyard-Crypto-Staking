@@ -1,49 +1,60 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  color: #333;
-  margin: 0;
+#dashboard {
+  width: 90%;
+  max-width: 800px;
+  margin: auto;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-#logo-section {
+#user-info {
+  text-align: center;
   margin-bottom: 30px;
 }
 
-#logo {
-  max-width: 200px;
-  height: auto;
-  cursor: pointer;
+#user-info h2 {
+  font-size: 24px;
 }
 
-.form {
-  width: 100%;
-  max-width: 300px;
-  background: #f5f5f5;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+#user-info p {
+  font-size: 18px;
+  color: #555;
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+#staking-info {
+  margin-bottom: 30px;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007BFF;
-  border: none;
+#staking-info h3 {
+  font-size: 22px;
+}
+
+#actions button {
+  background-color: #4CAF50;
   color: white;
-  font-weight: bold;
-  border-radius: 4px;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
   cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+#actions button:hover {
+  background-color: #45a049;
+}
+
+#transaction-history {
+  margin-top: 30px;
+}
+
+#transaction-history ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#transaction-history li {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
 }
