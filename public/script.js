@@ -38,6 +38,31 @@ function login() {
   }
 }
 
+// Display user info on dashboard
+function displayUserSummary() {
+  const username = localStorage.getItem('username') || 'User';
+
+  document.getElementById('user-name').innerText = username;
+
+  fetch(`/get-user-summary?userId=${localStorage.getItem('userId') || 1}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('total-staked').innerText = data.totalStaked || '0.00';
+      document.getElementById('total-earnings').innerText = data.totalEarnings || '0.00';
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('total-staked').innerText = '0.00';
+      document.getElementById('total-earnings').innerText = '0.00';
+    });
+}
+
+// Logout function
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
 // Fetch deposit address
 function getDepositAddress() {
   const network = document.getElementById('network').value;
@@ -99,4 +124,9 @@ function calculateEarnings() {
   const earningsMessage = `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
 
   document.getElementById('calculated-earnings').innerText = earningsMessage;
+}
+
+// Run on dashboard load
+if (window.location.pathname.includes("dashboard.html")) {
+  document.addEventListener("DOMContentLoaded", displayUserSummary);
 }
