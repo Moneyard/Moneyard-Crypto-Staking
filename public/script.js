@@ -86,17 +86,34 @@ function logDeposit() {
     });
 }
 
-// Calculate daily earnings based on deposit amount
-function calculateEarnings() {
-  const depositAmount = parseFloat(document.getElementById('calc-amount').value);
+// Fetch and display transaction history
+function getTransactionHistory() {
+  const userId = localStorage.getItem('userId') || 1;
 
-  if (!depositAmount || depositAmount < 15) {
-    alert("Enter a valid deposit amount (min 15 USDT).");
-    return;
-  }
+  fetch(`/get-transaction-history?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      const transactions = data.transactions || [];
+      const tableBody = document.getElementById('transaction-history-table').getElementsByTagName('tbody')[0];
+      
+      // Clear existing rows
+      tableBody.innerHTML = '';
 
-  // Assuming a 8% daily return
-  const dailyEarnings = depositAmount * 0.08;
+      transactions.forEach(transaction => {
+        const row = tableBody.insertRow();
 
-  document.getElementById('calc-result').innerText = `Your estimated daily earnings: ${dailyEarnings.toFixed(2)} USDT`;
+        row.insertCell(0).innerText = transaction.type;
+        row.insertCell(1).innerText = transaction.amount;
+        row.insertCell(2).innerText = transaction.network;
+        row.insertCell(3).innerText = transaction.tx_id;
+        row.insertCell(4).innerText = transaction.status;
+        row.insertCell(5).innerText = transaction.date;
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching transaction history:", error);
+    });
 }
+
+// Call the function to load transaction history when the page loads
+window.onload = getTransactionHistory;
