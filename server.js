@@ -16,15 +16,6 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     console.log('Connected to SQLite database.');
 });
 
-// Create users table
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT,
-        withdraw_password TEXT
-    )
-`);
-
 // Create transactions table if it doesn't exist
 db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
@@ -34,18 +25,6 @@ db.run(`
         amount REAL,
         network TEXT,
         tx_id TEXT,
-        status TEXT,
-        date TEXT
-    )
-`);
-
-// Create withdrawals table
-db.run(`
-    CREATE TABLE IF NOT EXISTS withdrawals (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        amount REAL,
-        wallet_address TEXT,
         status TEXT,
         date TEXT
     )
@@ -96,33 +75,20 @@ app.post('/log-deposit', (req, res) => {
     );
 });
 
-// API: Handle withdrawal request
-app.post('/request-withdrawal', (req, res) => {
-    const { userId, amount, walletAddress, password } = req.body;
+// API: Get transaction history for the logged-in user
+app.get('/get-transaction-history', (req, res) => {
+    const userId = req.query.userId || 1;  // Default to userId 1 for now
 
-    if (!userId || !amount || !walletAddress || !password) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Validate withdraw password
-    db.get('SELECT withdraw_password FROM users WHERE id = ?', [userId], (err, row) => {
-        if (err || !row) return res.status(400).json({ error: 'User not found' });
-
-        if (row.withdraw_password !== password) {
-            return res.status(403).json({ error: 'Incorrect withdrawal password' });
-        }
-
-        // Log withdrawal request
-        db.run(
-            `INSERT INTO withdrawals (user_id, amount, wallet_address, status, date)
-             VALUES (?, ?, ?, "pending", datetime("now"))`,
-            [userId, amount, walletAddress],
-            function (err) {
-                if (err) return res.status(500).json({ error: err.message });
-                res.json({ message: 'Withdrawal request submitted for review' });
+    db.all(
+        `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
             }
-        );
-    });
+            res.json({ transactions: rows });
+        }
+    );
 });
 
 // Start server
