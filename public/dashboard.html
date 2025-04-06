@@ -1,62 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #00bfa5;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .container {
-      padding: 30px;
-      text-align: center;
-    }
-    .btn {
-      padding: 10px 20px;
-      background-color: #007acc;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .btn:hover {
-      background-color: #005f99;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Moneyard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Welcome to Your Moneyard Dashboard</h1>
-  </header>
-
-  <div class="container">
-    <p>You are now logged in.</p>
-    <button class="btn" onclick="logout()">Logout</button>
-  </div>
-
-  <script>
-    function logout() {
-      localStorage.removeItem('token');
-      window.location.href = 'index.html';
-    }
-
-    // Redirect to login if token doesn't exist
-    if (!localStorage.getItem('token')) {
-      alert('Please login first');
-      window.location.href = 'index.html';
-    }
-  </script>
+    <h2>Welcome to your Moneyard Dashboard!</h2>
+    <p>You’re successfully logged in.</p>
 </body>
 </html>
