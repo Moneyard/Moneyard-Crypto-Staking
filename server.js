@@ -90,7 +90,7 @@ app.post('/log-deposit', (req, res) => {
 
 // API: Get transaction history for the logged-in user
 app.get('/get-transaction-history', (req, res) => {
-    const userId = req.query.userId || 1;  // Default to userId 1 for now
+    const userId = req.query.userId || 1;
 
     db.all(
         `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
@@ -100,6 +100,30 @@ app.get('/get-transaction-history', (req, res) => {
                 return res.status(500).json({ error: err.message });
             }
             res.json({ transactions: rows });
+        }
+    );
+});
+
+// API: Get user summary (total deposits and balance)
+app.get('/user-summary', (req, res) => {
+    const userId = req.query.userId;
+
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID required' });
+    }
+
+    db.get(
+        `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = 'deposit'`,
+        [userId],
+        (err, row) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+
+            const totalDeposit = row?.totalDeposit || 0;
+            const balance = totalDeposit * 0.9;
+
+            res.json({ totalDeposit, balance });
         }
     );
 });
@@ -133,35 +157,32 @@ app.post('/admin/reject-withdrawal', (req, res) => {
 });
 
 // Admin Routes
-
-// Get all withdrawals (for admin panel)
 app.get('/admin/get-withdrawals', (req, res) => {
-  db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json({ withdrawals: rows });
-  });
+    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ withdrawals: rows });
+    });
 });
 
-// Update withdrawal status (approve/reject)
 app.post('/admin/update-withdrawal', (req, res) => {
-  const { id, status } = req.body;
+    const { id, status } = req.body;
 
-  if (!['approved', 'rejected'].includes(status)) {
-    return res.status(400).json({ error: 'Invalid status' });
-  }
-
-  db.run(
-    'UPDATE transactions SET status = ? WHERE id = ?',
-    [status, id],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      res.json({ message: `Withdrawal ${status}` });
+    if (!['approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
     }
-  );
+
+    db.run(
+        'UPDATE transactions SET status = ? WHERE id = ?',
+        [status, id],
+        function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ message: `Withdrawal ${status}` });
+        }
+    );
 });
 
 // Start server
