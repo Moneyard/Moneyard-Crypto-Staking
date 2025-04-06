@@ -1,75 +1,12 @@
-/* General body style for non-dashboard pages */
 body {
   font-family: Arial, sans-serif;
-  background: #fff;
-  color: #333;
+  background-color: #FFA500; /* warm orange background */
+  color: #444; /* soft grey text */
   margin: 0;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-/* Dashboard-specific styles */
-body.dashboard {
-  background-color: #FFA500; /* warm orange */
-  color: #444; /* soft grey for text */
-}
-
-body.dashboard h2,
-body.dashboard h3,
-body.dashboard p,
-body.dashboard label {
-  color: #444;
-}
-
-body.dashboard input[type="number"],
-body.dashboard input[type="text"],
-body.dashboard input[type="password"] {
-  color: #28a745; /* green text for numbers and inputs */
-}
-
-body.dashboard #deposit-address,
-body.dashboard #calculated-earnings {
-  color: #28a745;
-}
-
-body.dashboard table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  color: #444;
-}
-
-body.dashboard th,
-body.dashboard td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
-}
-
-body.dashboard th {
-  background-color: #f0f0f0;
-}
-
-body.dashboard button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-body.dashboard button:hover {
-  background-color: #218838;
-}
-
-body.dashboard select {
-  padding: 6px;
-  border-radius: 4px;
-  margin-top: 5px;
 }
 
 /* Logo section */
@@ -94,23 +31,61 @@ body.dashboard select {
   margin-bottom: 20px;
 }
 
-/* Form inputs */
+/* Inputs */
 input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
+  color: #28a745; /* green for number/input text */
+}
+
+/* Green styled values */
+#deposit-address,
+#calculated-earnings {
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  color: #444;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
 }
 
 /* Buttons */
 button {
   width: 100%;
   padding: 10px;
-  background-color: #007BFF;
+  background-color: #28a745;
   border: none;
   color: white;
   font-weight: bold;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Select dropdown */
+select {
+  padding: 6px;
+  border-radius: 4px;
+  margin-top: 5px;
 }
