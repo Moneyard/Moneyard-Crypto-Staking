@@ -1,84 +1,66 @@
-// Toggle between Sign Up and Login forms
-function toggleForms() {
-  const signupForm = document.getElementById('signup-form');
-  const loginForm = document.getElementById('login-form');
+// script.js
 
-  if (signupForm.style.display === 'none') {
-    signupForm.style.display = 'block';
-    loginForm.style.display = 'none';
-  } else {
-    signupForm.style.display = 'none';
-    loginForm.style.display = 'block';
-  }
+// Toggle between Sign Up and Login forms
+function toggleForm() {
+  document.getElementById('sign-up-form').style.display = 
+    document.getElementById('sign-up-form').style.display === 'none' ? 'block' : 'none';
+  document.getElementById('login-form').style.display = 
+    document.getElementById('login-form').style.display === 'none' ? 'block' : 'none';
 }
 
-// Handle sign up
-function signup() {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
-  const email = document.getElementById('signup-email').value;
-
-  const data = { username, password, email };
+// Handle Registration
+document.getElementById('register-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   fetch('/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ username, email, password })
   })
   .then(response => response.json())
-  .then(data => {
-    if (data.message) {
-      alert(data.message);
-      toggleForms(); // Switch to login form after successful sign up
-    } else {
-      alert('Error: ' + data.error);
-    }
-  })
-  .catch(error => console.error('Error:', error));
-}
+  .then(data => alert(data.message))
+  .catch(error => alert('Error: ' + error.message));
+});
 
-// Handle login
-function login() {
+// Handle Login
+document.getElementById('login-form-submit').addEventListener('submit', function (e) {
+  e.preventDefault();
+  
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
-
-  const data = { username, password };
 
   fetch('/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ username, password })
   })
   .then(response => response.json())
   .then(data => {
     if (data.token) {
-      alert('Login successful!');
-      localStorage.setItem('token', data.token); // Store token
-      window.location.href = '/dashboard'; // Redirect to dashboard
+      localStorage.setItem('token', data.token);
+      alert('Logged in successfully');
     } else {
-      alert('Error: ' + data.error);
+      alert('Login failed');
     }
   })
-  .catch(error => console.error('Error:', error));
-}
+  .catch(error => alert('Error: ' + error.message));
+});
 
-// Handle password reset request
-function forgotPassword() {
-  const email = prompt('Enter your email for password reset:');
-  
-  if (!email) {
-    alert('Email is required!');
-    return;
+// Reset Password
+function resetPassword() {
+  const email = prompt('Enter your email to reset password:');
+  if (email) {
+    fetch('/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+    .then(response => response.json())
+    .then(data => alert(data.message))
+    .catch(error => alert('Error: ' + error.message));
   }
-
-  fetch('/forgot-password', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email })
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-  })
-  .catch(error => console.error('Error:', error));
 }
