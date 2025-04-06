@@ -30,6 +30,19 @@ db.run(`
     )
 `);
 
+// Create withdrawals table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        amount REAL,
+        wallet_address TEXT,
+        password TEXT,
+        status TEXT DEFAULT 'pending',
+        date TEXT
+    )
+`);
+
 // Static page routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -89,6 +102,34 @@ app.get('/get-transaction-history', (req, res) => {
             res.json({ transactions: rows });
         }
     );
+});
+
+// Admin API: Get pending withdrawals
+app.get('/admin/withdrawals', (req, res) => {
+    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
+});
+
+// Admin API: Approve withdrawal
+app.post('/admin/approve-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal approved successfully.' });
+    });
+});
+
+// Admin API: Reject withdrawal
+app.post('/admin/reject-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal rejected successfully.' });
+    });
 });
 
 // Start server
