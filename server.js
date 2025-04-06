@@ -19,8 +19,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
 // API: Get user summary (total deposit and balance)
 app.get('/user-summary', (req, res) => {
   const userId = req.query.userId || 1; // Default to userId 1 for now
-
-  console.log('Fetching user summary for userId:', userId);  // Add logging to check the userId
+  console.log('Fetching user summary for userId:', userId);  // Log the userId
 
   // Get the total deposit amount for the user
   db.get(
@@ -32,7 +31,8 @@ app.get('/user-summary', (req, res) => {
         return res.status(500).json({ error: err.message });
       }
 
-      const totalDeposit = result.totalDeposit || 0;
+      const totalDeposit = result ? result.totalDeposit : 0; // Safely handle null results
+      console.log('Total deposit:', totalDeposit);  // Log the total deposit
 
       // Get the total withdrawn amount for the user (approved withdrawals)
       db.get(
@@ -44,9 +44,10 @@ app.get('/user-summary', (req, res) => {
             return res.status(500).json({ error: err.message });
           }
 
-          const totalWithdrawn = withdrawalResult.totalWithdrawn || 0;
-          const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
+          const totalWithdrawn = withdrawalResult ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
+          console.log('Total withdrawn:', totalWithdrawn);  // Log the total withdrawn
 
+          const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
           console.log('User summary:', { totalDeposit, balance }); // Log the fetched summary
 
           // Return user summary with total deposit and balance
