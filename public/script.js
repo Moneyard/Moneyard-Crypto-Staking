@@ -108,7 +108,9 @@ function loadUserSummary() {
   fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
+      // Ensure the response contains the correct data
       if (data.totalDeposit !== undefined && data.balance !== undefined) {
+        // Display user summary data
         document.getElementById('user-username').innerText = localStorage.getItem('username');
         document.getElementById('total-deposit').innerText = `Total Deposit: ${data.totalDeposit.toFixed(2)} USDT`;
         document.getElementById('balance').innerText = `Balance: ${data.balance.toFixed(2)} USDT`;
