@@ -38,6 +38,12 @@ function login() {
   }
 }
 
+// Check if the user is logged in (i.e., userId exists in localStorage)
+function isUserLoggedIn() {
+  const userId = localStorage.getItem('userId');
+  return userId !== null;
+}
+
 // Fetch deposit address
 function getDepositAddress() {
   const network = document.getElementById('network').value;
@@ -103,14 +109,17 @@ function calculateEarnings() {
 
 // Fetch user summary (username, total deposit, balance)
 function loadUserSummary() {
-  const userId = localStorage.getItem('userId') || 1;
+  if (!isUserLoggedIn()) {
+    console.log('User is not logged in. Skipping user summary load.');
+    return;
+  }
+
+  const userId = localStorage.getItem('userId');
 
   fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
-      // Ensure the response contains the correct data
       if (data.totalDeposit !== undefined && data.balance !== undefined) {
-        // Display user summary data
         document.getElementById('summary-username').innerText = localStorage.getItem('username');
         document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
         document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
@@ -124,7 +133,9 @@ function loadUserSummary() {
     });
 }
 
-// Call loadUserSummary when the page loads
+// Call loadUserSummary only if user is logged in
 document.addEventListener("DOMContentLoaded", function () {
-  loadUserSummary();
+  if (isUserLoggedIn()) {
+    loadUserSummary();
+  }
 });
