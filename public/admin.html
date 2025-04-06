@@ -1,1 +1,87 @@
-<script src="script.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h2>Admin Panel - Withdrawal Requests</h2>
+
+  <table id="withdrawal-table" border="1" style="width:100%; margin-top:20px;">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Amount</th>
+        <th>Network</th>
+        <th>Wallet Address</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Withdrawal requests will be injected here -->
+    </tbody>
+  </table>
+
+  <script>
+    function fetchWithdrawals() {
+      fetch('/admin/withdrawals')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector('#withdrawal-table tbody');
+          tbody.innerHTML = '';
+          data.withdrawals.forEach(w => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${w.id}</td>
+              <td>${w.user_id}</td>
+              <td>${w.amount}</td>
+              <td>${w.network}</td>
+              <td>${w.wallet_address}</td>
+              <td>${w.status}</td>
+              <td>${w.date}</td>
+              <td>
+                <button onclick="approveWithdrawal(${w.id})">Approve</button>
+                <button onclick="declineWithdrawal(${w.id})">Decline</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        });
+    }
+
+    function approveWithdrawal(id) {
+      fetch('/admin/approve-withdrawal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        fetchWithdrawals();
+      });
+    }
+
+    function declineWithdrawal(id) {
+      fetch('/admin/decline-withdrawal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        fetchWithdrawals();
+      });
+    }
+
+    // Initial fetch
+    fetchWithdrawals();
+  </script>
+</body>
+</html>
