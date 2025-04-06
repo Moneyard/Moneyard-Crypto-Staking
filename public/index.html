@@ -3,52 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moneyard - User Registration & Login</title>
-    <link rel="stylesheet" href="/styles.css">  <!-- Correctly linked to styles.css -->
+    <title>Moneyard - Crypto Staking</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="form-box">
-            <!-- Logo Display -->
-            <img src="/logo.png" alt="Moneyard Logo" class="logo"> <!-- Correct path to logo.png -->
+    <!-- Header Section -->
+    <header>
+        <!-- Logo Image (Ensure logo is placed correctly in the root directory or update path if in another folder) -->
+        <img src="logo.png" alt="Moneyard Logo" class="logo">
+    </header>
 
-            <!-- Sign Up Form -->
-            <div id="signup-form">
-                <h2>Sign Up</h2>
-                <form id="signup">
-                    <input type="text" placeholder="Username" id="signup-username" required><br>
-                    <input type="email" placeholder="Email" id="signup-email" required><br>
-                    <input type="password" placeholder="Password" id="signup-password" required><br>
-                    <input type="text" placeholder="Reference Code" id="signup-ref-code"><br>
-                    <button type="submit">Sign Up</button>
-                </form>
-                <p>Already have an account? <a href="javascript:void(0);" id="show-login">Log In</a></p>
-            </div>
+    <!-- Forms Section -->
+    <div class="form-container">
+        <!-- Sign Up Form -->
+        <div id="signup-form" class="form-box">
+            <h2>Sign Up</h2>
+            <form id="signup" method="POST">
+                <input type="text" name="name" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="text" name="referral" placeholder="Referral Code (Optional)">
+                <button type="submit">Sign Up</button>
+                <p>Already have an account? <a href="#" id="show-login">Log In</a></p>
+            </form>
+        </div>
 
-            <!-- Log In Form -->
-            <div id="login-form" style="display: none;">
-                <h2>Log In</h2>
-                <form id="login">
-                    <input type="email" placeholder="Email" id="login-email" required><br>
-                    <input type="password" placeholder="Password" id="login-password" required><br>
-                    <button type="submit">Log In</button>
-                </form>
-                <p><a href="javascript:void(0);" id="show-forgot-password">Forgot Password?</a></p>
-                <p>Don't have an account? <a href="javascript:void(0);" id="show-signup">Sign Up</a></p>
-            </div>
+        <!-- Login Form -->
+        <div id="login-form" class="form-box" style="display:none;">
+            <h2>Log In</h2>
+            <form id="login" method="POST">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Log In</button>
+                <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            </form>
+        </div>
 
-            <!-- Forgot Password Form -->
-            <div id="forgot-password-form" style="display: none;">
-                <h2>Forgot Password</h2>
-                <form id="forgot-password">
-                    <input type="email" placeholder="Enter your email" id="forgot-password-email" required><br>
-                    <button type="submit">Submit</button>
-                </form>
-                <p><a href="javascript:void(0);" id="back-to-login">Back to Log In</a></p>
-            </div>
+        <!-- Forgot Password Form -->
+        <div id="forgot-password-form" class="form-box" style="display:none;">
+            <h2>Forgot Password</h2>
+            <form id="forgot-password" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Reset Password</button>
+                <p><a href="#" id="back-to-login">Back to Login</a></p>
+            </form>
         </div>
     </div>
 
-    <script src="/script.js"></script>  <!-- Correctly linked to script.js -->
+    <script src="script.js"></script>
 </body>
 </html>
