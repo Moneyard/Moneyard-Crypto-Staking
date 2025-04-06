@@ -86,35 +86,17 @@ function logDeposit() {
     });
 }
 
-// Submit withdrawal request
-function submitWithdrawal() {
-  const userId = localStorage.getItem('userId') || 1;
-  const amount = parseFloat(document.getElementById('withdraw-amount').value);
-  const address = document.getElementById('withdraw-address').value;
-  const password = document.getElementById('withdraw-password').value;
+// Calculate daily earnings based on deposit amount
+function calculateEarnings() {
+  const depositAmount = parseFloat(document.getElementById('calc-amount').value);
 
-  if (!amount || amount <= 0) {
-    alert("Please enter a valid withdrawal amount.");
+  if (!depositAmount || depositAmount < 15) {
+    alert("Enter a valid deposit amount (min 15 USDT).");
     return;
   }
 
-  if (!address) {
-    alert("Please enter your wallet address.");
-    return;
-  }
+  // Assuming a 1% daily return
+  const dailyEarnings = depositAmount * 0.01;
 
-  if (!password) {
-    alert("Please enter your security password.");
-    return;
-  }
-
-  fetch('/request-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, address, password })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
-    });
+  document.getElementById('calc-result').innerText = `Your estimated daily earnings: ${dailyEarnings.toFixed(2)} USDT`;
 }
