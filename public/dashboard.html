@@ -42,6 +42,20 @@
 
   <hr />
 
+  <section id="earnings-calculator-section" style="margin-top: 30px;">
+    <h3>Earnings Calculator</h3>
+    <p>Calculate your daily earnings based on your deposit.</p>
+    
+    <label for="deposit-input">Deposit Amount (15 - 1000 USDT):</label>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    
+    <p id="calculated-earnings" style="margin-top: 10px; font-weight: bold;"></p>
+  </section>
+
+  <hr />
+
   <section id="transaction-history-section" style="margin-top: 30px;">
     <h3>Transaction History</h3>
     <table id="transaction-history-table">
