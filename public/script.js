@@ -44,33 +44,30 @@ function isUserLoggedIn() {
   return userId !== null;
 }
 
-// Fetch deposit address
+// Fetch deposit address based on selected network (Tron or BNB Smart Chain)
 function getDepositAddress() {
-  const network = document.getElementById('network').value;
+  const network = document.getElementById('network').value;  // Get selected network
   const userId = localStorage.getItem('userId') || 1;
 
+  // Check if network is selected
   if (!network) {
     alert("Please select a network.");
     return;
   }
 
-  fetch('/get-deposit-address', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, network })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.address) {
-        document.getElementById('deposit-address').innerText = 'Send USDT to: ' + data.address;
-      } else {
-        alert(data.error || "Something went wrong.");
-      }
-    })
-    .catch(err => {
-      console.error("Error fetching deposit address:", err);
-      alert("Failed to fetch deposit address.");
-    });
+  // Define deposit addresses for the selected networks
+  let depositAddress = '';
+  if (network === 'Tron') {
+    depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
+  } else if (network === 'BNB') {
+    depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
+  } else {
+    alert("Unsupported network selected.");
+    return;
+  }
+
+  // Display the deposit address on the page
+  document.getElementById('deposit-address').innerText = 'Send USDT to: ' + depositAddress;
 }
 
 // Log deposit
@@ -90,11 +87,6 @@ function logDeposit() {
     return;
   }
 
-  if (!network) {
-    alert("Please select a network.");
-    return;
-  }
-
   fetch('/log-deposit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -103,10 +95,6 @@ function logDeposit() {
     .then(res => res.json())
     .then(data => {
       alert(data.message || data.error);
-    })
-    .catch(err => {
-      console.error("Error logging deposit:", err);
-      alert("Failed to log deposit.");
     });
 }
 
