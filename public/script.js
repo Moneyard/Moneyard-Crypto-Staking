@@ -44,7 +44,7 @@ function isUserLoggedIn() {
   return userId !== null;
 }
 
-// Fetch deposit address based on selected network (Tron or BNB Smart Chain)
+// Fetch deposit address based on selected network (Tron or BNB)
 function getDepositAddress() {
   const network = document.getElementById('network').value;  // Get selected network
   const userId = localStorage.getItem('userId') || 1;
