@@ -3,140 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard</title>
+  <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    body {
-      background-color: #FFA500;
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      color: #444;
-    }
-
-    h2, h3, label, p {
-      color: #444;
-    }
-
-    input[type="number"],
-    input[type="text"],
-    input[type="password"] {
-      padding: 8px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      color: #28a745;
-    }
-
-    #deposit-address,
-    #calculated-earnings {
-      color: #28a745;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff;
-      color: #444;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f0f0f0;
-    }
-
-    button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #218838;
-    }
-
-    select {
-      padding: 6px;
-      border-radius: 4px;
-      margin-top: 5px;
-    }
-
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #0a7fa1;
-      color: white;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-
-    .logo {
-      height: 40px;
-    }
-
-    #logoutBtn {
-      padding: 8px 12px;
-      background-color: white;
-      color: #0a7fa1;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #logoutBtn:hover {
-      background-color: #dff6fb;
-    }
-
-    /* User Summary */
-    .user-summary {
-      background-color: #fff;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .user-summary p {
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Step 1: Header / Navbar -->
-  <header class="navbar">
-    <div>
-      <img src="logo.png" alt="Moneyard Logo" class="logo" />
-    </div>
-    <h1>Moneyard</h1>
-    <button id="logoutBtn">Logout</button>
-  </header>
-
-  <!-- Step 2: User Summary -->
-  <section class="user-summary">
-    <p>Welcome, <span id="username">User</span></p>
-    <p>Total Staked: <strong>$<span id="totalStaked">0.00</span></strong></p>
-    <p>Total Earnings: <strong>$<span id="totalEarnings">0.00</span></strong></p>
+  <!-- User Summary -->
+  <section id="user-summary" class="form">
+    <h3>Account Summary</h3>
+    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
+    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
   </section>
 
-  <h2>Welcome to your Moneyard Dashboard!</h2>
-  <p>You are now logged in.</p>
-
-  <section id="deposit-section">
+  <!-- Deposit Section -->
+  <section id="deposit-section" class="form">
     <h3>Deposit Funds</h3>
     <label for="network">Choose Network:</label>
     <select id="network">
@@ -144,19 +25,15 @@
       <option value="BEP20">BEP20 (BNB Smart Chain)</option>
     </select>
     <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p id="deposit-address"></p>
 
-    <p id="deposit-address" style="margin-top: 10px; font-weight: bold;"></p>
-
-    <div style="margin-top: 20px;">
-      <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-      <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
-      <button onclick="logDeposit()">Submit Deposit</button>
-    </div>
+    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+    <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
+    <button onclick="logDeposit()">Submit Deposit</button>
   </section>
 
-  <hr />
-
-  <section id="withdraw-section" style="margin-top: 30px;">
+  <!-- Withdraw Section -->
+  <section id="withdraw-section" class="form">
     <h3>Withdraw Funds</h3>
     <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
     <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
@@ -164,20 +41,17 @@
     <button onclick="submitWithdrawal()">Request Withdrawal</button>
   </section>
 
-  <hr />
-
-  <section id="earnings-calculator-section" style="margin-top: 30px;">
+  <!-- Earnings Calculator -->
+  <section id="earnings-calculator-section" class="form">
     <h3>Earnings Calculator</h3>
     <p>Calculate your daily earnings based on your deposit.</p>
-    <label for="deposit-input">Deposit Amount (15 - 1000 USDT):</label>
     <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
     <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings" style="margin-top: 10px; font-weight: bold;"></p>
+    <p id="calculated-earnings"></p>
   </section>
 
-  <hr />
-
-  <section id="transaction-history-section" style="margin-top: 30px;">
+  <!-- Transaction History -->
+  <section id="transaction-history-section" class="form">
     <h3>Transaction History</h3>
     <table id="transaction-history-table">
       <thead>
@@ -191,7 +65,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Transaction rows will be injected here -->
+        <!-- Transaction rows injected here -->
       </tbody>
     </table>
   </section>
