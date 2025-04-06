@@ -57,6 +57,7 @@ function getDepositAddress() {
 
   // Define deposit addresses for the selected networks
   let depositAddress = '';
+
   if (network === 'Tron') {
     depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
   } else if (network === 'BNB') {
