@@ -1,29 +1,34 @@
-document.getElementById("show-login").addEventListener("click", function() {
-    document.getElementById("signup-form").style.display = "none";
-    document.getElementById("login-form").style.display = "block";
-});
+function toggleForms() {
+    const signup = document.getElementById('signup-form');
+    const login = document.getElementById('login-form');
+    signup.style.display = signup.style.display === 'none' ? 'block' : 'none';
+    login.style.display = login.style.display === 'none' ? 'block' : 'none';
+}
 
-document.getElementById("show-signup").addEventListener("click", function() {
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("signup-form").style.display = "block";
-});
+function signup() {
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
 
-document.getElementById("back-to-login").addEventListener("click", function() {
-    document.getElementById("forgot-password-form").style.display = "none";
-    document.getElementById("login-form").style.display = "block";
-});
-
-document.getElementById("login").addEventListener("submit", function(e) {
-    e.preventDefault();
-    
-    // Simulate login process
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-    
-    if (email === "test@example.com" && password === "password123") {
-        // Redirect to dashboard page
-        window.location.href = "/dashboard";
+    if (username && password) {
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
+        alert('Signup successful. You can now log in.');
+        toggleForms();
     } else {
-        alert("Invalid login credentials.");
+        alert('Please fill in both username and password.');
     }
-});
+}
+
+function login() {
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    const savedUser = localStorage.getItem('username');
+    const savedPass = localStorage.getItem('password');
+
+    if (username === savedUser && password === savedPass) {
+        window.location.href = "dashboard.html";
+    } else {
+        alert('Invalid login credentials.');
+    }
+}
