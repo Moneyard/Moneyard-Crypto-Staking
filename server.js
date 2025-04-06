@@ -90,36 +90,16 @@ app.post('/log-deposit', (req, res) => {
 
 // API: Get transaction history for the logged-in user
 app.get('/get-transaction-history', (req, res) => {
-    const userId = req.query.userId || 1;
+    const userId = req.query.userId || 1;  // Default to userId 1 for now
 
     db.all(
         `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
         [userId],
         (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
             res.json({ transactions: rows });
-        }
-    );
-});
-
-// API: Get live staked amount and earnings for a user
-app.get('/get-live-staked', (req, res) => {
-    const userId = req.query.userId || 1;
-
-    db.all(
-        `SELECT SUM(amount) as total_staked FROM transactions 
-         WHERE user_id = ? AND type = 'deposit' AND status = 'approved'`,
-        [userId],
-        (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
-
-            const totalStaked = rows[0].total_staked || 0;
-            const dailyEarnings = totalStaked * 0.08;
-
-            res.json({
-                totalStaked: totalStaked.toFixed(2),
-                dailyEarnings: dailyEarnings.toFixed(2)
-            });
         }
     );
 });
@@ -152,30 +132,36 @@ app.post('/admin/reject-withdrawal', (req, res) => {
     });
 });
 
-// Admin: Get all withdrawals for dashboard view
+// Admin Routes
+
+// Get all withdrawals (for admin panel)
 app.get('/admin/get-withdrawals', (req, res) => {
-    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ withdrawals: rows });
-    });
+  db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ withdrawals: rows });
+  });
 });
 
-// Admin: Update withdrawal status
+// Update withdrawal status (approve/reject)
 app.post('/admin/update-withdrawal', (req, res) => {
-    const { id, status } = req.body;
+  const { id, status } = req.body;
 
-    if (!['approved', 'rejected'].includes(status)) {
-        return res.status(400).json({ error: 'Invalid status' });
+  if (!['approved', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status' });
+  }
+
+  db.run(
+    'UPDATE transactions SET status = ? WHERE id = ?',
+    [status, id],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: `Withdrawal ${status}` });
     }
-
-    db.run(
-        'UPDATE transactions SET status = ? WHERE id = ?',
-        [status, id],
-        function(err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ message: `Withdrawal ${status}` });
-        }
-    );
+  );
 });
 
 // Start server
