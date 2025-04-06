@@ -1,35 +1,65 @@
-function toggleForms() {
-  const signupForm = document.getElementById('signup-form');
-  const loginForm = document.getElementById('login-form');
+window.onload = function() {
+  // Check if user is logged in
+  const storedUser = localStorage.getItem('username');
+  const storedBalance = localStorage.getItem('balance') || 0;
 
-  signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+  if (storedUser) {
+    document.getElementById('user-name').textContent = storedUser;
+    document.getElementById('account-balance').textContent = storedBalance;
+
+    // Example: Adding dummy stakes
+    const stakes = [
+      { stakeAmount: 100, date: '2025-04-01' },
+      { stakeAmount: 200, date: '2025-03-28' }
+    ];
+    
+    const stakesList = document.getElementById('stakes-list');
+    stakes.forEach(stake => {
+      const stakeDiv = document.createElement('div');
+      stakeDiv.innerHTML = `<p>Staked: ${stake.stakeAmount} USD on ${stake.date}</p>`;
+      stakesList.appendChild(stakeDiv);
+    });
+  } else {
+    window.location.href = 'index.html'; // Redirect to login if not logged in
+  }
+
+  // Event Listeners
+  document.getElementById('logout-btn').addEventListener('click', logout);
+  document.getElementById('deposit-btn').addEventListener('click', deposit);
+  document.getElementById('withdraw-btn').addEventListener('click', withdraw);
+};
+
+// Logout functionality
+function logout() {
+  localStorage.removeItem('username');
+  localStorage.removeItem('balance');
+  window.location.href = 'index.html'; // Redirect to login page
 }
 
-function signup() {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
-
-  if (username && password) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    alert("Signup successful! Please login.");
-    toggleForms();
-  } else {
-    alert("Please fill in all required fields.");
+// Deposit functionality (just an example)
+function deposit() {
+  const depositAmount = prompt('Enter the amount to deposit (USD):');
+  if (depositAmount) {
+    const currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+    const newBalance = currentBalance + parseFloat(depositAmount);
+    localStorage.setItem('balance', newBalance);
+    alert(`Deposited ${depositAmount} USD! New balance: ${newBalance} USD.`);
+    window.location.reload(); // Reload to update dashboard with new balance
   }
 }
 
-function login() {
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
-
-  const storedUser = localStorage.getItem('username');
-  const storedPass = localStorage.getItem('password');
-
-  if (username === storedUser && password === storedPass) {
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials. Please try again.");
+// Withdraw functionality (just an example)
+function withdraw() {
+  const withdrawAmount = prompt('Enter the amount to withdraw (USD):');
+  if (withdrawAmount) {
+    const currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+    if (currentBalance >= withdrawAmount) {
+      const newBalance = currentBalance - parseFloat(withdrawAmount);
+      localStorage.setItem('balance', newBalance);
+      alert(`Withdrew ${withdrawAmount} USD! New balance: ${newBalance} USD.`);
+      window.location.reload(); // Reload to update dashboard with new balance
+    } else {
+      alert('Insufficient balance to withdraw.');
+    }
   }
 }
