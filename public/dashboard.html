@@ -40,6 +40,15 @@
     <button onclick="submitWithdrawal()">Request Withdrawal</button>
   </section>
 
+  <hr />
+
+  <section id="calculator-section" style="margin-top: 30px;">
+    <h3>Earnings Calculator</h3>
+    <input type="number" id="calc-amount" placeholder="Enter deposit amount (min 15 USDT)" />
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="calc-result" style="margin-top: 10px; font-weight: bold;"></p>
+  </section>
+
   <script src="script.js"></script>
 </body>
 </html>
