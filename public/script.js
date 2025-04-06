@@ -1,73 +1,79 @@
-function toggleForms() {
-    const signupForm = document.getElementById("signup-form");
-    const loginForm = document.getElementById("login-form");
-
-    signupForm.style.display = signupForm.style.display === "none" ? "block" : "none";
-    loginForm.style.display = loginForm.style.display === "none" ? "block" : "none";
-}
-
+// This function runs when the user clicks "Sign Up"
 function signup() {
-    const username = document.getElementById("signup-username").value;
-    const password = document.getElementById("signup-password").value;
-    const refcode = document.getElementById("signup-refcode").value;
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
+    const refcode = document.getElementById('signup-refcode').value;
 
-    // Validate input fields
     if (!username || !password) {
-        alert("Please enter both username and password.");
+        alert('Username and password are required.');
         return;
     }
 
-    // Send signup request
-    fetch("/signup", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password, refcode }),
+    const data = { username, password, refcode };
+
+    fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                alert("Sign Up Successful! Now you can log in.");
-                toggleForms();  // Switch to the login form
-            } else {
-                alert(data.error);
-            }
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Sign-up successful! Please log in.');
+            toggleForms();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong during sign-up!');
+    });
 }
 
+// This function runs when the user clicks "Login"
 function login() {
-    const username = document.getElementById("login-username").value;
-    const password = document.getElementById("login-password").value;
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
 
-    // Validate input fields
     if (!username || !password) {
-        alert("Please enter both username and password.");
+        alert('Username and password are required.');
         return;
     }
 
-    // Send login request
-    fetch("/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
+    const data = { username, password };
+
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                alert("Login successful!");
-                // Optionally, redirect to the dashboard page
-                window.location.href = "/dashboard";
-            } else {
-                alert(data.error);
-            }
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Login successful!');
+            // Redirect to dashboard or user-specific page
+            window.location.href = '/dashboard';
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong during login!');
+    });
+}
+
+// Function to toggle between the sign-up and login forms
+function toggleForms() {
+    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form');
+
+    if (signupForm.style.display === 'none') {
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
+    } else {
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+    }
 }
