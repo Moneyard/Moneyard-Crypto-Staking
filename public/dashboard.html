@@ -10,7 +10,7 @@
       background-color: #FFA500;
       font-family: Arial, sans-serif;
       margin: 20px;
-      color: #444; /* soft grey text */
+      color: #444;
     }
 
     h2, h3, label, p {
@@ -24,7 +24,7 @@
       margin: 5px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
-      color: #28a745; /* green input text */
+      color: #28a745;
     }
 
     #deposit-address,
@@ -68,24 +68,85 @@
       border-radius: 4px;
       margin-top: 5px;
     }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0a7fa1;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      height: 40px;
+    }
+
+    #logoutBtn {
+      padding: 8px 12px;
+      background-color: white;
+      color: #0a7fa1;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #logoutBtn:hover {
+      background-color: #dff6fb;
+    }
+
+    /* User Summary */
+    .user-summary {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .user-summary p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Step 1: Header / Navbar -->
+  <header class="navbar">
+    <div>
+      <img src="logo.png" alt="Moneyard Logo" class="logo" />
+    </div>
+    <h1>Moneyard</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <!-- Step 2: User Summary -->
+  <section class="user-summary">
+    <p>Welcome, <span id="username">User</span></p>
+    <p>Total Staked: <strong>$<span id="totalStaked">0.00</span></strong></p>
+    <p>Total Earnings: <strong>$<span id="totalEarnings">0.00</span></strong></p>
+  </section>
+
   <h2>Welcome to your Moneyard Dashboard!</h2>
   <p>You are now logged in.</p>
 
   <section id="deposit-section">
     <h3>Deposit Funds</h3>
-    
     <label for="network">Choose Network:</label>
     <select id="network">
       <option value="TRC20">TRC20 (Tron)</option>
       <option value="BEP20">BEP20 (BNB Smart Chain)</option>
     </select>
     <button onclick="getDepositAddress()">Get Deposit Address</button>
-    
+
     <p id="deposit-address" style="margin-top: 10px; font-weight: bold;"></p>
-    
+
     <div style="margin-top: 20px;">
       <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
       <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
@@ -97,7 +158,6 @@
 
   <section id="withdraw-section" style="margin-top: 30px;">
     <h3>Withdraw Funds</h3>
-
     <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
     <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
     <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
@@ -109,12 +169,9 @@
   <section id="earnings-calculator-section" style="margin-top: 30px;">
     <h3>Earnings Calculator</h3>
     <p>Calculate your daily earnings based on your deposit.</p>
-    
     <label for="deposit-input">Deposit Amount (15 - 1000 USDT):</label>
     <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-
     <button onclick="calculateEarnings()">Calculate Earnings</button>
-    
     <p id="calculated-earnings" style="margin-top: 10px; font-weight: bold;"></p>
   </section>
 
