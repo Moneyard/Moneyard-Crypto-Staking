@@ -29,7 +29,9 @@ app.get('/user-summary', (req, res) => {
         return res.status(500).json({ error: err.message });
       }
 
-      // Get the user's balance (for simplicity, we'll assume it's totalDeposit - withdrawals)
+      const totalDeposit = result.totalDeposit || 0;
+
+      // Get the total withdrawn amount for the user (approved withdrawals)
       db.get(
         `SELECT SUM(amount) AS totalWithdrawn FROM withdrawals WHERE user_id = ? AND status = "approved"`,
         [userId],
@@ -38,11 +40,10 @@ app.get('/user-summary', (req, res) => {
             return res.status(500).json({ error: err.message });
           }
 
-          const totalDeposit = result.totalDeposit || 0;
           const totalWithdrawn = withdrawalResult.totalWithdrawn || 0;
           const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
 
-          // Return user summary
+          // Return user summary with total deposit and balance
           res.json({
             totalDeposit,
             balance
