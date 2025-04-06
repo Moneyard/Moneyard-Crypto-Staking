@@ -95,8 +95,8 @@ function calculateEarnings() {
     return;
   }
 
-  // Assuming a 1% daily return
-  const dailyEarnings = depositAmount * 0.01;
+  // Assuming a 8% daily return
+  const dailyEarnings = depositAmount * 1.2;
 
   document.getElementById('calc-result').innerText = `Your estimated daily earnings: ${dailyEarnings.toFixed(2)} USDT`;
 }
