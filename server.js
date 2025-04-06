@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
-const bcrypt = require("bcryptjs");  // Make sure bcrypt is installed
+const bcrypt = require("bcryptjs");  // Ensure bcryptjs is installed
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,7 +13,10 @@ app.use(express.json());
 
 // SQLite database setup
 const db = new sqlite3.Database("./database.sqlite", (err) => {
-  if (err) return console.error("Failed to connect to DB:", err);
+  if (err) {
+    console.error("Failed to connect to DB:", err);
+    return;
+  }
   console.log("Connected to SQLite database.");
 });
 
@@ -43,13 +46,13 @@ app.post("/signup", (req, res) => {
 
   // Check if username and password are provided
   if (!username || !password) {
-    return res.json({ success: false, error: "Username and password are required" });
+    return res.status(400).json({ success: false, error: "Username and password are required" });
   }
 
   // Hash the password before storing it
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
-      return res.json({ success: false, error: "Error hashing password" });
+      return res.status(500).json({ success: false, error: "Error hashing password" });
     }
 
     // Insert user into database
@@ -58,9 +61,9 @@ app.post("/signup", (req, res) => {
       [username, hashedPassword, refcode],
       function (err) {
         if (err) {
-          return res.json({ success: false, error: "Username already exists" });
+          return res.status(400).json({ success: false, error: "Username already exists" });
         }
-        res.json({ success: true });
+        res.status(201).json({ success: true, message: "User registered successfully" });
       }
     );
   });
@@ -72,29 +75,29 @@ app.post("/login", (req, res) => {
 
   // Check if username and password are provided
   if (!username || !password) {
-    return res.json({ success: false, error: "Username and password are required" });
+    return res.status(400).json({ success: false, error: "Username and password are required" });
   }
 
   // Get user from database
   db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, user) => {
     if (err) {
-      return res.json({ success: false, error: "Database error" });
+      return res.status(500).json({ success: false, error: "Database error" });
     }
 
     if (!user) {
-      return res.json({ success: false, error: "User not found" });
+      return res.status(404).json({ success: false, error: "User not found" });
     }
 
     // Compare password with hashed password
     bcrypt.compare(password, user.password, (err, match) => {
       if (err) {
-        return res.json({ success: false, error: "Error comparing password" });
+        return res.status(500).json({ success: false, error: "Error comparing password" });
       }
 
       if (match) {
-        res.json({ success: true });
+        res.status(200).json({ success: true, message: "Login successful" });
       } else {
-        res.json({ success: false, error: "Incorrect password" });
+        res.status(400).json({ success: false, error: "Incorrect password" });
       }
     });
   });
