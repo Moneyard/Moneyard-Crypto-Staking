@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,54 +38,72 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
 });
 
 // API: Get user summary (total deposit and balance)
-app.get('/user-summary', (req, res) => {
-  const userId = req.query.userId || 1; // Default to userId 1 for now
-  console.log('Fetching user summary for userId:', userId);  // Log the userId
+app.get('/api/user-info', (req, res) => {
+  const token = req.headers['authorization']; // Get the token from the headers
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
 
-  // Get the total deposit amount for the user
-  db.get(
-    `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = "deposit"`,
-    [userId],
-    (err, result) => {
-      if (err) {
-        console.error('Error fetching total deposit:', err); // Log the error
-        return res.status(500).json({ error: err.message });
-      }
+  jwt.verify(token, 'your-secret-key', (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Invalid Token" });
 
-      const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0; // Safely handle null results
-      console.log('Total deposit:', totalDeposit);  // Log the total deposit
+    const userId = decoded.userId; // Get userId from the decoded token
 
-      // Get the total withdrawn amount for the user (approved withdrawals)
-      db.get(
-        `SELECT SUM(amount) AS totalWithdrawn FROM withdrawals WHERE user_id = ? AND status = "approved"`,
-        [userId],
-        (err, withdrawalResult) => {
-          if (err) {
-            console.error('Error fetching total withdrawals:', err); // Log the error
-            return res.status(500).json({ error: err.message });
-          }
-
-          const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
-          console.log('Total withdrawn:', totalWithdrawn);  // Log the total withdrawn
-
-          const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
-          console.log('User summary:', { totalDeposit, balance }); // Log the fetched summary
-
-          // Return user summary with total deposit and balance
-          res.json({
-            totalDeposit,
-            balance
-          });
+    // Get the total deposit amount for the user
+    db.get(
+      `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = "deposit"`,
+      [userId],
+      (err, result) => {
+        if (err) {
+          console.error('Error fetching total deposit:', err);
+          return res.status(500).json({ error: err.message });
         }
-      );
-    }
-  );
+
+        const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0;
+
+        // Get the total withdrawn amount for the user (approved withdrawals)
+        db.get(
+          `SELECT SUM(amount) AS totalWithdrawn FROM withdrawals WHERE user_id = ? AND status = "approved"`,
+          [userId],
+          (err, withdrawalResult) => {
+            if (err) {
+              console.error('Error fetching total withdrawals:', err);
+              return res.status(500).json({ error: err.message });
+            }
+
+            const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0;
+
+            const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
+
+            // Get the username from the users table
+            db.get(
+              `SELECT username FROM users WHERE id = ?`,
+              [userId],
+              (err, userResult) => {
+                if (err) {
+                  console.error('Error fetching username:', err);
+                  return res.status(500).json({ error: err.message });
+                }
+
+                const username = userResult && userResult.username ? userResult.username : 'Unknown User';
+
+                // Return user summary with username, total deposit, and balance
+                res.json({
+                  username,
+                  totalDeposit,
+                  balance
+                });
+              }
+            );
+          }
+        );
+      }
+    );
+  });
 });
 
 // API: Get deposit address for selected network
 app.post('/get-deposit-address', (req, res) => {
   const { userId, network } = req.body;
-  
+
   // Simulate getting deposit address based on the network (TRC20/BEP20)
   const depositAddress = network === 'TRC20' ? 'TXXXXXXX' : network === 'BEP20' ? 'BXXXXXXX' : '';
 
