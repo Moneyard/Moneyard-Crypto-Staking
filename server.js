@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const session = require('express-session');  // Used for session management
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -9,11 +9,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(session({
-  secret: 'secret',  // Change this to something more secure
-  resave: false,
-  saveUninitialized: true
-}));
 
 // SQLite database setup
 const db = new sqlite3.Database('./database.sqlite', (err) => {
@@ -21,7 +16,16 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     console.log('Connected to SQLite database.');
 });
 
-// Create transactions table if not exists
+// Create tables if they don't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        password TEXT,
+        email TEXT
+    )
+`);
+
 db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +39,6 @@ db.run(`
     )
 `);
 
-// Create withdrawals table if not exists
 db.run(`
     CREATE TABLE IF NOT EXISTS withdrawals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,49 +51,146 @@ db.run(`
     )
 `);
 
+// Routes
+
 // Static pages
 app.get('/', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/dashboard');  // Redirect to dashboard if already logged in
-    }
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));  // Show login/sign up
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/dashboard', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/');  // Redirect to login if not authenticated
-    }
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+// Sign up page
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
 });
 
+// Login page
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Admin panel
 app.get('/admin', (req, res) => {
-    if (!req.session.user || !req.session.user.isAdmin) {
-        return res.redirect('/');  // Redirect to login if not an admin or not authenticated
-    }
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));  // Show admin panel if admin
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// API Routes (for simplicity, these remain the same, ensuring you call them after logging in)
-// Your API routes for deposit, withdrawal, transactions, etc., would remain unchanged.
+// User registration
+app.post('/signup', (req, res) => {
+    const { username, password, email } = req.body;
+    db.run(
+        `INSERT INTO users (username, password, email) VALUES (?, ?, ?)`,
+        [username, password, email],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: 'User registered successfully' });
+        }
+    );
+});
 
-// Log in (This is an example, you should validate the user credentials properly)
+// User login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    // In a real app, you'd fetch the user from the DB and validate the password
-    if (username === 'admin' && password === 'admin') {  // Example check
-        req.session.user = { username, isAdmin: true };  // Storing user data in session
-        return res.redirect('/dashboard');  // Redirect to dashboard after successful login
-    } else if (username === 'user' && password === 'user') {  // Non-admin user login
-        req.session.user = { username, isAdmin: false };
-        return res.redirect('/dashboard');
-    }
-    res.status(401).json({ error: 'Invalid credentials' });  // Invalid login credentials
+    db.get(
+        `SELECT * FROM users WHERE username = ? AND password = ?`,
+        [username, password],
+        (err, row) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (row) {
+                res.json({ message: 'Login successful', userId: row.id });
+            } else {
+                res.status(401).json({ error: 'Invalid credentials' });
+            }
+        }
+    );
 });
 
-// Log out
-app.post('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/');  // Redirect to login after logout
+// Load staking plans and display them
+app.get('/get-staking-plans', (req, res) => {
+    const stakingPlans = [
+        { id: 1, name: "Plan A", duration: "30 days", interestRate: "5%" },
+        { id: 2, name: "Plan B", duration: "60 days", interestRate: "10%" },
+        { id: 3, name: "Plan C", duration: "90 days", interestRate: "15%" },
+    ];
+    res.json({ stakingPlans });
+});
+
+// Load APY (Annual Percentage Yield)
+app.get('/get-apy', (req, res) => {
+    const APY = 12;  // Example APY value
+    res.json({ apy: APY });
+});
+
+// Get user summary (e.g., total deposit and balance)
+app.get('/user-summary', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: 'User ID required' });
+
+    db.get(
+        `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = 'deposit' AND status = 'approved'`,
+        [userId],
+        (err, row) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            const totalDeposit = row?.totalDeposit || 0;
+            const balance = totalDeposit * 0.9;  // Example balance calculation
+            res.json({ totalDeposit, balance });
+        }
+    );
+});
+
+// Transaction history for user
+app.get('/get-transaction-history', (req, res) => {
+    const userId = req.query.userId || 1;  // Example user ID
+    db.all(
+        `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ transactions: rows });
+        }
+    );
+});
+
+// Withdraw funds
+app.post('/withdraw', (req, res) => {
+    const { userId, amount, wallet_address, password } = req.body;
+    if (!userId || !amount || !wallet_address || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    db.run(
+        `INSERT INTO withdrawals (user_id, amount, wallet_address, password, status, date)
+         VALUES (?, ?, ?, ?, 'pending', datetime('now'))`,
+        [userId, amount, wallet_address, password],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: 'Withdrawal request submitted for review' });
+        }
+    );
+});
+
+// Admin - View pending withdrawals
+app.get('/admin/withdrawals', (req, res) => {
+    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
+});
+
+// Admin - Approve withdrawal
+app.post('/admin/approve-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal approved successfully.' });
+    });
+});
+
+// Admin - Reject withdrawal
+app.post('/admin/reject-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal rejected successfully.' });
     });
 });
 
