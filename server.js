@@ -2,8 +2,11 @@ const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SECRET_KEY = 'your_secret_key'; // Change this for production
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -14,82 +17,60 @@ app.use(express.json());
 const db = new sqlite3.Database('./database.sqlite', (err) => {
   if (err) return console.error('Failed to connect to DB:', err);
   console.log('Connected to SQLite database.');
+  
+  // Create the users table if it doesn't exist
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      ref_code TEXT
+    );
+  `, (err) => {
+    if (err) console.error('Error creating users table:', err);
+  });
 });
 
-// Sign-Up API: Create a new user
+// API: User Sign-Up
 app.post('/signup', (req, res) => {
-  const { username, password, refcode } = req.body;
-
-  // Validate input
+  const { username, password, refCode } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required.' });
+    return res.status(400).json({ success: false, error: 'Username and password are required' });
   }
 
-  // Check if username already exists
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-    if (err) {
-      console.error('Error checking username:', err);
-      return res.status(500).json({ error: 'An error occurred during sign up' });
-    }
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) return res.status(500).json({ success: false, error: 'Failed to hash password' });
 
-    if (row) {
-      return res.status(400).json({ error: 'Username already taken' });
-    }
-
-    // Hash the password
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-      if (err) {
-        console.error('Error hashing password:', err);
-        return res.status(500).json({ error: 'Failed to hash password' });
-      }
-
-      // Insert user into the database
-      const sql = 'INSERT INTO users (username, password, refcode) VALUES (?, ?, ?)';
-      db.run(sql, [username, hashedPassword, refcode], function(err) {
-        if (err) {
-          console.error('Error inserting user:', err);
-          return res.status(500).json({ error: 'An error occurred during sign up' });
-        }
-
-        res.json({ success: true, message: 'Sign up successful' });
-      });
+    const sql = `INSERT INTO users (username, password, ref_code) VALUES (?, ?, ?)`;
+    db.run(sql, [username, hashedPassword, refCode], function(err) {
+      if (err) return res.status(500).json({ success: false, error: 'Failed to register user' });
+      
+      res.json({ success: true });
     });
   });
 });
 
-// Login API: Authenticate user
+// API: User Login
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-
-  // Validate input
   if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required.' });
+    return res.status(400).json({ success: false, error: 'Username and password are required' });
   }
 
-  // Check if user exists
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-    if (err) {
-      console.error('Error fetching user:', err);
-      return res.status(500).json({ error: 'An error occurred during login' });
+  const sql = `SELECT * FROM users WHERE username = ?`;
+  db.get(sql, [username], (err, user) => {
+    if (err || !user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    if (!row) {
-      return res.status(400).json({ error: 'Invalid username or password' });
-    }
-
-    // Compare the password
-    bcrypt.compare(password, row.password, (err, isMatch) => {
-      if (err) {
-        console.error('Error comparing passwords:', err);
-        return res.status(500).json({ error: 'An error occurred during login' });
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err || !result) {
+        return res.status(400).json({ success: false, error: 'Invalid password' });
       }
 
-      if (!isMatch) {
-        return res.status(400).json({ error: 'Invalid username or password' });
-      }
-
-      // Login successful
-      res.json({ success: true, message: 'Login successful' });
+      // Generate JWT token
+      const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+      res.json({ success: true, token });
     });
   });
 });
