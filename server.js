@@ -36,6 +36,36 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     });
 });
 
+// API: Get user details (username)
+app.get('/user-details', (req, res) => {
+  const userId = req.query.userId || 1; // Default to userId 1 for now
+  console.log('Fetching user details for userId:', userId);
+
+  // Get the username for the user
+  db.get(
+    `SELECT username FROM users WHERE id = ?`,
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.error('Error fetching username:', err);
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (!result) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const username = result.username;
+      console.log('User details:', { username });
+
+      // Return username and other user details if needed
+      res.json({
+        username
+      });
+    }
+  );
+});
+
 // API: Get user summary (total deposit and balance)
 app.get('/user-summary', (req, res) => {
   const userId = req.query.userId || 1; // Default to userId 1 for now
