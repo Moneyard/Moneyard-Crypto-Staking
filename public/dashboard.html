@@ -7,69 +7,77 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <header>
+    <h1>Moneyard Staking Dashboard</h1>
+  </header>
 
-  <!-- User Summary -->
-  <section id="user-summary" class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-  </section>
+  <main class="container">
+    <!-- Staking Overview -->
+    <section class="section">
+      <h2>Staking Overview</h2>
+      <p><strong>Annual Percentage Yield (APY):</strong> <span id="apy">Loading...</span></p>
+      <p id="total-deposit">Loading total deposit...</p>
+      <p id="balance">Loading balance...</p>
+    </section>
 
-  <!-- Deposit Section -->
-  <section id="deposit-section" class="form">
-    <h3>Deposit Funds</h3>
-    <label for="network">Choose Network:</label>
-    <select id="network">
-      <option value="TRC20">TRC20 (Tron)</option>
-      <option value="BEP20">BEP20 (BNB Smart Chain)</option>
-    </select>
-    <button onclick="getDepositAddress()">Get Deposit Address</button>
-    <p id="deposit-address"></p>
+    <!-- Staking Plans -->
+    <section class="section">
+      <h2>Available Staking Plans</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Duration</th>
+            <th>Interest Rate</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="staking-plans-table-body">
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </section>
 
-    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
-    <button onclick="logDeposit()">Submit Deposit</button>
-  </section>
+    <!-- Transaction History -->
+    <section class="section">
+      <h2>Transaction History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Amount</th>
+            <th>Network</th>
+            <th>TxID</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="transaction-history-table-body">
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </section>
 
-  <!-- Withdraw Section -->
-  <section id="withdraw-section" class="form">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
-    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-    <button onclick="submitWithdrawal()">Request Withdrawal</button>
-  </section>
+    <!-- Pending Withdrawals -->
+    <section class="section">
+      <h2>Pending Withdrawals</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Amount</th>
+            <th>Wallet Address</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawals-table-body">
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
 
-  <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings"></p>
-  </section>
-
-  <!-- Transaction History -->
-  <section id="transaction-history-section" class="form">
-    <h3>Transaction History</h3>
-    <table id="transaction-history-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Network</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Transaction rows injected here -->
-      </tbody>
-    </table>
-  </section>
-
-  <script src="script.js"></script>
+  <script src="dashboard.js" defer></script>
 </body>
 </html>
