@@ -48,4 +48,58 @@
 
   <script src="dashboard.js" defer></script>
 </body>
-</html>
+</html>document.addEventListener("DOMContentLoaded", function () {
+  // Load the staking overview
+  loadStakingOverview();
+  
+  // Load available staking plans
+  loadStakingPlans();
+});
+
+// Load the staking overview (current staked amount, APY, estimated earnings)
+function loadStakingOverview() {
+  // Example data - this could be fetched from an API or database
+  const currentStaked = 500; // USDT
+  const apy = 12; // APY %
+  const estimatedEarnings = (currentStaked * apy) / 100; // Earnings for 30 days
+
+  document.getElementById('staked-amount').textContent = `${currentStaked} USDT`;
+  document.getElementById('apy').textContent = `${apy}%`;
+  document.getElementById('estimated-earnings').textContent = `${estimatedEarnings.toFixed(2)} USDT`;
+}
+
+// Load the available staking plans
+function loadStakingPlans() {
+  const plans = [
+    { name: 'Plan A', apy: 6, duration: '30 days', minAmount: 100 },
+    { name: 'Plan B', apy: 10, duration: '90 days', minAmount: 500 },
+    { name: 'Plan C', apy: 4, duration: 'Flexible', minAmount: 50 },
+  ];
+
+  const tableBody = document.getElementById('staking-plans');
+  plans.forEach(plan => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${plan.name}</td>
+      <td>${plan.apy}%</td>
+      <td>${plan.duration}</td>
+      <td>${plan.minAmount} USDT</td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+// Calculate earnings for the entered staking amount
+function calculateEarnings() {
+  const stakingAmount = parseFloat(document.getElementById('staking-amount').value);
+  const apy = 12; // Example: Using the same APY as above
+  
+  if (isNaN(stakingAmount) || stakingAmount <= 0) {
+    alert('Please enter a valid amount to stake');
+    return;
+  }
+
+  const estimatedEarnings = (stakingAmount * apy) / 100; // Earnings for 30 days
+  document.getElementById('calc-earnings').textContent = `${estimatedEarnings.toFixed(2)} USDT`;
+}
+
