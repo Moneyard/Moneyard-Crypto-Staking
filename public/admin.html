@@ -1,91 +1,49 @@
-// Admin Panel Script
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Withdrawals</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Assuming your existing styles -->
+</head>
+<body>
 
-// Fetch pending withdrawals for the admin
-function fetchPendingWithdrawals() {
-  fetch('/admin/withdrawals')
-    .then(res => res.json())
-    .then(data => {
-      const withdrawalList = document.getElementById('withdrawal-list');
-      withdrawalList.innerHTML = ''; // Clear the current list
+    <!-- Admin Header or Sidebar (optional) -->
+    <header>
+        <h1>Admin Panel</h1>
+        <nav>
+            <!-- Your existing navigation links -->
+        </nav>
+    </header>
 
-      data.withdrawals.forEach(withdrawal => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <p>User ID: ${withdrawal.user_id}</p>
-          <p>Amount: ${withdrawal.amount} USDT</p>
-          <p>Status: ${withdrawal.status}</p>
-          <p>Wallet Address: ${withdrawal.wallet_address}</p>
-          <button onclick="approveWithdrawal(${withdrawal.id})">Approve</button>
-          <button onclick="rejectWithdrawal(${withdrawal.id})">Reject</button>
-        `;
-        withdrawalList.appendChild(li);
-      });
-    })
-    .catch(err => console.error('Error fetching withdrawals:', err));
-}
+    <main>
+        <h2>Manage Withdrawals</h2>
 
-// Approve withdrawal request
-function approveWithdrawal(withdrawalId) {
-  fetch('/admin/approve-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ withdrawalId })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      fetchPendingWithdrawals(); // Refresh the withdrawal list
-    })
-    .catch(err => {
-      console.error('Error approving withdrawal:', err);
-      alert('Error approving withdrawal');
-    });
-}
+        <div id="withdrawals-container">
+            <h3>Pending Withdrawals</h3>
+            <table id="withdrawals-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Amount (USDT)</th>
+                        <th>Wallet Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Withdrawals will be populated here by admin.js -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-// Reject withdrawal request
-function rejectWithdrawal(withdrawalId) {
-  fetch('/admin/reject-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ withdrawalId })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      fetchPendingWithdrawals(); // Refresh the withdrawal list
-    })
-    .catch(err => {
-      console.error('Error rejecting withdrawal:', err);
-      alert('Error rejecting withdrawal');
-    });
-}
+    <footer>
+        <p>&copy; 2025 Moneyard</p>
+    </footer>
 
-// Fetch transaction history for the admin
-function fetchTransactionHistory() {
-  fetch('/admin/get-withdrawals')
-    .then(res => res.json())
-    .then(data => {
-      const transactionList = document.getElementById('transaction-history');
-      transactionList.innerHTML = ''; // Clear the current list
+    <!-- Include the JavaScript file for the admin functionality -->
+    <script src="admin.js"></script>
 
-      data.withdrawals.forEach(transaction => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <p>Transaction ID: ${transaction.id}</p>
-          <p>User ID: ${transaction.user_id}</p>
-          <p>Amount: ${transaction.amount} USDT</p>
-          <p>Network: ${transaction.network}</p>
-          <p>Transaction Status: ${transaction.status}</p>
-          <p>Transaction Date: ${transaction.date}</p>
-        `;
-        transactionList.appendChild(li);
-      });
-    })
-    .catch(err => console.error('Error fetching transaction history:', err));
-}
-
-// Call the function to fetch pending withdrawals and transaction history on page load
-document.addEventListener("DOMContentLoaded", function () {
-  fetchPendingWithdrawals();
-  fetchTransactionHistory();
-});
+</body>
+</html>
