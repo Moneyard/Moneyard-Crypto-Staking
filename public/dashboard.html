@@ -4,48 +4,55 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <div class="container">
-    <header>Moneyard Dashboard</header>
-    
-    <!-- Staking Overview -->
-    <div class="section">
-      <h2>Staking Overview</h2>
-      <p><strong>Current Staked:</strong> <span id="staked-amount">0 USDT</span></p>
-      <p><strong>Estimated APY:</strong> <span id="apy">0%</span></p>
-      <p><strong>Estimated Earnings (30 days):</strong> <span id="estimated-earnings">0 USDT</span></p>
-    </div>
-
-    <!-- Available Staking Plans -->
-    <div class="section">
-      <h2>Available Staking Plans</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Plan</th>
-            <th>APY</th>
-            <th>Duration</th>
-            <th>Minimum Amount</th>
-          </tr>
-        </thead>
-        <tbody id="staking-plans">
-          <!-- Plans will be dynamically loaded here -->
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Earnings Calculator -->
-    <div class="section">
-      <h2>Earnings Calculator</h2>
-      <input type="number" id="staking-amount" placeholder="Enter amount to stake" />
-      <button onclick="calculateEarnings()">Calculate Earnings</button>
-      <p><strong>Estimated Earnings (30 days):</strong> <span id="calc-earnings">0 USDT</span></p>
-    </div>
+  <div id="logo-section">
+    <img src="M.png" alt="Moneyard Logo" id="logo">
   </div>
 
-  <script src="dashboard.js" defer></script>
+  <div id="user-summary">
+    <h3>Welcome, <span id="summary-username">User</span></h3>
+    <p>Total Deposit: <span id="summary-total">0 USDT</span></p>
+    <p>Available Balance: <span id="summary-balance">0 USDT</span></p>
+  </div>
+
+  <div id="transaction-history">
+    <h4>Transaction History</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="transaction-table-body">
+        <!-- Transaction rows will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <div id="withdrawal-section">
+    <h4>Submit Withdrawal</h4>
+    <input type="number" id="withdraw-amount" placeholder="Amount to Withdraw" />
+    <input type="text" id="withdraw-address" placeholder="Withdrawal Address" />
+    <input type="password" id="withdraw-password" placeholder="Your Password" />
+    <button onclick="submitWithdrawal()">Submit Withdrawal</button>
+  </div>
+
+  <div id="deposit-section">
+    <h4>Deposit Funds</h4>
+    <select id="network" onchange="getDepositAddress()">
+      <option value="TRC20">TRC20</option>
+      <option value="BEP20">BEP20</option>
+    </select>
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p>Deposit Address: <span id="deposit-address"></span></p>
+    <button id="copy-button" style="display: none;" onclick="copyToClipboard()">Copy Address</button>
+  </div>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
