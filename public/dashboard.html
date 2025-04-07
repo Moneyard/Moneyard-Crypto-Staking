@@ -38,10 +38,13 @@
   <!-- Withdraw Section -->
   <section id="withdraw-section" class="form">
     <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
     <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
     <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
     <button onclick="submitWithdrawal()">Request Withdrawal</button>
+    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
+      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
+    </p>
   </section>
 
   <!-- Earnings Calculator -->
