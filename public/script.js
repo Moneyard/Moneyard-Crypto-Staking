@@ -1,4 +1,4 @@
-// Toggle between Sign Up and Login Forms
+// Toggle between the Sign Up and Login forms
 function toggleForms() {
   const signupForm = document.getElementById('signup-form');
   const loginForm = document.getElementById('login-form');
@@ -12,61 +12,66 @@ function toggleForms() {
   }
 }
 
-// Sign-Up Function
-function signup() {
+// Sign up function
+async function signup() {
   const username = document.getElementById('signup-username').value;
   const password = document.getElementById('signup-password').value;
-  const refcode = document.getElementById('signup-refcode').value;
+  const refCode = document.getElementById('signup-refcode').value;
 
-  // Validate fields
   if (!username || !password) {
-    alert('Username and password are required.');
+    alert('Please enter both a username and password.');
     return;
   }
 
-  // Send sign-up request to the backend
-  fetch('/signup', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password, refcode })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('Sign up successful!');
-      toggleForms(); // Switch to Login form
+  try {
+    const response = await fetch('/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password, refCode }),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert('Sign up successful! Please log in.');
+      toggleForms();
     } else {
-      alert('Sign up failed: ' + data.error);
+      alert('An error occurred during sign up: ' + result.error);
     }
-  })
-  .catch(error => {
-    console.error('Error during sign-up:', error);
-    alert('An error occurred during sign up');
-  });
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred during sign up.');
+  }
 }
 
-// Login Function
-function login() {
+// Login function
+async function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
 
-  // Send login request to the backend
-  fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('Login successful!');
-      // Optionally redirect to the dashboard or home page
+  if (!username || !password) {
+    alert('Please enter both username and password.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      window.location.href = '/dashboard.html'; // Redirect to dashboard
     } else {
-      alert('Login failed: ' + data.error);
+      alert('Invalid username or password.');
     }
-  })
-  .catch(error => {
-    console.error('Error during login:', error);
-    alert('An error occurred during login');
-  });
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred during login.');
+  }
 }
