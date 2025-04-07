@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// SQLite setup
+// SQLite database setup
 const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) return console.error('Failed to connect to DB:', err);
     console.log('Connected to SQLite database.');
@@ -42,9 +42,9 @@ db.run(`
     )
 `);
 
-// Routes
+// Routes for frontend
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Corrected
 });
 
 app.get('/dashboard', (req, res) => {
@@ -100,7 +100,7 @@ app.get('/get-transaction-history', (req, res) => {
     );
 });
 
-// API: User summary
+// API: Get user summary
 app.get('/user-summary', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'User ID required' });
@@ -136,20 +136,16 @@ app.post('/withdraw', (req, res) => {
     );
 });
 
-// API: Get pending withdrawals (for user)
+// API: Get user pending withdrawals
 app.get('/get-pending-withdrawals', (req, res) => {
-    const userId = req.query.userId || 1;
-    db.all(
-        `SELECT * FROM withdrawals WHERE user_id = ? ORDER BY date DESC`,
-        [userId],
-        (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ withdrawals: rows });
-        }
-    );
+    const userId = req.query.userId;
+    db.all(`SELECT * FROM withdrawals WHERE user_id = ? ORDER BY date DESC`, [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
 });
 
-// Admin APIs
+// === ADMIN PANEL APIs ===
 app.get('/admin/withdrawals', (req, res) => {
     db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -191,5 +187,5 @@ app.post('/admin/reject-deposit', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
