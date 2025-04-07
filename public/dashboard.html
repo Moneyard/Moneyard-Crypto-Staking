@@ -77,5 +77,44 @@
   </section>
 
   <script src="script.js"></script>
+
+  <script>
+    // Load username dynamically from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const username = localStorage.getItem('username');
+      if (username) {
+        document.getElementById('summary-username').innerText = username;
+      } else {
+        document.getElementById('summary-username').innerText = 'Not logged in';
+      }
+
+      // Load user summary (total deposit, balance)
+      loadUserSummary();
+    });
+
+    function loadUserSummary() {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.log('User is not logged in, skipping summary load');
+        return;
+      }
+
+      fetch(`/user-summary?userId=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.totalDeposit !== undefined && data.balance !== undefined) {
+            document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
+            document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
+          } else {
+            alert("Failed to load user summary.");
+          }
+        })
+        .catch(err => {
+          console.error("Error loading user summary:", err);
+          alert("Failed to load user summary.");
+        });
+    }
+  </script>
+
 </body>
 </html>
