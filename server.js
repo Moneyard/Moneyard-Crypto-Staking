@@ -65,33 +65,4 @@ app.post('/login', (req, res) => {
 
     bcrypt.compare(password, user.password, (err, result) => {
       if (err || !result) {
-        return res.status(400).json({ success: false, error: 'Invalid password' });
-      }
-
-      // Generate JWT token
-      const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
-      res.json({ success: true, token });
-    });
-  });
-});
-
-// API: Get User Info (for user loading)
-app.get('/user-info', (req, res) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) return res.status(401).json({ error: 'Invalid token' });
-
-    const sql = `SELECT username FROM users WHERE id = ?`;
-    db.get(sql, [decoded.id], (err, user) => {
-      if (err || !user) return res.status(404).json({ error: 'User not found' });
-      res.json({ username: user.username });
-    });
-  });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+        return
