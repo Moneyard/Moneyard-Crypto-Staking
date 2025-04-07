@@ -14,12 +14,32 @@ app.use(express.json());
 const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) return console.error('Failed to connect to DB:', err);
     console.log('Connected to SQLite database.');
+
+    // Create the withdrawals table if it doesn't exist
+    db.run(`
+      CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        address TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        approval_date TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      );
+    `, (err) => {
+      if (err) {
+        console.error('Error creating withdrawals table:', err);
+      } else {
+        console.log('Withdrawals table is ready.');
+      }
+    });
 });
 
 // API: Get user summary (total deposit and balance)
 app.get('/user-summary', (req, res) => {
   const userId = req.query.userId || 1; // Default to userId 1 for now
-  console.log('Fetching user summary for userId:', userId);
+  console.log('Fetching user summary for userId:', userId);  // Log the userId
 
   // Get the total deposit amount for the user
   db.get(
@@ -27,12 +47,12 @@ app.get('/user-summary', (req, res) => {
     [userId],
     (err, result) => {
       if (err) {
-        console.error('Error fetching total deposit:', err);
+        console.error('Error fetching total deposit:', err); // Log the error
         return res.status(500).json({ error: err.message });
       }
 
-      const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0;
-      console.log('Total deposit:', totalDeposit);
+      const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0; // Safely handle null results
+      console.log('Total deposit:', totalDeposit);  // Log the total deposit
 
       // Get the total withdrawn amount for the user (approved withdrawals)
       db.get(
@@ -40,15 +60,15 @@ app.get('/user-summary', (req, res) => {
         [userId],
         (err, withdrawalResult) => {
           if (err) {
-            console.error('Error fetching total withdrawals:', err);
+            console.error('Error fetching total withdrawals:', err); // Log the error
             return res.status(500).json({ error: err.message });
           }
 
-          const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0;
-          console.log('Total withdrawn:', totalWithdrawn);
+          const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
+          console.log('Total withdrawn:', totalWithdrawn);  // Log the total withdrawn
 
-          const balance = totalDeposit - totalWithdrawn;
-          console.log('User summary:', { totalDeposit, balance });
+          const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
+          console.log('User summary:', { totalDeposit, balance }); // Log the fetched summary
 
           // Return user summary with total deposit and balance
           res.json({
@@ -64,7 +84,7 @@ app.get('/user-summary', (req, res) => {
 // API: Get deposit address for selected network
 app.post('/get-deposit-address', (req, res) => {
   const { userId, network } = req.body;
-
+  
   // Simulate getting deposit address based on the network (TRC20/BEP20)
   const depositAddress = network === 'TRC20' ? 'TXXXXXXX' : network === 'BEP20' ? 'BXXXXXXX' : '';
 
@@ -91,13 +111,15 @@ app.post('/log-withdrawal', (req, res) => {
     return res.status(400).json({ error: 'Password is required for withdrawal' });
   }
 
-  // Simulate withdrawal logging
-  console.log(`User ${userId} is requesting withdrawal: ${amount} USDT to ${address}`);
-
-  // Here you'd save the withdrawal request to the database for admin approval, etc.
-  // For simplicity, let's assume it's successful.
-  
-  res.json({ message: 'Withdrawal request submitted successfully' });
+  // Insert withdrawal request into the withdrawals table
+  const sql = `INSERT INTO withdrawals (user_id, amount, address, status) VALUES (?, ?, ?, ?)`;
+  db.run(sql, [userId, amount, address, 'pending'], function(err) {
+    if (err) {
+      console.error('Error logging withdrawal request:', err);
+      return res.status(500).json({ error: 'Failed to log withdrawal request' });
+    }
+    res.json({ message: 'Withdrawal request submitted successfully', withdrawalId: this.lastID });
+  });
 });
 
 // API: Get transaction history for the user
@@ -117,30 +139,46 @@ app.get('/get-transaction-history', (req, res) => {
   );
 });
 
-// API: Log deposit (for testing deposit functionality)
-app.post('/log-deposit', (req, res) => {
-  const { userId, amount, network, txId } = req.body;
+// API: Get withdrawal history for the user
+app.get('/get-withdrawal-history', (req, res) => {
+  const userId = req.query.userId || 1; // Default to userId 1 for now
 
-  // Validate inputs
-  if (!amount || amount < 15 || amount > 1000) {
-    return res.status(400).json({ error: 'Invalid deposit amount. Must be between 15 and 1000 USDT' });
-  }
-
-  if (!txId) {
-    return res.status(400).json({ error: 'Transaction ID is required' });
-  }
-
-  // Log deposit into the database (simulate for now)
-  db.run(
-    `INSERT INTO transactions (user_id, amount, type, network, tx_id) VALUES (?, ?, "deposit", ?, ?)`,
-    [userId, amount, network, txId],
-    function (err) {
+  // Get withdrawal history from the withdrawals table
+  db.all(
+    `SELECT * FROM withdrawals WHERE user_id = ? ORDER BY request_date DESC`,
+    [userId],
+    (err, rows) => {
       if (err) {
-        return res.status(500).json({ error: 'Failed to log deposit' });
+        console.error('Error fetching withdrawal history:', err);
+        return res.status(500).json({ error: 'Failed to fetch withdrawal history' });
       }
-      res.json({ message: 'Deposit logged successfully' });
+      res.json(rows); // Send back the withdrawal history
     }
   );
+});
+
+// API: Admin approves withdrawal
+app.post('/approve-withdrawal', (req, res) => {
+  const { withdrawalId } = req.body;
+
+  if (!withdrawalId) {
+    return res.status(400).json({ error: 'Withdrawal ID is required' });
+  }
+
+  // Update the status of the withdrawal to 'approved'
+  const sql = `UPDATE withdrawals SET status = 'approved', approval_date = CURRENT_TIMESTAMP WHERE id = ?`;
+  db.run(sql, [withdrawalId], function(err) {
+    if (err) {
+      console.error('Error approving withdrawal:', err);
+      return res.status(500).json({ error: 'Failed to approve withdrawal' });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ error: 'Withdrawal not found' });
+    }
+
+    res.json({ message: 'Withdrawal approved successfully' });
+  });
 });
 
 // Start server
