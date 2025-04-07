@@ -1,183 +1,191 @@
-// Toggle between signup and login forms
-function toggleForms() {
-  const signupForm = document.getElementById('signup-form');
-  const loginForm = document.getElementById('login-form');
+const express = require('express');
+const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 
-  signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-}
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Signup handler
-function signup() {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-  if (username && password) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    alert("Signup successful! Please login.");
-    toggleForms();
-  } else {
-    alert("Please fill in all required fields.");
-  }
-}
+// SQLite database setup
+const db = new sqlite3.Database('./database.sqlite', (err) => {
+    if (err) return console.error('Failed to connect to DB:', err);
+    console.log('Connected to SQLite database.');
+});
 
-// Login handler
-function login() {
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
+// Create transactions table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        type TEXT,
+        amount REAL,
+        network TEXT,
+        tx_id TEXT,
+        status TEXT,
+        date TEXT
+    )
+`);
 
-  const storedUser = localStorage.getItem('username');
-  const storedPass = localStorage.getItem('password');
+// Create withdrawals table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        amount REAL,
+        wallet_address TEXT,
+        password TEXT,
+        status TEXT DEFAULT 'pending',
+        date TEXT
+    )
+`);
 
-  if (username === storedUser && password === storedPass) {
-    localStorage.setItem('userId', 1); // Static userId for now
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials. Please try again.");
-  }
-}
+// Static page routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-// Check if the user is logged in (i.e., userId exists in localStorage)
-function isUserLoggedIn() {
-  const userId = localStorage.getItem('userId');
-  return userId !== null;
-}
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
 
-// Fetch deposit address based on selected network
-function getDepositAddress() {
-  const network = document.getElementById('network').value;
-  let depositAddress = '';
-  let networkLabel = '';
+// Deposit wallet addresses (example)
+const walletAddresses = {
+    TRC20: "TXYZ1234567890TRONADDRESS",
+    BEP20: "0x1234567890BNBADDRESS"
+};
 
-  // Match deposit address based on selected network
-  if (network === 'Tron') {
-    depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
-    networkLabel = 'Tron Network (TRC20)';
-  } else if (network === 'BNB') {
-    depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
-    networkLabel = 'BNB Smart Chain (BEP20)';
-  } else {
-    depositAddress = '';  // No address if no valid network is selected
-  }
+// API: Get deposit address
+app.post('/get-deposit-address', (req, res) => {
+    const { userId, network } = req.body;
 
-  // Display the selected network and deposit address if it's found
-  if (depositAddress) {
-    document.getElementById('deposit-address').innerText = `Network: ${networkLabel}\nDeposit Address: ${depositAddress}`;
-    document.getElementById('copy-button').style.display = 'inline-block'; // Enable the "Copy" button
-    document.getElementById('deposit-address').setAttribute('data-copy-text', depositAddress); // Save the address for copying
-  } else {
-    document.getElementById('deposit-address').innerText = '';  // Clear address if network is invalid
-    alert("Please select a valid network.");
-    document.getElementById('copy-button').style.display = 'none';  // Hide the copy button
-  }
-}
+    if (!walletAddresses[network]) {
+        return res.status(400).json({ error: 'Invalid network selected' });
+    }
 
-// Copy to clipboard function
-function copyToClipboard() {
-  const depositAddress = document.getElementById('deposit-address').getAttribute('data-copy-text');
-  
-  if (depositAddress) {
-    const tempTextArea = document.createElement('textarea');
-    tempTextArea.value = depositAddress;
-    document.body.appendChild(tempTextArea);
-    tempTextArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempTextArea);
+    res.json({ address: walletAddresses[network] });
+});
 
-    alert("Deposit address copied to clipboard!");
-  }
-}
+// API: Log deposit
+app.post('/log-deposit', (req, res) => {
+    const { userId, amount, network, txId } = req.body;
 
-// Log deposit (without requiring TxID input)
-function logDeposit() {
-  const userId = localStorage.getItem('userId') || 1;
-  const amount = parseFloat(document.getElementById('deposit-amount').value);
-  const network = document.getElementById('network').value;
+    if (amount < 15 || amount > 1000) {
+        return res.status(400).json({ error: 'Amount must be between 15 and 1000 USDT' });
+    }
 
-  // Validate deposit amount
-  if (!amount || amount < 15 || amount > 1000) {
-    alert("Enter a valid amount between 15 and 1000 USDT.");
-    return;
-  }
+    db.run(
+        `INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+         VALUES (?, "deposit", ?, ?, ?, "pending", datetime("now"))`,
+        [userId, amount, network, txId],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: 'Deposit logged, pending confirmation' });
+        }
+    );
+});
 
-  // Automatically fetch the TxID
-  fetchTransactionId().then(txId => {
-    // Log deposit with the fetched TxID
-    fetch('/log-deposit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, amount, network, txId })
-    })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
+// API: Get transaction history for the logged-in user
+app.get('/get-transaction-history', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.all(
+        `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ transactions: rows });
+        }
+    );
+});
+
+// API: Get user summary (total deposits and balance)
+app.get('/user-summary', (req, res) => {
+    const userId = req.query.userId;
+
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID required' });
+    }
+
+    db.get(
+        `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = 'deposit'`,
+        [userId],
+        (err, row) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+
+            const totalDeposit = row?.totalDeposit || 0;
+            const balance = totalDeposit * 0.9;
+
+            res.json({ totalDeposit, balance });
+        }
+    );
+});
+
+// Admin API: Get pending withdrawals
+app.get('/admin/withdrawals', (req, res) => {
+    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
     });
-  }).catch(err => {
-    alert('Error fetching TxID: ' + err.message);
-  });
-}
+});
 
-// Simulate fetching TxID (Replace with a real API call to fetch TxID)
-function fetchTransactionId() {
-  return new Promise((resolve, reject) => {
-    // Simulate async call to get TxID (in a real-world scenario, this would be a call to a blockchain API)
-    setTimeout(() => {
-      const txId = '0x123456789abcdef'; // Example TxID
-      resolve(txId);
-    }, 2000); // Simulate delay
-  });
-}
+// Admin API: Approve withdrawal
+app.post('/admin/approve-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
 
-// Calculate earnings (8% daily)
-function calculateEarnings() {
-  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
-
-  if (!depositAmount || depositAmount < 15 || depositAmount > 1000) {
-    alert("Please enter a valid deposit amount between 15 and 1000 USDT.");
-    return;
-  }
-
-  const dailyEarnings = depositAmount * 0.08; // 8% daily earnings
-  const earningsMessage = `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
-
-  document.getElementById('calculated-earnings').innerText = earningsMessage;
-}
-
-// Fetch user summary (username, total deposit, balance)
-function loadUserSummary() {
-  const userId = localStorage.getItem('userId');
-  
-  // If userId is not found, do not load the summary
-  if (!userId) {
-    console.log('User is not logged in, skipping summary load');
-    return;
-  }
-
-  fetch(`/user-summary?userId=${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.totalDeposit !== undefined && data.balance !== undefined) {
-        // Display the username and balance in the dashboard
-        document.getElementById('summary-username').innerText = localStorage.getItem('username');
-        document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
-        document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
-      } else {
-        alert("Failed to load user summary.");
-      }
-    })
-    .catch(err => {
-      console.error("Error loading user summary:", err);
-      alert("Failed to load user summary.");
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal approved successfully.' });
     });
-}
+});
 
-// Call loadUserSummary only if user is logged in
-document.addEventListener("DOMContentLoaded", function () {
-  // Only attempt to load the user summary if the user is logged in
-  if (isUserLoggedIn()) {
-    loadUserSummary();
-  } else {
-    console.log('User is not logged in. Skipping user summary load.');
-  }
+// Admin API: Reject withdrawal
+app.post('/admin/reject-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal rejected successfully.' });
+    });
+});
+
+// Admin Routes
+app.get('/admin/get-withdrawals', (req, res) => {
+    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ withdrawals: rows });
+    });
+});
+
+app.post('/admin/update-withdrawal', (req, res) => {
+    const { id, status } = req.body;
+
+    if (!['approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    db.run(
+        'UPDATE transactions SET status = ? WHERE id = ?',
+        [status, id],
+        function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ message: `Withdrawal ${status}` });
+        }
+    );
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
