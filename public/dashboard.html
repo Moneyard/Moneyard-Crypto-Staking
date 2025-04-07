@@ -1,75 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+document.addEventListener("DOMContentLoaded", function () {
+  loadStakingPlans();
+  loadAPY();
+  loadUserSummary();
+  loadTransactionHistory();
+  loadPendingWithdrawals();
+});
 
-  <!-- User Summary -->
-  <section id="user-summary" class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-  </section>
+// Load staking plans and display them
+function loadStakingPlans() {
+  const stakingPlans = [
+    { id: 1, name: "Plan A", duration: "30 days", interestRate: "5%" },
+    { id: 2, name: "Plan B", duration: "60 days", interestRate: "10%" },
+    { id: 3, name: "Plan C", duration: "90 days", interestRate: "15%" },
+  ];
 
-  <!-- Deposit Section -->
-  <section id="deposit-section" class="form">
-    <h3>Deposit Funds</h3>
-    <label for="network">Choose Network:</label>
-    <select id="network">
-      <option value="TRC20">TRC20 (Tron)</option>
-      <option value="BEP20">BEP20 (BNB Smart Chain)</option>
-    </select>
-    <button onclick="getDepositAddress()">Get Deposit Address</button>
-    <p id="deposit-address"></p>
+  const stakingPlansTable = document.getElementById('staking-plans-table-body');
+  stakingPlansTable.innerHTML = '';
 
-    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
-    <button onclick="logDeposit()">Submit Deposit</button>
-  </section>
+  stakingPlans.forEach(plan => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${plan.name}</td>
+      <td>${plan.duration}</td>
+      <td>${plan.interestRate}</td>
+      <td><button onclick="selectStakingPlan(${plan.id})">Select</button></td>
+    `;
+    stakingPlansTable.appendChild(row);
+  });
+}
 
-  <!-- Withdraw Section -->
-  <section id="withdraw-section" class="form">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
-    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-    <button onclick="submitWithdrawal()">Request Withdrawal</button>
-  </section>
+// Select a staking plan
+function selectStakingPlan(planId) {
+  alert(`You selected Staking Plan ${planId}`);
+  // Further logic for selecting a plan can go here (e.g., submitting to the server)
+}
 
-  <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings"></p>
-  </section>
+// Load the Annual Percentage Yield (APY) and display it
+function loadAPY() {
+  const APY = 12;  // Example APY value
+  const apyElement = document.getElementById('apy');
+  apyElement.innerText = `${APY}%`;
+}
 
-  <!-- Transaction History -->
-  <section id="transaction-history-section" class="form">
-    <h3>Transaction History</h3>
-    <table id="transaction-history-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Network</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Transaction rows injected here -->
-      </tbody>
-    </table>
-  </section>
+// Load user summary (e.g., total deposit and balance)
+function loadUserSummary() {
+  const userId = 1;  // Get the actual user ID based on session or login
+  
+  fetch(`/user-summary?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      const totalDepositElement = document.getElementById('total-deposit');
+      const balanceElement = document.getElementById('balance');
+      totalDepositElement.innerText = `Total Deposit: ${data.totalDeposit} USDT`;
+      balanceElement.innerText = `Available Balance: ${data.balance} USDT`;
+    })
+    .catch(err => console.error('Failed to load user summary:', err));
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+// Load transaction history
+function loadTransactionHistory() {
+  const userId = 1;  // Get the actual user ID based on session or login
+  
+  fetch(`/get-transaction-history?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      const transactionHistoryTable = document.getElementById('transaction-history-table-body');
+      transactionHistoryTable.innerHTML = '';
+      
+      data.transactions.forEach(tx => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${tx.id}</td>
+          <td>${tx.amount}</td>
+          <td>${tx.network}</td>
+          <td>${tx.tx_id}</td>
+          <td>${tx.status}</td>
+          <td>${tx.date}</td>
+        `;
+        transactionHistoryTable.appendChild(row);
+      });
+    })
+    .catch(err => console.error('Failed to load transaction history:', err));
+}
+
+// Load pending withdrawals (for the admin panel or the user dashboard)
+function loadPendingWithdrawals() {
+  const userId = 1;  // For user-specific withdrawals, this would be dynamic
+  
+  fetch(`/get-pending-withdrawals?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      const withdrawalsTable = document.getElementById('withdrawals-table-body');
+      withdrawalsTable.innerHTML = '';
+      
+      data.withdrawals.forEach(w => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${w.id}</td>
+          <td>${w.amount}</td>
+          <td>${w.wallet_address}</td>
+          <td>${w.status}</td>
+          <td>${w.date}</td>
+        `;
+        withdrawalsTable.appendChild(row);
+      });
+    })
+    .catch(err => console.error('Failed to load pending withdrawals:', err));
+}
