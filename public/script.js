@@ -1,5 +1,3 @@
-Script.js
-
 // Toggle between signup and login forms
 function toggleForms() {
   const signupForm = document.getElementById('signup-form');
