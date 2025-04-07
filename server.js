@@ -1,7 +1,10 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const speakeasy = require('speakeasy');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,6 +39,30 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
       }
     });
 });
+
+// Constants for withdrawal validation
+const MIN_WITHDRAWAL = 50; // Example min amount
+const MAX_WITHDRAWAL = 5000; // Example max amount
+
+// Helper function to send email confirmation
+async function sendConfirmationEmail(userEmail) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'your_email@gmail.com',
+      pass: 'your_email_password'
+    }
+  });
+
+  const mailOptions = {
+    from: 'your_email@gmail.com',
+    to: userEmail,
+    subject: 'Withdrawal Request Confirmation',
+    text: 'Please confirm your withdrawal request by clicking the link.'
+  };
+
+  await transporter.sendMail(mailOptions);
+}
 
 // API: Get user summary (total deposit and balance)
 app.get('/api/user-info', (req, res) => {
@@ -100,34 +127,31 @@ app.get('/api/user-info', (req, res) => {
   });
 });
 
-// API: Get deposit address for selected network
-app.post('/get-deposit-address', (req, res) => {
-  const { userId, network } = req.body;
-
-  // Simulate getting deposit address based on the network (TRC20/BEP20)
-  const depositAddress = network === 'TRC20' ? 'TXXXXXXX' : network === 'BEP20' ? 'BXXXXXXX' : '';
-
-  if (!depositAddress) {
-    return res.status(400).json({ error: "Invalid network selected." });
-  }
-
-  // In real cases, you would fetch or generate an actual address from the database
-  res.json({ address: depositAddress });
-});
-
 // API: Log withdrawal request
-app.post('/log-withdrawal', (req, res) => {
-  const { userId, amount, address, password } = req.body;
+app.post('/log-withdrawal', async (req, res) => {
+  const { userId, amount, address, password, otp } = req.body;
 
-  // Validate inputs
-  if (!amount || amount <= 0) {
-    return res.status(400).json({ error: 'Invalid withdrawal amount' });
+  // Validate withdrawal amount
+  if (amount < MIN_WITHDRAWAL || amount > MAX_WITHDRAWAL) {
+    return res.status(400).json({ message: `Withdrawal must be between ${MIN_WITHDRAWAL} and ${MAX_WITHDRAWAL}` });
   }
-  if (!address) {
-    return res.status(400).json({ error: 'Withdrawal address is required' });
+
+  // Password verification
+  const user = await db.get(`SELECT * FROM users WHERE id = ?`, [userId]);
+  const passwordMatch = await bcrypt.compare(password, user.password);
+  if (!passwordMatch) {
+    return res.status(400).json({ message: 'Incorrect password' });
   }
-  if (!password) {
-    return res.status(400).json({ error: 'Password is required for withdrawal' });
+
+  // OTP (2FA) verification using speakeasy
+  const verified = speakeasy.totp.verify({
+    secret: user.secret, // stored in your database
+    encoding: 'base32',
+    token: otp
+  });
+
+  if (!verified) {
+    return res.status(400).json({ message: 'Invalid OTP' });
   }
 
   // Insert withdrawal request into the withdrawals table
@@ -137,25 +161,12 @@ app.post('/log-withdrawal', (req, res) => {
       console.error('Error logging withdrawal request:', err);
       return res.status(500).json({ error: 'Failed to log withdrawal request' });
     }
+
+    // Send confirmation email
+    await sendConfirmationEmail(user.email);
+
     res.json({ message: 'Withdrawal request submitted successfully', withdrawalId: this.lastID });
   });
-});
-
-// API: Get transaction history for the user
-app.get('/get-transaction-history', (req, res) => {
-  const userId = req.query.userId || 1;
-
-  // Simulate fetching transaction history from the database
-  db.all(
-    `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
-    [userId],
-    (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to fetch transaction history' });
-      }
-      res.json(rows); // Send back the transaction history
-    }
-  );
 });
 
 // API: Get withdrawal history for the user
