@@ -19,7 +19,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
 // API: Get user summary (total deposit and balance)
 app.get('/user-summary', (req, res) => {
   const userId = req.query.userId || 1; // Default to userId 1 for now
-  console.log('Fetching user summary for userId:', userId);  // Log the userId
+  console.log('Fetching user summary for userId:', userId);
 
   // Get the total deposit amount for the user
   db.get(
@@ -27,12 +27,12 @@ app.get('/user-summary', (req, res) => {
     [userId],
     (err, result) => {
       if (err) {
-        console.error('Error fetching total deposit:', err); // Log the error
+        console.error('Error fetching total deposit:', err);
         return res.status(500).json({ error: err.message });
       }
 
-      const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0; // Safely handle null results
-      console.log('Total deposit:', totalDeposit);  // Log the total deposit
+      const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0;
+      console.log('Total deposit:', totalDeposit);
 
       // Get the total withdrawn amount for the user (approved withdrawals)
       db.get(
@@ -40,15 +40,15 @@ app.get('/user-summary', (req, res) => {
         [userId],
         (err, withdrawalResult) => {
           if (err) {
-            console.error('Error fetching total withdrawals:', err); // Log the error
+            console.error('Error fetching total withdrawals:', err);
             return res.status(500).json({ error: err.message });
           }
 
-          const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
-          console.log('Total withdrawn:', totalWithdrawn);  // Log the total withdrawn
+          const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0;
+          console.log('Total withdrawn:', totalWithdrawn);
 
-          const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
-          console.log('User summary:', { totalDeposit, balance }); // Log the fetched summary
+          const balance = totalDeposit - totalWithdrawn;
+          console.log('User summary:', { totalDeposit, balance });
 
           // Return user summary with total deposit and balance
           res.json({
@@ -64,7 +64,7 @@ app.get('/user-summary', (req, res) => {
 // API: Get deposit address for selected network
 app.post('/get-deposit-address', (req, res) => {
   const { userId, network } = req.body;
-  
+
   // Simulate getting deposit address based on the network (TRC20/BEP20)
   const depositAddress = network === 'TRC20' ? 'TXXXXXXX' : network === 'BEP20' ? 'BXXXXXXX' : '';
 
@@ -113,6 +113,32 @@ app.get('/get-transaction-history', (req, res) => {
         return res.status(500).json({ error: 'Failed to fetch transaction history' });
       }
       res.json(rows); // Send back the transaction history
+    }
+  );
+});
+
+// API: Log deposit (for testing deposit functionality)
+app.post('/log-deposit', (req, res) => {
+  const { userId, amount, network, txId } = req.body;
+
+  // Validate inputs
+  if (!amount || amount < 15 || amount > 1000) {
+    return res.status(400).json({ error: 'Invalid deposit amount. Must be between 15 and 1000 USDT' });
+  }
+
+  if (!txId) {
+    return res.status(400).json({ error: 'Transaction ID is required' });
+  }
+
+  // Log deposit into the database (simulate for now)
+  db.run(
+    `INSERT INTO transactions (user_id, amount, type, network, tx_id) VALUES (?, ?, "deposit", ?, ?)`,
+    [userId, amount, network, txId],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to log deposit' });
+      }
+      res.json({ message: 'Deposit logged successfully' });
     }
   );
 });
