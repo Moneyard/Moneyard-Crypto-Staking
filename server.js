@@ -16,7 +16,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     console.log('Connected to SQLite database.');
 });
 
-// Tables
+// Create tables if not exist
 db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +29,6 @@ db.run(`
         date TEXT
     )
 `);
-
 db.run(`
     CREATE TABLE IF NOT EXISTS withdrawals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,11 +41,13 @@ db.run(`
     )
 `);
 
-// Routes for frontend
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Corrected
-});
+// Deposit wallet addresses
+const walletAddresses = {
+    TRC20: "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f",
+    BEP20: "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01"
+};
 
+// Routes to serve pages
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
@@ -55,11 +56,10 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Wallet addresses
-const walletAddresses = {
-    TRC20: "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f",
-    BEP20: "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01"
-};
+// Important: Place this route at the BOTTOM to ensure it's the fallback
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // API: Get deposit address
 app.post('/get-deposit-address', (req, res) => {
@@ -87,7 +87,7 @@ app.post('/log-deposit', (req, res) => {
     );
 });
 
-// API: Get transaction history
+// API: Transaction history
 app.get('/get-transaction-history', (req, res) => {
     const userId = req.query.userId || 1;
     db.all(
@@ -100,7 +100,7 @@ app.get('/get-transaction-history', (req, res) => {
     );
 });
 
-// API: Get user summary
+// API: User summary
 app.get('/user-summary', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'User ID required' });
@@ -118,7 +118,7 @@ app.get('/user-summary', (req, res) => {
     );
 });
 
-// API: Request withdrawal
+// API: Withdraw
 app.post('/withdraw', (req, res) => {
     const { userId, amount, wallet_address, password } = req.body;
     if (!userId || !amount || !wallet_address || !password) {
@@ -136,56 +136,56 @@ app.post('/withdraw', (req, res) => {
     );
 });
 
-// API: Get user pending withdrawals
+// API: Get pending withdrawals
 app.get('/get-pending-withdrawals', (req, res) => {
     const userId = req.query.userId;
-    db.all(`SELECT * FROM withdrawals WHERE user_id = ? ORDER BY date DESC`, [userId], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ withdrawals: rows });
-    });
+    db.all(
+        `SELECT * FROM withdrawals WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ withdrawals: rows });
+        }
+    );
 });
 
-// === ADMIN PANEL APIs ===
+// ADMIN APIs
 app.get('/admin/withdrawals', (req, res) => {
     db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ withdrawals: rows });
     });
 });
-
 app.post('/admin/approve-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
     db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function (err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Withdrawal approved successfully.' });
+        res.json({ message: 'Withdrawal approved.' });
     });
 });
-
 app.post('/admin/reject-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
     db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function (err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Withdrawal rejected successfully.' });
+        res.json({ message: 'Withdrawal rejected.' });
     });
 });
-
 app.post('/admin/approve-deposit', (req, res) => {
     const { transactionId } = req.body;
     db.run("UPDATE transactions SET status = 'approved' WHERE id = ?", [transactionId], function (err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Deposit approved successfully.' });
+        res.json({ message: 'Deposit approved.' });
     });
 });
-
 app.post('/admin/reject-deposit', (req, res) => {
     const { transactionId } = req.body;
     db.run("UPDATE transactions SET status = 'rejected' WHERE id = ?", [transactionId], function (err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Deposit rejected successfully.' });
+        res.json({ message: 'Deposit rejected.' });
     });
 });
 
-// Start server
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
