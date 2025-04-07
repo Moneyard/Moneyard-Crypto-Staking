@@ -29,6 +29,20 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
   `, (err) => {
     if (err) console.error('Error creating users table:', err);
   });
+
+  // Create deposits table if it doesn't exist
+  db.run(`
+    CREATE TABLE IF NOT EXISTS deposits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      amount REAL,
+      network TEXT,
+      txId TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `, (err) => {
+    if (err) console.error('Error creating deposits table:', err);
+  });
 });
 
 // API: User Sign-Up
@@ -87,6 +101,38 @@ app.get('/user-info', (req, res) => {
     db.get(sql, [decoded.id], (err, user) => {
       if (err || !user) return res.status(404).json({ error: 'User not found' });
       res.json({ username: user.username });
+    });
+  });
+});
+
+// API: Get user summary (username, totalDeposit, balance)
+app.get('/user-summary', (req, res) => {
+  const userId = parseInt(req.query.userId);
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing or invalid userId' });
+  }
+
+  const sqlUser = `SELECT username FROM users WHERE id = ?`;
+  const sqlDeposit = `SELECT 
+                        IFNULL(SUM(amount), 0) as totalDeposit, 
+                        IFNULL(SUM(amount * 1.08), 0) as balance 
+                      FROM deposits WHERE user_id = ?`;
+
+  db.get(sqlUser, [userId], (err, userRow) => {
+    if (err || !userRow) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    db.get(sqlDeposit, [userId], (err, depositRow) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to fetch deposit summary' });
+      }
+
+      res.json({
+        username: userRow.username,
+        totalDeposit: depositRow.totalDeposit,
+        balance: depositRow.balance
+      });
     });
   });
 });
