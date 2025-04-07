@@ -158,6 +158,7 @@ function loadUserSummary() {
     .then(res => res.json())
     .then(data => {
       if (data.totalDeposit !== undefined && data.balance !== undefined) {
+        // Display the username and balance in the dashboard
         document.getElementById('summary-username').innerText = localStorage.getItem('username');
         document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
         document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
