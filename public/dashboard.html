@@ -8,73 +8,51 @@
 </head>
 <body>
 
-  <!-- User Summary -->
-  <section id="user-summary" class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-  </section>
+  <div id="logo-section">
+    <img src="M.png" alt="Moneyard Logo" id="logo">
+  </div>
 
-  <!-- Deposit Section -->
-  <section id="deposit-section" class="form">
-    <h3>Deposit Funds</h3>
-    <label for="network">Choose Network:</label>
-    <select id="network" onchange="getDepositAddress()">
-      <option value="">-- Select Network --</option>
-      <option value="Tron">TRC20 (Tron)</option>
-      <option value="BNB">BEP20 (BNB Smart Chain)</option>
-    </select>
+  <div id="user-summary">
+    <h3>Welcome, <span id="summary-username">User</span></h3>
+    <p>Total Deposit: <span id="summary-total">0 USDT</span></p>
+    <p>Available Balance: <span id="summary-balance">0 USDT</span></p>
+  </div>
 
-    <button onclick="getDepositAddress()">Get Deposit Address</button>
-    <p id="deposit-address" style="margin-top: 10px;"></p>
-    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
-
-    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <button onclick="logDeposit()">Submit Deposit</button>
-  </section>
-
-  <!-- Withdraw Section -->
-  <section id="withdraw-section" class="form">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
-    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-    <button onclick="submitWithdrawal()">Request Withdrawal</button>
-    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
-      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
-    </p>
-  </section>
-
-  <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings"></p>
-  </section>
-
-  <!-- Transaction History -->
-  <section id="transaction-history-section" class="form">
-    <h3>Transaction History</h3>
-    <table id="transaction-history-table">
+  <div id="transaction-history">
+    <h4>Transaction History</h4>
+    <table>
       <thead>
         <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Network</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
           <th>Date</th>
+          <th>Amount</th>
+          <th>Status</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Transaction rows injected here -->
+      <tbody id="transaction-table-body">
+        <!-- Transaction rows will be inserted here -->
       </tbody>
     </table>
-  </section>
+  </div>
 
-  <script src="script.js"></script>
+  <div id="withdrawal-section">
+    <h4>Submit Withdrawal</h4>
+    <input type="number" id="withdraw-amount" placeholder="Amount to Withdraw" />
+    <input type="text" id="withdraw-address" placeholder="Withdrawal Address" />
+    <input type="password" id="withdraw-password" placeholder="Your Password" />
+    <button onclick="submitWithdrawal()">Submit Withdrawal</button>
+  </div>
+
+  <div id="deposit-section">
+    <h4>Deposit Funds</h4>
+    <select id="network" onchange="getDepositAddress()">
+      <option value="TRC20">TRC20</option>
+      <option value="BEP20">BEP20</option>
+    </select>
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p>Deposit Address: <span id="deposit-address"></span></p>
+    <button id="copy-button" style="display: none;" onclick="copyToClipboard()">Copy Address</button>
+  </div>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
