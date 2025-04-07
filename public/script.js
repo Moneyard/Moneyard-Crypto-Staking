@@ -89,7 +89,7 @@ function copyToClipboard() {
   }
 }
 
-// Log deposit
+// Log deposit (without requiring TxID input)
 function logDeposit() {
   const userId = localStorage.getItem('userId') || 1;
   const amount = parseFloat(document.getElementById('deposit-amount').value);
@@ -103,9 +103,6 @@ function logDeposit() {
 
   // Automatically fetch the TxID
   fetchTransactionId().then(txId => {
-    // Display the TxID (Optional: show a tooltip or explanation for the user)
-    document.getElementById('txId').value = txId;
-
     // Log deposit with the fetched TxID
     fetch('/log-deposit', {
       method: 'POST',
