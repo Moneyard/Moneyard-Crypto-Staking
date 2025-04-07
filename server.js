@@ -1,153 +1,183 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const speakeasy = require('speakeasy');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Toggle between signup and login forms
+function toggleForms() {
+  const signupForm = document.getElementById('signup-form');
+  const loginForm = document.getElementById('login-form');
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static('Public'));
+  signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
+  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+}
 
-// Database setup
-const db = new sqlite3.Database('./moneyard.db');
+// Signup handler
+function signup() {
+  const username = document.getElementById('signup-username').value;
+  const password = document.getElementById('signup-password').value;
 
-// Create tables if they don't exist
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT
-  )`);
+  if (username && password) {
+    localStorage.setItem('username', username);
+    localStorage.setItem('password', password);
+    alert("Signup successful! Please login.");
+    toggleForms();
+  } else {
+    alert("Please fill in all required fields.");
+  }
+}
 
-  db.run(`CREATE TABLE IF NOT EXISTS deposits (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId INTEGER,
-    amount REAL,
-    network TEXT,
-    txId TEXT,
-    date TEXT
-  )`);
+// Login handler
+function login() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
 
-  db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId INTEGER,
-    amount REAL,
-    address TEXT,
-    status TEXT DEFAULT 'Pending',
-    request_date TEXT
-  )`);
-});
+  const storedUser = localStorage.getItem('username');
+  const storedPass = localStorage.getItem('password');
 
-// Signup
-app.post('/signup', (req, res) => {
-  const { username, password } = req.body;
-  const hashed = bcrypt.hashSync(password, 10);
+  if (username === storedUser && password === storedPass) {
+    localStorage.setItem('userId', 1); // Static userId for now
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid credentials. Please try again.");
+  }
+}
 
-  db.run(`INSERT INTO users (username, password) VALUES (?, ?)`, [username, hashed], function (err) {
-    if (err) return res.status(400).json({ error: 'Username taken.' });
-    res.json({ message: 'Signup successful', userId: this.lastID });
+// Check if the user is logged in (i.e., userId exists in localStorage)
+function isUserLoggedIn() {
+  const userId = localStorage.getItem('userId');
+  return userId !== null;
+}
+
+// Fetch deposit address based on selected network
+function getDepositAddress() {
+  const network = document.getElementById('network').value;
+  let depositAddress = '';
+  let networkLabel = '';
+
+  // Match deposit address based on selected network
+  if (network === 'Tron') {
+    depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
+    networkLabel = 'Tron Network (TRC20)';
+  } else if (network === 'BNB') {
+    depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
+    networkLabel = 'BNB Smart Chain (BEP20)';
+  } else {
+    depositAddress = '';  // No address if no valid network is selected
+  }
+
+  // Display the selected network and deposit address if it's found
+  if (depositAddress) {
+    document.getElementById('deposit-address').innerText = `Network: ${networkLabel}\nDeposit Address: ${depositAddress}`;
+    document.getElementById('copy-button').style.display = 'inline-block'; // Enable the "Copy" button
+    document.getElementById('deposit-address').setAttribute('data-copy-text', depositAddress); // Save the address for copying
+  } else {
+    document.getElementById('deposit-address').innerText = '';  // Clear address if network is invalid
+    alert("Please select a valid network.");
+    document.getElementById('copy-button').style.display = 'none';  // Hide the copy button
+  }
+}
+
+// Copy to clipboard function
+function copyToClipboard() {
+  const depositAddress = document.getElementById('deposit-address').getAttribute('data-copy-text');
+  
+  if (depositAddress) {
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = depositAddress;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+
+    alert("Deposit address copied to clipboard!");
+  }
+}
+
+// Log deposit (without requiring TxID input)
+function logDeposit() {
+  const userId = localStorage.getItem('userId') || 1;
+  const amount = parseFloat(document.getElementById('deposit-amount').value);
+  const network = document.getElementById('network').value;
+
+  // Validate deposit amount
+  if (!amount || amount < 15 || amount > 1000) {
+    alert("Enter a valid amount between 15 and 1000 USDT.");
+    return;
+  }
+
+  // Automatically fetch the TxID
+  fetchTransactionId().then(txId => {
+    // Log deposit with the fetched TxID
+    fetch('/log-deposit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, amount, network, txId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || data.error);
+    });
+  }).catch(err => {
+    alert('Error fetching TxID: ' + err.message);
   });
-});
+}
 
-// Login
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-
-  db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, user) => {
-    if (err || !user) return res.status(401).json({ error: 'Invalid credentials' });
-    const valid = bcrypt.compareSync(password, user.password);
-    if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
-
-    const token = jwt.sign({ userId: user.id }, 'secret');
-    res.json({ message: 'Login successful', token, userId: user.id });
+// Simulate fetching TxID (Replace with a real API call to fetch TxID)
+function fetchTransactionId() {
+  return new Promise((resolve, reject) => {
+    // Simulate async call to get TxID (in a real-world scenario, this would be a call to a blockchain API)
+    setTimeout(() => {
+      const txId = '0x123456789abcdef'; // Example TxID
+      resolve(txId);
+    }, 2000); // Simulate delay
   });
-});
+}
 
-// Log deposit
-app.post('/log-deposit', (req, res) => {
-  const { userId, amount, network, txId } = req.body;
-  const date = new Date().toISOString();
+// Calculate earnings (8% daily)
+function calculateEarnings() {
+  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
 
-  db.run(`INSERT INTO deposits (userId, amount, network, txId, date) VALUES (?, ?, ?, ?, ?)`,
-    [userId, amount, network, txId, date],
-    function (err) {
-      if (err) return res.status(500).json({ error: 'Failed to log deposit' });
-      res.json({ message: 'Deposit logged successfully' });
-    }
-  );
-});
+  if (!depositAmount || depositAmount < 15 || depositAmount > 1000) {
+    alert("Please enter a valid deposit amount between 15 and 1000 USDT.");
+    return;
+  }
 
-// Get user summary
-app.get('/user-summary', (req, res) => {
-  const userId = req.query.userId;
+  const dailyEarnings = depositAmount * 0.08; // 8% daily earnings
+  const earningsMessage = `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
 
-  db.get(`SELECT SUM(amount) as totalDeposit FROM deposits WHERE userId = ?`, [userId], (err, row) => {
-    if (err) return res.status(500).json({ error: 'Error fetching summary' });
+  document.getElementById('calculated-earnings').innerText = earningsMessage;
+}
 
-    const total = row.totalDeposit || 0;
-    const balance = total + total * 0.08; // Sample logic for daily earnings
+// Fetch user summary (username, total deposit, balance)
+function loadUserSummary() {
+  const userId = localStorage.getItem('userId');
+  
+  // If userId is not found, do not load the summary
+  if (!userId) {
+    console.log('User is not logged in, skipping summary load');
+    return;
+  }
 
-    res.json({ totalDeposit: total, balance });
-  });
-});
-
-// Log withdrawal
-app.post('/log-withdrawal', (req, res) => {
-  const { userId, amount, address, password } = req.body;
-
-  db.get(`SELECT password FROM users WHERE id = ?`, [userId], (err, user) => {
-    if (err || !user || !bcrypt.compareSync(password, user.password)) {
-      return res.status(401).json({ error: 'Password incorrect' });
-    }
-
-    const date = new Date().toISOString();
-
-    db.run(`INSERT INTO withdrawals (userId, amount, address, request_date) VALUES (?, ?, ?, ?)`,
-      [userId, amount, address, date],
-      function (err) {
-        if (err) return res.status(500).json({ error: 'Withdrawal failed' });
-        res.json({ message: 'Withdrawal request submitted' });
+  fetch(`/user-summary?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.totalDeposit !== undefined && data.balance !== undefined) {
+        // Display the username and balance in the dashboard
+        document.getElementById('summary-username').innerText = localStorage.getItem('username');
+        document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
+        document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
+      } else {
+        alert("Failed to load user summary.");
       }
-    );
-  });
-});
+    })
+    .catch(err => {
+      console.error("Error loading user summary:", err);
+      alert("Failed to load user summary.");
+    });
+}
 
-// Get withdrawal history
-app.get('/get-withdrawal-history', (req, res) => {
-  const userId = req.query.userId;
-
-  db.all(`SELECT * FROM withdrawals WHERE userId = ? ORDER BY id DESC`, [userId], (err, rows) => {
-    if (err) return res.status(500).json({ error: 'Error loading history' });
-    res.json(rows);
-  });
-});
-
-// Admin: Approve withdrawal
-app.post('/approve-withdrawal', (req, res) => {
-  const { id } = req.body;
-
-  db.run(`UPDATE withdrawals SET status = 'Approved' WHERE id = ?`, [id], function (err) {
-    if (err) return res.status(500).json({ error: 'Failed to approve' });
-    res.json({ message: 'Withdrawal approved' });
-  });
-});
-
-// Admin: Reject withdrawal
-app.post('/reject-withdrawal', (req, res) => {
-  const { id } = req.body;
-
-  db.run(`UPDATE withdrawals SET status = 'Rejected' WHERE id = ?`, [id], function (err) {
-    if (err) return res.status(500).json({ error: 'Failed to reject' });
-    res.json({ message: 'Withdrawal rejected' });
-  });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Moneyard server running on port ${PORT}`);
+// Call loadUserSummary only if user is logged in
+document.addEventListener("DOMContentLoaded", function () {
+  // Only attempt to load the user summary if the user is logged in
+  if (isUserLoggedIn()) {
+    loadUserSummary();
+  } else {
+    console.log('User is not logged in. Skipping user summary load.');
+  }
 });
