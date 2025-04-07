@@ -66,6 +66,7 @@ async function login() {
 
     const result = await response.json();
     if (result.success) {
+      window.localStorage.setItem('authToken', result.token); // Store JWT token in localStorage
       window.location.href = '/dashboard.html'; // Redirect to dashboard
     } else {
       alert('Invalid username or password.');
@@ -73,5 +74,33 @@ async function login() {
   } catch (error) {
     console.error('Error:', error);
     alert('An error occurred during login.');
+  }
+}
+
+// Function to load username on dashboard
+async function loadUsername() {
+  const token = window.localStorage.getItem('authToken');
+
+  if (!token) {
+    window.location.href = '/'; // Redirect to home if no token
+    return;
+  }
+
+  try {
+    const response = await fetch('/user-info', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    const result = await response.json();
+    if (result.username) {
+      document.getElementById('welcome-message').innerText = `Welcome, ${result.username}`;
+    } else {
+      alert('Failed to load user information');
+    }
+  } catch (error) {
+    console.error('Error loading username:', error);
   }
 }
