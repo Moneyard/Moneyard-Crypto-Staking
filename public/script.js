@@ -93,28 +93,43 @@ function copyToClipboard() {
 function logDeposit() {
   const userId = localStorage.getItem('userId') || 1;
   const amount = parseFloat(document.getElementById('deposit-amount').value);
-  const txId = document.getElementById('txId').value;
   const network = document.getElementById('network').value;
 
+  // Validate deposit amount
   if (!amount || amount < 15 || amount > 1000) {
     alert("Enter a valid amount between 15 and 1000 USDT.");
     return;
   }
 
-  if (!txId) {
-    alert("Please enter the transaction ID.");
-    return;
-  }
+  // Automatically fetch the TxID
+  fetchTransactionId().then(txId => {
+    // Display the TxID (Optional: show a tooltip or explanation for the user)
+    document.getElementById('txId').value = txId;
 
-  fetch('/log-deposit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, network, txId })
-  })
+    // Log deposit with the fetched TxID
+    fetch('/log-deposit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, amount, network, txId })
+    })
     .then(res => res.json())
     .then(data => {
       alert(data.message || data.error);
     });
+  }).catch(err => {
+    alert('Error fetching TxID: ' + err.message);
+  });
+}
+
+// Simulate fetching TxID (Replace with a real API call to fetch TxID)
+function fetchTransactionId() {
+  return new Promise((resolve, reject) => {
+    // Simulate async call to get TxID (in a real-world scenario, this would be a call to a blockchain API)
+    setTimeout(() => {
+      const txId = '0x123456789abcdef'; // Example TxID
+      resolve(txId);
+    }, 2000); // Simulate delay
+  });
 }
 
 // Calculate earnings (8% daily)
@@ -156,44 +171,6 @@ function loadUserSummary() {
     .catch(err => {
       console.error("Error loading user summary:", err);
       alert("Failed to load user summary.");
-    });
-}
-
-// Submit withdrawal request
-function submitWithdrawal() {
-  const userId = localStorage.getItem('userId') || 1;
-  const amount = parseFloat(document.getElementById('withdraw-amount').value);
-  const withdrawAddress = document.getElementById('withdraw-address').value;
-  const withdrawPassword = document.getElementById('withdraw-password').value;
-
-  if (!amount || amount <= 0) {
-    alert("Please enter a valid withdrawal amount.");
-    return;
-  }
-
-  if (!withdrawAddress) {
-    alert("Please enter your wallet address.");
-    return;
-  }
-
-  if (!withdrawPassword) {
-    alert("Please enter your withdrawal password.");
-    return;
-  }
-
-  // Perform API call to request withdrawal
-  fetch('/request-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, withdrawAddress, withdrawPassword })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
-    })
-    .catch(err => {
-      console.error("Error requesting withdrawal:", err);
-      alert("An error occurred while requesting withdrawal.");
     });
 }
 
