@@ -48,23 +48,24 @@ function isUserLoggedIn() {
 function getDepositAddress() {
   const network = document.getElementById('network').value;
   let depositAddress = '';
+  let networkLabel = '';
 
   // Match deposit address based on selected network
   if (network === 'Tron') {
     depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
+    networkLabel = 'Tron Network (TRC20)';
   } else if (network === 'BNB') {
     depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
+    networkLabel = 'BNB Smart Chain (BEP20)';
   } else {
     depositAddress = '';  // No address if no valid network is selected
   }
 
-  // Display the deposit address if it's found
+  // Display the selected network and deposit address if it's found
   if (depositAddress) {
-    document.getElementById('deposit-address').innerText = `Send USDT to: ${depositAddress}`;
-    // Enable the "Copy" button
-    document.getElementById('copy-button').style.display = 'inline-block';
-    // Save the address to be copied
-    document.getElementById('deposit-address').setAttribute('data-copy-text', depositAddress);
+    document.getElementById('deposit-address').innerText = `Network: ${networkLabel}\nDeposit Address: ${depositAddress}`;
+    document.getElementById('copy-button').style.display = 'inline-block'; // Enable the "Copy" button
+    document.getElementById('deposit-address').setAttribute('data-copy-text', depositAddress); // Save the address for copying
   } else {
     document.getElementById('deposit-address').innerText = '';  // Clear address if network is invalid
     alert("Please select a valid network.");
