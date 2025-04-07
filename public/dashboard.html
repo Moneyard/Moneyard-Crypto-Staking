@@ -76,5 +76,18 @@
   </section>
 
   <script src="script.js"></script>
+
+  <script>
+    // On DOMContentLoaded, call the function to load user summary if logged in
+    document.addEventListener("DOMContentLoaded", function () {
+      // Only attempt to load the user summary if the user is logged in
+      if (isUserLoggedIn()) {
+        loadUserSummary();
+      } else {
+        alert("Please log in to view your dashboard.");
+        window.location.href = "index.html"; // Redirect to the login page if not logged in
+      }
+    });
+  </script>
 </body>
 </html>
