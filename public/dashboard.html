@@ -5,6 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Simple CSS for mobile responsiveness */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+    }
+
+    .form {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form h3 {
+      color: #333;
+    }
+
+    .form input,
+    .form select,
+    .form button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    @media (max-width: 600px) {
+      .form {
+        margin: 0 10px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -14,6 +63,59 @@
     <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
     <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
     <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
+  </section>
+
+  <!-- Deposit Section -->
+  <section id="deposit-section" class="form">
+    <h3>Deposit Funds</h3>
+    <label for="network">Choose Network:</label>
+    <select id="network">
+      <option value="TRC20">TRC20 (Tron)</option>
+      <option value="BEP20">BEP20 (BNB Smart Chain)</option>
+    </select>
+    <p id="deposit-address">Deposit Address will appear here.</p>
+
+    <input type="number" id="deposit-amount" placeholder="Enter amount (Minimum: 10 USDT)" />
+    <input type="text" id="txId" placeholder="Enter transaction ID (Optional)" />
+    <button onclick="logDeposit()">Submit Deposit</button>
+  </section>
+
+  <!-- Withdraw Section -->
+  <section id="withdraw-section" class="form">
+    <h3>Withdraw Funds</h3>
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
+    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
+    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
+    <button onclick="submitWithdrawal()">Request Withdrawal</button>
+  </section>
+
+  <!-- Earnings Calculator -->
+  <section id="earnings-calculator-section" class="form">
+    <h3>Earnings Calculator</h3>
+    <p>Calculate your daily earnings based on your deposit.</p>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="calculated-earnings"></p>
+  </section>
+
+  <!-- Transaction History -->
+  <section id="transaction-history-section" class="form">
+    <h3>Transaction History</h3>
+    <table id="transaction-history-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Network</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows will be injected here -->
+      </tbody>
+    </table>
   </section>
 
   <script src="script.js"></script>
