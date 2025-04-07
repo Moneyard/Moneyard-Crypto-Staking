@@ -50,23 +50,41 @@ function getDepositAddress() {
   let depositAddress = '';
 
   // Match deposit address based on selected network
-  switch(network) {
-    case 'Tron':
-      depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
-      break;
-    case 'BNB':
-      depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
-      break;
-    default:
-      depositAddress = '';  // No address if no valid network is selected
-      break;
+  if (network === 'Tron') {
+    depositAddress = 'TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f';  // Tron (TRC20)
+  } else if (network === 'BNB') {
+    depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';  // BNB Smart Chain (BEP20)
+  } else {
+    depositAddress = '';  // No address if no valid network is selected
   }
 
   // Display the deposit address if it's found
   if (depositAddress) {
     document.getElementById('deposit-address').innerText = `Send USDT to: ${depositAddress}`;
+    // Enable the "Copy" button
+    document.getElementById('copy-button').style.display = 'inline-block';
+    // Save the address to be copied
+    document.getElementById('deposit-address').setAttribute('data-copy-text', depositAddress);
   } else {
+    document.getElementById('deposit-address').innerText = '';  // Clear address if network is invalid
     alert("Please select a valid network.");
+    document.getElementById('copy-button').style.display = 'none';  // Hide the copy button
+  }
+}
+
+// Copy to clipboard function
+function copyToClipboard() {
+  const depositAddress = document.getElementById('deposit-address').getAttribute('data-copy-text');
+  
+  if (depositAddress) {
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = depositAddress;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+
+    alert("Deposit address copied to clipboard!");
   }
 }
 
