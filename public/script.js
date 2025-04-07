@@ -11,12 +11,23 @@ function toggleForms() {
 function signup() {
   const username = document.getElementById('signup-username').value;
   const password = document.getElementById('signup-password').value;
+  const refCode = document.getElementById('signup-refcode').value;
 
   if (username && password) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    alert("Signup successful! Please login.");
-    toggleForms();
+    fetch('/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, refCode })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Signup successful! Please login.");
+          toggleForms();
+        } else {
+          alert(data.error || "Signup failed.");
+        }
+      });
   } else {
     alert("Please fill in all required fields.");
   }
@@ -27,21 +38,30 @@ function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
 
-  const storedUser = localStorage.getItem('username');
-  const storedPass = localStorage.getItem('password');
-
-  if (username === storedUser && password === storedPass) {
-    localStorage.setItem('userId', 1); // Static userId for now
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials. Please try again.");
+  if (!username || !password) {
+    alert("Please enter both username and password.");
+    return;
   }
+
+  fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.token) {
+        localStorage.setItem('token', data.token);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(data.error || "Login failed.");
+      }
+    });
 }
 
-// Check if the user is logged in (i.e., userId exists in localStorage)
+// Check if user is logged in
 function isUserLoggedIn() {
-  const userId = localStorage.getItem('userId');
-  return userId !== null;
+  return !!localStorage.getItem('token');
 }
 
 // Fetch deposit address based on selected network
@@ -56,8 +76,6 @@ function getDepositAddress() {
   } else if (network === 'BNB') {
     depositAddress = '0x2837db956aba84eb2670d00aeea5c0d8a9e20a01';
     networkLabel = 'BNB Smart Chain (BEP20)';
-  } else {
-    depositAddress = '';
   }
 
   if (depositAddress) {
@@ -71,10 +89,10 @@ function getDepositAddress() {
   }
 }
 
-// Copy to clipboard
+// Copy to clipboard function
 function copyToClipboard() {
   const depositAddress = document.getElementById('deposit-address').getAttribute('data-copy-text');
-  
+
   if (depositAddress) {
     const tempTextArea = document.createElement('textarea');
     tempTextArea.value = depositAddress;
@@ -82,15 +100,16 @@ function copyToClipboard() {
     tempTextArea.select();
     document.execCommand('copy');
     document.body.removeChild(tempTextArea);
+
     alert("Deposit address copied to clipboard!");
   }
 }
 
-// Log deposit (simulate TxID)
+// Log deposit without manual TxID
 function logDeposit() {
-  const userId = localStorage.getItem('userId') || 1;
   const amount = parseFloat(document.getElementById('deposit-amount').value);
   const network = document.getElementById('network').value;
+  const token = localStorage.getItem('token');
 
   if (!amount || amount < 15 || amount > 1000) {
     alert("Enter a valid amount between 15 and 1000 USDT.");
@@ -100,29 +119,32 @@ function logDeposit() {
   fetchTransactionId().then(txId => {
     fetch('/log-deposit', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, amount, network, txId })
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ amount, network, txId })
     })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
-    });
-  }).catch(err => {
-    alert('Error fetching TxID: ' + err.message);
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || data.error);
+      })
+      .catch(err => {
+        alert('Error logging deposit: ' + err.message);
+      });
   });
 }
 
-// Simulate fetching TxID
+// Simulate async TxID fetch (to be replaced with real API)
 function fetchTransactionId() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
-      const txId = '0x123456789abcdef';
-      resolve(txId);
+      resolve('0x123456789abcdef');
     }, 2000);
   });
 }
 
-// Calculate earnings
+// Calculate earnings (8% daily)
 function calculateEarnings() {
   const depositAmount = parseFloat(document.getElementById('deposit-input').value);
 
@@ -137,37 +159,32 @@ function calculateEarnings() {
   document.getElementById('calculated-earnings').innerText = earningsMessage;
 }
 
-// Load user summary
+// Load user info including username
 function loadUserSummary() {
-  const userId = localStorage.getItem('userId');
-  
-  if (!userId) {
-    console.log('User is not logged in, skipping summary load');
-    return;
-  }
+  const token = localStorage.getItem('token');
+  if (!token) return;
 
-  fetch(`/user-summary?userId=${userId}`)
+  fetch('/user-info', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .then(res => res.json())
     .then(data => {
-      if (data.totalDeposit !== undefined && data.balance !== undefined) {
-        document.getElementById('summary-username').innerText = data.username || 'User';
-        document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
-        document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
+      if (data.username) {
+        document.getElementById('summary-username').innerText = data.username;
       } else {
-        alert("Failed to load user summary.");
+        document.getElementById('summary-username').innerText = 'Unknown';
       }
     })
-    .catch(err => {
-      console.error("Error loading user summary:", err);
-      alert("Failed to load user summary.");
+    .catch(() => {
+      document.getElementById('summary-username').innerText = 'Error loading username';
     });
 }
 
-// Run on page load
+// DOM Ready
 document.addEventListener("DOMContentLoaded", function () {
   if (isUserLoggedIn()) {
     loadUserSummary();
-  } else {
-    console.log('User is not logged in. Skipping user summary load.');
   }
 });
