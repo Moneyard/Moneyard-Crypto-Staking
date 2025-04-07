@@ -25,7 +25,7 @@
       <option value="Tron">TRC20 (Tron)</option>
       <option value="BNB">BEP20 (BNB Smart Chain)</option>
     </select>
-    
+
     <button onclick="getDepositAddress()">Get Deposit Address</button>
     <p id="deposit-address" style="margin-top: 10px;"></p>
     <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
@@ -74,34 +74,5 @@
   </section>
 
   <script src="script.js"></script>
-
-  <script>
-    // Ensure username is loaded from localStorage
-    document.getElementById('summary-username').innerText = localStorage.getItem('username') || 'Loading...';
-
-    // Function to load the user summary
-    function loadUserSummary() {
-      const userId = localStorage.getItem('userId') || 1;
-
-      fetch(`/user-summary?userId=${userId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.totalDeposit !== undefined && data.balance !== undefined) {
-            document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
-            document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
-          } else {
-            alert("Failed to load user summary.");
-          }
-        })
-        .catch(err => {
-          console.error("Error loading user summary:", err);
-          alert("Failed to load user summary.");
-        });
-    }
-
-    // Load user summary when the page loads
-    loadUserSummary();
-  </script>
-
 </body>
 </html>
