@@ -159,6 +159,44 @@ function loadUserSummary() {
     });
 }
 
+// Submit withdrawal request
+function submitWithdrawal() {
+  const userId = localStorage.getItem('userId') || 1;
+  const amount = parseFloat(document.getElementById('withdraw-amount').value);
+  const withdrawAddress = document.getElementById('withdraw-address').value;
+  const withdrawPassword = document.getElementById('withdraw-password').value;
+
+  if (!amount || amount <= 0) {
+    alert("Please enter a valid withdrawal amount.");
+    return;
+  }
+
+  if (!withdrawAddress) {
+    alert("Please enter your wallet address.");
+    return;
+  }
+
+  if (!withdrawPassword) {
+    alert("Please enter your withdrawal password.");
+    return;
+  }
+
+  // Perform API call to request withdrawal
+  fetch('/request-withdrawal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, amount, withdrawAddress, withdrawPassword })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || data.error);
+    })
+    .catch(err => {
+      console.error("Error requesting withdrawal:", err);
+      alert("An error occurred while requesting withdrawal.");
+    });
+}
+
 // Call loadUserSummary only if user is logged in
 document.addEventListener("DOMContentLoaded", function () {
   // Only attempt to load the user summary if the user is logged in
