@@ -1,54 +1,56 @@
-// Fetch and display user summary (username, total deposit, available balance)
-function loadUserSummary() {
-  const userId = 1;  // Replace with actual userId from authentication session or token
-
-  // Fetch user summary from API
-  fetch(`/user-summary?userId=${userId}`)
-    .then(response => response.json())
-    .then(data => {
-      // Update user summary fields with the fetched data
-      document.getElementById("summary-username").textContent = "Username"; // Replace with actual username
-      document.getElementById("summary-total").textContent = `${data.totalDeposit} USDT`;
-      document.getElementById("summary-balance").textContent = `${data.balance} USDT`;
-    })
-    .catch(error => {
-      console.error("Error fetching user summary:", error);
-    });
+// Toggle between Sign Up and Login Forms
+function toggleForms() {
+  const signupForm = document.getElementById('signup-form');
+  const loginForm = document.getElementById('login-form');
+  
+  if (signupForm.style.display === 'none') {
+    signupForm.style.display = 'block';
+    loginForm.style.display = 'none';
+  } else {
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
+  }
 }
 
-// Handle signup form submission
+// Sign-Up Function
 function signup() {
-  const username = document.getElementById("signup-username").value;
-  const password = document.getElementById("signup-password").value;
-  const refCode = document.getElementById("signup-refcode").value;
+  const username = document.getElementById('signup-username').value;
+  const password = document.getElementById('signup-password').value;
+  const refcode = document.getElementById('signup-refcode').value;
 
-  // Send signup data to the server
+  // Validate fields
+  if (!username || !password) {
+    alert('Username and password are required.');
+    return;
+  }
+
+  // Send sign-up request to the backend
   fetch('/signup', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password, refCode })
+    body: JSON.stringify({ username, password, refcode })
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert("Sign up successful! Please log in.");
-      toggleForms();
+      alert('Sign up successful!');
+      toggleForms(); // Switch to Login form
     } else {
-      alert("Signup failed. Please try again.");
+      alert('Sign up failed: ' + data.error);
     }
   })
   .catch(error => {
-    console.error("Signup error:", error);
-    alert("An error occurred during signup.");
+    console.error('Error during sign-up:', error);
+    alert('An error occurred during sign up');
   });
 }
 
-// Handle login form submission
+// Login Function
 function login() {
-  const username = document.getElementById("login-username").value;
-  const password = document.getElementById("login-password").value;
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
 
-  // Send login data to the server
+  // Send login request to the backend
   fetch('/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -57,109 +59,14 @@ function login() {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert("Login successful!");
-      loadUserSummary();
+      alert('Login successful!');
+      // Optionally redirect to the dashboard or home page
     } else {
-      alert("Login failed. Please check your credentials.");
+      alert('Login failed: ' + data.error);
     }
   })
   .catch(error => {
-    console.error("Login error:", error);
-    alert("An error occurred during login.");
+    console.error('Error during login:', error);
+    alert('An error occurred during login');
   });
 }
-
-// Toggle between Sign Up and Login forms
-function toggleForms() {
-  const signupForm = document.getElementById("signup-form");
-  const loginForm = document.getElementById("login-form");
-  signupForm.style.display = signupForm.style.display === "none" ? "block" : "none";
-  loginForm.style.display = loginForm.style.display === "none" ? "block" : "none";
-}
-
-// Copy deposit address to clipboard
-function copyToClipboard() {
-  const depositAddress = document.getElementById("deposit-address").textContent;
-  navigator.clipboard.writeText(depositAddress)
-    .then(() => {
-      alert("Deposit address copied to clipboard.");
-    })
-    .catch(err => {
-      console.error("Failed to copy text: ", err);
-    });
-}
-
-// Get deposit address based on selected network
-function getDepositAddress() {
-  const userId = 1;  // Replace with actual userId
-  const network = document.getElementById("network").value;
-
-  fetch('/get-deposit-address', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, network })
-  })
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById("deposit-address").textContent = data.address;
-    document.getElementById("copy-button").style.display = "inline";
-  })
-  .catch(error => {
-    console.error("Error fetching deposit address:", error);
-  });
-}
-
-// Handle deposit submission
-function logDeposit() {
-  const userId = 1;  // Replace with actual userId
-  const amount = document.getElementById("deposit-amount").value;
-
-  fetch('/log-deposit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert("Deposit logged successfully.");
-    } else {
-      alert("Failed to log deposit.");
-    }
-  })
-  .catch(error => {
-    console.error("Error logging deposit:", error);
-    alert("An error occurred during deposit.");
-  });
-}
-
-// Handle withdrawal request
-function submitWithdrawal() {
-  const userId = 1;  // Replace with actual userId
-  const amount = document.getElementById("withdraw-amount").value;
-  const address = document.getElementById("withdraw-address").value;
-  const password = document.getElementById("withdraw-password").value;
-
-  fetch('/log-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, address, password })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert("Withdrawal request submitted.");
-    } else {
-      alert("Failed to submit withdrawal request.");
-    }
-  })
-  .catch(error => {
-    console.error("Error submitting withdrawal request:", error);
-    alert("An error occurred during withdrawal.");
-  });
-}
-
-// Load user summary when the page is ready
-window.onload = function() {
-  loadUserSummary();
-};
