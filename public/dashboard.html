@@ -31,7 +31,6 @@
     <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
 
     <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <!-- Removed TxID input field -->
     <button onclick="logDeposit()">Submit Deposit</button>
   </section>
 
@@ -77,5 +76,18 @@
   </section>
 
   <script src="script.js"></script>
+
+  <script>
+    // On DOMContentLoaded, call the function to load user summary if logged in
+    document.addEventListener("DOMContentLoaded", function () {
+      // Only attempt to load the user summary if the user is logged in
+      if (isUserLoggedIn()) {
+        loadUserSummary();
+      } else {
+        alert("Please log in to view your dashboard.");
+        window.location.href = "index.html"; // Redirect to the login page if not logged in
+      }
+    });
+  </script>
 </body>
 </html>
