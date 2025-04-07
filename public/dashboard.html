@@ -5,55 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Simple CSS for mobile responsiveness */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f7f7f7;
-    }
-
-    .form {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .form h3 {
-      color: #333;
-    }
-
-    .form input,
-    .form select,
-    .form button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    @media (max-width: 600px) {
-      .form {
-        margin: 0 10px;
-      }
-    }
-  </style>
 </head>
 <body>
 
@@ -69,24 +20,30 @@
   <section id="deposit-section" class="form">
     <h3>Deposit Funds</h3>
     <label for="network">Choose Network:</label>
-    <select id="network">
-      <option value="TRC20">TRC20 (Tron)</option>
-      <option value="BEP20">BEP20 (BNB Smart Chain)</option>
+    <select id="network" onchange="getDepositAddress()">
+      <option value="">-- Select Network --</option>
+      <option value="Tron">TRC20 (Tron)</option>
+      <option value="BNB">BEP20 (BNB Smart Chain)</option>
     </select>
-    <p id="deposit-address">Deposit Address will appear here.</p>
 
-    <input type="number" id="deposit-amount" placeholder="Enter amount (Minimum: 10 USDT)" />
-    <input type="text" id="txId" placeholder="Enter transaction ID (Optional)" />
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p id="deposit-address" style="margin-top: 10px;"></p>
+    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
+
+    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
     <button onclick="logDeposit()">Submit Deposit</button>
   </section>
 
   <!-- Withdraw Section -->
   <section id="withdraw-section" class="form">
     <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
     <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
     <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
     <button onclick="submitWithdrawal()">Request Withdrawal</button>
+    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
+      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
+    </p>
   </section>
 
   <!-- Earnings Calculator -->
@@ -113,7 +70,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Dynamic rows will be injected here -->
+        <!-- Transaction rows injected here -->
       </tbody>
     </table>
   </section>
