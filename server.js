@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-
+const bcrypt = require('bcrypt');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -12,94 +12,89 @@ app.use(express.json());
 
 // SQLite database setup
 const db = new sqlite3.Database('./database.sqlite', (err) => {
-    if (err) return console.error('Failed to connect to DB:', err);
-    console.log('Connected to SQLite database.');
-
-    // Create the withdrawals table if it doesn't exist
-    db.run(`
-      CREATE TABLE IF NOT EXISTS withdrawals (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        amount REAL NOT NULL,
-        address TEXT NOT NULL,
-        status TEXT DEFAULT 'pending',
-        request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        approval_date TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-      );
-    `, (err) => {
-      if (err) {
-        console.error('Error creating withdrawals table:', err);
-      } else {
-        console.log('Withdrawals table is ready.');
-      }
-    });
+  if (err) return console.error('Failed to connect to DB:', err);
+  console.log('Connected to SQLite database.');
 });
 
-// API: Get user summary (total deposit, balance, and username)
-app.get('/user-summary', (req, res) => {
-  const userId = req.query.userId || 1; // Default to userId 1 for now
-  console.log('Fetching user summary for userId:', userId);  // Log the userId
+// Sign-Up API: Create a new user
+app.post('/signup', (req, res) => {
+  const { username, password, refcode } = req.body;
 
-  // Get the username and total deposit amount for the user
-  db.get(
-    `SELECT username FROM users WHERE id = ?`,
-    [userId],
-    (err, userResult) => {
-      if (err) {
-        console.error('Error fetching username:', err); // Log the error
-        return res.status(500).json({ error: err.message });
-      }
+  // Validate input
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required.' });
+  }
 
-      if (!userResult) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      const username = userResult.username; // Fetch the username
-
-      db.get(
-        `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = "deposit"`,
-        [userId],
-        (err, result) => {
-          if (err) {
-            console.error('Error fetching total deposit:', err); // Log the error
-            return res.status(500).json({ error: err.message });
-          }
-
-          const totalDeposit = result && result.totalDeposit ? result.totalDeposit : 0; // Safely handle null results
-          console.log('Total deposit:', totalDeposit);  // Log the total deposit
-
-          // Get the total withdrawn amount for the user (approved withdrawals)
-          db.get(
-            `SELECT SUM(amount) AS totalWithdrawn FROM withdrawals WHERE user_id = ? AND status = "approved"`,
-            [userId],
-            (err, withdrawalResult) => {
-              if (err) {
-                console.error('Error fetching total withdrawals:', err); // Log the error
-                return res.status(500).json({ error: err.message });
-              }
-
-              const totalWithdrawn = withdrawalResult && withdrawalResult.totalWithdrawn ? withdrawalResult.totalWithdrawn : 0; // Safely handle null results
-              console.log('Total withdrawn:', totalWithdrawn);  // Log the total withdrawn
-
-              const balance = totalDeposit - totalWithdrawn; // Calculate balance as totalDeposit - totalWithdrawn
-              console.log('User summary:', { totalDeposit, balance }); // Log the fetched summary
-
-              // Return user summary with username, total deposit, and balance
-              res.json({
-                username,
-                totalDeposit,
-                balance
-              });
-            }
-          );
-        }
-      );
+  // Check if username already exists
+  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
+    if (err) {
+      console.error('Error checking username:', err);
+      return res.status(500).json({ error: 'An error occurred during sign up' });
     }
-  );
+
+    if (row) {
+      return res.status(400).json({ error: 'Username already taken' });
+    }
+
+    // Hash the password
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return res.status(500).json({ error: 'Failed to hash password' });
+      }
+
+      // Insert user into the database
+      const sql = 'INSERT INTO users (username, password, refcode) VALUES (?, ?, ?)';
+      db.run(sql, [username, hashedPassword, refcode], function(err) {
+        if (err) {
+          console.error('Error inserting user:', err);
+          return res.status(500).json({ error: 'An error occurred during sign up' });
+        }
+
+        res.json({ success: true, message: 'Sign up successful' });
+      });
+    });
+  });
+});
+
+// Login API: Authenticate user
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Validate input
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required.' });
+  }
+
+  // Check if user exists
+  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
+    if (err) {
+      console.error('Error fetching user:', err);
+      return res.status(500).json({ error: 'An error occurred during login' });
+    }
+
+    if (!row) {
+      return res.status(400).json({ error: 'Invalid username or password' });
+    }
+
+    // Compare the password
+    bcrypt.compare(password, row.password, (err, isMatch) => {
+      if (err) {
+        console.error('Error comparing passwords:', err);
+        return res.status(500).json({ error: 'An error occurred during login' });
+      }
+
+      if (!isMatch) {
+        return res.status(400).json({ error: 'Invalid username or password' });
+      }
+
+      // Login successful
+      res.json({ success: true, message: 'Login successful' });
+    });
+  });
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
