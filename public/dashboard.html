@@ -25,23 +25,26 @@
       <option value="Tron">TRC20 (Tron)</option>
       <option value="BNB">BEP20 (BNB Smart Chain)</option>
     </select>
-    
+
     <button onclick="getDepositAddress()">Get Deposit Address</button>
     <p id="deposit-address" style="margin-top: 10px;"></p>
     <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
 
     <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
+    <!-- Removed TxID input field -->
     <button onclick="logDeposit()">Submit Deposit</button>
   </section>
 
   <!-- Withdraw Section -->
   <section id="withdraw-section" class="form">
     <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
     <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
     <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
     <button onclick="submitWithdrawal()">Request Withdrawal</button>
+    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
+      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
+    </p>
   </section>
 
   <!-- Earnings Calculator -->
@@ -74,34 +77,5 @@
   </section>
 
   <script src="script.js"></script>
-
-  <script>
-    // Ensure username is loaded from localStorage
-    document.getElementById('summary-username').innerText = localStorage.getItem('username') || 'Loading...';
-
-    // Function to load the user summary
-    function loadUserSummary() {
-      const userId = localStorage.getItem('userId') || 1;
-
-      fetch(`/user-summary?userId=${userId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.totalDeposit !== undefined && data.balance !== undefined) {
-            document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
-            document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
-          } else {
-            alert("Failed to load user summary.");
-          }
-        })
-        .catch(err => {
-          console.error("Error loading user summary:", err);
-          alert("Failed to load user summary.");
-        });
-    }
-
-    // Load user summary when the page loads
-    loadUserSummary();
-  </script>
-
 </body>
 </html>
