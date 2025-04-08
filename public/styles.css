@@ -29,6 +29,12 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  display: none; /* Hidden by default */
+}
+
+.form.active {
+  display: block;
+  animation: slideIn 0.3s ease;
 }
 
 /* Inputs */
@@ -39,11 +45,40 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
   color: #28a745; /* green for number/input text */
+  transition: all 0.3s ease;
 }
 
 input:focus {
   border-color: #28a745;
   outline: none;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+}
+
+/* Password Validation States */
+.password-match {
+  border-color: #28a745 !important;
+  background-color: #f8fff9;
+}
+
+.password-mismatch {
+  border-color: #dc3545 !important;
+  background-color: #fff8f8;
+}
+
+/* Error/Success Messages */
+.error-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin: 5px 0;
+  display: none;
+}
+
+.success-message {
+  color: #28a745;
+  font-size: 0.9rem;
+  margin: 10px 0;
+  text-align: center;
+  display: none;
 }
 
 /* Green styled values */
@@ -131,7 +166,44 @@ section {
   margin-bottom: 40px;
 }
 
-/* Responsive */
+/* Form Transitions */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Password Requirements */
+.password-requirements {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.password-requirements ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
+/* Form Links */
+.form a {
+  color: #28a745;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.form a:hover {
+  color: #218838;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
 @media screen and (max-width: 600px) {
   body {
     padding: 10px;
@@ -144,4 +216,33 @@ section {
   table, th, td {
     font-size: 14px;
   }
+
+  .form {
+    padding: 15px;
+    margin: 10px 0;
+  }
+
+  #forgot-password-form input {
+    font-size: 14px;
+  }
+}
+
+/* Enhanced Validation States */
+input:invalid {
+  border-color: #ffcccc;
+}
+
+input:valid {
+  border-color: #ccffcc;
+}
+
+/* Forgot Password Specific Styles */
+#forgot-password-form {
+  background: #fff;
+  border: 2px solid #28a745;
+}
+
+#forgot-password-form h2 {
+  color: #218838;
+  margin-bottom: 1.5rem;
 }
