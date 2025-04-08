@@ -1,8 +1,7 @@
-/* Original Styles - Preserved Exactly */
 body {
   font-family: Arial, sans-serif;
-  background-color: #FFA500;
-  color: #444;
+  background-color: #FFA500; /* warm orange background */
+  color: #444; /* soft grey text */
   margin: 0;
   padding: 20px;
   display: flex;
@@ -10,6 +9,7 @@ body {
   align-items: center;
 }
 
+/* Logo section */
 #logo-section {
   margin-bottom: 30px;
 }
@@ -20,24 +20,7 @@ body {
   cursor: pointer;
 }
 
-#welcome-text {
-  color: #006400;
-  font-size: 2.5rem;
-  text-align: center;
-  margin-top: 50px;
-}
-
-#tagline {
-  color: #006400;
-  font-size: 1.5rem;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.blue { color: #0000FF; }
-.green { color: #4CAF50; }
-
-/* Original Form Styles - Preserved */
+/* Form container (signup, login, forgot password) */
 .form {
   width: 100%;
   max-width: 300px;
@@ -48,6 +31,7 @@ body {
   margin-bottom: 20px;
 }
 
+/* Inputs */
 input {
   width: 100%;
   padding: 10px;
@@ -57,6 +41,12 @@ input {
   color: #28a745;
 }
 
+input:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
+/* Buttons */
 button {
   width: 100%;
   padding: 10px;
@@ -74,68 +64,105 @@ button:hover {
   background-color: #218838;
 }
 
-/* New Password Recovery Additions - Added Below */
-/* --------------------------------------------- */
-.form-toggle {
-  display: none;
+/* Select dropdown */
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  color: #444;
 }
 
-.form.active {
-  display: block;
-  animation: formSlide 0.3s ease;
+/* Links inside forms */
+.form a {
+  color: #006400;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-#forgot-password-form {
-  background: #f5f5f5;
+.form a:hover {
+  text-decoration: underline;
 }
 
-.password-feedback {
-  font-size: 0.9rem;
-  margin: 5px 0;
-  display: none;
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  color: #444;
+  margin-top: 15px;
 }
 
-.error-message {
-  color: #dc3545;
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
 }
 
-.success-message {
-  color: #28a745;
+th {
+  background-color: #f0f0f0;
+}
+
+/* Section headers */
+h2, h3 {
   text-align: center;
+  color: #222;
 }
 
-@keyframes formSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Dashboard summary box */
+#user-summary {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-left: 5px solid #28a745;
+  padding: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-.password-match {
-  border-color: #28a745 !important;
-  background-color: #f8fff9;
+#user-summary p {
+  margin: 8px 0;
+  font-size: 16px;
 }
 
-.password-mismatch {
-  border-color: #dc3545 !important;
-  background-color: #fff8f8;
+/* Green styled values */
+#deposit-address,
+#calculated-earnings {
+  color: #28a745;
+  font-weight: bold;
 }
 
+/* Section wrapper */
+section {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+/* Forgot password form specific tweaks (optional for clarity) */
+#forgot-password-form {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
 @media screen and (max-width: 600px) {
-  .form {
-    width: 90%;
-    padding: 15px;
+  body {
+    padding: 10px;
   }
-  
-  #welcome-text {
-    font-size: 2rem;
+
+  section, .form, #user-summary {
+    width: 100%;
   }
-  
-  #tagline {
-    font-size: 1.2rem;
+
+  table, th, td {
+    font-size: 14px;
   }
 }
