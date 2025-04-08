@@ -1,22 +1,21 @@
-// Show Signup/Login Forms
+// Unified Form Navigation
 function showForm(formId) {
   document.querySelectorAll('.form').forEach(form => form.style.display = 'none');
   document.getElementById(formId).style.display = 'block';
 }
 
-// SIGNUP - Send data to backend
+// Signup handler (Uses server API)
 async function signup() {
   const username = document.getElementById('signup-username').value;
   const email = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
   const refcode = document.getElementById('signup-refcode').value;
 
-  if (!username || !email || !password) {
-    alert("Please fill in all required fields.");
-    return;
-  }
-
   try {
+    if (!username || !email || !password) {
+      throw new Error('All required fields must be filled');
+    }
+
     const response = await fetch('/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -24,30 +23,26 @@ async function signup() {
     });
 
     const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Signup failed');
 
-    if (response.ok) {
-      alert("Registration successful! Please log in.");
-      showForm('login-form');
-    } else {
-      alert(data.error || "Signup failed.");
-    }
-  } catch (err) {
-    console.error("Signup Error:", err);
-    alert("Server error. Please try again later.");
+    alert('Registration successful! Please login.');
+    showForm('login-form');
+  } catch (error) {
+    alert(error.message);
+    console.error('Signup Error:', error);
   }
 }
 
-// LOGIN - Send data to backend
+// Login handler (Uses server API)
 async function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
 
-  if (!username || !password) {
-    alert("Please enter both username and password.");
-    return;
-  }
-
   try {
+    if (!username || !password) {
+      throw new Error('Please enter both username and password');
+    }
+
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -55,29 +50,25 @@ async function login() {
     });
 
     const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Login failed');
 
-    if (response.ok) {
-      localStorage.setItem('userId', data.userId);
-      localStorage.setItem('username', username);
-      window.location.href = 'dashboard.html';
-    } else {
-      alert(data.error || "Login failed.");
-    }
-  } catch (err) {
-    console.error("Login Error:", err);
-    alert("Server error. Please try again later.");
+    // Save userId and username
+    localStorage.setItem('userId', data.userId);
+    localStorage.setItem('username', username);
+    window.location.href = 'dashboard.html';
+  } catch (error) {
+    alert(error.message);
+    console.error('Login Error:', error);
   }
 }
 
-// RESET PASSWORD (Still using localStorage for now)
+// Password Reset (Local only)
 function resetPassword() {
   const email = document.getElementById('recovery-email').value;
   const newPassword = document.getElementById('new-password').value;
   const confirmPassword = document.getElementById('confirm-password').value;
 
   try {
-    document.querySelectorAll('.form-message').forEach(msg => msg.style.display = 'none');
-
     if (newPassword !== confirmPassword) {
       throw new Error('Passwords do not match');
     }
