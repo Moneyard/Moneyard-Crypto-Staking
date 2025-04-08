@@ -73,8 +73,8 @@
     <!-- Forgot Password Form -->
     <div id="forgot-password-form" class="form" style="display: none;">
       <h2>Password Recovery</h2>
-      <div class="form-message error-message" id="password-error"></div>
-      <div class="form-message success-message" id="password-success"></div>
+      <div class="form-message error-message" id="password-error" style="color: red;"></div>
+      <div class="form-message success-message" id="password-success" style="color: green;"></div>
       <input type="email" id="recovery-email" placeholder="Registered Email" required>
       <input type="password" id="new-password" placeholder="New Password" required>
       <input type="password" id="confirm-password" placeholder="Confirm Password" required>
@@ -131,12 +131,6 @@
     <p>If you need help, feel free to reach out to us through our <a href="support-link">Support Page</a>.</p>
   </section>
 
-  <!-- User Info Section -->
-  <div id="user-info" style="display:none;">
-    <h3>Welcome, <span id="user-username"></span></h3>
-    <p>Your account is loaded successfully.</p>
-  </div>
-
   <!-- JavaScript -->
   <script>
     function showForm(formId) {
@@ -144,6 +138,60 @@
       formIds.forEach(id => {
         document.getElementById(id).style.display = (id === formId) ? 'block' : 'none';
       });
+    }
+
+    function signup() {
+      const username = document.getElementById('signup-username').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const refcode = document.getElementById('signup-refcode').value;
+
+      if (!username || !email || !password) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, refcode })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Account created! You can now log in.");
+          showForm('login-form');
+        } else {
+          alert(data.error || "Signup failed.");
+        }
+      })
+      .catch(() => alert("Server error. Please try again later."));
+    }
+
+    function login() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      if (!username || !password) {
+        alert("Please enter both username and password.");
+        return;
+      }
+
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          window.location.href = '/dashboard.html';
+        } else {
+          alert(data.error || "Login failed.");
+        }
+      })
+      .catch(() => alert("Server error. Please try again later."));
     }
 
     function resetPassword() {
@@ -168,36 +216,27 @@
         return;
       }
 
-      // Simulate success (replace with actual server call)
-      successDiv.textContent = 'Password reset successful. You can now log in.';
-      successDiv.style.display = 'block';
-    }
-
-    function toggleForms() {
-      const signupForm = document.getElementById('signup-form');
-      const loginForm = document.getElementById('login-form');
-      const forgotForm = document.getElementById('forgot-password-form');
-
-      if (signupForm.style.display === 'none') {
-        signupForm.style.display = 'block';
-        loginForm.style.display = 'none';
-        forgotForm.style.display = 'none';
-      } else {
-        signupForm.style.display = 'none';
-        loginForm.style.display = 'block';
-        forgotForm.style.display = 'none';
-      }
-    }
-
-    function signup() {
-      // Your signup logic here
-      alert("Sign Up logic not implemented yet.");
-    }
-
-    function login() {
-      // Your login logic here
-      alert("Login logic not implemented yet.");
+      fetch('/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, newPassword })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          successDiv.textContent = 'Password reset successful. You can now log in.';
+          successDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = data.error || 'Error resetting password.';
+          errorDiv.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        errorDiv.textContent = 'Server error.';
+        errorDiv.style.display = 'block';
+      });
     }
   </script>
+
 </body>
 </html>
