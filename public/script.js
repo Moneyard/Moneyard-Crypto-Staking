@@ -180,4 +180,55 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.log('User is not logged in. Skipping user summary load.');
   }
-});
+}
+
+// Handle withdrawal request
+function submitWithdrawal() {
+  const userId = localStorage.getItem('userId');
+  const amount = parseFloat(document.getElementById('withdraw-amount').value);
+  const withdrawAddress = document.getElementById('withdraw-address').value;
+  const withdrawPassword = document.getElementById('withdraw-password').value;
+
+  // Validate withdrawal amount and address
+  if (!amount || amount < 10) {
+    alert("The minimum withdrawal is 10 USDT.");
+    return;
+  }
+
+  if (!withdrawAddress) {
+    alert("Please enter a valid withdrawal address.");
+    return;
+  }
+
+  if (!withdrawPassword) {
+    alert("Please enter your withdrawal password.");
+    return;
+  }
+
+  // Show a processing message while submitting the withdrawal
+  document.getElementById('withdraw-info').innerText = "Processing your withdrawal request...";
+
+  // Send withdrawal request to the backend
+  fetch('/submit-withdrawal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, amount, withdrawAddress, withdrawPassword })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'pending') {
+      document.getElementById('withdraw-info').innerText = "Withdrawal request is pending approval.";
+    } else if (data.status === 'approved') {
+      document.getElementById('withdraw-info').innerText = "Withdrawal approved! Your funds will be sent shortly.";
+    } else if (data.status === 'rejected') {
+      document.getElementById('withdraw-info').innerText = "Withdrawal rejected. Please check the details and try again.";
+    } else {
+      document.getElementById('withdraw-info').innerText = "An error occurred. Please try again.";
+    }
+  })
+  .catch(err => {
+    console.error('Error processing withdrawal:', err);
+    document.getElementById('withdraw-info').innerText = "Error processing withdrawal request.";
+  });
+}
+
