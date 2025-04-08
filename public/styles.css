@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #FFA500; /* warm orange background */
-  color: #444; /* soft grey text */
+  background-color: #FFA500; /* Maintained orange background */
+  color: #444;
   margin: 0;
   padding: 20px;
   display: flex;
@@ -9,7 +9,7 @@ body {
   align-items: center;
 }
 
-/* Logo section */
+/* Original Logo Section Styles */
 #logo-section {
   margin-bottom: 30px;
 }
@@ -20,7 +20,26 @@ body {
   cursor: pointer;
 }
 
-/* Form container */
+/* Maintained Welcome Text Colors */
+#welcome-text {
+  color: #006400; /* Original dark green */
+  font-size: 2.5rem;
+}
+
+.blue { /* Maintained blue class */
+  color: #0000FF;
+}
+
+.green { /* Maintained green class */
+  color: #4CAF50;
+}
+
+#tagline {
+  color: #006400; /* Original dark green */
+  font-size: 1.5rem;
+}
+
+/* Original Form Styles */
 .form {
   width: 100%;
   max-width: 300px;
@@ -29,7 +48,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-  display: none; /* Hidden by default */
+  display: none;
 }
 
 .form.active {
@@ -37,24 +56,26 @@ body {
   animation: slideIn 0.3s ease;
 }
 
-/* Inputs */
+/* Maintained Input Styles */
 input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-  color: #28a745; /* green for number/input text */
-  transition: all 0.3s ease;
+  color: #28a745;
 }
 
 input:focus {
   border-color: #28a745;
   outline: none;
-  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
 }
 
-/* Password Validation States */
+/* Added Forgot Password Styles */
+#forgot-password-form {
+  background: #f5f5f5;
+}
+
 .password-match {
   border-color: #28a745 !important;
   background-color: #f8fff9;
@@ -65,7 +86,6 @@ input:focus {
   background-color: #fff8f8;
 }
 
-/* Error/Success Messages */
 .error-message {
   color: #dc3545;
   font-size: 0.9rem;
@@ -81,14 +101,51 @@ input:focus {
   display: none;
 }
 
-/* Green styled values */
-#deposit-address,
-#calculated-earnings {
-  color: #28a745;
-  font-weight: bold;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Table styling */
+/* Original Button Styles */
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Original Section Styles */
+#staking-plans,
+#faq,
+#tutorials,
+#disclaimer,
+#security,
+#support {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* Original Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -107,78 +164,26 @@ th {
   background-color: #f0f0f0;
 }
 
-/* Buttons */
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #28a745;
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-/* Select dropdown */
-select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 4px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  color: #444;
-}
-
-/* Section headers */
-h2, h3 {
-  text-align: center;
-  color: #222;
-}
-
-/* Dashboard summary box */
-#user-summary {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-left: 5px solid #28a745;
-  padding: 15px;
-  margin-bottom: 20px;
-  width: 100%;
-  max-width: 600px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-#user-summary p {
-  margin: 8px 0;
-  font-size: 16px;
-}
-
-/* Section wrapper */
-section {
-  width: 100%;
-  max-width: 600px;
-  margin-bottom: 40px;
-}
-
-/* Form Transitions */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+/* Responsive Styles */
+@media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  #welcome-text {
+    font-size: 2rem;
+  }
+
+  #tagline {
+    font-size: 1.2rem;
+  }
+
+  .form {
+    width: 90%;
   }
 }
 
-/* Password Requirements */
+/* Added Password Requirements */
 .password-requirements {
   font-size: 0.8rem;
   color: #666;
@@ -190,59 +195,11 @@ section {
   padding-left: 15px;
 }
 
-/* Form Links */
 .form a {
   color: #28a745;
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s ease;
 }
 
 .form a:hover {
-  color: #218838;
   text-decoration: underline;
-}
-
-/* Responsive Design */
-@media screen and (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  section, .form, #user-summary {
-    width: 100%;
-  }
-
-  table, th, td {
-    font-size: 14px;
-  }
-
-  .form {
-    padding: 15px;
-    margin: 10px 0;
-  }
-
-  #forgot-password-form input {
-    font-size: 14px;
-  }
-}
-
-/* Enhanced Validation States */
-input:invalid {
-  border-color: #ffcccc;
-}
-
-input:valid {
-  border-color: #ccffcc;
-}
-
-/* Forgot Password Specific Styles */
-#forgot-password-form {
-  background: #fff;
-  border: 2px solid #28a745;
-}
-
-#forgot-password-form h2 {
-  color: #218838;
-  margin-bottom: 1.5rem;
 }
