@@ -1,7 +1,9 @@
+/* === EXISTING STYLES === */
+
 body {
   font-family: Arial, sans-serif;
   background-color: #FFA500; /* warm orange background */
-  color: #444; /* soft grey text */
+  color: #444;
   margin: 0;
   padding: 20px;
   display: flex;
@@ -38,7 +40,7 @@ input {
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-  color: #28a745; /* green for number/input text */
+  color: #28a745;
 }
 
 input:focus {
@@ -144,4 +146,70 @@ section {
   table, th, td {
     font-size: 14px;
   }
+}
+
+
+/* === ADDITIONAL STYLES FOR FORGOT PASSWORD === */
+
+/* Password Recovery Form */
+#forgot-password-form {
+  display: none; /* Hidden by default */
+  animation: formSlide 0.3s ease;
+}
+
+.form.active {
+  display: block;
+}
+
+/* Password Validation States */
+.password-match {
+  border-color: #28a745 !important;
+  background-color: #f8fff9;
+}
+
+.password-mismatch {
+  border-color: #dc3545 !important;
+  background-color: #fff8f8;
+}
+
+/* Error/Success Messages */
+.form-message {
+  font-size: 0.9rem;
+  padding: 8px;
+  border-radius: 4px;
+  margin: 10px 0;
+  display: none;
+}
+
+.error-message {
+  background-color: #ffecec;
+  color: #dc3545;
+}
+
+.success-message {
+  background-color: #edf9f0;
+  color: #28a745;
+}
+
+/* Animation */
+@keyframes formSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form Links */
+.form-toggle-link {
+  color: #218838;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form-toggle-link:hover {
+  color: #1e7e34;
 }
