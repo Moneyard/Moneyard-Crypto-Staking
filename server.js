@@ -18,7 +18,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     console.log('Connected to SQLite database.');
 });
 
-// Create transactions table if it doesn't exist
+// Create tables if not exist
 db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,8 +31,6 @@ db.run(`
         date TEXT
     )
 `);
-
-// Create withdrawals table if it doesn't exist
 db.run(`
     CREATE TABLE IF NOT EXISTS withdrawals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,8 +42,6 @@ db.run(`
         date TEXT
     )
 `);
-
-// Create users table if it doesn't exist
 db.run(`
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,36 +52,32 @@ db.run(`
     )
 `);
 
-// Static page routes
+// Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
-
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Deposit wallet addresses (example)
+// Deposit wallet addresses
 const walletAddresses = {
     TRC20: "TXYZ1234567890TRONADDRESS",
     BEP20: "0x1234567890BNBADDRESS"
 };
 
-// API: Get deposit address
+// Get deposit address
 app.post('/get-deposit-address', (req, res) => {
     const { userId, network } = req.body;
-
     if (!walletAddresses[network]) {
         return res.status(400).json({ error: 'Invalid network selected' });
     }
-
     res.json({ address: walletAddresses[network] });
 });
 
-// API: Log deposit
+// Log deposit
 app.post('/log-deposit', (req, res) => {
     const { userId, amount, network, txId } = req.body;
-
     if (amount < 15 || amount > 1000) {
         return res.status(400).json({ error: 'Amount must be between 15 and 1000 USDT' });
     }
@@ -101,47 +93,38 @@ app.post('/log-deposit', (req, res) => {
     );
 });
 
-// API: Get transaction history for the logged-in user
+// Get transaction history
 app.get('/get-transaction-history', (req, res) => {
     const userId = req.query.userId || 1;
-
     db.all(
         `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
         [userId],
         (err, rows) => {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
+            if (err) return res.status(500).json({ error: err.message });
             res.json({ transactions: rows });
         }
     );
 });
 
-// API: Get user summary (total deposits and balance)
+// User summary
 app.get('/user-summary', (req, res) => {
     const userId = req.query.userId;
-
-    if (!userId) {
-        return res.status(400).json({ error: 'User ID required' });
-    }
+    if (!userId) return res.status(400).json({ error: 'User ID required' });
 
     db.get(
         `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = 'deposit'`,
         [userId],
         (err, row) => {
-            if (err) {
-                return res.status(500).json({ error: 'Database error' });
-            }
+            if (err) return res.status(500).json({ error: 'Database error' });
 
             const totalDeposit = row?.totalDeposit || 0;
             const balance = totalDeposit * 0.9;
-
             res.json({ totalDeposit, balance });
         }
     );
 });
 
-// Admin API: Get pending withdrawals
+// Admin: View pending withdrawals
 app.get('/admin/withdrawals', (req, res) => {
     db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -149,106 +132,83 @@ app.get('/admin/withdrawals', (req, res) => {
     });
 });
 
-// Admin API: Approve withdrawal
+// Admin: Approve withdrawal
 app.post('/admin/approve-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
-
     db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: 'Withdrawal approved successfully.' });
     });
 });
 
-// Admin API: Reject withdrawal
+// Admin: Reject withdrawal
 app.post('/admin/reject-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
-
     db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: 'Withdrawal rejected successfully.' });
     });
 });
 
-// Admin Routes
+// Admin: Get all withdrawals
 app.get('/admin/get-withdrawals', (req, res) => {
     db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+        if (err) return res.status(500).json({ error: err.message });
         res.json({ withdrawals: rows });
     });
 });
 
+// Admin: Update withdrawal status
 app.post('/admin/update-withdrawal', (req, res) => {
     const { id, status } = req.body;
-
     if (!['approved', 'rejected'].includes(status)) {
         return res.status(400).json({ error: 'Invalid status' });
     }
 
-    db.run(
-        'UPDATE transactions SET status = ? WHERE id = ?',
-        [status, id],
-        function(err) {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-            res.json({ message: `Withdrawal ${status}` });
-        }
-    );
+    db.run('UPDATE transactions SET status = ? WHERE id = ?', [status, id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: `Withdrawal ${status}` });
+    });
 });
 
-// Sign Up Route
-app.post('/signup', (req, res) => {
+// User Signup (updated route)
+app.post('/api/signup', (req, res) => {
     const { username, email, password, refcode } = req.body;
-
     if (!username || !email || !password) {
-        return res.status(400).send("Please fill in all fields.");
+        return res.status(400).json({ error: "Please fill in all fields." });
     }
 
     bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) {
-            return res.status(500).send("Error hashing password.");
-        }
+        if (err) return res.status(500).json({ error: "Error hashing password." });
 
         const query = "INSERT INTO users (username, email, password, refcode) VALUES (?, ?, ?, ?)";
         db.run(query, [username, email, hashedPassword, refcode], function (err) {
-            if (err) {
-                return res.status(500).send("Error creating user.");
-            }
-            res.status(200).send("User created successfully.");
+            if (err) return res.status(500).json({ error: "Error creating user." });
+            res.status(200).json({ message: "User created successfully." });
         });
     });
 });
 
-// Login Route
-app.post('/login', (req, res) => {
+// User Login (updated route)
+app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
-
     if (!username || !password) {
-        return res.status(400).send("Please fill in all fields.");
+        return res.status(400).json({ error: "Please fill in all fields." });
     }
 
     const query = "SELECT * FROM users WHERE username = ?";
     db.get(query, [username], (err, user) => {
-        if (err) {
-            return res.status(500).send("Error checking user.");
-        }
-
-        if (!user) {
-            return res.status(400).send("User not found.");
-        }
+        if (err) return res.status(500).json({ error: "Error checking user." });
+        if (!user) return res.status(400).json({ error: "User not found." });
 
         bcrypt.compare(password, user.password, (err, result) => {
-            if (err) {
-                return res.status(500).send("Error comparing password.");
-            }
+            if (err) return res.status(500).json({ error: "Error comparing password." });
 
             if (result) {
                 const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-                return res.status(200).json({ message: "Login successful", token });
+                res.status(200).json({ message: "Login successful", token });
             } else {
-                return res.status(400).send("Incorrect password.");
+                res.status(400).json({ error: "Incorrect password." });
             }
         });
     });
