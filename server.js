@@ -1,7 +1,8 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -20,54 +21,71 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
 db.run(`
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE,
+        username TEXT UNIQUE,
         password TEXT,
         balance REAL DEFAULT 0
     )
 `);
 
-// Sign Up - Register a new user
+// Create transactions table
+db.run(`
+    CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        type TEXT,
+        amount REAL,
+        network TEXT,
+        tx_id TEXT,
+        status TEXT,
+        date TEXT
+    )
+`);
+
+// Register route (signup)
 app.post('/register', (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.json({ success: false, error: 'Email and password are required' });
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  db.run(
+    `INSERT INTO users (username, password) VALUES (?, ?)`,
+    [username, hashedPassword],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: 'Signup successful' });
     }
-
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) return res.json({ success: false, error: 'Error hashing password' });
-
-        db.run(`INSERT INTO users (email, password) VALUES (?, ?)`, [email, hashedPassword], function(err) {
-            if (err) return res.json({ success: false, error: 'Error registering user' });
-            res.json({ success: true });
-        });
-    });
+  );
 });
 
-// Login - Authenticate an existing user
+// Login route (signin)
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
+  const { username, password } = req.body;
 
-    if (!email || !password) {
-        return res.json({ success: false, error: 'Email and password are required' });
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+
+  db.get(
+    `SELECT * FROM users WHERE username = ?`,
+    [username],
+    (err, user) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!user) return res.status(400).json({ error: 'Invalid credentials' });
+
+      // Compare password with stored hash
+      bcrypt.compare(password, user.password, (err, result) => {
+        if (result) {
+          res.json({ message: 'Login successful', userId: user.id });
+        } else {
+          res.status(400).json({ error: 'Invalid credentials' });
+        }
+      });
     }
-
-    db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
-        if (err || !row) return res.json({ success: false, error: 'User not found' });
-
-        bcrypt.compare(password, row.password, (err, isMatch) => {
-            if (err || !isMatch) return res.json({ success: false, error: 'Invalid password' });
-            res.json({ success: true });
-        });
-    });
-});
-
-// Static page routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+  );
 });
 
 // Start server
