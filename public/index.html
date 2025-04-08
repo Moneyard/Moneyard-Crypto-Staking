@@ -6,6 +6,7 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* Existing styles */
     .highlighted { font-weight: bold; }
     .blue { color: #0000FF; }
     .green { color: #4CAF50; }
@@ -23,6 +24,7 @@
     }
     #intro { text-align: center; padding: 20px; }
 
+    /* Enhanced Auth Styles */
     #auth-forms {
       width: 100%;
       max-width: 400px;
@@ -76,6 +78,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Loaders & Toasts */
     .loader {
       display: none;
       position: fixed;
@@ -87,16 +90,15 @@
       color: white;
       border-radius: 5px;
     }
-
     .toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
       padding: 15px;
       border-radius: 5px;
+      display: none;
       z-index: 1000;
     }
-
     .toast.error { background: #ffebee; color: #b71c1c; }
     .toast.success { background: #e8f5e9; color: #1b5e20; }
     [data-auth] { display: none; }
@@ -104,28 +106,35 @@
 </head>
 <body>
 
+  <!-- Loading Indicators -->
   <div id="signup-loader" class="loader">Creating Account...</div>
   <div id="login-loader" class="loader">Logging In...</div>
   <div id="reset-password-loader" class="loader">Resetting Password...</div>
+
+  <!-- Toast Container -->
   <div id="toast-container"></div>
 
-  <div id="logo-section" style="text-align:center;">
-    <img src="M.png" alt="Moneyard Logo" id="logo" style="max-width: 100px;" />
+  <!-- Logo Section -->
+  <div id="logo-section">
+    <img src="M.png" alt="Moneyard Logo" id="logo">
   </div>
 
+  <!-- Introduction Section -->
   <section id="intro">
     <h1 id="welcome-text">
       WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
     </h1>
     <p id="tagline">Grow Your Crypto, Effortlessly!</p>
-    <p style="color: #006400; font-size: 1rem;">
+    <p style="color: #006400; font-size: 1rem; text-align: center;">
       We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
       whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
       beginners, or first-time crypto users.
     </p>
   </section>
 
+  <!-- Auth Forms Section -->
   <div id="auth-forms">
+    <!-- Sign Up Form -->
     <div id="signup-form" class="auth-form active" data-auth="anonymous">
       <h2>Create Account</h2>
       <input type="text" id="signup-username" placeholder="Username" required>
@@ -136,6 +145,7 @@
       <p class="form-toggle-link" onclick="showForm('login-form')">Already have an account? Login</p>
     </div>
 
+    <!-- Login Form -->
     <div id="login-form" class="auth-form" data-auth="anonymous">
       <h2>Welcome Back</h2>
       <input type="text" id="login-username" placeholder="Username" required>
@@ -145,16 +155,40 @@
       <p class="form-toggle-link" onclick="showForm('forgot-password-form')">Forgot Password?</p>
     </div>
 
+    <!-- Forgot Password Form -->
     <div id="forgot-password-form" class="auth-form" data-auth="anonymous">
       <h2>Password Recovery</h2>
-      <div id="password-error" style="color: red; display: none;"></div>
-      <div id="password-success" style="color: green; display: none;"></div>
+      <div class="form-message error-message" id="password-error"></div>
+      <div class="form-message success-message" id="password-success"></div>
       <input type="email" id="recovery-email" placeholder="Your Email" required>
       <button onclick="resetPassword()">Send Reset Link</button>
       <p class="form-toggle-link" onclick="showForm('login-form')">Back to Login</p>
     </div>
   </div>
 
+  <!-- Protected Content -->
+  <div data-auth="authenticated">
+    <!-- Existing content sections here -->
+  </div>
+
   <script src="script.js"></script>
+  <script>
+    // Initialize form visibility
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('token')) {
+        showForm('signup-form');
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    // Form visibility control
+    function showForm(formId) {
+      document.querySelectorAll('.auth-form').forEach(form => {
+        form.classList.remove('active');
+      });
+      document.getElementById(formId).classList.add('active');
+    }
+  </script>
 </body>
 </html>
