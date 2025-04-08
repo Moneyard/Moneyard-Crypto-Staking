@@ -1,109 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Existing head content remains the same -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .highlighted {
+      font-weight: bold;
+    }
+    .blue {
+      color: #0000FF;
+    }
+    .green {
+      color: #4CAF50;
+    }
+    #welcome-text {
+      color: #006400;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #tagline {
+      color: #006400;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #intro {
+      text-align: center;
+      padding: 20px;
+    }
+    .form {
+      text-align: center;
+      margin: 20px auto;
+      width: 300px;
+    }
+    .form input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+    .form button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form button:hover {
+      background-color: #45a049;
+    }
+    .form p {
+      font-size: 1rem;
+    }
+    .plan {
+      padding: 20px;
+      margin: 20px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Existing body content remains the same until forms section -->
+  <!-- Logo Section -->
+  <div id="logo-section">
+    <img src="M.png" alt="Moneyard Logo" id="logo">
+  </div>
 
-  <!-- Updated Forms Section -->
+  <!-- Introduction Section -->
+  <section id="intro">
+    <h1 id="welcome-text">
+      WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
+    </h1>
+    <p id="tagline">
+      Grow Your Crypto, Effortlessly!
+    </p>
+    <p style="color: #006400; font-size: 1rem; text-align: center;">
+      We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
+      whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
+      beginners, or first-time crypto users.
+    </p>
+  </section>
+
+  <!-- Forms Section -->
   <div id="forms">
-    <!-- Sign Up Form (with added email field) -->
+    <!-- Sign Up Form -->
     <div id="signup-form" class="form">
       <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" required />
-      <input type="email" id="signup-email" placeholder="Email" required />
-      <input type="password" id="signup-password" placeholder="Password" required />
+      <input type="text" id="signup-username" placeholder="Username" />
+      <input type="password" id="signup-password" placeholder="Password" />
       <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
       <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="showForm('login-form')">Login</a></p>
+      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
     </div>
 
     <!-- Login Form -->
     <div id="login-form" class="form" style="display: none;">
       <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" required />
-      <input type="password" id="login-password" placeholder="Password" required />
+      <input type="text" id="login-username" placeholder="Username" />
+      <input type="password" id="login-password" placeholder="Password" />
       <button onclick="login()">Login</button>
-      <p><a href="#" onclick="showForm('forgot-password-form')">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="showForm('signup-form')">Sign Up</a></p>
-    </div>
-
-    <!-- New Forgot Password Form -->
-    <div id="forgot-password-form" class="form" style="display: none;">
-      <h2>Password Recovery</h2>
-      <input type="email" id="forgot-email" placeholder="Enter your registered email" required />
-      <input type="password" id="new-password" placeholder="New Password" required />
-      <input type="password" id="confirm-password" placeholder="Confirm New Password" required />
-      <button onclick="resetPassword()">Reset Password</button>
-      <p><a href="#" onclick="showForm('login-form')">Back to Login</a></p>
+      <p><a href="#" onclick="resetPassword()">Forgot password?</a></p>
+      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
     </div>
   </div>
 
-  <!-- Rest of the existing content remains the same -->
+  <!-- Staking Plans Section -->
+  <section id="staking-plans">
+    <h2>Staking Plans</h2>
+    <div class="plan">
+      <h3>Basic Plan</h3>
+      <p>Lock for 30 days, earn 5% APY.</p>
+      <a href="#forms">Start Staking</a>
+    </div>
+    <div class="plan">
+      <h3>Advanced Plan</h3>
+      <p>Lock for 90 days, earn 10% APY.</p>
+      <a href="#forms">Start Staking</a>
+    </div>
+  </section>
 
-  <!-- Updated JavaScript -->
+  <!-- FAQ Section -->
+  <section id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <ul>
+      <li><strong>What is staking?</strong> Staking involves locking your cryptocurrency to support the blockchain and earn rewards.</li>
+      <li><strong>How do I deposit?</strong> You can deposit using TRC20/BEP20 tokens.</li>
+    </ul>
+  </section>
+
+  <!-- Tutorials Section -->
+  <section id="tutorials">
+    <h2>Crypto Staking Tutorials</h2>
+    <a href="tutorial-link" target="_blank">Step-by-Step Guide for Beginners</a>
+  </section>
+
+  <!-- Risk Disclaimer Section -->
+  <section id="disclaimer">
+    <h2>Risk Disclaimer</h2>
+    <p>Staking involves risks, including the potential loss of funds. Please stake responsibly.</p>
+  </section>
+
+  <!-- Security Section -->
+  <section id="security">
+    <h2>Platform Security</h2>
+    <p>We use two-factor authentication (2FA) to protect your account, and all funds are stored securely.</p>
+  </section>
+
+  <!-- Support Section -->
+  <section id="support">
+    <h2>Customer Support</h2>
+    <p>If you need help, feel free to reach out to us through our <a href="support-link">Support Page</a>.</p>
+  </section>
+
+  <!-- User Info Section -->
+  <div id="user-info" style="display:none;">
+    <h3>Welcome, <span id="user-username"></span></h3>
+    <p>Your account is loaded successfully.</p>
+  </div>
+
+  <!-- JavaScript -->
   <script>
-    // Form visibility control
-    function showForm(formId) {
-      document.getElementById('signup-form').style.display = 'none';
-      document.getElementById('login-form').style.display = 'none';
-      document.getElementById('forgot-password-form').style.display = 'none';
-      document.getElementById(formId).style.display = 'block';
+    function toggleForms() {
+      const signupForm = document.getElementById('signup-form');
+      const loginForm = document.getElementById('login-form');
+      signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
+      loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
     }
 
-    // Password reset functionality
-    function resetPassword() {
-      const email = document.getElementById('forgot-email').value;
-      const newPassword = document.getElementById('new-password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-
-      if (newPassword !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.email === email);
-
-      if (!user) {
-        alert('No account found with this email.');
-        return;
-      }
-
-      user.password = newPassword;
-      localStorage.setItem('users', JSON.stringify(users));
-      alert('Password updated successfully!');
-      showForm('login-form');
-    }
-
-    // Update signup function to include email
     function signup() {
-      const username = document.getElementById('signup-username').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const refCode = document.getElementById('signup-refcode').value;
-
-      let users = JSON.parse(localStorage.getItem('users')) || [];
-      if (users.some(u => u.username === username)) {
-        alert('Username already exists!');
-        return;
-      }
-      if (users.some(u => u.email === email)) {
-        alert('Email already registered!');
-        return;
-      }
-
-      users.push({ username, email, password, refCode });
-      localStorage.setItem('users', JSON.stringify(users));
-      alert('Registration successful! Please login.');
-      showForm('login-form');
+      // Add signup functionality here
+      alert('Signup clicked!');
     }
 
-    // Existing login function (keep your existing implementation)
     function login() {
-      // Your existing login implementation
+      // Add login functionality here
+      alert('Login clicked!');
+    }
+
+    function resetPassword() {
+      // Add password reset functionality here
+      alert('Password reset functionality not implemented yet!');
     }
   </script>
 </body>
