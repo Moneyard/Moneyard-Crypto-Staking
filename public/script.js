@@ -203,14 +203,22 @@ function copyToClipboard() {
 // ===== EARNINGS CALCULATOR =====
 function calculateEarnings() {
   const amount = parseFloat(document.getElementById('deposit-input').value);
-  if (!amount || amount < 15) {
-    showToast('Minimum deposit is 15 USDT', 'error');
+  const minDeposit = 15;
+  
+  if (isNaN(amount) || amount < minDeposit) {
+    showToast(`Minimum deposit is ${minDeposit} USDT`, 'error');
+    document.getElementById('calculated-earnings').innerHTML = '';  // Clear previous results
     return;
   }
   
-  const dailyEarnings = amount * 0.08;
+  // Assuming 0.08% daily return, adjust this if necessary
+  const dailyEarnings = amount * 0.08;  
+  const monthlyEarnings = dailyEarnings * 30;  // Calculate monthly earnings
+  
+  // Update earnings display with both daily and monthly estimates
   document.getElementById('calculated-earnings').innerHTML = `
-    Daily Earnings: <strong>${dailyEarnings.toFixed(2)} USDT</strong>
+    Daily Earnings: <strong>${dailyEarnings.toFixed(2)} USDT</strong><br>
+    Estimated Monthly Earnings: <strong>${monthlyEarnings.toFixed(2)} USDT</strong>
   `;
 }
 
