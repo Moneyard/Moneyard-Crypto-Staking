@@ -7,18 +7,26 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// SQLite database setup
+// SQLite DB setup
 const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) return console.error('Failed to connect to DB:', err);
     console.log('Connected to SQLite database.');
 });
 
-// Create tables if not exist
+// Tables
+db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        refcode TEXT
+    )
+`);
 db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,15 +50,6 @@ db.run(`
         date TEXT
     )
 `);
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL,
-        refcode TEXT
-    )
-`);
 
 // Routes
 app.get('/', (req, res) => {
@@ -58,6 +57,55 @@ app.get('/', (req, res) => {
 });
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Signup route
+app.post('/api/signup', (req, res) => {
+    const { username, email, password, refcode } = req.body;
+    if (!username || !email || !password) {
+        return res.status(400).json({ error: "Please fill in all fields." });
+    }
+
+    // Check for duplicate email
+    db.get("SELECT * FROM users WHERE email = ?", [email], (err, existingUser) => {
+        if (err) return res.status(500).json({ error: "Database error." });
+        if (existingUser) return res.status(400).json({ error: "Email already registered." });
+
+        bcrypt.hash(password, 10, (err, hashedPassword) => {
+            if (err) return res.status(500).json({ error: "Error hashing password." });
+
+            const query = "INSERT INTO users (username, email, password, refcode) VALUES (?, ?, ?, ?)";
+            db.run(query, [username, email, hashedPassword, refcode], function (err) {
+                if (err) return res.status(500).json({ error: "Error creating user." });
+                res.status(200).json({ message: "User created successfully." });
+            });
+        });
+    });
+});
+
+// Login route
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ error: "Please fill in all fields." });
+    }
+
+    const query = "SELECT * FROM users WHERE username = ?";
+    db.get(query, [username], (err, user) => {
+        if (err) return res.status(500).json({ error: "Error checking user." });
+        if (!user) return res.status(400).json({ error: "User not found." });
+
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (err) return res.status(500).json({ error: "Error comparing password." });
+
+            if (result) {
+                const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+                res.status(200).json({ message: "Login successful", token, userId: user.id });
+            } else {
+                res.status(400).json({ error: "Incorrect password." });
+            }
+        });
+    });
 });
 
 // Deposit wallet addresses
@@ -93,7 +141,7 @@ app.post('/log-deposit', (req, res) => {
     );
 });
 
-// Get transaction history
+// Transaction history
 app.get('/get-transaction-history', (req, res) => {
     const userId = req.query.userId || 1;
     db.all(
@@ -124,15 +172,13 @@ app.get('/user-summary', (req, res) => {
     );
 });
 
-// Admin: View pending withdrawals
+// Admin routes
 app.get('/admin/withdrawals', (req, res) => {
     db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ withdrawals: rows });
     });
 });
-
-// Admin: Approve withdrawal
 app.post('/admin/approve-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
     db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
@@ -140,8 +186,6 @@ app.post('/admin/approve-withdrawal', (req, res) => {
         res.json({ message: 'Withdrawal approved successfully.' });
     });
 });
-
-// Admin: Reject withdrawal
 app.post('/admin/reject-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
     db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
@@ -149,16 +193,12 @@ app.post('/admin/reject-withdrawal', (req, res) => {
         res.json({ message: 'Withdrawal rejected successfully.' });
     });
 });
-
-// Admin: Get all withdrawals
 app.get('/admin/get-withdrawals', (req, res) => {
     db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ withdrawals: rows });
     });
 });
-
-// Admin: Update withdrawal status
 app.post('/admin/update-withdrawal', (req, res) => {
     const { id, status } = req.body;
     if (!['approved', 'rejected'].includes(status)) {
@@ -168,49 +208,6 @@ app.post('/admin/update-withdrawal', (req, res) => {
     db.run('UPDATE transactions SET status = ? WHERE id = ?', [status, id], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: `Withdrawal ${status}` });
-    });
-});
-
-// User Signup (updated route)
-app.post('/api/signup', (req, res) => {
-    const { username, email, password, refcode } = req.body;
-    if (!username || !email || !password) {
-        return res.status(400).json({ error: "Please fill in all fields." });
-    }
-
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) return res.status(500).json({ error: "Error hashing password." });
-
-        const query = "INSERT INTO users (username, email, password, refcode) VALUES (?, ?, ?, ?)";
-        db.run(query, [username, email, hashedPassword, refcode], function (err) {
-            if (err) return res.status(500).json({ error: "Error creating user." });
-            res.status(200).json({ message: "User created successfully." });
-        });
-    });
-});
-
-// User Login (updated route)
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({ error: "Please fill in all fields." });
-    }
-
-    const query = "SELECT * FROM users WHERE username = ?";
-    db.get(query, [username], (err, user) => {
-        if (err) return res.status(500).json({ error: "Error checking user." });
-        if (!user) return res.status(400).json({ error: "User not found." });
-
-        bcrypt.compare(password, user.password, (err, result) => {
-            if (err) return res.status(500).json({ error: "Error comparing password." });
-
-            if (result) {
-                const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-                res.status(200).json({ message: "Login successful", token });
-            } else {
-                res.status(400).json({ error: "Incorrect password." });
-            }
-        });
     });
 });
 
