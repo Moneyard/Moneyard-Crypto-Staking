@@ -77,17 +77,15 @@ const authenticate = (req, res, next) => {
   });
 };
 
-// Enhanced Signup Endpoint with transaction safety
+// Signup Endpoint
 app.post('/api/signup', async (req, res) => {
   try {
     const { username, email, password, refcode } = req.body;
     
-    // Validation
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Check existing users first
     const existingUser = await new Promise((resolve, reject) => {
       db.get(
         'SELECT username, email FROM users WHERE username = ? OR email = ?',
@@ -144,7 +142,7 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// Enhanced Login Endpoint with rate limiting potential
+// Login Endpoint
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -191,9 +189,49 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Password Reset Endpoint
+app.post('/api/reset-password', async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({ error: 'Email and new password are required' });
+    }
+
+    const user = await new Promise((resolve, reject) => {
+      db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User with that email not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await new Promise((resolve, reject) => {
+      db.run(
+        'UPDATE users SET password = ? WHERE email = ?',
+        [hashedPassword, email],
+        function (err) {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
+    });
+
+    res.json({ message: 'Password reset successful. You can now log in with your new password.' });
+
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
-  // HTTPS enforcement
   app.use((req, res, next) => {
     if (req.header('x-forwarded-proto') !== 'https') {
       res.redirect(`https://${req.header('host')}${req.url}`);
@@ -202,7 +240,6 @@ if (process.env.NODE_ENV === 'production') {
     }
   });
 
-  // Static assets and SPA handling
   app.use(express.static(path.join(__dirname, 'public')));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
