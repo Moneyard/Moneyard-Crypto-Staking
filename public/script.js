@@ -9,46 +9,61 @@ function isUserLoggedIn() {
   return localStorage.getItem('userId') !== null;
 }
 
-// Signup handler
+// Signup handler (AJAX)
 function signup() {
   const username = document.getElementById('signup-username').value;
+  const email = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
-  const email = document.getElementById('signup-email')?.value || '';
+  const refcode = document.getElementById('signup-refcode').value;
 
-  if (username && password && email) {
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-
-    if (users.find(u => u.username === username)) {
-      alert("Username already exists. Please login.");
-      showForm('login-form');
-      return;
-    }
-
-    users.push({ username, password, email });
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('username', username); // optional for dashboard display
-    alert("Signup successful! Please login.");
-    showForm('login-form');
-  } else {
-    alert("Please fill in all required fields.");
+  if (!username || !email || !password) {
+    alert('Please fill in all required fields.');
+    return;
   }
+
+  fetch('/api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, email, password, refcode })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert(data.error);
+    } else {
+      alert('Signup successful! Please login.');
+      showForm('login-form');
+    }
+  })
+  .catch(err => alert('Signup error: ' + err.message));
 }
 
-// Login handler
+// Login handler (AJAX)
 function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
 
-  const users = JSON.parse(localStorage.getItem('users')) || [];
-  const user = users.find(u => u.username === username && u.password === password);
-
-  if (user) {
-    localStorage.setItem('userId', 1); // Static userId for now
-    localStorage.setItem('username', user.username);
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials. Please try again.");
+  if (!username || !password) {
+    alert('Please enter both username and password.');
+    return;
   }
+
+  fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert(data.error);
+    } else {
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('username', data.username);
+      window.location.href = 'dashboard.html';
+    }
+  })
+  .catch(err => alert('Login error: ' + err.message));
 }
 
 // Password Reset
