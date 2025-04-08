@@ -1,5 +1,5 @@
 // Client-side Configuration
-const API_BASE_URL = window.location.origin; // Auto-detect Heroku/production URL
+const API_BASE_URL = window.location.origin;
 let authToken = null;
 
 // Initialize authentication state
@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   authToken = localStorage.getItem('token');
   if (authToken) {
     checkTokenValidity();
-    updateAuthUI(true);
+    window.location.href = 'dashboard.html';
   } else {
-    updateAuthUI(false);
+    showForm('signup-form');
   }
 });
 
@@ -23,14 +23,15 @@ function updateAuthUI(isLoggedIn) {
   });
 }
 
-// Form Navigation
+// Show specific form
 function showForm(formId) {
-  document.querySelectorAll('.form').forEach(form => {
-    form.style.display = form.id === formId ? 'block' : 'none';
+  document.querySelectorAll('.auth-form').forEach(form => {
+    form.classList.remove('active');
   });
+  document.getElementById(formId).classList.add('active');
 }
 
-// Enhanced API Handler
+// API Handler
 async function apiRequest(endpoint, method, body) {
   try {
     const url = `${API_BASE_URL}/api${endpoint}`;
@@ -44,13 +45,9 @@ async function apiRequest(endpoint, method, body) {
     });
 
     const data = await response.json();
-    
     if (!response.ok) {
-      const error = new Error(data.error || 'Request failed');
-      error.status = response.status;
-      throw error;
+      throw new Error(data.error || 'Request failed');
     }
-
     return data;
   } catch (error) {
     console.error('API Error:', error);
@@ -58,12 +55,11 @@ async function apiRequest(endpoint, method, body) {
   }
 }
 
-// Signup Handler
+// Sign Up
 async function signup() {
   const loader = document.getElementById('signup-loader');
   try {
     loader.style.display = 'block';
-    
     const userData = {
       username: document.getElementById('signup-username').value.trim(),
       email: document.getElementById('signup-email').value.trim().toLowerCase(),
@@ -71,131 +67,98 @@ async function signup() {
       refcode: document.getElementById('signup-refcode').value.trim()
     };
 
-    // Client-side validation
     if (!userData.username || !userData.email || !userData.password) {
-      throw new Error('All fields marked with * are required');
+      throw new Error('All required fields must be filled');
     }
 
     const response = await apiRequest('/signup', 'POST', userData);
-    
     localStorage.setItem('token', response.token);
     localStorage.setItem('userId', response.user.id);
     localStorage.setItem('username', response.user.username);
     authToken = response.token;
-    
-    showToast('Registration successful! Redirecting...', 'success');
+
+    showToast('Signup successful! Redirecting...', 'success');
     setTimeout(() => window.location.href = 'dashboard.html', 1500);
-  } catch (error) {
-    showToast(`Signup failed: ${error.message}`, 'error');
+  } catch (err) {
+    showToast(`Signup failed: ${err.message}`, 'error');
   } finally {
     loader.style.display = 'none';
   }
 }
 
-// Login Handler
+// Login
 async function login() {
   const loader = document.getElementById('login-loader');
   try {
     loader.style.display = 'block';
-    
     const credentials = {
       username: document.getElementById('login-username').value.trim(),
       password: document.getElementById('login-password').value
     };
 
     const response = await apiRequest('/login', 'POST', credentials);
-    
     localStorage.setItem('token', response.token);
     localStorage.setItem('userId', response.user.id);
     localStorage.setItem('username', response.user.username);
     authToken = response.token;
-    
+
     showToast('Login successful! Redirecting...', 'success');
     setTimeout(() => window.location.href = 'dashboard.html', 1500);
-  } catch (error) {
-    const message = error.status === 401 ? 'Invalid username or password' : error.message;
+  } catch (err) {
+    const message = err.status === 401 ? 'Invalid credentials' : err.message;
     showToast(`Login failed: ${message}`, 'error');
   } finally {
     loader.style.display = 'none';
   }
 }
 
-// Password Reset Handler
+// Password Reset
 async function resetPassword() {
   const loader = document.getElementById('reset-password-loader');
   try {
     loader.style.display = 'block';
-    
-    const newPassword = document.getElementById('new-password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
+    const email = document.getElementById('recovery-email').value.trim();
+    if (!email) throw new Error('Email is required');
 
-    if (newPassword !== confirmPassword) {
-      throw new Error('Password confirmation does not match');
-    }
+    await apiRequest('/reset-password', 'POST', { email });
 
-    await apiRequest('/reset-password', 'POST', { newPassword });
-    
-    document.getElementById('password-success').textContent = 'Password updated successfully!';
-    document.getElementById('password-success').style.display = 'block';
-    setTimeout(() => showForm('login-form'), 1500);
-  } catch (error) {
-    document.getElementById('password-error').textContent = error.message;
-    document.getElementById('password-error').style.display = 'block';
+    const success = document.getElementById('password-success');
+    success.textContent = 'Reset link sent to your email.';
+    success.style.display = 'block';
+  } catch (err) {
+    const errorBox = document.getElementById('password-error');
+    errorBox.textContent = err.message;
+    errorBox.style.display = 'block';
   } finally {
     loader.style.display = 'none';
   }
 }
 
-// Token Management
+// Token Checker
 function checkTokenValidity() {
   try {
     const payload = JSON.parse(atob(authToken.split('.')[1]));
-    const isExpired = payload.exp * 1000 < Date.now();
-    
-    if (isExpired) {
+    if (payload.exp * 1000 < Date.now()) {
       localStorage.clear();
-      authToken = null;
       window.location.reload();
     }
-  } catch (error) {
+  } catch {
     localStorage.clear();
-    authToken = null;
     window.location.reload();
   }
 }
 
-// UI Helpers
+// Toast
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   toast.textContent = message;
   document.body.appendChild(toast);
-
-  setTimeout(() => toast.remove(), 5000);
+  setTimeout(() => toast.remove(), 4000);
 }
 
-// Auto-redirect Logic
-if (window.location.pathname.endsWith('index.html') && authToken) {
-  window.location.href = 'dashboard.html';
-}
-
-// Logout Functionality
+// Logout
 window.logout = () => {
   localStorage.clear();
-  authToken = null;
   window.location.href = 'index.html';
 };
-// Form Visibility Control
-function showForm(formId) {
-  document.querySelectorAll('.auth-form').forEach(form => {
-    form.classList.remove('active');
-  });
-  document.getElementById(formId).classList.add('active');
-}
-
-// Initial Form State
-document.addEventListener('DOMContentLoaded', () => {
-  if (!localStorage.getItem('token')) {
-    showForm('signup-form');
-  }
-});
