@@ -21,7 +21,7 @@ function signup() {
     return;
   }
 
-  fetch('/api/signup', {
+  fetch('/signup', {  // Corrected the endpoint to match your backend route
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, email, password, refcode })
@@ -48,7 +48,7 @@ function login() {
     return;
   }
 
-  fetch('/api/login', {
+  fetch('/login', {  // Corrected the endpoint to match your backend route
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
