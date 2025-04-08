@@ -154,7 +154,31 @@
     <p>Your account is loaded successfully.</p>
   </div>
 
+  <!-- Sign Up and Login Forms -->
+  <div id="forms">
+    <!-- Sign Up Form -->
+    <div id="signup-form" class="form">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-username" placeholder="Username" />
+      <input type="password" id="signup-password" placeholder="Password" />
+      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
+      <button onclick="signup()">Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form" class="form" style="display: none;">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p><a href="#">Forgot password?</a></p>
+      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script src="script.js" defer></script>
 </body>
 </html>
+
