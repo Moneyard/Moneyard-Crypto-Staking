@@ -6,15 +6,9 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .highlighted {
-      font-weight: bold;
-    }
-    .blue {
-      color: #0000FF;
-    }
-    .green {
-      color: #4CAF50;
-    }
+    .highlighted { font-weight: bold; }
+    .blue { color: #0000FF; }
+    .green { color: #4CAF50; }
     #welcome-text {
       color: #006400;
       font-size: 2.5rem;
@@ -45,9 +39,7 @@
     <h1 id="welcome-text">
       WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
     </h1>
-    <p id="tagline">
-      Grow Your Crypto, Effortlessly!
-    </p>
+    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
     <p style="color: #006400; font-size: 1rem; text-align: center;">
       We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
       whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
@@ -60,21 +52,34 @@
     <!-- Sign Up Form -->
     <div id="signup-form" class="form">
       <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" />
-      <input type="password" id="signup-password" placeholder="Password" />
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
+      <input type="text" id="signup-username" placeholder="Username" required>
+      <input type="email" id="signup-email" placeholder="Email" required>
+      <input type="password" id="signup-password" placeholder="Password" required>
+      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)">
       <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+      <p>Already have an account? <a class="form-toggle-link" onclick="showForm('login-form')">Login</a></p>
     </div>
 
     <!-- Login Form -->
     <div id="login-form" class="form" style="display: none;">
       <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
+      <input type="text" id="login-username" placeholder="Username" required>
+      <input type="password" id="login-password" placeholder="Password" required>
       <button onclick="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+      <p><a class="form-toggle-link" onclick="showForm('forgot-password-form')">Forgot password?</a></p>
+      <p>Don't have an account? <a class="form-toggle-link" onclick="showForm('signup-form')">Sign Up</a></p>
+    </div>
+
+    <!-- Forgot Password Form -->
+    <div id="forgot-password-form" class="form" style="display: none;">
+      <h2>Password Recovery</h2>
+      <div class="form-message error-message" id="password-error"></div>
+      <div class="form-message success-message" id="password-success"></div>
+      <input type="email" id="recovery-email" placeholder="Registered Email" required>
+      <input type="password" id="new-password" placeholder="New Password" required>
+      <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+      <button onclick="resetPassword()">Reset Password</button>
+      <p><a class="form-toggle-link" onclick="showForm('login-form')">Back to Login</a></p>
     </div>
   </div>
 
@@ -133,6 +138,66 @@
   </div>
 
   <!-- JavaScript -->
-  <script src="script.js" defer></script>
+  <script>
+    function showForm(formId) {
+      const formIds = ['signup-form', 'login-form', 'forgot-password-form'];
+      formIds.forEach(id => {
+        document.getElementById(id).style.display = (id === formId) ? 'block' : 'none';
+      });
+    }
+
+    function resetPassword() {
+      const email = document.getElementById('recovery-email').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const errorDiv = document.getElementById('password-error');
+      const successDiv = document.getElementById('password-success');
+
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      if (!email || !newPassword || !confirmPassword) {
+        errorDiv.textContent = 'Please fill in all fields.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      // Simulate success (replace with actual server call)
+      successDiv.textContent = 'Password reset successful. You can now log in.';
+      successDiv.style.display = 'block';
+    }
+
+    function toggleForms() {
+      const signupForm = document.getElementById('signup-form');
+      const loginForm = document.getElementById('login-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+
+      if (signupForm.style.display === 'none') {
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
+        forgotForm.style.display = 'none';
+      } else {
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        forgotForm.style.display = 'none';
+      }
+    }
+
+    function signup() {
+      // Your signup logic here
+      alert("Sign Up logic not implemented yet.");
+    }
+
+    function login() {
+      // Your login logic here
+      alert("Login logic not implemented yet.");
+    }
+  </script>
 </body>
 </html>
