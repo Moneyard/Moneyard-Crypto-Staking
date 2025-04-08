@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +42,17 @@ db.run(`
         password TEXT,
         status TEXT DEFAULT 'pending',
         date TEXT
+    )
+`);
+
+// Create users table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        refcode TEXT
     )
 `);
 
@@ -183,6 +196,62 @@ app.post('/admin/update-withdrawal', (req, res) => {
             res.json({ message: `Withdrawal ${status}` });
         }
     );
+});
+
+// Sign Up Route
+app.post('/signup', (req, res) => {
+    const { username, email, password, refcode } = req.body;
+
+    if (!username || !email || !password) {
+        return res.status(400).send("Please fill in all fields.");
+    }
+
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) {
+            return res.status(500).send("Error hashing password.");
+        }
+
+        const query = "INSERT INTO users (username, email, password, refcode) VALUES (?, ?, ?, ?)";
+        db.run(query, [username, email, hashedPassword, refcode], function (err) {
+            if (err) {
+                return res.status(500).send("Error creating user.");
+            }
+            res.status(200).send("User created successfully.");
+        });
+    });
+});
+
+// Login Route
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).send("Please fill in all fields.");
+    }
+
+    const query = "SELECT * FROM users WHERE username = ?";
+    db.get(query, [username], (err, user) => {
+        if (err) {
+            return res.status(500).send("Error checking user.");
+        }
+
+        if (!user) {
+            return res.status(400).send("User not found.");
+        }
+
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (err) {
+                return res.status(500).send("Error comparing password.");
+            }
+
+            if (result) {
+                const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+                return res.status(200).json({ message: "Login successful", token });
+            } else {
+                return res.status(400).send("Incorrect password.");
+            }
+        });
+    });
 });
 
 // Start server
