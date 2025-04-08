@@ -73,17 +73,8 @@
       <input type="text" id="login-username" placeholder="Username" />
       <input type="password" id="login-password" placeholder="Password" />
       <button onclick="login()">Login</button>
-      <p><a href="#" onclick="toggleForgotPassword()">Forgot password?</a></p>
+      <p><a href="#">Forgot password?</a></p>
       <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
-    </div>
-
-    <!-- Forgot Password Form -->
-    <div id="forgot-password-form" class="form" style="display: none;">
-      <h2>Forgot Password</h2>
-      <input type="text" id="forgot-password-username" placeholder="Username" />
-      <input type="email" id="forgot-password-email" placeholder="Email" />
-      <button onclick="forgotPassword()">Reset Password</button>
-      <p>Remembered your password? <a href="#" onclick="toggleForgotPassword()">Login</a></p>
     </div>
   </div>
 
@@ -143,22 +134,5 @@
 
   <!-- JavaScript -->
   <script src="script.js" defer></script>
-  <script>
-    function toggleForgotPassword() {
-      const loginForm = document.getElementById('login-form');
-      const forgotPasswordForm = document.getElementById('forgot-password-form');
-      
-      loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
-      forgotPasswordForm.style.display = (forgotPasswordForm.style.display === 'none') ? 'block' : 'none';
-    }
-
-    function forgotPassword() {
-      const username = document.getElementById('forgot-password-username').value;
-      const email = document.getElementById('forgot-password-email').value;
-      // You can integrate a backend function here to handle password reset logic.
-      alert(`Password reset link sent to ${email} for ${username}`);
-      toggleForgotPassword();
-    }
-  </script>
 </body>
 </html>
