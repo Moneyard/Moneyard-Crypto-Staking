@@ -1,21 +1,22 @@
-// Unified Form Navigation
+// Show Signup/Login Forms
 function showForm(formId) {
   document.querySelectorAll('.form').forEach(form => form.style.display = 'none');
   document.getElementById(formId).style.display = 'block';
 }
 
-// Signup handler (API integrated)
+// SIGNUP - Send data to backend
 async function signup() {
   const username = document.getElementById('signup-username').value;
   const email = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
   const refcode = document.getElementById('signup-refcode').value;
 
-  try {
-    if (!username || !email || !password) {
-      throw new Error('All required fields must be filled');
-    }
+  if (!username || !email || !password) {
+    alert("Please fill in all required fields.");
+    return;
+  }
 
+  try {
     const response = await fetch('/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -23,26 +24,30 @@ async function signup() {
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Signup failed');
 
-    alert('Registration successful! Please login.');
-    showForm('login-form');
-  } catch (error) {
-    alert(error.message);
-    console.error('Signup Error:', error);
+    if (response.ok) {
+      alert("Registration successful! Please log in.");
+      showForm('login-form');
+    } else {
+      alert(data.error || "Signup failed.");
+    }
+  } catch (err) {
+    console.error("Signup Error:", err);
+    alert("Server error. Please try again later.");
   }
 }
 
-// Login handler (API integrated)
+// LOGIN - Send data to backend
 async function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
 
-  try {
-    if (!username || !password) {
-      throw new Error('Please enter both username and password');
-    }
+  if (!username || !password) {
+    alert("Please enter both username and password.");
+    return;
+  }
 
+  try {
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -50,18 +55,21 @@ async function login() {
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Login failed');
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('username', username);
-    window.location.href = 'dashboard.html';
-  } catch (error) {
-    alert(error.message);
-    console.error('Login Error:', error);
+    if (response.ok) {
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('username', username);
+      window.location.href = 'dashboard.html';
+    } else {
+      alert(data.error || "Login failed.");
+    }
+  } catch (err) {
+    console.error("Login Error:", err);
+    alert("Server error. Please try again later.");
   }
 }
 
-// Password Reset (still client-side only)
+// RESET PASSWORD (Still using localStorage for now)
 function resetPassword() {
   const email = document.getElementById('recovery-email').value;
   const newPassword = document.getElementById('new-password').value;
@@ -87,6 +95,7 @@ function resetPassword() {
     document.getElementById('password-success').textContent = 'Password updated successfully!';
     document.getElementById('password-success').style.display = 'block';
     setTimeout(() => showForm('login-form'), 1500);
+
   } catch (error) {
     document.getElementById('password-error').textContent = error.message;
     document.getElementById('password-error').style.display = 'block';
