@@ -36,67 +36,146 @@ function showForm(formId) {
   });
 }
 
-// ===== EARNINGS CALCULATOR =====
-function calculateEarnings() {
-  const amount = parseFloat(document.getElementById('deposit-input').value);
-  console.log(`Calculating earnings for amount: ${amount}`);  // Debugging log
-  
-  const minDeposit = 15;
-  
-  if (isNaN(amount) || amount < minDeposit) {
-    showToast(`Minimum deposit is ${minDeposit} USDT`, 'error');
-    document.getElementById('calculated-earnings').innerHTML = '';  // Clear previous results
-    console.log('Invalid amount');  // Debugging log
+// Signup functionality
+function signup() {
+  const username = document.getElementById('signup-username').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const refcode = document.getElementById('signup-refcode').value;
+
+  if (!username || !email || !password) {
+    showToast('Please fill all fields.', 'error');
     return;
   }
-  
-  // Assuming 0.08% daily return, adjust this if necessary
-  const dailyEarnings = amount * 0.08;  
-  const monthlyEarnings = dailyEarnings * 30;  // Calculate monthly earnings
-  
-  console.log(`Daily Earnings: ${dailyEarnings.toFixed(2)} USDT`);  // Debugging log
-  console.log(`Monthly Earnings: ${monthlyEarnings.toFixed(2)} USDT`);  // Debugging log
-  
-  // Update earnings display with both daily and monthly estimates
+
+  // Show loader
+  showLoader('signup-loader');
+
+  // Send signup request (API endpoint should be configured)
+  fetch(`${API_BASE_URL}/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, email, password, refcode }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    hideLoader('signup-loader');
+    if (data.success) {
+      showToast('Account created successfully!', 'success');
+      showForm('login-form');
+    } else {
+      showToast(data.message || 'Error creating account.', 'error');
+    }
+  })
+  .catch(error => {
+    hideLoader('signup-loader');
+    showToast('Error: ' + error.message, 'error');
+  });
+}
+
+// Login functionality
+function login() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+
+  if (!username || !password) {
+    showToast('Please fill all fields.', 'error');
+    return;
+  }
+
+  // Show loader
+  showLoader('login-loader');
+
+  // Send login request (API endpoint should be configured)
+  fetch(`${API_BASE_URL}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    hideLoader('login-loader');
+    if (data.success) {
+      localStorage.setItem('token', data.token); // Store token
+      authToken = data.token;
+      updateAuthUI(true);
+      showToast('Logged in successfully!', 'success');
+    } else {
+      showToast(data.message || 'Error logging in.', 'error');
+    }
+  })
+  .catch(error => {
+    hideLoader('login-loader');
+    showToast('Error: ' + error.message, 'error');
+  });
+}
+
+// Reset Password functionality
+function resetPassword() {
+  const email = document.getElementById('recovery-email').value;
+  if (!email) {
+    showToast('Please provide your email address.', 'error');
+    return;
+  }
+
+  // Show loader
+  showLoader('reset-password-loader');
+
+  // Send password reset request (API endpoint should be configured)
+  fetch(`${API_BASE_URL}/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    hideLoader('reset-password-loader');
+    if (data.success) {
+      showToast('Password reset link sent to your email.', 'success');
+      showForm('login-form');
+    } else {
+      showToast(data.message || 'Error resetting password.', 'error');
+    }
+  })
+  .catch(error => {
+    hideLoader('reset-password-loader');
+    showToast('Error: ' + error.message, 'error');
+  });
+}
+
+// Earnings Calculator
+function calculateEarnings() {
+  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
+  if (isNaN(depositAmount) || depositAmount <= 0) {
+    document.getElementById('calculated-earnings').textContent = '';
+    return;
+  }
+
+  // Assuming daily return is 0.08%
+  const dailyEarnings = depositAmount * 0.0008;
+  const monthlyEarnings = dailyEarnings * 30;
+
   document.getElementById('calculated-earnings').innerHTML = `
-    Daily Earnings: <strong>${dailyEarnings.toFixed(2)} USDT</strong><br>
-    Estimated Monthly Earnings: <strong>${monthlyEarnings.toFixed(2)} USDT</strong>
+    Estimated Daily Earnings: ${dailyEarnings.toFixed(2)} USDT
+    <br>
+    Estimated Monthly Earnings: ${monthlyEarnings.toFixed(2)} USDT
   `;
 }
 
-// ===== UTILITY FUNCTIONS =====
-function showLoader(loaderId) {
-  document.getElementById(loaderId).style.display = 'block';
-}
-
-function hideLoader(loaderId) {
-  document.getElementById(loaderId).style.display = 'none';
-}
-
-function showToast(message, type = 'info') {
+// Toast Notification
+function showToast(message, type) {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   toast.textContent = message;
-  document.body.appendChild(toast);
-
-  setTimeout(() => toast.remove(), 5000);
+  document.getElementById('toast-container').appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
-function displayErrorMessages(errors) {
-  const errorContainer = document.getElementById('password-error');
-  errorContainer.innerHTML = errors.join('<br>');
-  errorContainer.style.display = 'block';
+// Loader Management
+function showLoader(id) {
+  document.getElementById(id).style.display = 'block';
 }
 
-// Simple email validation function
-function validateEmail(email) {
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailPattern.test(email);
+function hideLoader(id) {
+  document.getElementById(id).style.display = 'none';
 }
-
-// Initial Form State
-document.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem('currentUser')) {
-    window.location.href = 'dashboard.html';
-  }
-});
