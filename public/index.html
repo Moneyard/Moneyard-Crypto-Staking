@@ -6,6 +6,7 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* Existing styles remain */
     .highlighted { font-weight: bold; }
     .blue { color: #0000FF; }
     .green { color: #4CAF50; }
@@ -21,13 +22,42 @@
       text-align: center;
       margin-top: 20px;
     }
-    #intro {
-      text-align: center;
-      padding: 20px;
+    #intro { text-align: center; padding: 20px; }
+
+    /* New additions */
+    .loader {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 15px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      border-radius: 5px;
     }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+    }
+    .toast.error { background: #ffebee; color: #b71c1c; }
+    .toast.success { background: #e8f5e9; color: #1b5e20; }
+    [data-auth] { display: none; }
   </style>
 </head>
 <body>
+
+  <!-- Loading Indicators -->
+  <div id="signup-loader" class="loader">Creating Account...</div>
+  <div id="login-loader" class="loader">Logging In...</div>
+  <div id="reset-password-loader" class="loader">Resetting Password...</div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
 
   <!-- Logo Section -->
   <div id="logo-section">
@@ -50,7 +80,7 @@
   <!-- Forms Section -->
   <div id="forms">
     <!-- Sign Up Form -->
-    <div id="signup-form" class="form">
+    <div id="signup-form" class="form" data-auth="anonymous">
       <h2>Sign Up</h2>
       <input type="text" id="signup-username" placeholder="Username" required>
       <input type="email" id="signup-email" placeholder="Email" required>
@@ -61,7 +91,7 @@
     </div>
 
     <!-- Login Form -->
-    <div id="login-form" class="form" style="display: none;">
+    <div id="login-form" class="form" style="display: none;" data-auth="anonymous">
       <h2>Login</h2>
       <input type="text" id="login-username" placeholder="Username" required>
       <input type="password" id="login-password" placeholder="Password" required>
@@ -71,10 +101,10 @@
     </div>
 
     <!-- Forgot Password Form -->
-    <div id="forgot-password-form" class="form" style="display: none;">
+    <div id="forgot-password-form" class="form" style="display: none;" data-auth="anonymous">
       <h2>Password Recovery</h2>
-      <div class="form-message error-message" id="password-error" style="color: red;"></div>
-      <div class="form-message success-message" id="password-success" style="color: green;"></div>
+      <div class="form-message error-message" id="password-error"></div>
+      <div class="form-message success-message" id="password-success"></div>
       <input type="email" id="recovery-email" placeholder="Registered Email" required>
       <input type="password" id="new-password" placeholder="New Password" required>
       <input type="password" id="confirm-password" placeholder="Confirm Password" required>
@@ -83,160 +113,61 @@
     </div>
   </div>
 
-  <!-- Staking Plans Section -->
-  <section id="staking-plans">
-    <h2>Staking Plans</h2>
-    <div class="plan">
-      <h3>Basic Plan</h3>
-      <p>Lock for 30 days, earn 5% APY.</p>
-      <a href="#forms">Start Staking</a>
-    </div>
-    <div class="plan">
-      <h3>Advanced Plan</h3>
-      <p>Lock for 90 days, earn 10% APY.</p>
-      <a href="#forms">Start Staking</a>
-    </div>
-  </section>
+  <!-- Protected Content -->
+  <div data-auth="authenticated">
+    <!-- Rest of your sections -->
+    <section id="staking-plans">
+      <h2>Staking Plans</h2>
+      <div class="plan">
+        <h3>Basic Plan</h3>
+        <p>Lock for 30 days, earn 5% APY.</p>
+        <a href="#forms">Start Staking</a>
+      </div>
+      <div class="plan">
+        <h3>Advanced Plan</h3>
+        <p>Lock for 90 days, earn 10% APY.</p>
+        <a href="#forms">Start Staking</a>
+      </div>
+    </section>
 
-  <!-- FAQ Section -->
-  <section id="faq">
-    <h2>Frequently Asked Questions</h2>
-    <ul>
-      <li><strong>What is staking?</strong> Staking involves locking your cryptocurrency to support the blockchain and earn rewards.</li>
-      <li><strong>How do I deposit?</strong> You can deposit using TRC20/BEP20 tokens.</li>
-    </ul>
-  </section>
+    <section id="faq">
+      <h2>Frequently Asked Questions</h2>
+      <ul>
+        <li><strong>What is staking?</strong> Staking involves locking your cryptocurrency to support the blockchain and earn rewards.</li>
+        <li><strong>How do I deposit?</strong> You can deposit using TRC20/BEP20 tokens.</li>
+      </ul>
+    </section>
 
-  <!-- Tutorials Section -->
-  <section id="tutorials">
-    <h2>Crypto Staking Tutorials</h2>
-    <a href="tutorial-link" target="_blank">Step-by-Step Guide for Beginners</a>
-  </section>
+    <section id="tutorials">
+      <h2>Crypto Staking Tutorials</h2>
+      <a href="tutorial-link" target="_blank">Step-by-Step Guide for Beginners</a>
+    </section>
 
-  <!-- Risk Disclaimer Section -->
-  <section id="disclaimer">
-    <h2>Risk Disclaimer</h2>
-    <p>Staking involves risks, including the potential loss of funds. Please stake responsibly.</p>
-  </section>
+    <section id="disclaimer">
+      <h2>Risk Disclaimer</h2>
+      <p>Staking involves risks, including the potential loss of funds. Please stake responsibly.</p>
+    </section>
 
-  <!-- Security Section -->
-  <section id="security">
-    <h2>Platform Security</h2>
-    <p>We use two-factor authentication (2FA) to protect your account, and all funds are stored securely.</p>
-  </section>
+    <section id="security">
+      <h2>Platform Security</h2>
+      <p>We use two-factor authentication (2FA) to protect your account, and all funds are stored securely.</p>
+    </section>
 
-  <!-- Support Section -->
-  <section id="support">
-    <h2>Customer Support</h2>
-    <p>If you need help, feel free to reach out to us through our <a href="support-link">Support Page</a>.</p>
-  </section>
+    <section id="support">
+      <h2>Customer Support</h2>
+      <p>If you need help, feel free to reach out to us through our <a href="support-link">Support Page</a>.</p>
+    </section>
+  </div>
 
   <!-- JavaScript -->
+  <script src="script.js"></script>
   <script>
-    function showForm(formId) {
-      const formIds = ['signup-form', 'login-form', 'forgot-password-form'];
-      formIds.forEach(id => {
-        document.getElementById(id).style.display = (id === formId) ? 'block' : 'none';
-      });
-    }
-
-    function signup() {
-      const username = document.getElementById('signup-username').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const refcode = document.getElementById('signup-refcode').value;
-
-      if (!username || !email || !password) {
-        alert("Please fill in all required fields.");
-        return;
+    // Initialize form visibility
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('token')) {
+        showForm('signup-form');
       }
-
-      fetch('/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, refcode })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert("Account created! You can now log in.");
-          showForm('login-form');
-        } else {
-          alert(data.error || "Signup failed.");
-        }
-      })
-      .catch(() => alert("Server error. Please try again later."));
-    }
-
-    function login() {
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-
-      if (!username || !password) {
-        alert("Please enter both username and password.");
-        return;
-      }
-
-      fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          localStorage.setItem('token', data.token);
-          window.location.href = '/dashboard.html';
-        } else {
-          alert(data.error || "Login failed.");
-        }
-      })
-      .catch(() => alert("Server error. Please try again later."));
-    }
-
-    function resetPassword() {
-      const email = document.getElementById('recovery-email').value;
-      const newPassword = document.getElementById('new-password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-      const errorDiv = document.getElementById('password-error');
-      const successDiv = document.getElementById('password-success');
-
-      errorDiv.style.display = 'none';
-      successDiv.style.display = 'none';
-
-      if (!email || !newPassword || !confirmPassword) {
-        errorDiv.textContent = 'Please fill in all fields.';
-        errorDiv.style.display = 'block';
-        return;
-      }
-
-      if (newPassword !== confirmPassword) {
-        errorDiv.textContent = 'Passwords do not match.';
-        errorDiv.style.display = 'block';
-        return;
-      }
-
-      fetch('/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, newPassword })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          successDiv.textContent = 'Password reset successful. You can now log in.';
-          successDiv.style.display = 'block';
-        } else {
-          errorDiv.textContent = data.error || 'Error resetting password.';
-          errorDiv.style.display = 'block';
-        }
-      })
-      .catch(() => {
-        errorDiv.textContent = 'Server error.';
-        errorDiv.style.display = 'block';
-      });
-    }
+    });
   </script>
-
 </body>
 </html>
