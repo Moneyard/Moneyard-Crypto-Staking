@@ -166,3 +166,15 @@ app.post('/api/reset-password', authenticate, async (req, res) => {
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Handle production environment
+if (process.env.NODE_ENV === 'production') {
+  // Static folder
+  app.use(express.static(path.join(__dirname, 'public')));
+
+  // Handle SPA
+  app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+}
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
