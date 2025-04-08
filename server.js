@@ -16,17 +16,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     console.log('Connected to SQLite database.');
 });
 
-// Create users table (for balance tracking)
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE,
-        password TEXT,
-        balance REAL DEFAULT 0
-    )
-`);
-
-// Create transactions table
+// Create transactions table if it doesn't exist
 db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,13 +30,14 @@ db.run(`
     )
 `);
 
-// Create withdrawals table
+// Create withdrawals table if it doesn't exist
 db.run(`
     CREATE TABLE IF NOT EXISTS withdrawals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         amount REAL,
         wallet_address TEXT,
+        password TEXT,
         status TEXT DEFAULT 'pending',
         date TEXT
     )
@@ -97,55 +88,7 @@ app.post('/log-deposit', (req, res) => {
     );
 });
 
-// API: Request withdrawal
-app.post('/request-withdrawal', (req, res) => {
-    const { userId, amount, walletAddress } = req.body;
-
-    if (!userId || !amount || !walletAddress) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    if (amount < 10) {
-        return res.status(400).json({ error: 'Minimum withdrawal is 10 USDT' });
-    }
-
-    db.get(
-        `SELECT SUM(amount) as totalDeposits FROM transactions WHERE user_id = ? AND type = 'deposit'`,
-        [userId],
-        (err, row) => {
-            if (err) return res.status(500).json({ error: err.message });
-
-            const totalDeposit = row?.totalDeposits || 0;
-            const balance = totalDeposit * 0.9;
-
-            if (amount > balance) {
-                return res.status(400).json({ error: 'Insufficient balance' });
-            }
-
-            db.run(
-                `INSERT INTO withdrawals (user_id, amount, wallet_address, status, date)
-                 VALUES (?, ?, ?, 'pending', datetime('now'))`,
-                [userId, amount, walletAddress],
-                function (err) {
-                    if (err) return res.status(500).json({ error: err.message });
-
-                    db.run(
-                        `INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-                         VALUES (?, 'withdrawal', ?, '', '', 'pending', datetime('now'))`,
-                        [userId, amount],
-                        (err) => {
-                            if (err) return res.status(500).json({ error: err.message });
-
-                            res.json({ message: 'Withdrawal request submitted and pending approval' });
-                        }
-                    );
-                }
-            );
-        }
-    );
-});
-
-// API: Get transaction history
+// API: Get transaction history for the logged-in user
 app.get('/get-transaction-history', (req, res) => {
     const userId = req.query.userId || 1;
 
@@ -161,7 +104,7 @@ app.get('/get-transaction-history', (req, res) => {
     );
 });
 
-// API: Get user summary
+// API: Get user summary (total deposits and balance)
 app.get('/user-summary', (req, res) => {
     const userId = req.query.userId;
 
@@ -185,7 +128,7 @@ app.get('/user-summary', (req, res) => {
     );
 });
 
-// Admin: Get pending withdrawals
+// Admin API: Get pending withdrawals
 app.get('/admin/withdrawals', (req, res) => {
     db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -193,7 +136,7 @@ app.get('/admin/withdrawals', (req, res) => {
     });
 });
 
-// Admin: Approve withdrawal
+// Admin API: Approve withdrawal
 app.post('/admin/approve-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
 
@@ -203,7 +146,7 @@ app.post('/admin/approve-withdrawal', (req, res) => {
     });
 });
 
-// Admin: Reject withdrawal
+// Admin API: Reject withdrawal
 app.post('/admin/reject-withdrawal', (req, res) => {
     const { withdrawalId } = req.body;
 
@@ -213,7 +156,7 @@ app.post('/admin/reject-withdrawal', (req, res) => {
     });
 });
 
-// Admin: Get all withdrawals for admin dashboard
+// Admin Routes
 app.get('/admin/get-withdrawals', (req, res) => {
     db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
         if (err) {
@@ -223,7 +166,6 @@ app.get('/admin/get-withdrawals', (req, res) => {
     });
 });
 
-// Admin: Update withdrawal status manually
 app.post('/admin/update-withdrawal', (req, res) => {
     const { id, status } = req.body;
 
