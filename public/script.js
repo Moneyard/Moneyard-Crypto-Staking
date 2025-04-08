@@ -185,3 +185,17 @@ window.logout = () => {
   authToken = null;
   window.location.href = 'index.html';
 };
+// Form Visibility Control
+function showForm(formId) {
+  document.querySelectorAll('.auth-form').forEach(form => {
+    form.classList.remove('active');
+  });
+  document.getElementById(formId).classList.add('active');
+}
+
+// Initial Form State
+document.addEventListener('DOMContentLoaded', () => {
+  if (!localStorage.getItem('token')) {
+    showForm('signup-form');
+  }
+});
