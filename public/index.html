@@ -10,19 +10,19 @@
       font-weight: bold;
     }
     .blue {
-      color: #0000FF; /* Blue */
+      color: #0000FF;
     }
     .green {
-      color: #4CAF50; /* Green */
+      color: #4CAF50;
     }
     #welcome-text {
-      color: #006400; /* Dark Green */
+      color: #006400;
       font-size: 2.5rem;
       text-align: center;
       margin-top: 50px;
     }
     #tagline {
-      color: #006400; /* Dark Green */
+      color: #006400;
       font-size: 1.5rem;
       text-align: center;
       margin-top: 20px;
@@ -32,7 +32,7 @@
       padding: 20px;
     }
     .get-started-btn {
-      background-color: #0000FF; /* Blue */
+      background-color: #0000FF;
       color: white;
       padding: 10px 20px;
       border: none;
@@ -43,37 +43,60 @@
       text-decoration: none;
     }
     .get-started-btn:hover {
-      background-color: #0033cc; /* Darker Blue on hover */
+      background-color: #0033cc;
+    }
+    .form {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #f9f9f9;
+      text-align: center;
+    }
+    .form input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .form button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
 
   <!-- Logo Section -->
-  <div id="logo-section">
-    <img src="M.png" alt="Moneyard Logo" id="logo">
+  <div id="logo-section" style="text-align: center;">
+    <img src="M.png" alt="Moneyard Logo" id="logo" style="max-width: 200px;">
   </div>
 
-  <!-- Introduction Section with Updated Welcome Text -->
+  <!-- Intro Section -->
   <section id="intro">
     <h1 id="welcome-text">
       WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
     </h1>
-    <p id="tagline">
-      Grow Your Crypto, Effortlessly!
-    </p>
+    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
     <p style="color: #006400; font-size: 1rem; text-align: center;">
-      We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
-      whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
-      beginners, or first-time crypto users.
+      We are committed to providing financial literacy and effortless crypto staking services for wealth builders, investors, and beginners.
     </p>
-    <a href="#signup" class="get-started-btn">Get Started Today</a>
+    <a href="#" class="get-started-btn" onclick="showSignup()">Get Started Today</a>
   </section>
 
-
+  <!-- Forms Section -->
   <div id="forms">
     <!-- Sign Up Form -->
-    <div id="signup-form" class="form" id="signup" style="display: none;">
+    <div id="signup-form" class="form">
       <h2>Sign Up</h2>
       <input type="text" id="signup-username" placeholder="Username" />
       <input type="password" id="signup-password" placeholder="Password" />
@@ -92,18 +115,19 @@
       <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
     </div>
   </div>
+
   <!-- Staking Plans Section -->
-  <section id="staking-plans">
+  <section id="staking-plans" style="text-align: center;">
     <h2>Staking Plans</h2>
     <div class="plan">
       <h3>Basic Plan</h3>
       <p>Lock for 30 days, earn 5% APY.</p>
-      <a href="#signup">Start Staking</a>
+      <a href="#" onclick="showSignup()">Start Staking</a>
     </div>
     <div class="plan">
       <h3>Advanced Plan</h3>
       <p>Lock for 90 days, earn 10% APY.</p>
-      <a href="#signup">Start Staking</a>
+      <a href="#" onclick="showSignup()">Start Staking</a>
     </div>
   </section>
 
@@ -141,35 +165,31 @@
   </section>
 
   <!-- User Info Section (Visible after login) -->
-  <div id="user-info" style="display:none;">
+  <div id="user-info" style="display:none; text-align: center;">
     <h3>Welcome, <span id="user-username"></span></h3>
     <p>Your account is loaded successfully.</p>
   </div>
 
-  <!-- Sign Up and Login Forms -->
-  <div id="forms">
-    <!-- Sign Up Form -->
-    <div id="signup-form" class="form">
-      <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" />
-      <input type="password" id="signup-password" placeholder="Password" />
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
-      <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
-    </div>
-
-    <!-- Login Form -->
-    <div id="login-form" class="form" style="display: none;">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
-    </div>
-  </div>
-
   <!-- JavaScript -->
   <script src="script.js" defer></script>
+  <script>
+    function toggleForms() {
+      const signupForm = document.getElementById('signup-form');
+      const loginForm = document.getElementById('login-form');
+      if (signupForm.style.display === 'none') {
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
+      } else {
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      }
+    }
+
+    function showSignup() {
+      document.getElementById('signup-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      window.scrollTo(0, document.getElementById('forms').offsetTop);
+    }
+  </script>
 </body>
 </html>
