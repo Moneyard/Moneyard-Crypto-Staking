@@ -70,8 +70,14 @@ async function signup() {
     };
 
     // Client-side validation
-    if (!userData.username || !userData.email || !userData.password) {
-      throw new Error('All fields are required');
+    let errors = [];
+    if (!userData.username) errors.push("Username is required");
+    if (!userData.email || !validateEmail(userData.email)) errors.push("A valid email is required");
+    if (!userData.password || userData.password.length < 6) errors.push("Password must be at least 6 characters");
+
+    if (errors.length > 0) {
+      displayErrorMessages(errors);
+      return;
     }
 
     // Check existing users
@@ -112,6 +118,15 @@ async function login() {
       password: document.getElementById('login-password').value
     };
 
+    let errors = [];
+    if (!credentials.username) errors.push("Username is required");
+    if (!credentials.password) errors.push("Password is required");
+
+    if (errors.length > 0) {
+      displayErrorMessages(errors);
+      return;
+    }
+
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(u => u.username === credentials.username && u.password === credentials.password);
 
@@ -135,7 +150,14 @@ async function resetPassword() {
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
 
-    if (newPassword !== confirmPassword) throw new Error('Passwords do not match');
+    let errors = [];
+    if (!email || !validateEmail(email)) errors.push("A valid email is required");
+    if (newPassword !== confirmPassword) errors.push("Passwords do not match");
+
+    if (errors.length > 0) {
+      displayErrorMessages(errors);
+      return;
+    }
 
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const userIndex = users.findIndex(u => u.email === email);
@@ -208,6 +230,18 @@ function showToast(message, type = 'info') {
   document.body.appendChild(toast);
 
   setTimeout(() => toast.remove(), 5000);
+}
+
+function displayErrorMessages(errors) {
+  const errorContainer = document.getElementById('password-error');
+  errorContainer.innerHTML = errors.join('<br>');
+  errorContainer.style.display = 'block';
+}
+
+// Simple email validation function
+function validateEmail(email) {
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailPattern.test(email);
 }
 
 // Initial Form State
