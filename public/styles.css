@@ -108,6 +108,8 @@ select {
 .logout-button:hover {
   background-color: #218838;
 }
+
+
 .bottom-nav {
   position: fixed;
   bottom: 0;
