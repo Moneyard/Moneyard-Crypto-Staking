@@ -108,3 +108,30 @@ select {
 .logout-button:hover {
   background-color: #218838;
 }
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+  z-index: 999;
+}
+
+.nav-btn {
+  flex: 1;
+  background: #f0f0f0;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  color: #333;
+  border-radius: 10px;
+  margin: 0 5px;
+}
+
+.nav-btn.active {
+  background-color: #28a745; /* green */
+  color: white;
+}
