@@ -50,11 +50,14 @@
     padding: 16px;
     gap: 12px;
     visibility: hidden; /* Hide the dropdown by default */
+    opacity: 0; /* Hide the dropdown by default */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
   }
 
   .menu-dropdown.show {
     display: flex;
     visibility: visible; /* Make the dropdown visible when toggled */
+    opacity: 1; /* Make the dropdown fully visible when toggled */
   }
 
   .menu-section {
@@ -96,11 +99,12 @@
     const menuDropdown = document.getElementById('menuDropdown');
 
     toggleButton.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent click event from closing the menu immediately
+      // Prevent click event from closing the dropdown immediately
+      e.stopPropagation();
       menuDropdown.classList.toggle('show');
     });
 
-    // Close the menu if clicking outside
+    // Close the menu if clicking outside of the menu area
     document.addEventListener('click', (e) => {
       if (!document.querySelector('.top-menu').contains(e.target)) {
         menuDropdown.classList.remove('show');
