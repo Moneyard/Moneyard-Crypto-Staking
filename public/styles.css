@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #FFA500; /* warm orange background */
-  color: #444; /* soft grey text */
+  background-color: #FFA500;
+  color: #444;
   margin: 0;
   padding: 20px;
   display: flex;
@@ -9,18 +9,24 @@ body {
   align-items: center;
 }
 
-/* Logo section */
-#logo-section {
-  margin-bottom: 30px;
-}
-
-#logo {
-  max-width: 200px;
-  height: auto;
+/* Logout Button Style */
+#logout-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
+  margin-bottom: 20px;
+  max-width: 300px;
+  width: 100%;
 }
 
-/* Form container */
+#logout-button:hover {
+  background-color: #218838;
+}
+
 .form {
   width: 100%;
   max-width: 300px;
@@ -31,24 +37,21 @@ body {
   margin-bottom: 20px;
 }
 
-/* Inputs */
 input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-  color: #28a745; /* green for number/input text */
+  color: #28a745;
 }
 
-/* Green styled values */
 #deposit-address,
 #calculated-earnings {
   color: #28a745;
   font-weight: bold;
 }
 
-/* Table styling */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -66,7 +69,6 @@ th {
   background-color: #f0f0f0;
 }
 
-/* Buttons */
 button {
   width: 100%;
   padding: 10px;
@@ -83,7 +85,6 @@ button:hover {
   background-color: #218838;
 }
 
-/* Select dropdown */
 select {
   padding: 6px;
   border-radius: 4px;
