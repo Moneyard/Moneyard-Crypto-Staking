@@ -1,3 +1,27 @@
+function toggleForms(type) {
+  const signup = document.getElementById('signup-form');
+  const login = document.getElementById('login-form');
+  if (type === 'login') {
+    signup.style.display = 'none';
+    login.style.display = 'block';
+  } else {
+    signup.style.display = 'block';
+    login.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('.animated-section');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  sections.forEach(section => observer.observe(section));
+});
 // Toggle between signup and login forms
 function toggleForms() {
   const signupForm = document.getElementById('signup-form');
