@@ -3,78 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Dashboard</title>
+  <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .highlighted {
+      font-weight: bold;
+    }
+    .blue {
+      color: #0000FF;
+    }
+    .green {
+      color: #4CAF50;
+    }
+    #welcome-text {
+      color: #006400;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #tagline {
+      color: #006400;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #intro {
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- User Summary -->
-  <section id="user-summary" class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-  </section>
+  <!-- Logo Section -->
+  <div id="logo-section">
+    <img src="M.png" alt="Moneyard Logo" id="logo">
+  </div>
 
-  <!-- Deposit Section -->
-  <section id="deposit-section" class="form">
-    <h3>Deposit Funds</h3>
-    <label for="network">Choose Network:</label>
-    <select id="network" onchange="getDepositAddress()">
-      <option value="">-- Select Network --</option>
-      <option value="Tron">TRC20 (Tron)</option>
-      <option value="BNB">BEP20 (BNB Smart Chain)</option>
-    </select>
-
-    <button onclick="getDepositAddress()">Get Deposit Address</button>
-    <p id="deposit-address" style="margin-top: 10px;"></p>
-    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
-
-    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <button onclick="logDeposit()">Submit Deposit</button>
-  </section>
-
-  <!-- Withdraw Section -->
-  <section id="withdraw-section" class="form">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
-    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-    <button onclick="submitWithdrawal()">Request Withdrawal</button>
-    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
-      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
+  <!-- Introduction Section -->
+  <section id="intro">
+    <h1 id="welcome-text">
+      WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
+    </h1>
+    <p id="tagline">
+      Grow Your Crypto, Effortlessly!
+    </p>
+    <p style="color: #006400; font-size: 1rem; text-align: center;">
+      We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
+      whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
+      beginners, or first-time crypto users.
     </p>
   </section>
 
-  <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings"></p>
+  <!-- Forms Section -->
+  <div id="forms">
+    <!-- Sign Up Form -->
+    <div id="signup-form" class="form">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-username" placeholder="Username" />
+      <input type="password" id="signup-password" placeholder="Password" />
+      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
+      <button onclick="signup()">Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form" class="form" style="display: none;">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p><a href="#">Forgot password?</a></p>
+      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+    </div>
+  </div>
+
+  <!-- Staking Plans Section -->
+  <section id="staking-plans">
+    <h2>Staking Plans</h2>
+    <div class="plan">
+      <h3>Basic Plan</h3>
+      <p>Lock for 30 days, earn 5% APY.</p>
+      <a href="#forms">Start Staking</a>
+    </div>
+    <div class="plan">
+      <h3>Advanced Plan</h3>
+      <p>Lock for 90 days, earn 10% APY.</p>
+      <a href="#forms">Start Staking</a>
+    </div>
   </section>
 
-  <!-- Transaction History -->
-  <section id="transaction-history-section" class="form">
-    <h3>Transaction History</h3>
-    <table id="transaction-history-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Network</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Transaction rows injected here -->
-      </tbody>
-    </table>
+  <!-- FAQ Section -->
+  <section id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <ul>
+      <li><strong>What is staking?</strong> Staking involves locking your cryptocurrency to support the blockchain and earn rewards.</li>
+      <li><strong>How do I deposit?</strong> You can deposit using TRC20/BEP20 tokens.</li>
+    </ul>
   </section>
 
-  <script src="script.js"></script>
+  <!-- Tutorials Section -->
+  <section id="tutorials">
+    <h2>Crypto Staking Tutorials</h2>
+    <a href="tutorial-link" target="_blank">Step-by-Step Guide for Beginners</a>
+  </section>
+
+  <!-- Risk Disclaimer Section -->
+  <section id="disclaimer">
+    <h2>Risk Disclaimer</h2>
+    <p>Staking involves risks, including the potential loss of funds. Please stake responsibly.</p>
+  </section>
+
+  <!-- Security Section -->
+  <section id="security">
+    <h2>Platform Security</h2>
+    <p>We use two-factor authentication (2FA) to protect your account, and all funds are stored securely.</p>
+  </section>
+
+  <!-- Support Section -->
+  <section id="support">
+    <h2>Customer Support</h2>
+    <p>If you need help, feel free to reach out to us through our <a href="support-link">Support Page</a>.</p>
+  </section>
+
+  <!-- User Info Section -->
+  <div id="user-info" style="display:none;">
+    <h3>Welcome, <span id="user-username"></span></h3>
+    <p>Your account is loaded successfully.</p>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js" defer></script>
 </body>
 </html>
