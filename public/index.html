@@ -3,18 +3,16 @@
   <button id="menuToggle" class="menu-button">☰</button>
   <div id="menuDropdown" class="menu-dropdown">
     <div class="menu-section left">
-      <h3 onclick="toggleSection('learningList')">Moneyard Learning</h3>
-      <ul id="learningList" style="display: none;">
+      <h3>Moneyard Learning</h3>
+      <ul>
         <li>Learn about Crypto Staking</li>
         <li>High-Yield Savings Tools</li>
         <li>Micro-Investing Data</li>
       </ul>
     </div>
     <div class="menu-section right">
-      <h3 onclick="toggleSection('loginButton')">My Account</h3>
-      <div id="loginButton" style="display: none;">
-        <button class="login-button" onclick="location.href='index.html#login'">Login</button>
-      </div>
+      <h3>My Account</h3>
+      <button class="login-button" onclick="location.href='index.html#login'">Login</button>
     </div>
   </div>
 </div>
@@ -66,7 +64,6 @@
     font-size: 16px;
     color: #007a5a;
     margin-bottom: 8px;
-    cursor: pointer;
   }
 
   .menu-section ul {
@@ -103,22 +100,9 @@
     document.addEventListener('click', (e) => {
       if (!document.querySelector('.top-menu').contains(e.target)) {
         menuDropdown.classList.remove('show');
-        hideAllSections();
       }
     });
   });
-
-  function toggleSection(id) {
-    const el = document.getElementById(id);
-    const isVisible = el.style.display === 'block';
-    hideAllSections();
-    if (!isVisible) el.style.display = 'block';
-  }
-
-  function hideAllSections() {
-    document.getElementById('learningList').style.display = 'none';
-    document.getElementById('loginButton').style.display = 'none';
-  }
 </script>
 
 <!DOCTYPE html>
