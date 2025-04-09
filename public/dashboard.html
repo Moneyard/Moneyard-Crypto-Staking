@@ -7,66 +7,10 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body style="padding-top: 60px; padding-bottom: 20px;">
-
-  <!-- Deposit Button -->
-  <div class="deposit-button-container" style="text-align: center; margin-bottom: 20px;">
-    <button class="deposit-button" onclick="toggleDepositSidebar()">Deposit Funds</button>
-  </div>
-
   <!-- Logout Button -->
   <div class="logout-container">
     <button class="logout-button" onclick="logout()">Log Out</button>
   </div>
-
-  <!-- Deposit Sidebar -->
-  <div id="deposit-sidebar" class="deposit-sidebar">
-    <div class="sidebar-header">
-      <h3>Deposit Methods</h3>
-      <button class="close-btn" onclick="toggleDepositSidebar()">&times;</button>
-    </div>
-
-    <div class="payment-method">
-      <h4>1. Buy Crypto with ZM</h4>
-      <p>Bank transfer, mobile money, card</p>
-      <button onclick="window.location.href='tel:+260771196634'" class="payment-button">
-        Airtel Money: 0771196634
-      </button>
-    </div>
-
-    <div class="payment-method">
-      <h4>2. Crypto Deposit</h4>
-      <div class="crypto-network">
-        <p><strong>TRC20 (Tron):</strong></p>
-        <p class="crypto-address">TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</p>
-        <button onclick="copyAddress('TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f')">
-          Copy TRC20 Address
-        </button>
-      </div>
-      <div class="crypto-network">
-        <p><strong>BEP20 (BNB):</strong></p>
-        <p class="crypto-address">0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</p>
-        <button onclick="copyAddress('0x2837db956aba84eb2670d00aeea5c0d8a9e20a01')">
-          Copy BEP20 Address
-        </button>
-      </div>
-    </div>
-
-    <div class="payment-method">
-      <h4>3. Mobile Payments</h4>
-      <select id="mobile-provider">
-        <option value="">Select Provider</option>
-        <option value="Airtel">Airtel MobileMoney</option>
-        <option value="MTN">MTN Mobile Money</option>
-      </select>
-      <input type="tel" id="mobile-number" placeholder="Your mobile number">
-      <button onclick="handleMobilePayment()" class="payment-button">
-        Send to +260771196634
-      </button>
-    </div>
-  </div>
-
-  <!-- Overlay for sidebar -->
-  <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleDepositSidebar()"></div>
 
   <!-- User Summary -->
   <section id="user-summary" class="form">
@@ -74,6 +18,24 @@
     <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
     <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
     <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
+  </section>
+
+  <!-- Deposit Section -->
+  <section id="deposit-section" class="form">
+    <h3>Deposit Funds</h3>
+    <label for="network">Choose Network:</label>
+    <select id="network" onchange="getDepositAddress()">
+      <option value="">-- Select Network --</option>
+      <option value="Tron">TRC20 (Tron)</option>
+      <option value="BNB">BEP20 (BNB Smart Chain)</option>
+    </select>
+
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p id="deposit-address" style="margin-top: 10px;"></p>
+    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
+
+    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+    <button onclick="logDeposit()">Submit Deposit</button>
   </section>
 
   <!-- Withdraw Section -->
