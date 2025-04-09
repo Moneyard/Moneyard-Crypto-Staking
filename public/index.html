@@ -136,3 +136,14 @@
   <script src="script.js" defer></script>
 </body>
 </html>
+// Example login logic in index.html
+function login() {
+  // After successful login (authentication)
+  if (userIsAuthenticated) {
+    localStorage.setItem("loggedIn", "true"); // Set session state to logged in
+    window.location.replace("dashboard.html"); // Redirect to the dashboard
+  } else {
+    alert("Login failed");
+  }
+}
+
