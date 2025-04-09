@@ -2,131 +2,130 @@
 <div class="top-menu">
   <button id="menuToggle" class="menu-button">☰</button>
   <div id="menuDropdown" class="menu-dropdown">
-    <div class="menu-item">
-      <button class="menu-header" onclick="toggleSection('learningSection')">Moneyard Learning</button>
-      <div id="learningSection" class="menu-sub" style="display: none;">
-        <ul>
-          <li>Crypto Staking Guide</li>
-          <li>High-Yield Savings</li>
-          <li>Micro-Investing Tips</li>
-        </ul>
-      </div>
+    <div class="menu-section left">
+      <h3 onclick="toggleSection('learningContent')">Moneyard Learning</h3>
+      <ul id="learningContent" style="display: none;">
+        <li>Learn about Crypto Staking</li>
+        <li>High-Yield Savings Tools</li>
+        <li>Micro-Investing Data</li>
+      </ul>
     </div>
-    <div class="menu-item">
-      <button class="menu-header" onclick="toggleSection('accountSection')">My Account</button>
-      <div id="accountSection" class="menu-sub" style="display: none;">
+    <div class="menu-section right">
+      <h3 onclick="toggleSection('accountContent')">My Account</h3>
+      <div id="accountContent" style="display: none;">
         <button class="login-button" onclick="location.href='index.html#login'">Login</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Menu Styles -->
 <style>
   .top-menu {
     position: fixed;
     top: 10px;
     right: 10px;
-    z-index: 999;
+    z-index: 1000;
   }
 
   .menu-button {
     background-color: #007a5a;
-    color: #fff;
-    font-size: 20px;
-    padding: 8px 12px;
+    color: white;
+    font-size: 24px;
+    padding: 6px 12px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
   }
 
   .menu-dropdown {
-    display: none;
-    flex-direction: column;
-    background: #fff;
-    border: 1px solid #ccc;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 10px;
-    margin-top: 5px;
-    width: 250px;
+    display: none;
+    flex-direction: row;
+    width: 320px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 16px;
+    gap: 12px;
   }
 
   .menu-dropdown.show {
     display: flex;
   }
 
-  .menu-header {
-    background: none;
-    border: none;
-    font-weight: bold;
+  .menu-section {
+    width: 50%;
+  }
+
+  .menu-section h3 {
+    margin-top: 0;
     font-size: 16px;
-    text-align: left;
-    width: 100%;
-    padding: 6px 0;
     color: #007a5a;
+    margin-bottom: 8px;
     cursor: pointer;
   }
 
-  .menu-sub {
-    padding-left: 15px;
-    margin-bottom: 10px;
+  .menu-section ul {
+    padding-left: 16px;
   }
 
-  .menu-sub ul {
-    list-style: disc;
-    padding-left: 18px;
-    margin: 6px 0;
-  }
-
-  .menu-sub li {
+  .menu-section ul li {
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    list-style: disc;
   }
 
   .login-button {
     background-color: #28a745;
     color: white;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border: none;
     border-radius: 6px;
-    font-size: 14px;
     cursor: pointer;
+    font-size: 14px;
   }
 </style>
 
+<!-- Menu Script -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const menuToggle = document.getElementById("menuToggle");
-    const menuDropdown = document.getElementById("menuDropdown");
+    const toggleButton = document.getElementById('menuToggle');
+    const menuDropdown = document.getElementById('menuDropdown');
 
-    menuToggle.addEventListener("click", () => {
-      menuDropdown.classList.toggle("show");
+    toggleButton.addEventListener('click', () => {
+      menuDropdown.classList.toggle('show');
     });
 
-    document.addEventListener("click", (e) => {
+    document.addEventListener('click', (e) => {
       if (!document.querySelector('.top-menu').contains(e.target)) {
-        menuDropdown.classList.remove("show");
-        document.getElementById("learningSection").style.display = "none";
-        document.getElementById("accountSection").style.display = "none";
+        menuDropdown.classList.remove('show');
+        hideAllSections();
       }
     });
   });
 
   function toggleSection(sectionId) {
     const section = document.getElementById(sectionId);
-    const isVisible = section.style.display === "block";
+    const isVisible = section.style.display === 'block';
 
-    // Hide both sections first
-    document.getElementById("learningSection").style.display = "none";
-    document.getElementById("accountSection").style.display = "none";
+    // Hide all sections first
+    hideAllSections();
 
-    // Then show the one clicked (if it wasn't already visible)
+    // If the clicked section was hidden, show it
     if (!isVisible) {
-      section.style.display = "block";
+      section.style.display = 'block';
     }
   }
-</script>
 
+  function hideAllSections() {
+    document.getElementById('learningContent').style.display = 'none';
+    document.getElementById('accountContent').style.display = 'none';
+  }
+</script>
 
 <!DOCTYPE html>
 <html lang="en">
