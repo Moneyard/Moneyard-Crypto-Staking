@@ -121,11 +121,47 @@ app.get('/user-summary', (req, res) => {
             }
 
             const totalDeposit = row?.totalDeposit || 0;
-            const balance = totalDeposit * 0.9;
+            const balance = totalDeposit * 0.9; // Example calculation
 
             res.json({ totalDeposit, balance });
         }
     );
+});
+
+// New API: Get full assets summary for the Assets page
+app.get('/user/assets-summary', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.serialize(() => {
+        // Consider only confirmed deposits
+        db.get(
+            `SELECT SUM(amount) as totalDeposits FROM transactions WHERE user_id = ? AND type = 'deposit' AND status = 'confirmed'`,
+            [userId],
+            (err, depositRow) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                db.get(
+                    `SELECT SUM(amount) as pendingWithdrawals FROM withdrawals WHERE user_id = ? AND status = 'pending'`,
+                    [userId],
+                    (err, withdrawalRow) => {
+                        if (err) return res.status(500).json({ error: err.message });
+
+                        const deposits = depositRow?.totalDeposits || 0;
+                        const earnings = deposits * 0.1; // Example: 10% earnings rate
+                        const pendingWithdrawals = withdrawalRow?.pendingWithdrawals || 0;
+                        const totalValue = deposits + earnings - pendingWithdrawals;
+
+                        res.json({
+                            totalDeposits: deposits,
+                            earnings,
+                            pendingWithdrawals,
+                            totalValue
+                        });
+                    }
+                );
+            }
+        );
+    });
 });
 
 // Admin API: Get pending withdrawals
