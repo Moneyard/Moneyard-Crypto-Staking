@@ -186,3 +186,21 @@ function logout() {
   localStorage.removeItem('userId');
   window.location.href = "index.html";
 }
+function navigateTo(page) {
+  switch (page) {
+    case 'home':
+      window.location.href = 'dashboard.html'; // change to your actual home page
+      break;
+    case 'referral':
+      window.location.href = 'referral.html'; // or open referral section
+      break;
+    case 'stake':
+      window.location.href = 'stake.html';
+      break;
+    case 'assets':
+      window.location.href = 'assets.html';
+      break;
+    default:
+      break;
+  }
+}
