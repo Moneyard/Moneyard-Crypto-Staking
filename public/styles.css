@@ -95,9 +95,7 @@ select {
   top: 20px;
   right: 20px;
   z-index: 1000;
-}
-
-.logout-button {
+}.logout-button {
   background-color: #28a745;
   padding: 10px 20px;
   border-radius: 4px;
