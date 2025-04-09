@@ -4,20 +4,27 @@
   <title>Assets - Moneyard</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-bottom: 80px;
+      background: #ffffff;
+    }
+
     .wallet-balance {
       margin: 20px;
       padding: 20px;
       background: #e8f5e9;
       border-left: 6px solid #28a745;
       border-radius: 12px;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       color: #14532d;
       text-align: left;
     }
 
     .spacer {
-      height: 20px;
+      height: 25px;
     }
 
     .header-buttons {
@@ -54,25 +61,46 @@
     .asset-summary {
       margin: 20px;
       padding: 25px;
-      background: #f9f9f9;
+      background: #f4f4f4;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       text-align: left;
     }
 
     .asset-summary h3 {
-      margin-bottom: 20px;
-      font-size: 24px;
+      margin-bottom: 25px;
+      font-size: 26px;
+      font-weight: bold;
     }
 
     .summary-item {
-      margin: 18px 0;
-      font-size: 20px;
+      margin: 20px 0;
+      font-size: 24px;
       font-weight: 600;
+      color: #222;
     }
 
-    .summary-item strong {
-      float: right;
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: #f1f1f1;
+      border-top: 1px solid #ccc;
+      padding: 10px 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #666;
+    }
+
+    .nav-btn.active {
+      color: #28a745;
     }
   </style>
 </head>
@@ -92,9 +120,9 @@
 
   <div class="asset-summary">
     <h3>Wallet Overview</h3>
-    <div class="summary-item">Total Deposits: <strong>$1,250.00</strong></div>
-    <div class="summary-item">Total Earnings: <strong>$95.00</strong></div>
-    <div class="summary-item">Pending Withdrawals: <strong>$300.00</strong></div>
+    <div class="summary-item">Total Deposits: $1,250.00</div>
+    <div class="summary-item">Total Earnings: $95.00</div>
+    <div class="summary-item">Pending Withdrawals: $300.00</div>
   </div>
 
   <div class="bottom-nav">
