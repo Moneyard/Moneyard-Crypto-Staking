@@ -164,39 +164,7 @@ function loadUserSummary() {
     });
 }
 
-// Withdraw request handler
-function submitWithdrawal() {
-  const userId = localStorage.getItem('userId') || 1;
-  const amount = parseFloat(document.getElementById('withdraw-amount').value);
-  const address = document.getElementById('withdraw-address').value;
-  const password = document.getElementById('withdraw-password').value;
-
-  if (!amount || amount < 10) {
-    alert("Minimum withdrawal amount is 10 USDT.");
-    return;
-  }
-
-  if (!address || !password) {
-    alert("Please fill in all fields.");
-    return;
-  }
-
-  fetch('/request-withdrawal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, amount, address, password })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
-    })
-    .catch(err => {
-      console.error("Withdrawal error:", err);
-      alert("Failed to submit withdrawal request.");
-    });
-}
-
-// Logout user
+// Logout user (adjusted to be consistent with the app's structure)
 function logout() {
   localStorage.clear();
   alert("You have been logged out.");
@@ -205,13 +173,20 @@ function logout() {
 
 // On page load
 document.addEventListener("DOMContentLoaded", function () {
+  const logoutBtn = document.getElementById("logout-btn");
+
   if (isUserLoggedIn()) {
     loadUserSummary();
-    const logoutBtn = document.getElementById("logout-button") || document.getElementById("logout-btn");
+    
+    // Make sure the logout button is visible if the user is logged in
     if (logoutBtn) {
       logoutBtn.style.display = "inline-block";
+      logoutBtn.addEventListener('click', logout); // Attach the logout function to the button
     }
   } else {
     console.log('User is not logged in. Skipping user summary load.');
+    if (logoutBtn) {
+      logoutBtn.style.display = "none"; // Hide logout button if not logged in
+    }
   }
 });
