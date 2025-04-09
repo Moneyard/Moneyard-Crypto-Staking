@@ -103,13 +103,16 @@
 </head>
 <body>
 
-  <!-- Est. Total Value at the top like a feature -->
+  <!-- Est. Total Value at the top (dynamically updated) -->
   <div class="asset-summary" style="margin-top: 20px;">
-    <div class="summary-item">Est. Total Value: $1,045.00</div>
+    <div class="summary-item">
+      Est. Total Value: <span id="estValue">$0.00</span>
+    </div>
   </div>
 
   <div class="spacer"></div>
 
+  <!-- Header buttons with collapsible sections -->
   <div class="header-buttons">
     <button class="header-btn btn-green-blue" onclick="toggleSection('crypto-content')">Crypto Assets</button>
     <button class="header-btn btn-grey" onclick="toggleSection('savings-content')">High-Yield Savings Account</button>
@@ -134,11 +137,12 @@
     </div>
   </div>
 
+  <!-- Wallet Overview Section (dynamic fields) -->
   <div class="asset-summary">
     <h3>Wallet Overview</h3>
-    <div class="summary-item">Total Deposits: $1,250.00</div>
-    <div class="summary-item">Total Earnings: $95.00</div>
-    <div class="summary-item">Pending Withdrawals: $300.00</div>
+    <div class="summary-item">Total Deposits: <span id="totalDeposits">$0.00</span></div>
+    <div class="summary-item">Total Earnings: <span id="totalEarnings">$0.00</span></div>
+    <div class="summary-item">Pending Withdrawals: <span id="pendingWithdrawals">$0.00</span></div>
   </div>
 
   <div class="bottom-nav">
@@ -149,6 +153,7 @@
   </div>
 
   <script>
+    // Toggle collapsible sections
     function toggleSection(id) {
       const sections = ['crypto-content', 'savings-content', 'micro-content'];
       sections.forEach(sectionId => {
@@ -161,9 +166,25 @@
       });
     }
 
+    // Navigation function
     function navigateTo(page) {
       window.location.href = `${page}.html`;
     }
+
+    // Fetch and update the asset summary for the user
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = 1; // Replace with actual user ID logic
+
+      fetch(`/user/assets-summary?userId=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('estValue').innerText = `$${data.totalValue.toFixed(2)}`;
+          document.getElementById('totalDeposits').innerText = `$${data.totalDeposits.toFixed(2)}`;
+          document.getElementById('totalEarnings').innerText = `$${data.earnings.toFixed(2)}`;
+          document.getElementById('pendingWithdrawals').innerText = `$${data.pendingWithdrawals.toFixed(2)}`;
+        })
+        .catch(err => console.error('Failed to load asset summary', err));
+    });
   </script>
 </body>
 </html>
