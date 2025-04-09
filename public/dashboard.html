@@ -5,131 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Dashboard-specific styles */
-    .dashboard-section {
-      margin: 20px auto;
-      max-width: 800px;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    #logout-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .loader {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 15px;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      border-radius: 5px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 15px;
-      border-radius: 5px;
-      display: none;
-    }
-    .toast.error { background: #ffebee; color: #b71c1c; }
-    .toast.success { background: #e8f5e9; color: #1b5e20; }
-  </style>
 </head>
 <body>
-  <!-- Loaders -->
-  <div id="main-loader" class="loader">Loading Dashboard...</div>
-  <div id="transaction-loader" class="loader">Loading Transactions...</div>
-
-  <!-- Toast Container -->
-  <div id="toast-container"></div>
-
-  <!-- Logout Button -->
-  <button id="logout-btn" onclick="logout()">Logout</button>
 
   <!-- User Summary -->
-  <section id="user-summary" class="dashboard-section">
+  <section id="user-summary" class="form">
     <h3>Account Summary</h3>
-    <div id="user-summary-content">
-      <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-      <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-      <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-    </div>
+    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
+    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
   </section>
 
   <!-- Deposit Section -->
-  <section id="deposit-section" class="dashboard-section">
+  <section id="deposit-section" class="form">
     <h3>Deposit Funds</h3>
-    <div class="form-group">
-      <label for="network">Choose Network:</label>
-      <select id="network" onchange="getDepositAddress()" class="form-control">
-        <option value="">-- Select Network --</option>
-        <option value="Tron">TRC20 (Tron)</option>
-        <option value="BNB">BEP20 (BNB Smart Chain)</option>
-      </select>
-    </div>
+    <label for="network">Choose Network:</label>
+    <select id="network">
+      <option value="TRC20">TRC20 (Tron)</option>
+      <option value="BEP20">BEP20 (BNB Smart Chain)</option>
+    </select>
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p id="deposit-address"></p>
 
-    <button id="get-deposit-address-btn" onclick="getDepositAddress()">Get Deposit Address</button>
-    <div id="address-container" style="margin-top: 15px;">
-      <p id="deposit-address"></p>
-      <button id="copy-button" class="btn-secondary" onclick="copyToClipboard()" style="display: none;">
-        Copy Address
-      </button>
-    </div>
-
-    <div class="form-group" style="margin-top: 20px;">
-      <input type="number" id="deposit-amount" class="form-control" 
-             placeholder="Enter amount (15 - 1000 USDT)" min="15" max="1000">
-      <button id="submit-deposit-btn" class="btn-primary" onclick="logDeposit()">Submit Deposit</button>
-    </div>
+    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+    <input type="text" id="txId" placeholder="Enter transaction ID (TxID)" />
+    <button onclick="logDeposit()">Submit Deposit</button>
   </section>
 
   <!-- Withdraw Section -->
-  <section id="withdraw-section" class="dashboard-section">
+  <section id="withdraw-section" class="form">
     <h3>Withdraw Funds</h3>
-    <div class="form-group">
-      <input type="number" id="withdraw-amount" class="form-control" 
-             placeholder="Amount to withdraw (min 10 USDT)" min="10">
-    </div>
-    <div class="form-group">
-      <input type="text" id="withdraw-address" class="form-control" 
-             placeholder="Your USDT wallet address">
-    </div>
-    <div class="form-group">
-      <input type="password" id="withdraw-password" class="form-control" 
-             placeholder="Account password">
-    </div>
-    <button id="submit-withdrawal-btn" class="btn-primary" onclick="submitWithdrawal()">Request Withdrawal</button>
-    <p class="info-text">
-      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
-    </p>
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (USDT)" />
+    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
+    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
+    <button onclick="submitWithdrawal()">Request Withdrawal</button>
   </section>
 
   <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="dashboard-section">
+  <section id="earnings-calculator-section" class="form">
     <h3>Earnings Calculator</h3>
-    <div class="form-group">
-      <input type="number" id="deposit-input" class="form-control" 
-             placeholder="Enter deposit amount" min="15">
-      <button id="calculate-earnings-btn" class="btn-primary" onclick="calculateEarnings()">Calculate Earnings</button>
-    </div>
-    <p><strong>Estimated Earnings:</strong> <span id="earnings-result">0 USDT</span></p>
+    <p>Calculate your daily earnings based on your deposit.</p>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="calculated-earnings"></p>
+  </section>
+
+  <!-- Transaction History -->
+  <section id="transaction-history-section" class="form">
+    <h3>Transaction History</h3>
+    <table id="transaction-history-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Network</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Transaction rows injected here -->
+      </tbody>
+    </table>
   </section>
 
   <script src="script.js"></script>
