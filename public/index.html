@@ -2,22 +2,26 @@
 <div class="top-menu">
   <button id="menuToggle" class="menu-button">☰</button>
   <div id="menuDropdown" class="menu-dropdown">
-    <div class="menu-section left">
-      <h3>Moneyard Learning</h3>
-      <ul>
-        <li>Learn about Crypto Staking</li>
-        <li>High-Yield Savings Tools</li>
-        <li>Micro-Investing Data</li>
-      </ul>
+    <div class="menu-section">
+      <h3 class="menu-title" data-target="learningContent">Moneyard Learning</h3>
+      <div class="menu-content" id="learningContent">
+        <ul>
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
     </div>
-    <div class="menu-section right">
-      <h3>My Account</h3>
-      <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+    <div class="menu-section">
+      <h3 class="menu-title" data-target="accountContent">My Account</h3>
+      <div class="menu-content" id="accountContent">
+        <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Menu Styles -->
+<!-- Styles -->
 <style>
   .top-menu {
     position: fixed;
@@ -44,11 +48,10 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     display: none;
-    flex-direction: row;
+    flex-direction: column;
     width: 320px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 16px;
-    gap: 12px;
+    padding: 10px 16px;
   }
 
   .menu-dropdown.show {
@@ -56,24 +59,30 @@
   }
 
   .menu-section {
-    width: 50%;
+    margin-bottom: 10px;
   }
 
-  .menu-section h3 {
-    margin-top: 0;
+  .menu-title {
     font-size: 16px;
+    font-weight: bold;
     color: #007a5a;
-    margin-bottom: 8px;
+    cursor: pointer;
+    margin-bottom: 6px;
   }
 
-  .menu-section ul {
+  .menu-content {
+    display: none;
     padding-left: 16px;
   }
 
-  .menu-section ul li {
+  .menu-content ul {
+    list-style: disc;
+    padding-left: 16px;
+  }
+
+  .menu-content ul li {
     font-size: 14px;
     margin-bottom: 6px;
-    list-style: disc;
   }
 
   .login-button {
@@ -87,7 +96,7 @@
   }
 </style>
 
-<!-- Menu Script -->
+<!-- Script -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const toggleButton = document.getElementById('menuToggle');
@@ -100,7 +109,20 @@
     document.addEventListener('click', (e) => {
       if (!document.querySelector('.top-menu').contains(e.target)) {
         menuDropdown.classList.remove('show');
+        document.querySelectorAll('.menu-content').forEach(c => c.style.display = 'none');
       }
+    });
+
+    document.querySelectorAll('.menu-title').forEach(title => {
+      title.addEventListener('click', () => {
+        const targetId = title.getAttribute('data-target');
+        const content = document.getElementById(targetId);
+        const isVisible = content.style.display === 'block';
+        // Hide all other sections
+        document.querySelectorAll('.menu-content').forEach(c => c.style.display = 'none');
+        // Toggle the clicked one
+        content.style.display = isVisible ? 'none' : 'block';
+      });
     });
   });
 </script>
