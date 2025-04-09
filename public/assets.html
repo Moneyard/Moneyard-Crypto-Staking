@@ -91,6 +91,14 @@
     .nav-btn.active {
       color: #28a745;
     }
+
+    .hidden-section {
+      display: none;
+      margin: 0 20px 25px;
+      background: #eef2f3;
+      border-radius: 12px;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
@@ -103,9 +111,27 @@
   <div class="spacer"></div>
 
   <div class="header-buttons">
-    <button class="header-btn btn-green-blue">Crypto Assets</button>
-    <button class="header-btn btn-grey">High-Yield Savings Account</button>
-    <button class="header-btn btn-dark-green">Micro-Investing</button>
+    <button class="header-btn btn-green-blue" onclick="toggleSection('crypto-content')">Crypto Assets</button>
+    <button class="header-btn btn-grey" onclick="toggleSection('savings-content')">High-Yield Savings Account</button>
+    <button class="header-btn btn-dark-green" onclick="toggleSection('micro-content')">Micro-Investing</button>
+  </div>
+
+  <!-- Collapsible Sections -->
+  <div class="collapsible-section">
+    <div id="crypto-content" class="hidden-section">
+      <div class="summary-item">Crypto Wallet Balance: $700.00</div>
+      <div class="summary-item">Coins Held: BTC, ETH, USDT</div>
+    </div>
+
+    <div id="savings-content" class="hidden-section">
+      <div class="summary-item">Interest Rate: 8% APY</div>
+      <div class="summary-item">Savings Balance: $300.00</div>
+    </div>
+
+    <div id="micro-content" class="hidden-section">
+      <div class="summary-item">Portfolio: Round-up Investments</div>
+      <div class="summary-item">Current Value: $45.00</div>
+    </div>
   </div>
 
   <div class="asset-summary">
@@ -122,6 +148,22 @@
     <button class="nav-btn active" onclick="navigateTo('assets')">Assets</button>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    function toggleSection(id) {
+      const sections = ['crypto-content', 'savings-content', 'micro-content'];
+      sections.forEach(sectionId => {
+        const el = document.getElementById(sectionId);
+        if (sectionId === id) {
+          el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    function navigateTo(page) {
+      window.location.href = `${page}.html`;
+    }
+  </script>
 </body>
 </html>
