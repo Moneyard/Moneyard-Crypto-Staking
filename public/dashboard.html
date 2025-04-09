@@ -79,35 +79,17 @@
     </table>
   </section>
 
-  <!-- Bottom Navigation Bar -->
-  <div class="bottom-nav">
-    <button class="nav-btn" onclick="navigateTo('home')">Home</button>
-    <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
-    <button class="nav-btn active" onclick="navigateTo('stake')">Stake</button>
-    <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
-  </div>
-
-  <!-- JavaScript -->
-  <script>
-    function navigateTo(page) {
-      if (page === 'home') {
-        // Redirect to the index.html page when Home button is clicked
-        window.location.href = 'index.html';
-      }
-      else if (page === 'referral') {
-        // Handle referral page navigation (adjust the page as needed)
-        window.location.href = 'referral.html'; // Replace with your actual referral page URL
-      }
-      else if (page === 'stake') {
-        // Stay on the current dashboard page, optionally scroll to the stake section
-        window.location.href = 'dashboard.html#stake';
-      }
-      else if (page === 'assets') {
-        // Handle assets page navigation (adjust the page as needed)
-        window.location.href = 'assets.html'; // Replace with your actual assets page URL
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 
 </body>
 </html>
+
+
+
+
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+  <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
+  <button class="nav-btn active" onclick="navigateTo('stake')">Stake</button>
+  <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
+</div>
