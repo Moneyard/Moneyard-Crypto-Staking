@@ -11,18 +11,6 @@
       background: #ffffff;
     }
 
-    .wallet-balance {
-      margin: 20px;
-      padding: 25px;
-      background: #e8f5e9;
-      border-left: 6px solid #28a745;
-      border-radius: 12px;
-      font-size: 28px;
-      font-weight: bold;
-      color: #14532d;
-      text-align: left; /* Left alignment */
-    }
-
     .spacer {
       height: 30px;
     }
@@ -75,9 +63,10 @@
 
     .summary-item {
       margin: 22px 0;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       color: #222;
+      text-align: left;
     }
 
     .bottom-nav {
@@ -106,8 +95,9 @@
 </head>
 <body>
 
-  <div class="wallet-balance">
-    Est. Total Value: $1,045.00
+  <!-- Est. Total Value at the top like a feature -->
+  <div class="asset-summary" style="margin-top: 20px;">
+    <div class="summary-item">Est. Total Value: $1,045.00</div>
   </div>
 
   <div class="spacer"></div>
