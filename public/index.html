@@ -6,6 +6,22 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
+<script>
+  const toggleButton = document.getElementById('menuToggle');
+  const menuDropdown = document.getElementById('menuDropdown');
+
+  toggleButton.addEventListener('click', () => {
+    menuDropdown.classList.toggle('hidden');
+  });
+
+  // Optional: Hide when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!document.querySelector('.top-menu').contains(e.target)) {
+      menuDropdown.classList.add('hidden');
+    }
+  });
+</script>
+
     .highlighted {
       font-weight: bold;
     }
