@@ -3,82 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard</title>
+  <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Add your inline CSS here for page styling as provided */
-  </style>
 </head>
 <body>
 
-  <!-- Loading Indicators -->
-  <div id="signup-loader" class="loader">Creating Account...</div>
-  <div id="login-loader" class="loader">Logging In...</div>
-  <div id="reset-password-loader" class="loader">Resetting Password...</div>
+  <!-- User Summary -->
+  <section id="user-summary" class="form">
+    <h3>Account Summary</h3>
+    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
+    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
+  </section>
 
-  <!-- Toast Container -->
-  <div id="toast-container"></div>
+  <!-- Deposit Section -->
+  <section id="deposit-section" class="form">
+    <h3>Deposit Funds</h3>
+    <label for="network">Choose Network:</label>
+    <select id="network" onchange="getDepositAddress()">
+      <option value="">-- Select Network --</option>
+      <option value="Tron">TRC20 (Tron)</option>
+      <option value="BNB">BEP20 (BNB Smart Chain)</option>
+    </select>
 
-  <!-- Logo Section -->
-  <div id="logo-section">
-    <img src="M.png" alt="Moneyard Logo" id="logo">
-  </div>
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p id="deposit-address" style="margin-top: 10px;"></p>
+    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
 
-  <!-- Introduction Section -->
-  <section id="intro">
-    <h1 id="welcome-text">
-      WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
-    </h1>
-    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
-    <p style="color: #006400; font-size: 1rem; text-align: center;">
-      We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
-      whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
-      beginners, or first-time crypto users.
+    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+    <button onclick="logDeposit()">Submit Deposit</button>
+  </section>
+
+  <!-- Withdraw Section -->
+  <section id="withdraw-section" class="form">
+    <h3>Withdraw Funds</h3>
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
+    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
+    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
+    <button onclick="submitWithdrawal()">Request Withdrawal</button>
+    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
+      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
     </p>
   </section>
 
-  <!-- Auth Forms Section -->
-  <div id="auth-forms">
-    <!-- Sign Up Form -->
-    <div id="signup-form" class="auth-form active" data-auth="anonymous">
-      <h2>Create Account</h2>
-      <input type="text" id="signup-username" placeholder="Username" required>
-      <input type="email" id="signup-email" placeholder="Email" required>
-      <input type="password" id="signup-password" placeholder="Password" required>
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)">
-      <button onclick="signup()">Sign Up</button>
-      <p class="form-toggle-link" onclick="showForm('login-form')">Already have an account? Login</p>
-    </div>
+  <!-- Earnings Calculator -->
+  <section id="earnings-calculator-section" class="form">
+    <h3>Earnings Calculator</h3>
+    <p>Calculate your daily earnings based on your deposit.</p>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="calculated-earnings"></p>
+  </section>
 
-    <!-- Login Form -->
-    <div id="login-form" class="auth-form" data-auth="anonymous">
-      <h2>Welcome Back</h2>
-      <input type="text" id="login-username" placeholder="Username" required>
-      <input type="password" id="login-password" placeholder="Password" required>
-      <button onclick="login()">Login</button>
-      <p class="form-toggle-link" onclick="showForm('signup-form')">Need an account? Sign Up</p>
-      <p class="form-toggle-link" onclick="showForm('forgot-password-form')">Forgot Password?</p>
-    </div>
-
-    <!-- Forgot Password Form -->
-    <div id="forgot-password-form" class="auth-form" data-auth="anonymous">
-      <h2>Password Recovery</h2>
-      <div class="form-message error-message" id="password-error"></div>
-      <div class="form-message success-message" id="password-success"></div>
-      <input type="email" id="recovery-email" placeholder="Your Email" required>
-      <button onclick="resetPassword()">Send Reset Link</button>
-      <p class="form-toggle-link" onclick="showForm('login-form')">Back to Login</p>
-    </div>
-  </div>
-
-  <!-- Protected Content -->
-  <div data-auth="authenticated">
-    <!-- Existing content sections here -->
-  </div>
+  <!-- Transaction History -->
+  <section id="transaction-history-section" class="form">
+    <h3>Transaction History</h3>
+    <table id="transaction-history-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Network</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Transaction rows injected here -->
+      </tbody>
+    </table>
+  </section>
 
   <script src="script.js"></script>
-  <script>
-    // JavaScript code to control form visibility and handle actions
-  </script>
 </body>
 </html>
