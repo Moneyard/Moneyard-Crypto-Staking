@@ -4,26 +4,127 @@
     <title>Assets - Moneyard</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Maintain existing styles */
-        .refresh-indicator {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-bottom: 100px;
+            background: #ffffff;
+        }
+        .spacer {
+            height: 30px;
+        }
+        .header-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 20px 25px;
+            gap: 10px;
+        }
+        .header-btn {
+            flex: 1;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: left;
+            border-radius: 12px;
+            border: none;
+        }
+        .btn-green-blue {
+            background: linear-gradient(to right, #28a745, #17a2b8);
+            color: white;
+        }
+        .btn-grey {
+            background: #d3d3d3;
+            color: #333;
+        }
+        .btn-dark-green {
+            background: #14532d;
+            color: white;
+        }
+        .asset-summary {
+            margin: 20px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            text-align: left;
+        }
+        .asset-summary h3 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .summary-item {
+            margin: 22px 0;
+            font-size: 26px;
+            font-weight: bold;
+            color: #222;
+            text-align: left;
+        }
+        .bottom-nav {
             position: fixed;
-            top: 70px;
-            right: 20px;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            background: #f1f1f1;
+            border-top: 1px solid #ccc;
+            padding: 14px 0;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #666;
+        }
+        .nav-btn.active {
             color: #28a745;
-            font-size: 12px;
+        }
+        .hidden-section {
+            display: none;
+            margin: 0 20px 25px;
+            background: #eef2f3;
+            border-radius: 12px;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
-    <!-- Est. Total Value -->
+
+    <!-- Est. Total Value at the top (dynamically updated) -->
     <div class="asset-summary" style="margin-top: 20px;">
         <div class="summary-item">
             Est. Total Value: <span id="estValue">$0.00</span>
-            <span class="refresh-indicator" id="refreshTime"></span>
         </div>
     </div>
 
-    <!-- Wallet Overview -->
+    <div class="spacer"></div>
+
+    <!-- Header buttons with collapsible sections -->
+    <div class="header-buttons">
+        <button class="header-btn btn-green-blue" onclick="toggleSection('crypto-content')">Crypto Assets</button>
+        <button class="header-btn btn-grey" onclick="toggleSection('savings-content')">High-Yield Savings Account</button>
+        <button class="header-btn btn-dark-green" onclick="toggleSection('micro-content')">Micro-Investing</button>
+    </div>
+
+    <!-- Collapsible Sections -->
+    <div class="collapsible-section">
+        <div id="crypto-content" class="hidden-section">
+            <div class="summary-item">Crypto Wallet Balance: $0.00</div>
+            <div class="summary-item">Coins Held: BTC, ETH, USDT</div>
+        </div>
+
+        <div id="savings-content" class="hidden-section">
+            <div class="summary-item">Interest Rate: 8% APY</div>
+            <div class="summary-item">Savings Balance: $0.00</div>
+        </div>
+
+        <div id="micro-content" class="hidden-section">
+            <div class="summary-item">Portfolio: Round-up Investments</div>
+            <div class="summary-item">Current Value: $0.00</div>
+        </div>
+    </div>
+
+    <!-- Wallet Overview Section (dynamic fields) -->
     <div class="asset-summary">
         <h3>Wallet Overview</h3>
         <div class="summary-item">Total Deposits: <span id="totalDeposits">$0.00</span></div>
@@ -31,40 +132,49 @@
         <div class="summary-item">Pending Withdrawals: <span id="pendingWithdrawals">$0.00</span></div>
     </div>
 
+    <div class="bottom-nav">
+        <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+        <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
+        <button class="nav-btn" onclick="navigateTo('stake')">Stake</button>
+        <button class="nav-btn" onclick="navigateTo('withdraw')">Withdraw</button>
+    </div>
+
     <script>
-        let lastUpdate = new Date();
-        
-        function updateDisplay(data) {
-            document.getElementById('estValue').textContent = `$${data.totalValue.toFixed(2)}`;
-            document.getElementById('totalDeposits').textContent = `$${data.totalDeposits.toFixed(2)}`;
-            document.getElementById('totalEarnings').textContent = `$${data.earnings.toFixed(2)}`;
-            document.getElementById('pendingWithdrawals').textContent = `$${data.pendingWithdrawals.toFixed(2)}`;
-            document.getElementById('refreshTime').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
+        // Toggle collapsible sections
+        function toggleSection(id) {
+            const sections = ['crypto-content', 'savings-content', 'micro-content'];
+            sections.forEach(sectionId => {
+                const el = document.getElementById(sectionId);
+                if (sectionId === id) {
+                    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
         }
 
-        async function fetchAssetData() {
-            try {
-                const userId = localStorage.getItem('userId');
-                if (!userId) throw new Error('Not authenticated');
-
-                const response = await fetch(`/user/assets-summary?userId=${userId}`);
-                if (!response.ok) throw new Error('Server error');
-                
-                const data = await response.json();
-                updateDisplay(data);
-            } catch (error) {
-                console.error('Fetch error:', error);
-                alert('Error updating balances. Please refresh.');
-            }
+        // Navigation function
+        function navigateTo(page) {
+            window.location.href = `${page}.html`;
         }
 
-        // Initial load
+        // Fetch and update the asset summary for the user
         document.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('userId')) window.location.href = '/';
-            
-            fetchAssetData();
-            setInterval(fetchAssetData, 30000); // Refresh every 30 seconds
+            const userId = 1; // Replace with actual user ID logic
+
+            // Fetch data from the backend API for user assets
+            fetch(`/user/assets-summary?userId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the DOM elements with fetched data
+                    document.getElementById('estValue').innerText = `$${data.totalValue.toFixed(2)}`;
+                    document.getElementById('totalDeposits').innerText = `$${data.totalDeposits.toFixed(2)}`;
+                    document.getElementById('totalEarnings').innerText = `$${data.earnings.toFixed(2)}`;
+                    document.getElementById('pendingWithdrawals').innerText = `$${data.pendingWithdrawals.toFixed(2)}`;
+                })
+                .catch(err => console.error('Failed to load asset summary', err));
         });
     </script>
+
 </body>
 </html>
