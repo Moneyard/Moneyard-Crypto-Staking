@@ -117,6 +117,10 @@ select {
 .other-features {
   /* Styling for the section below */
 }
+/* Add spacing below the Transaction History section */
+#transaction-history-section {
+  margin-bottom: 60px; /* You can adjust this value for the spacing you need */
+}
 
 .bottom-nav {
   position: fixed;
