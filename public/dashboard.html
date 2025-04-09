@@ -111,3 +111,37 @@
   </script>
 </body>
 </html>
+<script>
+  // Check if the user is logged in
+  if (localStorage.getItem("loggedIn") !== "true") {
+    // If not logged in, redirect to the homepage (index.html)
+    window.location.replace("index.html");
+  }
+
+  // navigateTo function to handle navigation
+  function navigateTo(page) {
+    switch(page) {
+      case 'home':
+        window.location.replace('index.html'); // Go to home page (index.html) without logging out
+        break;
+      case 'referral':
+        window.location.href = 'referral.html'; // Go to referral page
+        break;
+      case 'stake':
+        window.location.href = 'stake.html'; // Go to stake page
+        break;
+      case 'assets':
+        window.location.href = 'assets.html'; // Go to assets page
+        break;
+      default:
+        console.log("Invalid page");
+        break;
+    }
+  }
+
+  // Example logout function that clears session on logout
+  function logout() {
+    localStorage.removeItem("loggedIn"); // Clear the loggedIn session item
+    window.location.replace("index.html"); // Redirect to the homepage
+  }
+</script>
