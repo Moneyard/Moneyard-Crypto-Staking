@@ -1,3 +1,110 @@
+<!-- Top-Right Menu Bar -->
+<div class="top-menu">
+  <button id="menuToggle" class="menu-button">☰</button>
+  <div id="menuDropdown" class="menu-dropdown">
+    <div class="menu-section left">
+      <h3>Moneyard Learning</h3>
+      <ul>
+        <li>Learn about Crypto Staking</li>
+        <li>High-Yield Savings Tools</li>
+        <li>Micro-Investing Data</li>
+      </ul>
+    </div>
+    <div class="menu-section right">
+      <h3>My Account</h3>
+      <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Styles -->
+<style>
+  .top-menu {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+  }
+
+  .menu-button {
+    background-color: #007a5a;
+    color: white;
+    font-size: 24px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .menu-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: none;
+    flex-direction: row;
+    width: 320px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .menu-dropdown.show {
+    display: flex;
+  }
+
+  .menu-section {
+    width: 50%;
+  }
+
+  .menu-section h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #007a5a;
+    margin-bottom: 8px;
+  }
+
+  .menu-section ul {
+    padding-left: 16px;
+  }
+
+  .menu-section ul li {
+    font-size: 14px;
+    margin-bottom: 6px;
+    list-style: disc;
+  }
+
+  .login-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+</style>
+
+<!-- Menu Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleButton = document.getElementById('menuToggle');
+    const menuDropdown = document.getElementById('menuDropdown');
+
+    toggleButton.addEventListener('click', () => {
+      menuDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!document.querySelector('.top-menu').contains(e.target)) {
+        menuDropdown.classList.remove('show');
+      }
+    });
+  });
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,72 +113,7 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Top-Right Menu Bar Styles */
-    .top-menu {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000;
-    }
-
-    .menu-button {
-      background-color: #007a5a;
-      color: white;
-      font-size: 24px;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .menu-dropdown {
-      position: absolute;
-      top: 40px;
-      right: 0;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      display: none;
-      flex-direction: row;
-      width: 320px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      padding: 16px;
-      gap: 12px;
-    }
-
-    .menu-dropdown.show {
-      display: flex;
-    }
-
-    .menu-section {
-      width: 50%;
-    }
-
-    .menu-section h3 {
-      margin-top: 0;
-      font-size: 16px;
-      color: #007a5a;
-      margin-bottom: 8px;
-    }
-
-    .menu-section ul {
-      padding-left: 16px;
-    }
-
-    .menu-section ul li {
-      font-size: 14px;
-      margin-bottom: 6px;
-      list-style: disc;
-    }
-
-    .login-button {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
+    
     }
 
     #welcome-text {
