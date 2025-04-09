@@ -1,259 +1,191 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
 
 const app = express();
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secure_secret_here';
+const PORT = process.env.PORT || 3000;
 
-// Enhanced middleware configuration
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://your-heroku-app-name.herokuapp.com' 
-    : 'http://localhost:5500',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-app.use(express.json());
+// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Heroku-compatible database setup
-let db;
-if (process.env.DATABASE_URL) {
-  db = new sqlite3.Database(process.env.DATABASE_URL);
-} else {
-  db = new sqlite3.Database('./database.sqlite', (err) => {
-    if (err) {
-      console.error('Database connection error:', err);
-      process.exit(1);
-    }
-    console.log('Connected to local SQLite database');
-    initializeDatabase();
-  });
-}
+// SQLite database setup
+const db = new sqlite3.Database('./database.sqlite', (err) => {
+    if (err) return console.error('Failed to connect to DB:', err);
+    console.log('Connected to SQLite database.');
+});
 
-function initializeDatabase() {
-  db.exec(`
-    PRAGMA foreign_keys = ON;
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      refcode TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
+// Create transactions table if it doesn't exist
+db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      type TEXT NOT NULL,
-      amount REAL NOT NULL,
-      network TEXT,
-      tx_id TEXT UNIQUE,
-      status TEXT DEFAULT 'pending',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(user_id) REFERENCES users(id)
-    );
-  `, (err) => {
-    if (err) console.error('Database initialization error:', err);
-  });
-}
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        type TEXT,
+        amount REAL,
+        network TEXT,
+        tx_id TEXT,
+        status TEXT,
+        date TEXT
+    )
+`);
 
-// Enhanced auth middleware with error handling
-const authenticate = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Authorization token required' });
+// Create withdrawals table if it doesn't exist
+db.run(`
+    CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        amount REAL,
+        wallet_address TEXT,
+        password TEXT,
+        status TEXT DEFAULT 'pending',
+        date TEXT
+    )
+`);
 
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      console.error('JWT verification error:', err);
-      return res.status(403).json({ error: 'Invalid or expired token' });
-    }
-    req.user = decoded;
-    next();
-  });
+// Static page routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Deposit wallet addresses (example)
+const walletAddresses = {
+    TRC20: "TXYZ1234567890TRONADDRESS",
+    BEP20: "0x1234567890BNBADDRESS"
 };
 
-// Signup Endpoint
-app.post('/api/signup', async (req, res) => {
-  try {
-    const { username, email, password, refcode } = req.body;
-    
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'All fields are required' });
+// API: Get deposit address
+app.post('/get-deposit-address', (req, res) => {
+    const { userId, network } = req.body;
+
+    if (!walletAddresses[network]) {
+        return res.status(400).json({ error: 'Invalid network selected' });
     }
 
-    const existingUser = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT username, email FROM users WHERE username = ? OR email = ?',
-        [username, email],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
-
-    if (existingUser) {
-      const conflicts = [];
-      if (existingUser.username === username) conflicts.push('username');
-      if (existingUser.email === email) conflicts.push('email');
-      return res.status(409).json({ 
-        error: `Conflict found: ${conflicts.join(', ')} already exists`
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const newUser = await new Promise((resolve, reject) => {
-      db.run(
-        `INSERT INTO users (username, email, password, refcode) 
-         VALUES (?, ?, ?, ?)`,
-        [username, email, hashedPassword, refcode],
-        function(err) {
-          if (err) reject(err);
-          else resolve(this);
-        }
-      );
-    });
-
-    const token = jwt.sign(
-      { userId: newUser.lastID, username }, 
-      JWT_SECRET, 
-      { expiresIn: '1h' }
-    );
-
-    res.status(201).json({ 
-      message: 'Registration successful',
-      token,
-      user: { id: newUser.lastID, username, email }
-    });
-
-  } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ 
-      error: error.message.includes('UNIQUE') 
-        ? 'Username or email already exists' 
-        : 'Registration failed' 
-    });
-  }
+    res.json({ address: walletAddresses[network] });
 });
 
-// Login Endpoint
-app.post('/api/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password required' });
+// API: Log deposit
+app.post('/log-deposit', (req, res) => {
+    const { userId, amount, network, txId } = req.body;
+
+    if (amount < 15 || amount > 1000) {
+        return res.status(400).json({ error: 'Amount must be between 15 and 1000 USDT' });
     }
 
-    const user = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT * FROM users WHERE username = ?',
-        [username],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    res.json({
-      message: 'Login successful',
-      token,
-      user: { id: user.id, username: user.username, email: user.email }
-    });
-
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Authentication failed' });
-  }
-});
-
-// Password Reset Endpoint
-app.post('/api/reset-password', async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
-
-    if (!email || !newPassword) {
-      return res.status(400).json({ error: 'Email and new password are required' });
-    }
-
-    const user = await new Promise((resolve, reject) => {
-      db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User with that email not found' });
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    await new Promise((resolve, reject) => {
-      db.run(
-        'UPDATE users SET password = ? WHERE email = ?',
-        [hashedPassword, email],
+    db.run(
+        `INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+         VALUES (?, "deposit", ?, ?, ?, "pending", datetime("now"))`,
+        [userId, amount, network, txId],
         function (err) {
-          if (err) reject(err);
-          else resolve();
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: 'Deposit logged, pending confirmation' });
         }
-      );
-    });
-
-    res.json({ message: 'Password reset successful. You can now log in with your new password.' });
-
-  } catch (error) {
-    console.error('Password reset error:', error);
-    res.status(500).json({ error: 'Failed to reset password' });
-  }
+    );
 });
 
-// Production configuration
-if (process.env.NODE_ENV === 'production') {
-  app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https') {
-      res.redirect(`https://${req.header('host')}${req.url}`);
-    } else {
-      next();
+// API: Get transaction history for the logged-in user
+app.get('/get-transaction-history', (req, res) => {
+    const userId = req.query.userId || 1;
+
+    db.all(
+        `SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`,
+        [userId],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ transactions: rows });
+        }
+    );
+});
+
+// API: Get user summary (total deposits and balance)
+app.get('/user-summary', (req, res) => {
+    const userId = req.query.userId;
+
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID required' });
     }
-  });
 
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
-}
+    db.get(
+        `SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = 'deposit'`,
+        [userId],
+        (err, row) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error('Global error:', err);
-  res.status(500).json({ error: 'Internal server error' });
+            const totalDeposit = row?.totalDeposit || 0;
+            const balance = totalDeposit * 0.9;
+
+            res.json({ totalDeposit, balance });
+        }
+    );
 });
 
-// Server start
-const PORT = process.env.PORT || 3000;
+// Admin API: Get pending withdrawals
+app.get('/admin/withdrawals', (req, res) => {
+    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ withdrawals: rows });
+    });
+});
+
+// Admin API: Approve withdrawal
+app.post('/admin/approve-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal approved successfully.' });
+    });
+});
+
+// Admin API: Reject withdrawal
+app.post('/admin/reject-withdrawal', (req, res) => {
+    const { withdrawalId } = req.body;
+
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Withdrawal rejected successfully.' });
+    });
+});
+
+// Admin Routes
+app.get('/admin/get-withdrawals', (req, res) => {
+    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ withdrawals: rows });
+    });
+});
+
+app.post('/admin/update-withdrawal', (req, res) => {
+    const { id, status } = req.body;
+
+    if (!['approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    db.run(
+        'UPDATE transactions SET status = ? WHERE id = ?',
+        [status, id],
+        function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ message: `Withdrawal ${status}` });
+        }
+    );
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
