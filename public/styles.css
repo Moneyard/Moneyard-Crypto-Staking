@@ -109,6 +109,14 @@ select {
   background-color: #218838;
 }
 
+.transaction-history {
+  /* Add any existing styling here */
+  margin-bottom: 30px; /* Adjust the value as needed for spacing */
+}
+
+.other-features {
+  /* Styling for the section below */
+}
 
 .bottom-nav {
   position: fixed;
