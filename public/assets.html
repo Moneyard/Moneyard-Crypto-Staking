@@ -1,129 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard - Assets</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <title>Assets - Moneyard</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
-      background: #fff;
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      padding-bottom: 100px;
+      background: #ffffff;
+    }
+
+    .spacer {
+      height: 30px;
     }
 
     .header-buttons {
       display: flex;
       justify-content: space-between;
-      padding: 10px 15px;
-      background-color: #f1f1f1;
-      border-bottom: 1px solid #ccc;
+      margin: 0 20px 25px;
+      gap: 10px;
     }
 
-    .header-buttons button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
+    .header-btn {
+      flex: 1;
+      padding: 20px;
+      font-size: 20px;
       font-weight: bold;
-      cursor: pointer;
+      text-align: left;
+      border-radius: 12px;
+      border: none;
     }
 
-    .left-button {
-      background-color: #28a745;
+    .btn-green-blue {
+      background: linear-gradient(to right, #28a745, #17a2b8);
       color: white;
     }
 
-    .center-button {
-      background-color: #ccc;
+    .btn-grey {
+      background: #d3d3d3;
       color: #333;
     }
 
-    .right-button {
-      background-color: #006400;
+    .btn-dark-green {
+      background: #14532d;
       color: white;
     }
 
-    .assets-overview {
-      text-align: center;
-      padding: 20px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .assets-overview h2 {
-      margin-bottom: 10px;
-    }
-
-    .overview-section {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      padding: 20px;
-    }
-
-    .asset-box {
+    .asset-summary {
+      margin: 20px;
+      padding: 25px;
       background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
+      border-radius: 12px;
+      text-align: left;
     }
 
-    .asset-title {
+    .asset-summary h3 {
+      font-size: 28px;
+      margin-bottom: 30px;
       font-weight: bold;
-      font-size: 16px;
-      margin-bottom: 5px;
     }
 
-    .asset-value {
+    .summary-item {
+      margin: 22px 0;
+      font-size: 26px;
+      font-weight: bold;
+      color: #222;
+      text-align: left;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: #f1f1f1;
+      border-top: 1px solid #ccc;
+      padding: 14px 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
       font-size: 18px;
-      color: #007bff;
+      font-weight: bold;
+      color: #666;
+    }
+
+    .nav-btn.active {
+      color: #28a745;
+    }
+
+    .hidden-section {
+      display: none;
+      margin: 0 20px 25px;
+      background: #eef2f3;
+      border-radius: 12px;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
+
+  <!-- Est. Total Value at the top (dynamically updated) -->
+  <div class="asset-summary" style="margin-top: 20px;">
+    <div class="summary-item">
+      Est. Total Value: <span id="estValue">$0.00</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- Header buttons with collapsible sections -->
   <div class="header-buttons">
-    <button class="left-button">Crypto Assets</button>
-    <button class="center-button">High-Yield Savings Account</button>
-    <button class="right-button">Micro-Investing</button>
+    <button class="header-btn btn-green-blue" onclick="toggleSection('crypto-content')">Crypto Assets</button>
+    <button class="header-btn btn-grey" onclick="toggleSection('savings-content')">High-Yield Savings Account</button>
+    <button class="header-btn btn-dark-green" onclick="toggleSection('micro-content')">Micro-Investing</button>
   </div>
 
-  <div class="assets-overview">
-    <h2>Est. Total Value</h2>
-    <div id="totalValue" style="font-size: 24px; color: #28a745;">$0</div>
+  <!-- Collapsible Sections -->
+  <div class="collapsible-section">
+    <div id="crypto-content" class="hidden-section">
+      <div class="summary-item">Crypto Wallet Balance: $700.00</div>
+      <div class="summary-item">Coins Held: BTC, ETH, USDT</div>
+    </div>
+
+    <div id="savings-content" class="hidden-section">
+      <div class="summary-item">Interest Rate: 8% APY</div>
+      <div class="summary-item">Savings Balance: $300.00</div>
+    </div>
+
+    <div id="micro-content" class="hidden-section">
+      <div class="summary-item">Portfolio: Round-up Investments</div>
+      <div class="summary-item">Current Value: $45.00</div>
+    </div>
   </div>
 
-  <div class="overview-section">
-    <div class="asset-box">
-      <div class="asset-title">Crypto Assets</div>
-      <div class="asset-value" id="cryptoAssetsValue">$0</div>
-    </div>
+  <!-- Wallet Overview Section (dynamic fields) -->
+  <div class="asset-summary">
+    <h3>Wallet Overview</h3>
+    <div class="summary-item">Total Deposits: <span id="totalDeposits">$0.00</span></div>
+    <div class="summary-item">Total Earnings: <span id="totalEarnings">$0.00</span></div>
+    <div class="summary-item">Pending Withdrawals: <span id="pendingWithdrawals">$0.00</span></div>
+  </div>
 
-    <div class="asset-box">
-      <div class="asset-title">High-Yield Savings Account</div>
-      <div class="asset-value" id="savingsValue">$0</div>
-    </div>
-
-    <div class="asset-box">
-      <div class="asset-title">Micro-Investing</div>
-      <div class="asset-value" id="microInvestingValue">$0</div>
-    </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+    <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
+    <button class="nav-btn" onclick="navigateTo('stake')">Stake</button>
+    <button class="nav-btn active" onclick="navigateTo('assets')">Assets</button>
   </div>
 
   <script>
-    // Simulated values (replace these with real fetch() calls from your backend if needed)
-    const cryptoAssets = 500;
-    const highYieldSavings = 300;
-    const microInvesting = 150;
+    // Toggle collapsible sections
+    function toggleSection(id) {
+      const sections = ['crypto-content', 'savings-content', 'micro-content'];
+      sections.forEach(sectionId => {
+        const el = document.getElementById(sectionId);
+        if (sectionId === id) {
+          el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
 
-    // Update UI with values
-    document.getElementById('cryptoAssetsValue').textContent = `$${cryptoAssets}`;
-    document.getElementById('savingsValue').textContent = `$${highYieldSavings}`;
-    document.getElementById('microInvestingValue').textContent = `$${microInvesting}`;
+    // Navigation function
+    function navigateTo(page) {
+      window.location.href = `${page}.html`;
+    }
 
-    // Calculate total value correctly
-    const totalValue = cryptoAssets + highYieldSavings + microInvesting;
-    document.getElementById('totalValue').textContent = `$${totalValue}`;
+    // Fetch and update the asset summary for the user
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = 1; // Replace with actual user ID logic
+
+      fetch(`/user/assets-summary?userId=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('estValue').innerText = `$${data.totalValue.toFixed(2)}`;
+          document.getElementById('totalDeposits').innerText = `$${data.totalDeposits.toFixed(2)}`;
+          document.getElementById('totalEarnings').innerText = `$${data.earnings.toFixed(2)}`;
+          document.getElementById('pendingWithdrawals').innerText = `$${data.pendingWithdrawals.toFixed(2)}`;
+        })
+        .catch(err => console.error('Failed to load asset summary', err));
+    });
   </script>
 </body>
 </html>
