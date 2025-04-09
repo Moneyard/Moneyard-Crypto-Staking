@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Assets - Moneyard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2 style="text-align:center; padding: 20px;">Your Assets</h2>
+  <p style="text-align:center;">Overview of your holdings, deposits, and balance history.</p>
+
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+    <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
+    <button class="nav-btn" onclick="navigateTo('stake')">Stake</button>
+    <button class="nav-btn active" onclick="navigateTo('assets')">Assets</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
