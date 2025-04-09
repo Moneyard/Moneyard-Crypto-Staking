@@ -6,211 +6,6 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-<!-- Top-Right Menu Bar -->
-<div class="top-menu">
-  <button id="menuToggle" class="menu-button">☰</button>
-  <div id="menuDropdown" class="menu-dropdown hidden">
-    <div class="menu-section left">
-      <h3>Moneyard Learning</h3>
-      <ul>
-        <li>Learn about Crypto Staking</li>
-        <li>High-Yield Savings Tools</li>
-        <li>Micro-Investing Data</li>
-      </ul>
-    </div>
-    <div class="menu-section right">
-      <h3>My Account</h3>
-      <button class="login-button" onclick="location.href='index.html#login'">Login</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const toggleButton = document.getElementById('menuToggle');
-  const menuDropdown = document.getElementById('menuDropdown');
-
-  toggleButton.addEventListener('click', () => {
-    menuDropdown.classList.toggle('hidden');
-  });
-
-  // Optional: Hide when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!document.querySelector('.top-menu').contains(e.target)) {
-      menuDropdown.classList.add('hidden');
-    }
-  });
-</script>
-
-    .highlighted {
-      font-weight: bold;
-    }
-    .blue {
-      color: #0000FF;
-    }
-    .green {
-      color: #4CAF50;
-    }
-    #welcome-text {
-      color: #006400;
-      font-size: 2.5rem;
-      text-align: center;
-      margin-top: 50px;
-    }
-    #tagline {
-      color: #006400;
-      font-size: 1.5rem;
-      text-align: center;
-      margin-top: 20px;
-    }
-    #intro {
-      text-align: center;
-      padding: 20px;
-    }
-  </style>
-</head><!-- Top-Right Menu Bar -->
-<div class="top-menu">
-  <button id="menuToggle" class="menu-button">☰</button>
-  <div id="menuDropdown" class="menu-dropdown hidden">
-    <div class="menu-section left">
-      <h3>Moneyard Learning</h3>
-      <ul>
-        <li>Learn about Crypto Staking</li>
-        <li>High-Yield Savings Tools</li>
-        <li>Micro-Investing Data</li>
-      </ul>
-    </div>
-    <div class="menu-section right">
-      <h3>My Account</h3>
-      <button class="login-button" onclick="location.href='index.html#login'">Login</button>
-    </div>
-  </div>
-</div>
-
-<body>
-
-  <!-- Logo Section -->
-  <div id="logo-section">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo">
-  </div>
-
-  <!-- Introduction Section -->
-  <section id="intro">
-    <h1 id="welcome-text">
-      WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span>
-    </h1>
-    <p id="tagline">
-      Grow Your Crypto, Effortlessly!
-    </p>
-    <p style="color: #006400; font-size: 1rem; text-align: center;">
-      We are committed to providing financial literacy/education appealing to users seeking wealth growth, 
-      whilst providing effortless crypto staking services for everyday wealth builders, mainstream investors, 
-      beginners, or first-time crypto users.
-    </p>
-  </section>
-
-  <!-- Forms Section -->
-  <div id="forms">
-    <!-- Sign Up Form -->
-    <div id="signup-form" class="form">
-      <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" />
-      <input type="password" id="signup-password" placeholder="Password" />
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
-      <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
-    </div>
-
-    <!-- Login Form -->
-    <div id="login-form" class="form" style="display: none;">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
-    </div>
-  </div>
-
-<!-- Simplicity Section -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
-    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <!-- Security Section -->
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <!-- Growth Section -->
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 27% APY. Use Multiply and Moneyard High-Yield Account Plus to boost your crypto.</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
-    </div>
-  </section>
-
-  <!-- Offers Section -->
-  <section class="section" id="offers">
-    <h2>Get Started with These Special Offers</h2>
-    <ul class="offers-list">
-      <li>Deposit $100 → <strong>Get $20</strong> in Moneyard</li>
-      <li>Stake $150 in Crypto → <strong>Earn $35</strong> in Moneyard</li>
-      <li>Open Multiply with $100 → <strong>Receive $25</strong> in Moneyard</li>
-      <li>Open High-Yield Savings Account Plus with $100 → <strong>Earn another $25</strong> in Moneyard</li>
-    </ul>
-  </section>
-
-<!-- Live Growth Tracker Section -->
-<section class="section animated-section" id="growth-tracker">
-  <h2>Watch Your Crypto Grow</h2>
-  <p>Real-time growth with staking, savings, and multiply features.</p>
-
-  <div class="growth-boxes">
-    <div class="growth-card">
-      <h3>Staking APY</h3>
-      <div class="counter" data-target="27">0</div>
-      <span>% Annual Yield</span>
-    </div>
-    <div class="growth-card">
-      <h3>High-Yield Savings</h3>
-      <div class="counter" data-target="12">0</div>
-      <span>% Per Annum</span>
-    </div>
-    <div class="growth-card">
-      <h3>Multiply Growth</h3>
-      <div class="counter" data-target="35">0</div>
-      <span>% Bonus Returns</span>
-    </div>
-  </div>
-</section>
-
-
-  <footer>
-    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
-  </footer>
-
-</body>
-</html>
-<!-- User Info Section -->
-  <div id="user-info" style="display:none;">
-    <h3>Welcome, <span id="user-username"></span></h3>
-    <p>Your account is loaded successfully.</p>
-  </div>
-
-  <!-- JavaScript -->
-  <script src="script.js" defer></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Moneyard</title>
-  <style>
     /* Top-Right Menu Bar Styles */
     .top-menu {
       position: fixed;
@@ -278,8 +73,34 @@
       cursor: pointer;
       font-size: 14px;
     }
+
+    #welcome-text {
+      color: #006400;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    #tagline {
+      color: #006400;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #intro {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .highlighted { font-weight: bold; }
+    .blue { color: #0000FF; }
+    .green { color: #4CAF50; }
+
+    /* Additional layout or animation styles can go here */
   </style>
 </head>
+
 <body>
 
   <!-- Top-Right Menu Bar -->
@@ -301,6 +122,98 @@
     </div>
   </div>
 
+  <!-- Logo -->
+  <div id="logo-section" style="text-align: center;">
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
+  </div>
+
+  <!-- Intro Section -->
+  <section id="intro">
+    <h1 id="welcome-text">WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span></h1>
+    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
+    <p style="color: #006400;">We are committed to providing financial literacy, education and effortless crypto staking for wealth builders and crypto beginners.</p>
+  </section>
+
+  <!-- Forms -->
+  <div id="forms">
+    <div id="signup-form" class="form">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-username" placeholder="Username" />
+      <input type="password" id="signup-password" placeholder="Password" />
+      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
+      <button onclick="signup()">Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+    </div>
+
+    <div id="login-form" class="form" style="display: none;">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p><a href="#">Forgot password?</a></p>
+      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+    </div>
+  </div>
+
+  <!-- Sections (Growth, Security, Simplicity etc.) -->
+  <section class="section animated-section">
+    <h2>Simplicity First</h2>
+    <p>Start investing in minutes. One-tap deposits and animated guides make it easy for beginners.</p>
+    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
+  </section>
+
+  <section class="section animated-section">
+    <h2>Built-In Security</h2>
+    <p>Your funds are safe with password + OTP, email confirmation, and encryption.</p>
+    <div class="vault-animation">🔐</div>
+  </section>
+
+  <section class="section animated-section">
+    <h2>Real Growth for Real People</h2>
+    <p>Stake and earn up to 27% APY. Use Multiply and High-Yield Savings Plus to boost your crypto.</p>
+    <div class="progress-bar-container">
+      <div class="progress-bar"></div>
+    </div>
+  </section>
+
+  <section class="section" id="offers">
+    <h2>Get Started with These Special Offers</h2>
+    <ul class="offers-list">
+      <li>Deposit $100 → <strong>Get $20</strong> in Moneyard</li>
+      <li>Stake $150 → <strong>Earn $35</strong> in Moneyard</li>
+      <li>Multiply with $100 → <strong>Receive $25</strong> in Moneyard</li>
+      <li>High-Yield Savings with $100 → <strong>Earn another $25</strong></li>
+    </ul>
+  </section>
+
+  <section class="section animated-section" id="growth-tracker">
+    <h2>Watch Your Crypto Grow</h2>
+    <div class="growth-boxes">
+      <div class="growth-card">
+        <h3>Staking APY</h3>
+        <div class="counter" data-target="27">0</div>
+        <span>% Annual Yield</span>
+      </div>
+      <div class="growth-card">
+        <h3>High-Yield Savings</h3>
+        <div class="counter" data-target="12">0</div>
+        <span>% Per Annum</span>
+      </div>
+      <div class="growth-card">
+        <h3>Multiply Growth</h3>
+        <div class="counter" data-target="35">0</div>
+        <span>% Bonus Returns</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="script.js" defer></script>
   <script>
     const toggleButton = document.getElementById('menuToggle');
     const menuDropdown = document.getElementById('menuDropdown');
@@ -315,6 +228,5 @@
       }
     });
   </script>
-
 </body>
 </html>
