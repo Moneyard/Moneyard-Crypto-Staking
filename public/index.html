@@ -35,11 +35,10 @@
 </head>
 <body>
 
-  <!-- Header Bar -->
-<header class="header">
-  <img src="logo/20250409_162622.jpg" alt="Moneyard Logo" id="logo">
-</header>
-
+  <!-- Logo Section -->
+  <div id="logo-section">
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo">
+  </div>
 
   <!-- Introduction Section -->
   <section id="intro">
@@ -137,3 +136,14 @@
   <script src="script.js" defer></script>
 </body>
 </html>
+// Example login logic in index.html
+function login() {
+  // After successful login (authentication)
+  if (userIsAuthenticated) {
+    localStorage.setItem("loggedIn", "true"); // Set session state to logged in
+    window.location.replace("dashboard.html"); // Redirect to the dashboard
+  } else {
+    alert("Login failed");
+  }
+}
+
