@@ -18,10 +18,14 @@
     <h3 style="margin-top: 0;">Payment Methods</h3>
     <ol style="padding-left: 18px; font-size: 15px;">
       <li><b>Buy Crypto with ZM</b>:<br/> Send via bank, mobile money, card, etc.<br/><b>Airtel Money:</b> 0771196634</li><br/>
+      
       <li><b>Deposit Crypto / USDT</b>:<br/>
-        TRC20 Address: <code>TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</code><br/>
-        BEP20 Address: <code>0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</code>
+        TRC20: <code id="trc20-address">TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</code>
+        <button onclick="copyToClipboard('trc20-address')">Copy</button><br/>
+        BEP20: <code id="bep20-address">0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</code>
+        <button onclick="copyToClipboard('bep20-address')">Copy</button>
       </li><br/>
+
       <li><b>Mobile Payment</b>:
         <br/>
         <select id="mobile-method" style="width: 100%; margin-top: 5px;">
