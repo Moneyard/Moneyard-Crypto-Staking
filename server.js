@@ -88,6 +88,43 @@ app.post('/log-deposit', (req, res) => {
     );
 });
 
+// Function to update user balance after deposit confirmation
+async function updateUserBalance(userId, amount) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+// API: Confirm deposit and update balance
+app.post('/confirm-deposit', (req, res) => {
+    const { userId, txId, amount } = req.body;
+
+    // Verify transaction (example: check transaction status or process the deposit)
+    db.run(
+        `UPDATE transactions SET status = 'confirmed' WHERE user_id = ? AND tx_id = ?`,
+        [userId, txId],
+        async function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            // After confirming the transaction, update the user's balance
+            try {
+                await updateUserBalance(userId, amount);
+                res.json({ message: 'Deposit confirmed, balance updated.' });
+            } catch (error) {
+                res.status(500).json({ error: 'Failed to update user balance.' });
+            }
+        }
+    );
+});
+
 // API: Get transaction history for the logged-in user
 app.get('/get-transaction-history', (req, res) => {
     const userId = req.query.userId || 1;
