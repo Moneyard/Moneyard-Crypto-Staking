@@ -262,3 +262,29 @@ app.post('/admin/update-withdrawal', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+// API: Handle fund transfers
+app.post('/transfer', (req, res) => {
+  const { userId, amount, recipientId } = req.body;
+
+  if (!amount || !recipientId || amount <= 0) {
+    return res.status(400).json({ error: 'Invalid transfer request' });
+  }
+
+  // Subtract from sender
+  db.run(`
+    INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+    VALUES (?, 'transfer-out', ?, '', '', 'completed', datetime('now'))
+  `, [userId, amount], function(err) {
+    if (err) return res.status(500).json({ error: 'Error sending funds' });
+
+    // Add to recipient
+    db.run(`
+      INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+      VALUES (?, 'transfer-in', ?, '', '', 'completed', datetime('now'))
+    `, [recipientId, amount], function(err) {
+      if (err) return res.status(500).json({ error: 'Error crediting recipient' });
+
+      res.json({ message: 'Transfer successful' });
+    });
+  });
+});
