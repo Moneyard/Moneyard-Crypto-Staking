@@ -6,59 +6,78 @@
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-
-  <!-- Deposit Button (Top Center) -->
-  <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000;">
-    <button onclick="togglePaymentModal()" style="background-color: #28a745; padding: 10px 25px; color: white; border: none; border-radius: 5px; font-weight: bold;">Deposit</button>
+<body style="padding-top: 60px; padding-bottom: 20px;">
+  <!-- Logout Button -->
+  <div class="logout-container">
+    <button class="logout-button" onclick="logout()">Log Out</button>
   </div>
 
-  <!-- Payment Modal -->
-  <div id="payment-modal" style="display:none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 10px; padding: 20px; max-width: 350px; width: 90%; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;">
-    <h3 style="margin-top: 0;">Payment Methods</h3>
-    <ol style="padding-left: 18px; font-size: 15px;">
-      <li><b>Buy Crypto with ZM</b>:<br/> Send via bank, mobile money, card, etc.<br/><b>Airtel Money:</b> 0771196634</li><br/>
-      
-      <li><b>Deposit Crypto / USDT</b>:<br/>
-        TRC20: <code id="trc20-address">TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</code>
-        <button onclick="copyToClipboard('trc20-address')">Copy</button><br/>
-        BEP20: <code id="bep20-address">0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</code>
-        <button onclick="copyToClipboard('bep20-address')">Copy</button>
-      </li><br/>
+  <!-- User Summary -->
+  <section id="user-summary" class="form">
+    <h3>Account Summary</h3>
+    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
+    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
+  </section>
 
-      <li><b>Mobile Payment</b>:
-        <br/>
-        <select id="mobile-method" style="width: 100%; margin-top: 5px;">
-          <option value="">Select Method</option>
-          <option value="airtel">Airtel MobileMoney</option>
-          <option value="mtn">MTN Mobile Money</option>
-        </select>
-        <input type="text" placeholder="Enter your mobile number" style="margin-top: 10px; width: 100%; padding: 8px;"/>
-        <button onclick="alert('Send to +260771196634')" style="margin-top: 10px; width: 100%;">Proceed to Pay</button>
-      </li>
-    </ol>
-    <button onclick="togglePaymentModal()" style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 5px; width: 100%; margin-top: 10px;">Close</button>
-  </div>
+  <!-- Deposit Section -->
+  <section id="deposit-section" class="form">
+    <h3>Deposit Funds</h3>
+    <label for="network">Choose Network:</label>
+    <select id="network" onchange="getDepositAddress()">
+      <option value="">-- Select Network --</option>
+      <option value="Tron">TRC20 (Tron)</option>
+      <option value="BNB">BEP20 (BNB Smart Chain)</option>
+    </select>
 
-  <!-- Your existing dashboard content -->
-  <div class="dashboard-container">
-    <h1>Welcome to Your Moneyard Dashboard</h1>
-    <div class="balance-section">
-      <p>Current Balance: <span id="balance">0 USDT</span></p>
-    </div>
+    <button onclick="getDepositAddress()">Get Deposit Address</button>
+    <p id="deposit-address" style="margin-top: 10px;"></p>
+    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
 
-    <div class="staking-calculator">
-      <h2>Staking Earnings Calculator</h2>
-      <input type="number" id="stake-amount" placeholder="Enter amount to stake" />
-      <button onclick="calculateEarnings()">Calculate</button>
-      <p id="earnings-result"></p>
-    </div>
+    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+    <button onclick="logDeposit()">Submit Deposit</button>
+  </section>
 
-    <div class="transaction-history">
-      <h2>Transaction History</h2>
-      <ul id="transaction-list"></ul>
-    </div>
-  </div>
+  <!-- Withdraw Section -->
+  <section id="withdraw-section" class="form">
+    <h3>Withdraw Funds</h3>
+    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
+    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
+    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
+    <button onclick="submitWithdrawal()">Request Withdrawal</button>
+    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
+      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
+    </p>
+  </section>
+
+  <!-- Earnings Calculator -->
+  <section id="earnings-calculator-section" class="form">
+    <h3>Earnings Calculator</h3>
+    <p>Calculate your daily earnings based on your deposit.</p>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="calculated-earnings"></p>
+  </section>
+
+  <!-- Transaction History -->
+  <section id="transaction-history-section" class="form">
+    <h3>Transaction History</h3>
+    <table id="transaction-history-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Network</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Transaction rows injected here -->
+      </tbody>
+    </table>
+  </section>
 
   <script src="script.js"></script>
 </body>
