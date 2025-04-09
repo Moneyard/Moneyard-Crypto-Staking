@@ -93,16 +93,16 @@
     const toggleButton = document.getElementById('menuToggle');
     const menuDropdown = document.getElementById('menuDropdown');
 
-    // Toggle menu visibility on button click
+    // Toggle menu visibility when the button is clicked
     toggleButton.addEventListener('click', (e) => {
-      // Prevent menu from closing immediately when clicked on
-      e.stopPropagation();
+      e.stopPropagation();  // Prevent closing menu immediately when clicking the button
       menuDropdown.classList.toggle('show');
     });
 
-    // Close menu if click occurs outside of the menu
+    // Close menu when clicking outside of the menu
     document.addEventListener('click', (e) => {
-      if (!document.querySelector('.top-menu').contains(e.target)) {
+      // Check if the click is outside the top-menu and the menu is open
+      if (!document.querySelector('.top-menu').contains(e.target) && menuDropdown.classList.contains('show')) {
         menuDropdown.classList.remove('show');
       }
     });
