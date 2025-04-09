@@ -164,10 +164,13 @@ function loadUserSummary() {
     });
 }
 
-// Logout user (adjusted to be consistent with the app's structure)
+// Logout user (with fix for layout stability)
 function logout() {
   localStorage.clear();
   alert("You have been logged out.");
+
+  // Temporarily remove focus and prevent layout changes
+  document.body.style.zoom = '1'; // Reset any zoom
   window.location.href = "index.html";
 }
 
