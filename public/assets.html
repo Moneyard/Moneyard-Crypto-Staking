@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Assets</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Moneyard - Assets</title>
+  <link rel="stylesheet" href="styles.css"/>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #ffffff;
       margin: 0;
       padding-bottom: 150px;
+      background: #f5f7fa;
     }
 
     header {
@@ -19,25 +19,23 @@
       border-bottom: 1px solid #ccc;
     }
 
-    .header-buttons {
+    .section-buttons {
       display: flex;
       justify-content: space-between;
       padding: 10px 20px;
       background: #fff;
-      gap: 10px;
     }
 
-    .header-buttons button {
-      flex: 1;
-      padding: 15px;
-      font-size: 16px;
-      font-weight: bold;
+    .section-buttons button {
+      padding: 10px 15px;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
       cursor: pointer;
     }
 
-    .btn-green-blue { background: linear-gradient(to right, #28a745, #17a2b8); color: white; }
+    .btn-green { background: #28a745; color: white; }
     .btn-grey { background: #d3d3d3; color: #333; }
     .btn-dark-green { background: #14532d; color: white; }
 
@@ -69,7 +67,6 @@
       font-size: 16px;
       border: none;
       border-radius: 12px;
-      cursor: pointer;
     }
 
     .deposit-btn { background: #28a745; color: #fff; }
@@ -118,28 +115,28 @@
 <body>
 
   <header>
-    <h2>Est. Total Value: $<span id="totalValue">0.00</span></h2>
+    <h2>Est. Total Value: <span id="totalValue">$0.00</span></h2>
   </header>
 
-  <div class="header-buttons">
-    <button class="btn-green-blue">Crypto Assets</button>
-    <button class="btn-grey">High-Yield Savings</button>
-    <button class="btn-dark-green">Micro-Investing</button>
+  <div class="section-buttons">
+    <button class="btn-green" onclick="toggleSection('crypto')">Crypto Assets</button>
+    <button class="btn-grey" onclick="toggleSection('savings')">High-Yield Savings</button>
+    <button class="btn-dark-green" onclick="toggleSection('micro')">Micro-Investing</button>
   </div>
 
-  <div class="summary-box">
-    <h4>Total Deposits</h4>
-    <p>$<span id="depositsValue">0.00</span></p>
+  <div class="summary-box" id="cryptoSection">
+    <h4>Crypto Assets</h4>
+    <p id="cryptoAssetsValue">$0.00</p>
   </div>
 
-  <div class="summary-box">
-    <h4>Total Earnings</h4>
-    <p>$<span id="earningsValue">0.00</span></p>
+  <div class="summary-box" id="savingsSection" style="display: none;">
+    <h4>High-Yield Savings</h4>
+    <p id="savingsValue">$0.00</p>
   </div>
 
-  <div class="summary-box">
-    <h4>Pending Withdrawals</h4>
-    <p>$<span id="pendingValue">0.00</span></p>
+  <div class="summary-box" id="microSection" style="display: none;">
+    <h4>Micro-Investing</h4>
+    <p id="microInvestingValue">$0.00</p>
   </div>
 
   <!-- Footer Buttons -->
@@ -189,6 +186,24 @@
   </div>
 
   <script>
+    // Simulated values (replace with backend)
+    const cryptoAssets = 500;
+    const highYieldSavings = 300;
+    const microInvesting = 150;
+
+    document.getElementById('cryptoAssetsValue').textContent = `$${cryptoAssets}`;
+    document.getElementById('savingsValue').textContent = `$${highYieldSavings}`;
+    document.getElementById('microInvestingValue').textContent = `$${microInvesting}`;
+
+    const total = cryptoAssets + highYieldSavings + microInvesting;
+    document.getElementById('totalValue').textContent = `$${total}`;
+
+    function toggleSection(section) {
+      document.getElementById('cryptoSection').style.display = section === 'crypto' ? 'block' : 'none';
+      document.getElementById('savingsSection').style.display = section === 'savings' ? 'block' : 'none';
+      document.getElementById('microSection').style.display = section === 'micro' ? 'block' : 'none';
+    }
+
     function openModal(type) {
       closeModals();
       document.getElementById(type + 'Modal').style.display = 'block';
@@ -200,57 +215,20 @@
       });
     }
 
-    // Populate example values
-    const cryptoAssets = 500;
-    const highYieldSavings = 300;
-    const microInvesting = 150;
-    const total = cryptoAssets + highYieldSavings + microInvesting;
-
-    document.getElementById("totalValue").textContent = total.toFixed(2);
-    document.getElementById("depositsValue").textContent = (cryptoAssets + highYieldSavings).toFixed(2);
-    document.getElementById("earningsValue").textContent = microInvesting.toFixed(2);
-    document.getElementById("pendingValue").textContent = "0.00";
-
-    // Handle forms
-    document.getElementById("depositForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(this).entries());
-      data.userId = 1;
-      fetch('/log-deposit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).then(res => res.json()).then(res => {
-        alert(res.message || 'Deposit submitted!');
-        closeModals();
-      });
-    });
-
-    document.getElementById("withdrawForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(this).entries());
-      data.userId = 1;
-      fetch('/withdraw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).then(res => res.json()).then(res => {
-        alert(res.message || 'Withdrawal submitted!');
-        closeModals();
-      });
-    });
-
-    document.getElementById("transferForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(this).entries());
-      data.userId = 1;
-      fetch('/transfer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).then(res => res.json()).then(res => {
-        alert(res.message || 'Transfer complete!');
-        closeModals();
+    // Form submission handling (replace with real endpoints)
+    ['depositForm', 'withdrawForm', 'transferForm'].forEach(formId => {
+      document.getElementById(formId).addEventListener("submit", function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        data.userId = 1;
+        fetch(`/${formId.replace('Form', '')}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(res => res.json()).then(res => {
+          alert(res.message || 'Action completed!');
+          closeModals();
+        });
       });
     });
   </script>
