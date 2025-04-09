@@ -181,3 +181,8 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log('User is not logged in. Skipping user summary load.');
   }
 });
+// Logout function
+function logout() {
+  localStorage.removeItem('userId');
+  window.location.href = "index.html";
+}
