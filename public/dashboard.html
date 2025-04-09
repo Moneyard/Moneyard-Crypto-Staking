@@ -92,7 +92,7 @@
     function navigateTo(page) {
       switch(page) {
         case 'home':
-          window.location.href = 'index.html'; // Redirects to index.html
+          window.location.replace('index.html'); // Use replace to avoid logging out
           break;
         case 'referral':
           window.location.href = 'referral.html'; // Adjust with your referral page path
