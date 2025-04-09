@@ -178,3 +178,236 @@
 
 </body>
 </html>
+
+    }
+
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-top: 1px solid #ccc;
+    }
+
+    .footer-nav button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .deposit-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .withdraw-btn {
+      background-color: #006400;
+      color: white;
+    }
+
+    .transfer-btn {
+      background-color: #999;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-content h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-buttons">
+    <button class="left-button">Crypto Assets</button>
+    <button class="center-button">High-Yield Savings Account</button>
+    <button class="right-button">Micro-Investing</button>
+  </div>
+
+  <div class="assets-overview">
+    <h2>Est. Total Value</h2>
+    <div id="totalValue" style="font-size: 24px; color: #28a745;">$0</div>
+  </div>
+
+  <div class="overview-section">
+    <div class="asset-box">
+      <div class="asset-title">Crypto Assets</div>
+      <div class="asset-value" id="cryptoAssetsValue">$0</div>
+    </div>
+
+    <div class="asset-box">
+      <div class="asset-title">High-Yield Savings Account</div>
+      <div class="asset-value" id="savingsValue">$0</div>
+    </div>
+
+    <div class="asset-box">
+      <div class="asset-title">Micro-Investing</div>
+      <div class="asset-value" id="microInvestingValue">$0</div>
+    </div>
+  </div>
+
+  <!-- Dynamic Tab Contents -->
+  <div id="depositTab" class="tab-content active">
+    <h3>Deposit Funds</h3>
+    <p>Select network and enter amount...</p>
+  </div>
+
+  <div id="withdrawTab" class="tab-content">
+    <h3>Withdraw Funds</h3>
+    <p>Enter amount, wallet address and verify...</p>
+  </div>
+
+  <div id="transferTab" class="tab-content">
+    <h3>Transfer Funds</h3>
+    <p>Transfer between assets or to another user...</p>
+  </div>
+
+  <!-- Footer Navigation -->
+  <div class="footer-nav">
+    <button class="deposit-btn" onclick="showTab('depositTab')">Deposit</button>
+    <button class="withdraw-btn" onclick="showTab('withdrawTab')">Withdraw</button>
+    <button class="transfer-btn" onclick="showTab('transferTab')">Transfer</button>
+  </div>
+
+  <script>
+    // Dummy data - replace with API values if needed
+    const cryptoAssets = 500;
+    const highYieldSavings = 300;
+    const microInvesting = 150;
+
+    document.getElementById('cryptoAssetsValue').textContent = `$${cryptoAssets}`;
+    document.getElementById('savingsValue').textContent = `$${highYieldSavings}`;
+    document.getElementById('microInvestingValue').textContent = `$${microInvesting}`;
+    document.getElementById('totalValue').textContent = `$${cryptoAssets + highYieldSavings + microInvesting}`;
+
+    // Tab switching
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>
+
+<!-- Add at the bottom inside <body> tag -->
+<div class="footer-buttons">
+  <button class="footer-btn deposit-btn" onclick="openModal('deposit')">Deposit</button>
+  <button class="footer-btn withdraw-btn" onclick="openModal('withdraw')">Withdraw</button>
+  <button class="footer-btn transfer-btn" onclick="openModal('transfer')">Transfer</button>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="depositModal">
+  <div class="modal-content">
+    <h3>Deposit Funds</h3>
+    <form id="depositForm">
+      <input type="number" name="amount" placeholder="Amount (USDT)" required />
+      <select name="network">
+        <option value="TRC20">TRC20</option>
+        <option value="BEP20">BEP20</option>
+      </select>
+      <input type="text" name="txId" placeholder="Transaction ID" required />
+      <button type="submit">Submit Deposit</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="withdrawModal">
+  <div class="modal-content">
+    <h3>Withdraw Funds</h3>
+    <form id="withdrawForm">
+      <input type="number" name="amount" placeholder="Amount to withdraw" required />
+      <input type="text" name="wallet" placeholder="Wallet Address" required />
+      <input type="password" name="password" placeholder="Account Password" required />
+      <button type="submit">Submit Withdrawal</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="transferModal">
+  <div class="modal-content">
+    <h3>Transfer Funds</h3>
+    <form id="transferForm">
+      <input type="number" name="amount" placeholder="Amount to transfer" required />
+      <input type="text" name="recipientId" placeholder="Recipient User ID" required />
+      <button type="submit">Submit Transfer</button>
+    </form>
+  </div>
+</div>
+<script>
+function openModal(type) {
+  closeModals();
+  document.getElementById(type + 'Modal').style.display = 'block';
+}
+
+function closeModals() {
+  ['depositModal', 'withdrawModal', 'transferModal'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+// Deposit logic
+document.getElementById("depositForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(this).entries());
+  data.userId = 1;
+
+  fetch('/log-deposit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json()).then(res => {
+    alert(res.message || 'Deposit submitted!');
+    closeModals();
+  });
+});
+
+// Withdraw logic
+document.getElementById("withdrawForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(this).entries());
+  data.userId = 1;
+
+  fetch('/withdraw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json()).then(res => {
+    alert(res.message || 'Withdrawal submitted!');
+    closeModals();
+  });
+});
+
+// Transfer logic
+document.getElementById("transferForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(this).entries());
+  data.userId = 1;
+
+  fetch('/transfer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(res => res.json()).then(res => {
+    alert(res.message || 'Transfer complete!');
+    closeModals();
+  });
+});
+</script>
