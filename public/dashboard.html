@@ -12,6 +12,50 @@
     <button class="logout-button" onclick="logout()">Log Out</button>
   </div>
 
+  <!-- Deposit Button -->
+  <div class="deposit-button-container">
+    <button class="deposit-button">Deposit Funds</button>
+  </div>
+
+  <!-- Payment Methods Section -->
+  <section id="payment-methods" class="form">
+    <h3>Deposit Methods</h3>
+
+    <!-- Method 1: Buy Crypto with ZM -->
+    <div class="payment-method">
+      <h4>Buy Crypto with ZM</h4>
+      <p>Buy crypto easily via bank transfer, mobile money, card and more</p>
+      <button onclick="window.location.href='tel:+260771196634'" class="payment-button">
+        Pay via Airtel MobileMoney: 0771196634
+      </button>
+    </div>
+
+    <!-- Method 2: Crypto Deposit -->
+    <div class="payment-method">
+      <h4>Deposit Crypto/USDT</h4>
+      <div class="crypto-address">
+        <p><strong>Tron (TRC20):</strong><br>
+        TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</p>
+        <p><strong>BNB Smart Chain (BEP20):</strong><br>
+        0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</p>
+      </div>
+    </div>
+
+    <!-- Method 3: Mobile Payments -->
+    <div class="payment-method">
+      <h4>Mobile Payments</h4>
+      <select id="mobile-provider">
+        <option value="">Select Provider</option>
+        <option value="Airtel">Airtel MobileMoney</option>
+        <option value="MTN">MTN Mobile Money</option>
+      </select>
+      <input type="tel" id="mobile-number" placeholder="Enter your mobile number">
+      <button onclick="handleMobilePayment()" class="payment-button">
+        Confirm Payment to +260771196634
+      </button>
+    </div>
+  </section>
+
   <!-- User Summary -->
   <section id="user-summary" class="form">
     <h3>Account Summary</h3>
