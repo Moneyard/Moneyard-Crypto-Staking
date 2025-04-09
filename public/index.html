@@ -110,11 +110,17 @@
 
     // Toggle Moneyard Learning section
     learningToggle.addEventListener('click', () => {
-      learningList.style.display = (learningList.style.display === 'none') ? 'block' : 'none';
+      // Collapse/Expand the learning list
+      if (learningList.style.display === 'none' || learningList.style.display === '') {
+        learningList.style.display = 'block';
+      } else {
+        learningList.style.display = 'none';
+      }
     });
 
     // Show Login button when My Account is clicked
     accountToggle.addEventListener('click', () => {
+      // Toggle the visibility of the Login button
       loginButton.style.display = (loginButton.style.display === 'none') ? 'block' : 'none';
     });
 
