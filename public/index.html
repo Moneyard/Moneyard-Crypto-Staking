@@ -245,11 +245,12 @@
       }
     }
 
+    // Updated handleLogin function
     function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-      localStorage.setItem('moneyard_user_email', email);
+      
       fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -257,18 +258,27 @@
       })
       .then(res => res.json())
       .then(data => {
-        alert(data.message || 'Logged in!');
-        // Clear form after submission
+        if (data.error) {
+          alert(data.error); // Show actual error message
+        } else if (data.success) {
+          localStorage.setItem('userId', data.userId);
+          localStorage.setItem('email', email);
+          window.location.href = '/dashboard'; // Redirect to dashboard
+        }
         document.getElementById('loginForm').reset();
         closeAuthForm();
       })
-      .catch(() => alert('Login failed!'));
+      .catch(err => {
+        alert(`Login failed! Error: ${err.message}`);
+      });
     }
 
+    // Updated handleSignup function
     function handleSignup(e) {
       e.preventDefault();
       const email = document.getElementById('signupEmail').value;
       const password = document.getElementById('signupPassword').value;
+      
       fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -276,16 +286,17 @@
       })
       .then(res => res.json())
       .then(data => {
-        alert(data.message || 'Signup successful!');
-        // Reset form and show login form
-        document.getElementById('signupForm').reset();
-        showAuthForm('login');
+        if (data.error) {
+          alert(data.error); // Show actual error message
+        } else {
+          alert('Signup successful! Please login.');
+          document.getElementById('signupForm').reset();
+          showAuthForm('login');
+        }
       })
-      .catch(() => alert('Signup failed!'));
-    }
-
-    function closeAuthForm() {
-      document.getElementById('auth-form').style.display = 'none';
+      .catch(err => {
+        alert(`Signup failed! Error: ${err.message}`);
+      });
     }
   </script>
 
