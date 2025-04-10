@@ -6,11 +6,56 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <!-- Moneyard Learning Section -->
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
+
+      <!-- My Account Section -->
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" onclick="showLogin()">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <h1>Welcome to Moneyard</h1>
+    <p>Your trusted crypto staking platform.</p>
+
+    <!-- Login/Signup Form -->
+    <div id="auth-form" style="display: none;">
+      <h2 id="form-title">Login</h2>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+      </form>
+      <p>No account? <a href="#" onclick="toggleAuthForm()">Sign Up</a></p>
+    </div>
+  </div>
+
+  <!-- Inline Styles -->
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 60px 20px 20px;
     }
 
     .top-menu {
@@ -49,20 +94,12 @@
       display: flex;
     }
 
-    .menu-section {
-      width: 100%;
-    }
-
     .menu-section h3 {
       margin-top: 0;
       font-size: 16px;
       color: #007a5a;
       margin-bottom: 8px;
       cursor: pointer;
-    }
-
-    .menu-section ul {
-      padding-left: 16px;
     }
 
     .menu-section ul li {
@@ -81,118 +118,35 @@
       font-size: 14px;
     }
 
-    .form-container {
-      margin: 120px auto 0;
-      max-width: 400px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-      display: none;
-      transition: all 0.3s ease;
+    .main-content {
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
     }
 
-    .form-container h2 {
-      margin-top: 0;
-      color: #007a5a;
-    }
-
-    .form-container input {
-      width: 100%;
+    #auth-form input {
+      width: 80%;
       padding: 10px;
-      margin: 10px 0;
-      font-size: 14px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
-    .form-container button {
+    #auth-form button {
       background-color: #007a5a;
       color: white;
-      padding: 10px 16px;
+      padding: 10px 20px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      width: 100%;
     }
 
-    .form-toggle {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .form-toggle a {
+    a {
       color: #007a5a;
-      text-decoration: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .forgot-password {
-      text-align: right;
-      font-size: 13px;
-      margin-top: -8px;
-      margin-bottom: 10px;
-    }
-
-    .forgot-password a {
-      color: #007a5a;
-      text-decoration: none;
     }
   </style>
-</head>
 
-<body>
-
-  <!-- Top-Right Menu Bar -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
-
-      <div class="menu-section right">
-        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content" style="display: none;">
-          <button class="login-button" id="loginTrigger">Login / Signup</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Login Form -->
-  <div id="loginForm" class="form-container">
-    <h2>Login to Moneyard</h2>
-    <form>
-      <input type="text" placeholder="Email" required />
-      <input type="password" placeholder="Password" required />
-      <div class="forgot-password">
-        <a href="#">Forgot Password?</a>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <div class="form-toggle">Don't have an account? <a id="showSignup">Sign up</a></div>
-  </div>
-
-  <!-- Signup Form -->
-  <div id="signupForm" class="form-container">
-    <h2>Create Your Moneyard Account</h2>
-    <form>
-      <input type="text" placeholder="Full Name" required />
-      <input type="email" placeholder="Email" required />
-      <input type="password" placeholder="Create Password" required />
-      <button type="submit">Sign Up</button>
-    </form>
-    <div class="form-toggle">Already have an account? <a id="showLogin">Log in</a></div>
-  </div>
-
-  <!-- JavaScript Logic -->
+  <!-- Scripts -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const toggleButton = document.getElementById('menuToggle');
@@ -201,51 +155,63 @@
       const learningContent = document.getElementById('learning-content');
       const accountHeader = document.getElementById('account-header');
       const accountContent = document.getElementById('account-content');
-      const loginTrigger = document.getElementById('loginTrigger');
-      const loginForm = document.getElementById('loginForm');
-      const signupForm = document.getElementById('signupForm');
-      const showSignup = document.getElementById('showSignup');
-      const showLogin = document.getElementById('showLogin');
 
+      // Toggle Menu Dropdown
       toggleButton.addEventListener('click', (e) => {
         e.stopPropagation();
         menuDropdown.classList.toggle('show');
       });
 
+      // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
         if (!document.querySelector('.top-menu').contains(e.target)) {
           menuDropdown.classList.remove('show');
         }
       });
 
+      // Toggle Moneyard Learning
       learningHeader.addEventListener('click', () => {
-        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
+        learningContent.style.display = (learningContent.style.display === 'none') ? 'block' : 'none';
       });
 
+      // Toggle My Account
       accountHeader.addEventListener('click', () => {
-        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
+        accountContent.style.display = (accountContent.style.display === 'none') ? 'block' : 'none';
       });
-
-      loginTrigger.addEventListener('click', () => {
-        loginForm.style.display = 'block';
-        signupForm.style.display = 'none';
-        menuDropdown.classList.remove('show');
-      });
-
-      showSignup.addEventListener('click', () => {
-        signupForm.style.display = 'block';
-        loginForm.style.display = 'none';
-      });
-
-      showLogin.addEventListener('click', () => {
-        loginForm.style.display = 'block';
-        signupForm.style.display = 'none';
-      });
-
-      if (window.location.hash) {
-        history.replaceState("", document.title, window.location.pathname + window.location.search);
-      }
     });
+
+    // Show login form
+    function showLogin() {
+      document.getElementById('auth-form').style.display = 'block';
+      document.getElementById('form-title').textContent = 'Login';
+    }
+
+    // Toggle between Login and Signup
+    function toggleAuthForm() {
+      const formTitle = document.getElementById('form-title');
+      formTitle.textContent = formTitle.textContent === 'Login' ? 'Sign Up' : 'Login';
+    }
+
+    // Store email and connect to backend (simulate)
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      localStorage.setItem('moneyard_user_email', email);
+
+      // Simulated backend call
+      fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email, password})
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || 'Logged in!');
+      })
+      .catch(() => alert('Login failed!'));
+    }
   </script>
 
 </body>
