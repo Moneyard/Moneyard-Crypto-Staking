@@ -287,3 +287,55 @@ function handleForgotPassword() {
   })
   .catch(() => alert('Failed to send reset link. Please try again.'));
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const signupForm = document.getElementById("signupForm");
+    const loginForm = document.getElementById("loginForm");
+
+    if (signupForm) {
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("signupEmail").value;
+            const password = document.getElementById("signupPassword").value;
+
+            const res = await fetch("/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert("Signup successful! Please login.");
+                signupForm.reset();
+                document.getElementById("signupSection").style.display = "none";
+                document.getElementById("loginSection").style.display = "block";
+            } else {
+                alert(data.error || "Signup failed.");
+            }
+        });
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert("Login successful!");
+                localStorage.setItem("userId", data.userId);
+                localStorage.setItem("email", email);
+                window.location.href = "/dashboard";
+            } else {
+                alert(data.error || "Login failed.");
+            }
+        });
+    }
+});
