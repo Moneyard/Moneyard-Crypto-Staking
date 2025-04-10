@@ -1,3 +1,49 @@
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+// Set up the email transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use your email service (this is an example)
+    auth: {
+        user: 'your-email@gmail.com',  // Replace with your email
+        pass: 'your-email-password'    // Replace with your email password or app password
+    }
+});
+
+// Route to handle forgot password requests
+app.post('/api/forgot-password', (req, res) => {
+    const { email } = req.body;
+
+    // Generate a unique reset token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const expirationTime = Date.now() + 3600000; // Token expires in 1 hour
+
+    // Store the token and expiration in the database (add your own user table logic)
+    db.run(
+        `UPDATE users SET reset_token = ?, reset_token_expiration = ? WHERE email = ?`,
+        [resetToken, expirationTime, email],
+        function(err) {
+            if (err) return res.status(500).json({ message: "Error updating user" });
+
+            // Send the reset email
+            const resetLink = `https://your-app-url.com/reset-password?token=${resetToken}`;
+            const mailOptions = {
+                from: 'your-email@gmail.com',
+                to: email,
+                subject: 'Password Reset',
+                text: `Click the link below to reset your password:\n\n${resetLink}`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return res.status(500).json({ message: "Error sending email" });
+                }
+                res.json({ success: true, message: "Password reset link sent" });
+            });
+        }
+    );
+});
+
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
