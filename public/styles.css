@@ -185,3 +185,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+/* Apply warm orange background color globally */
+body {
+  background-color: #FFA500; /* Warm orange color */
+  font-family: Arial, sans-serif; /* Example font family, change as needed */
+  color: #333; /* Default text color, can adjust to suit the background */
+}
+
+/* Ensure all sections have proper padding and margins */
+section {
+  padding: 20px;
+  margin: 0;
+}
+
+/* Apply some styling to forms and buttons */
+form {
+  background-color: #fff; /* White background for forms */
+  border-radius: 8px;
+  padding: 20px;
+}
+
+button {
+  background-color: #28a745; /* Example button color, can be changed */
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+/* You can also style the signup/login forms as boxed sections */
+#signup-form, #login-form {
+  display: none; /* Hidden initially */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+#signup-form.active, #login-form.active {
+  display: block; /* Show the active form */
+}
+
+/* Additional styling for headers, links, etc. */
+h1, h2 {
+  color: #333; /* Dark text for headers */
+}
+
+a {
+  color: #007bff; /* Link color */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
