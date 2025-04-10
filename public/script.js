@@ -306,3 +306,47 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver.observe(counter);
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  // Scroll reveal for animated sections
+  const animatedSections = document.querySelectorAll('.animated-section');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  animatedSections.forEach(section => {
+    observer.observe(section);
+  });
+
+  // Counter animation
+  const counters = document.querySelectorAll('.counter');
+
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-target');
+      const count = +counter.innerText;
+      const speed = 20;
+      const increment = target / speed;
+
+      if (count < target) {
+        counter.innerText = Math.ceil(count + increment);
+        setTimeout(updateCount, 50);
+      } else {
+        counter.innerText = target;
+      }
+    };
+
+    const counterObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        updateCount();
+        counterObserver.disconnect();
+      }
+    }, { threshold: 1 });
+
+    counterObserver.observe(counter);
+  });
+});
