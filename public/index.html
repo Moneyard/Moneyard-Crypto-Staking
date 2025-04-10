@@ -47,8 +47,53 @@
     <button type="submit">Login</button>
   </form>
 
-  <!-- Forgot Password Link -->
-  <p><a href="#" onclick="handleForgotPassword()">Forgot password?</a></p>
+  <!-- Forgot Password Link in the Login Form -->
+<a href="#" id="forgot-password-link">Forgot Password?</a>
+
+<!-- Modal for Forgot Password -->
+<div id="forgot-password-modal" style="display: none;">
+    <h2>Forgot Password</h2>
+    <form id="forgot-password-form">
+        <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
+        <button type="submit">Send Reset Link</button>
+    </form>
+    <button onclick="closeForgotPasswordModal()">Close</button>
+</div>
+
+<script>
+  // Show the forgot password modal
+  document.getElementById("forgot-password-link").onclick = function() {
+      document.getElementById("forgot-password-modal").style.display = "block";
+  };
+
+  // Close the forgot password modal
+  function closeForgotPasswordModal() {
+      document.getElementById("forgot-password-modal").style.display = "none";
+  }
+
+  // Handle forgot password form submission
+  document.getElementById("forgot-password-form").onsubmit = function(e) {
+      e.preventDefault();
+      const email = document.getElementById("forgot-password-email").value;
+
+      // Send email to backend to initiate reset
+      fetch('/api/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              alert("Check your email for the password reset link.");
+              closeForgotPasswordModal();
+          } else {
+              alert("Error: " + data.message);
+          }
+      })
+      .catch(error => alert("Error: " + error.message));
+  };
+</script>
 
   <p>No account? <a href="#" onclick="toggleAuthForm()">Sign Up</a></p>
 </div>
