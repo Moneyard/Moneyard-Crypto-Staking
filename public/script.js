@@ -205,3 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver.observe(counter);
   });
 });
+body {
+  background-color: #FFA500; /* Warm orange background */
+}
