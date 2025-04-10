@@ -39,16 +39,19 @@
     <p>Your trusted crypto staking platform.</p>
 
     <!-- Login/Signup Form -->
-    <div id="auth-form" style="display: none;">
-      <h2 id="form-title">Login</h2>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="email" id="email" placeholder="Email" required><br>
-        <input type="password" id="password" placeholder="Password" required><br>
-        <button type="submit">Login</button>
-      </form>
-      <p>No account? <a href="#" onclick="toggleAuthForm()">Sign Up</a></p>
-    </div>
-  </div>
+<div id="auth-form" style="display: none;">
+  <h2 id="form-title">Login</h2>
+  <form id="loginForm" onsubmit="handleLogin(event)">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Forgot Password Link -->
+  <p><a href="#" onclick="handleForgotPassword()">Forgot password?</a></p>
+
+  <p>No account? <a href="#" onclick="toggleAuthForm()">Sign Up</a></p>
+</div>
 
   <!-- Inline Styles -->
   <style>
