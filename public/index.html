@@ -132,35 +132,84 @@
 
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 30px 20px;
       color: #fff;
       background-color: #007a5a;
+      margin-top: 40px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: green;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .logo span {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .menu a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .growth-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+
+    .growth-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 200px;
+      text-align: center;
+    }
+
+    .counter {
+      font-size: 36px;
+      color: #007a5a;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<!-- Green Menu Bar -->
-<div class="navbar" style="display: flex; justify-content: space-between; align-items: center; background-color: green; padding: 10px;">
-  <!-- Logo on the left -->
-  <div class="logo" style="display: flex; align-items: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" style="height: 40px; margin-right: 10px;">
-    <span style="color: white; font-size: 20px; font-weight: bold;">Moneyard</span>
+  <!-- Logo & Navbar -->
+  <div class="navbar">
+    <div class="logo" style="display: flex; align-items: center;">
+      <img src="20250409_162622.jpg" alt="Moneyard Logo">
+      <span>Moneyard</span>
+    </div>
+    <div class="menu">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Support</a>
+    </div>
   </div>
 
-  <!-- Menu on the right -->
-  <div class="menu">
-    <a href="#" style="color: white; margin: 0 10px;">Home</a>
-    <a href="#" style="color: white; margin: 0 10px;">About</a>
-    <a href="#" style="color: white; margin: 0 10px;">Support</a>
-  </div>
-</div>
-
-  <!-- Top-Right Menu Bar -->
+  <!-- Top-Right Menu -->
   <div class="top-menu">
     <button id="menuToggle" class="menu-button">☰</button>
     <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
+      <div class="menu-section">
         <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
         <ul id="learning-content" style="display: none;">
           <li>Learn about Crypto Staking</li>
@@ -168,8 +217,7 @@
           <li>Micro-Investing Data</li>
         </ul>
       </div>
-
-      <div class="menu-section right">
+      <div class="menu-section">
         <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
         <div id="account-content" style="display: none;">
           <button class="login-button" onclick="showAuthForm('login')">Login</button>
@@ -179,247 +227,77 @@
     </div>
   </div>
 
-  <!-- Auth Form Box -->
-  <div id="auth-form" style="display: none;">
-    <div id="login-form-section">
-      <h2>Login</h2>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="email" id="loginEmail" placeholder="Email" required><br>
-        <input type="password" id="loginPassword" placeholder="Password" required><br>
-        <button type="submit">Login</button>
-      </form>
-      <a href="#" id="forgot-password-link">Forgot Password?</a><br>
-      <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
-    </div>
+  <!-- Sections (Simplicity, Security, Growth, Offers, Referral, Tracker) -->
+  <section class="section"><h2>Simplicity First</h2><p>Start investing in minutes...</p></section>
+  <section class="section"><h2>Built-In Security</h2><p>Your funds are safe...</p></section>
+  <section class="section"><h2>Real Growth for Real People</h2><p>Stake and earn up to 27% APY...</p></section>
+  <section class="section" id="offers"><h2>Get Started with These Offers</h2></section>
+  <section class="section" id="referral-bonus"><h2>Earn More with Referrals</h2></section>
 
-    <div id="signup-form-section" style="display: none;">
-      <h2>Sign Up</h2>
-      <form id="signupForm" onsubmit="handleSignup(event)">
-        <input type="email" id="signupEmail" placeholder="Email" required><br>
-        <input type="password" id="signupPassword" placeholder="Password" required><br>
-        <button type="submit">Sign Up</button>
-      </form>
-      <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
-    </div>
-  </div>
-
-  <!-- Forgot Password Modal -->
-  <div id="forgot-password-modal" style="display: none;">
-    <h2>Forgot Password</h2>
-    <form id="forgot-password-form">
-      <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
-      <button type="submit">Send Reset Link</button>
-    </form>
-    <button onclick="closeForgotPasswordModal()">Close</button>
-  </div>
-
-  <!-- Simplicity Section -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
-    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <!-- Security Section -->
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <!-- Growth Section -->
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 27% APY. Use Multiply and High-Yield Savings Account Plus to boost your crypto.</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
+  <!-- Growth Tracker Section with Margin Below -->
+  <section class="section" id="growth-tracker">
+    <h2>Watch Your Crypto Grow</h2>
+    <p>Real-time growth with staking, savings, and multiply features.</p>
+    <div class="growth-boxes">
+      <div class="growth-card">
+        <h3>Staking APY</h3>
+        <div class="counter">27</div>
+        <span>% Annual Yield</span>
+      </div>
+      <div class="growth-card">
+        <h3>High-Yield Savings</h3>
+        <div class="counter">12</div>
+        <span>% Per Annum</span>
+      </div>
+      <div class="growth-card">
+        <h3>Multiply Growth</h3>
+        <div class="counter">55</div>
+        <span>% Bonus Returns</span>
+      </div>
     </div>
   </section>
 
-  <!-- Offers Section -->
-  <section class="section" id="offers">
-    <h2>Get Started with These Offers</h2>
-    <ul class="offers-list">
-      <li>Deposit $100 → <strong>Get $15</strong> in Moneyard</li>
-      <li>Buy $150 in Crypto → <strong>Earn $25</strong> in Moneyard</li>
-      <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>
-      <li>Open Moneyerd High-Yield Savings Account Plus with $80 → <strong>Earn another $15</strong> in Moneyard</li>
-    </ul>
-  </section>
-
-  <!-- Referral Section -->
-  <section class="section animated-section" id="referral-bonus">
-    <h2>Earn More with Referrals</h2>
-    <p>Invite your friends and get <strong>5% bonus</strong> whenever they stake with Moneyard.</p>
-  </section>
-
-  <!-- Live Growth Tracker Section -->
-<section class="section animated-section" id="growth-tracker">
-  <h2>Watch Your Crypto Grow</h2>
-  <p>Real-time growth with staking, savings, and multiply features.</p>
-
-  <div class="growth-boxes">
-    <div class="growth-card">
-      <h3>Staking APY</h3>
-      <div class="counter" data-target="15">27</div>
-      <span>% Annual Yield</span>
-    </div>
-    <div class="growth-card">
-      <h3>High-Yield Savings</h3>
-      <div class="counter" data-target="9">12</div>
-      <span>% Per Annum</span>
-    </div>
-    <div class="growth-card">
-      <h3>Multiply Growth</h3>
-      <div class="counter" data-target="35">55</div>
-      <span>% Bonus Returns</span>
-    </div>
-  </div>
-</section>
-  <div class="growth-boxes">
-  <div class="growth-card" data-tooltip="Earn 27% annually by staking your crypto safely.">
-    <h3>Staking APY</h3>
-    <div class="counter" data-target="20">27</div>
-    <span>% Annual Yield</span>
-    <div class="sparkline"></div>
-  </div>
-
-  <div class="growth-card" data-tooltip="Save and earn up to 9% interest per year, just like a bank—but smarter.">
-    <h3>High-Yield Savings</h3>
-    <div class="counter" data-target="9">12</div>
-    <span>% Per Annum</span>
-    <div class="sparkline"></div>
-  </div>
-
-  <div class="growth-card pulse" data-tooltip="Multiply your deposits and earn bonus rewards up to 45%!">
-    <h3>Multiply Growth</h3>
-    <div class="counter" data-target="45">55</div>
-    <span>% Bonus Returns</span>
-    <div class="sparkline"></div>
-  </div>
-</div>
-</div>
-</div>
-
- 
- <footer>
+  <!-- Footer -->
+  <footer>
     <p>© 2025 Moneyard. Your crypto journey starts here.</p>
   </footer>
 
   <!-- Scripts -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggleButton = document.getElementById('menuToggle');
-      const menuDropdown = document.getElementById('menuDropdown');
-      const learningHeader = document.getElementById('learning-header');
-      const learningContent = document.getElementById('learning-content');
-      const accountHeader = document.getElementById('account-header');
-      const accountContent = document.getElementById('account-content');
+    const toggleButton = document.getElementById('menuToggle');
+    const menuDropdown = document.getElementById('menuDropdown');
+    const learningHeader = document.getElementById('learning-header');
+    const learningContent = document.getElementById('learning-content');
+    const accountHeader = document.getElementById('account-header');
+    const accountContent = document.getElementById('account-content');
 
-      toggleButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menuDropdown.classList.toggle('show');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!document.querySelector('.top-menu').contains(e.target)) {
-          menuDropdown.classList.remove('show');
-        }
-      });
-
-      learningHeader.addEventListener('click', () => {
-        learningContent.style.display = learningContent.style.display === 'none' ? 'block' : 'none';
-      });
-
-      accountHeader.addEventListener('click', () => {
-        accountContent.style.display = accountContent.style.display === 'none' ? 'block' : 'none';
-      });
-
-      document.getElementById("forgot-password-link").onclick = () => {
-        document.getElementById("forgot-password-modal").style.display = "block";
-      };
-
-      document.getElementById("forgot-password-form").onsubmit = function(e) {
-        e.preventDefault();
-        const email = document.getElementById("forgot-password-email").value;
-        fetch('/api/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        })
-        .then(res => res.json())
-        .then(data => {
-          alert(data.success ? "Reset link sent!" : "Error: " + data.message);
-          closeForgotPasswordModal();
-        })
-        .catch(err => alert("Error: " + err.message));
-      };
+    toggleButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('show');
     });
 
-    function closeForgotPasswordModal() {
-      document.getElementById("forgot-password-modal").style.display = "none";
-    }
+    document.addEventListener('click', () => menuDropdown.classList.remove('show'));
+
+    learningHeader.addEventListener('click', () => {
+      learningContent.style.display = learningContent.style.display === 'none' ? 'block' : 'none';
+    });
+
+    accountHeader.addEventListener('click', () => {
+      accountContent.style.display = accountContent.style.display === 'none' ? 'block' : 'none';
+    });
 
     function showAuthForm(type) {
-      document.getElementById('auth-form').style.display = 'block';
-      if (type === 'login') {
-        document.getElementById('login-form-section').style.display = 'block';
-        document.getElementById('signup-form-section').style.display = 'none';
-      } else {
-        document.getElementById('signup-form-section').style.display = 'block';
-        document.getElementById('login-form-section').style.display = 'none';
-      }
+      const form = document.getElementById('auth-form');
+      const login = document.getElementById('login-form-section');
+      const signup = document.getElementById('signup-form-section');
+      form.style.display = 'block';
+      login.style.display = type === 'login' ? 'block' : 'none';
+      signup.style.display = type === 'signup' ? 'block' : 'none';
     }
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
-      fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          alert(data.error);
-        } else if (data.success) {
-          localStorage.setItem('userId', data.userId);
-          localStorage.setItem('email', email);
-          window.location.href = '/dashboard';
-        }
-        document.getElementById('loginForm').reset();
-      })
-      .catch(err => {
-        alert(`Login failed! Error: ${err.message}`);
-      });
-    }
-
-    function handleSignup(e) {
-      e.preventDefault();
-      const email = document.getElementById('signupEmail').value;
-      const password = document.getElementById('signupPassword').value;
-      fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          alert('Signup successful! Please login.');
-          document.getElementById('signupForm').reset();
-          showAuthForm('login');
-        }
-      })
-      .catch(err => {
-        alert(`Signup failed! Error: ${err.message}`);
-      });
+    function closeForgotPasswordModal() {
+      document.getElementById('forgot-password-modal').style.display = 'none';
     }
   </script>
-
 </body>
 </html>
