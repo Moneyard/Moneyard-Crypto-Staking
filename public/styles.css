@@ -1,423 +1,187 @@
-.landing-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #fff;
-  color: #1c1c1c;
-}
-
-.hero {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(to right, #4ecdc4, #556270);
-  color: white;
-}
-
-.section {
-  padding: 3rem 2rem;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-}
-
-.auth-box {
-  max-width: 400px;
-  margin: 2rem auto;
-  border: 1px solid #ccc;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  background: #f9f9f9;
-}
-
-.auth-box input {
-  display: block;
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.6rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-.auth-box button {
-  width: 100%;
-  padding: 0.6rem;
-  background: #34d399;
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.animated-section {
-  opacity: 0;
-  transform: translateY(50px);
-  transition: all 0.8s ease-out;
-}
-
-.animated-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.feature-image {
-  max-width: 80%;
-  margin-top: 1rem;
-  animation: float 2s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.vault-animation {
-  font-size: 4rem;
-  animation: pop-in 0.8s ease forwards;
-}
-
-@keyframes pop-in {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.progress-bar-container {
-  width: 80%;
-  height: 20px;
-  margin: 1rem auto;
-  background: #e5e7eb;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  width: 0%;
-  height: 100%;
-  background: #10b981;
-  animation: fill-bar 4s ease-in-out forwards;
-}
-
-@keyframes fill-bar {
-  0% { width: 0; }
-  100% { width: 100%; }
-}
-
-.offers-list {
-  list-style: none;
-  padding: 0;
-  line-height: 2;
-  font-size: 1.1rem;
-}
-
-footer {
-  text-align: center;
-  padding: 2rem;
-  background: #f9fafb;
-  font-size: 0.9rem;
-}
-body {
-  font-family: Arial, sans-serif;
-  background-color: #FFA500; /* warm orange background */
-  color: #444; /* soft grey text */
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Logo section */
-#logo-section {
-  margin-bottom: 30px;
-}
-
-#logo {
-  max-width: 200px;
-  height: auto;
-  cursor: pointer;
-}
-
-/* Form container */
-.form {
-  width: 100%;
-  max-width: 300px;
-  background: #f5f5f5;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-/* Inputs */
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  color: #28a745; /* green for number/input text */
-}
-
-/* Green styled values */
-#deposit-address,
-#calculated-earnings {
-  color: #28a745;
-  font-weight: bold;
-}
-
-/* Table styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  color: #444;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f0f0f0;
-}
-
-/* Buttons */
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #28a745;
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-/* Select dropdown */
-select {
-  padding: 6px;
-  border-radius: 4px;
-  margin-top: 5px;
-}
-/* Logout Button Styles */
-.logout-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}.logout-button {
-  background-color: #28a745;
-  padding: 10px 20px;
-  border-radius: 4px;
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.logout-button:hover {
-  background-color: #218838;
-}
-
-.transaction-history {
-  /* Add any existing styling here */
-  margin-bottom: 30px; /* Adjust the value as needed for spacing */
-}
-
-.other-features {
-  /* Styling for the section below */
-}
-/* Add spacing below the Transaction History section */
-#transaction-history-section {
-  margin-bottom: 60px; /* You can adjust this value for the spacing you need */
-}
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  border-top: 1px solid #ccc;
-  z-index: 999;
-}
-
-.nav-btn {
-  flex: 1;
-  background: #f0f0f0;
-  border: none;
-  padding: 10px;
-  font-weight: bold;
-  color: #333;
-  border-radius: 10px;
-  margin: 0 5px;
-}
-
-.nav-btn.active {
-  background-color: #28a745; /* green */
-  color: white;
-}
-/* Header Styling */
-.header {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* Logo Styling */
-#logo {
-  width: 120px;
-  height: auto;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  #logo {
-    width: 90px;
-  }
-
-  .header {
-    padding: 8px 16px;
+// Toggle between signup and login forms
+function toggleForms(type) {
+  const signup = document.getElementById('signup-form');
+  const login = document.getElementById('login-form');
+  if (type === 'login') {
+    signup.style.display = 'none';
+    login.style.display = 'block';
+  } else {
+    signup.style.display = 'block';
+    login.style.display = 'none';
   }
 }
-.growth-boxes {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-top: 2rem;
+
+// Handle forgot password
+function handleForgotPassword() {
+  const email = document.getElementById('email').value;
+  if (!email) {
+    alert('Please enter your email first so we can send the reset link.');
+    return;
+  }
+
+  fetch('/api/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || 'If this email exists, a reset link has been sent.');
+  })
+  .catch(() => alert('Failed to send reset link. Please try again.'));
 }
 
-.growth-card {
-  background: #f0fdf4;
-  border: 2px solid #d1fae5;
-  padding: 1.5rem;
-  border-radius: 16px;
-  width: 200px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
-  animation: pop-in 0.8s ease forwards;
+// Calculate earnings (8% daily)
+function calculateEarnings() {
+  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
+  if (!depositAmount || depositAmount < 15 || depositAmount > 1000) {
+    alert("Please enter a valid deposit amount between 15 and 1000 USDT.");
+    return;
+  }
+  const dailyEarnings = depositAmount * 0.08;
+  document.getElementById('calculated-earnings').innerText = 
+    `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
 }
 
-.growth-card:hover {
-  transform: scale(1.05);
+// Load user summary
+function loadUserSummary() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+
+  fetch(`/user-summary?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('summary-username').innerText = localStorage.getItem('email');
+      document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
+      document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
+    })
+    .catch(err => {
+      console.error("Error loading summary:", err);
+      alert("Failed to load user summary.");
+    });
 }
 
-.counter {
-  font-size: 2.5rem;
-  color: #10b981;
-  font-weight: bold;
-  margin: 0.5rem 0;
-}
-.top-menu {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
+// Counter animation
+function animateCounters() {
+  const counters = document.querySelectorAll('.counter');
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-target');
+      const count = +counter.innerText;
+      const increment = target / 100;
+
+      if (count < target) {
+        counter.innerText = Math.ceil(count + increment);
+        setTimeout(updateCount, 30);
+      } else {
+        counter.innerText = target;
+      }
+    };
+
+    const counterObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        updateCount();
+        counterObserver.disconnect();
+      }
+    }, { threshold: 1 });
+
+    counterObserver.observe(counter);
+  });
 }
 
-.menu-button {
-  background-color: #007a5a;
-  color: white;
-  font-size: 24px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+// Navigation handler
+function navigateTo(page) {
+  const pages = {
+    home: 'dashboard.html',
+    referral: 'referral.html',
+    stake: 'stake.html',
+    assets: 'assets.html'
+  };
+  if (pages[page]) window.location.href = pages[page];
 }
 
-.menu-dropdown {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  display: flex;
-  width: 300px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  padding: 16px;
-  gap: 12px;
+// Logout
+function logout() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('email');
+  window.location.href = "index.html";
 }
 
-.menu-section {
-  width: 50%;
-}
+// DOMContentLoaded for all setup
+document.addEventListener('DOMContentLoaded', () => {
+  // Animate sections
+  const sections = document.querySelectorAll('.animated-section');
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        if (entry.target.id === 'growth-tracker') {
+          animateCounters();
+        }
+      }
+    });
+  }, { threshold: 0.1 });
 
-.menu-section h3 {
-  margin-top: 0;
-  font-size: 16px;
-  color: #007a5a;
-  margin-bottom: 8px;
-}
+  sections.forEach(section => sectionObserver.observe(section));
 
-.menu-section ul {
-  padding-left: 16px;
-}
+  // Load summary if logged in
+  if (localStorage.getItem('userId')) {
+    loadUserSummary();
+  }
 
-.menu-section ul li {
-  font-size: 14px;
-  margin-bottom: 6px;
-  list-style: disc;
-}
+  // Signup form
+  const signupForm = document.getElementById("signupForm");
+  if (signupForm) {
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
 
-.login-button {
-  background-color: #28a745;
-  color: white;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
+      const res = await fetch("/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-.hidden {
-  display: none;
-}
-/* Animation setup */
-.animated-section {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease-out;
-}
+      const data = await res.json();
+      if (data.success) {
+        alert("Signup successful! Please login.");
+        signupForm.reset();
+        toggleForms('login');
+      } else {
+        alert(data.error || "Signup failed.");
+      }
+    });
+  }
 
-.animated-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+  // Login form
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
 
-/* Counter styling */
-.counter {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #007a5a;
-}
-.animated-section {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease-out;
-}
+      if (!email || !password) {
+        alert("Please fill in both email and password.");
+        return;
+      }
 
-.animated-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-.counter {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #007a5a;
-}
+      const data = await res.json();
+      if (data.success) {
+        alert("Login successful!");
+        localStorage.setItem("userId", data.userId);
+        localStorage.setItem("email", email);
+        window.location.href = "/dashboard";
+      } else {
+        alert(data.error || "Login failed.");
+      }
+    });
+  }
+});
