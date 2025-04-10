@@ -1,3 +1,347 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head>   <meta charset="UTF-8" />   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>   <title>Moneyard – Crypto Staking Made Simple</title>   <link rel="stylesheet" href="styles.css" />   <script defer src="script.js"></script> </head> <body class="landing-body">    <!-- Hero Header -->   <header class="hero">     <h1>Moneyard</h1>     <p>Simple. Secure. Built for Growth.</p>   </header>    <!-- Signup/Login Box -->   <section id="auth-section" class="section auth-box">     <div id="signup-form">       <h2>Create Account</h2>       <input type="email" placeholder="Email" />       <input type="password" placeholder="Password" />       <input type="text" placeholder="Referral Code (optional)" />       <button>Sign Up</button>       <p>Already have an account? <a href="#" onclick="toggleForms('login')">Log In</a></p>     </div>      <div id="login-form" style="display: none;">       <h2>Log In</h2>       <input type="email" placeholder="Email" />       <input type="password" placeholder="Password" />       <button>Login</button>       <p>Forgot password? <a href="#">Reset</a></p>       <p>Don't have an account? <a href="#" onclick="toggleForms('signup')">Create One</a></p>     </div>   </section>    <!-- Simplicity Section -->   <section class="section animated-section">     <h2>Simplicity First</h2>     <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>     <img src="M.png" alt="Moneyard Flow" class="feature-image grow-animation" />   </section>    <!-- Security Section -->   <section class="section animated-section">     <h2>Built-In Security</h2>     <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>     <div class="vault-animation">🔐</div>   </section>    <!-- Growth Section -->   <section class="section animated-section">     <h2>Real Growth for Real People</h2>     <p>Stake and earn up to 15% APY. Use Multiply and X-Account Plus to boost your crypto.</p>     <div class="progress-bar-container">       <div class="progress-bar"></div>     </div>   </section>    <!-- Offers Section -->   <section class="section" id="offers">     <h2>Get Started with These Offers</h2>     <ul class="offers-list">       <li>Deposit $300 → <strong>Get $30</strong> in Moneyard</li>       <li>Buy $500 in Crypto → <strong>Earn $100</strong> in Moneyard</li>       <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>       <li>Open X-Account Plus with $100 → <strong>Earn another $35</strong> in WXT</li>     </ul>   </section>    <footer>     <p>© 2025 Moneyard. Your crypto journey starts here.</p>   </footer>  </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moneyard – Crypto Staking Made Simple</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+  <style>
+    /* Basic Reset */
+    body, h1, p, ul, li, button {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f7f7f7;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Header & Navigation */
+    header {
+      background-color: #007a5a;
+      color: white;
+      padding: 20px;
+    }
+
+    header h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background-color: #333;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      background-color: #007a5a;
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.2em;
+    }
+
+    /* Signup/Login Box */
+    #auth-section {
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 20px;
+    }
+
+    .auth-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    .auth-box input,
+    .auth-box button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    .auth-box button {
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+
+    .auth-box button:hover {
+      background-color: #007a5a;
+    }
+
+    .auth-box a {
+      color: #007a5a;
+      text-decoration: none;
+    }
+
+    /* Simplicity Section */
+    .animated-section {
+      text-align: center;
+      padding: 50px 20px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animated-section h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    .animated-section p {
+      font-size: 1.2em;
+    }
+
+    .grow-animation {
+      animation: growImage 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes growImage {
+      0% {
+        transform: scale(0.9);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Vault Animation */
+    .vault-animation {
+      font-size: 50px;
+      animation: vaultRotate 2s infinite;
+    }
+
+    @keyframes vaultRotate {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      50% {
+        transform: rotate(180deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 50%; /* Change as needed for your APY */
+      background-color: #28a745;
+      border-radius: 10px;
+    }
+
+    /* Offers Section */
+    #offers {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .offers-list {
+      list-style-type: none;
+      font-size: 1.2em;
+    }
+
+    .offers-list li {
+      margin: 10px 0;
+    }
+
+    /* Moneyard Learning Section */
+    #learning {
+      background-color: #f4f4f4;
+      padding: 40px 20px;
+    }
+
+    #learning h2 {
+      font-size: 2.5em;
+      text-align: center;
+    }
+
+    #learning ul {
+      list-style-type: none;
+      margin-top: 20px;
+    }
+
+    #learning ul li {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+
+    /* Footer Styles */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #333;
+      color: white;
+    }
+  </style>
+</head>
+
+<body class="landing-body">
+
+  <!-- Navigation Bar -->
+  <header>
+    <h1>Moneyard</h1>
+    <p>Simple. Secure. Built for Growth.</p>
+  </header>
+
+  <nav>
+    <a href="#auth-section">Sign Up / Log In</a>
+    <a href="#offers">Offers</a>
+    <a href="#learning">Moneyard Learning</a>
+  </nav>
+
+  <!-- Hero Header -->
+  <section class="hero">
+    <h1>Moneyard</h1>
+    <p>Simple. Secure. Built for Growth.</p>
+  </section>
+
+  <!-- Signup/Login Box -->
+  <section id="auth-section" class="section auth-box">
+    <div id="signup-form">
+      <h2>Create Account</h2>
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <input type="text" placeholder="Referral Code (optional)" />
+      <button>Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="toggleForms('login')">Log In</a></p>
+    </div>
+
+    <div id="login-form" style="display: none;">
+      <h2>Log In</h2>
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <button>Login</button>
+      <p>Forgot password? <a href="#">Reset</a></p>
+      <p>Don't have an account? <a href="#" onclick="toggleForms('signup')">Create One</a></p>
+    </div>
+  </section>
+
+  <!-- Simplicity Section -->
+  <section class="section animated-section">
+    <h2>Simplicity First</h2>
+    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
+    <img src="M.png" alt="Moneyard Flow" class="feature-image grow-animation" />
+  </section>
+
+  <!-- Security Section -->
+  <section class="section animated-section">
+    <h2>Built-In Security</h2>
+    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
+    <div class="vault-animation">🔐</div>
+  </section>
+
+  <!-- Growth Section -->
+  <section class="section animated-section">
+    <h2>Real Growth for Real People</h2>
+    <p>Stake and earn up to 15% APY. Use Multiply and X-Account Plus to boost your crypto.</p>
+    <div class="progress-bar-container">
+      <div class="progress-bar"></div>
+    </div>
+  </section>
+
+  <!-- Offers Section -->
+  <section class="section" id="offers">
+    <h2>Get Started with These Offers</h2>
+    <ul class="offers-list">
+      <li>Deposit $300 → <strong>Get $30</strong> in Moneyard</li>
+      <li>Buy $500 in Crypto → <strong>Earn $100</strong> in Moneyard</li>
+      <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>
+      <li>Open X-Account Plus with $100 → <strong>Earn another $35</strong> in WXT</li>
+    </ul>
+  </section>
+
+  <!-- Moneyard Learning Section -->
+  <section class="section" id="learning">
+    <h2>Moneyard Learning</h2>
+    <ul>
+      <li><a href="#">How to Start Staking</a></li>
+      <li><a href="#">What is APY?</a></li>
+      <li><a href="#">Security Tips for Crypto</a></li>
+      <li><a href="#">Understanding Crypto Networks</a></li>
+      <li><a href="#">Beginner’s Guide to Crypto</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>© 2025 Moneyard. Your crypto journey starts here.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    function toggleForms(form) {
+      var signupForm = document.getElementById('signup-form');
+      var loginForm = document.getElementById('login-form');
+      if (form === 'signup') {
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
+      } else {
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+
+</html>
