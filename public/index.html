@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Head Section -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- FontAwesome CDN for icons -->
+  <!-- FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     .top-menu {
@@ -38,15 +37,11 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 16px;
       gap: 12px;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     .menu-dropdown.show {
       display: flex;
-      visibility: visible;
-      opacity: 1;
     }
 
     .menu-section {
@@ -82,14 +77,9 @@
   </style>
 </head>
 
+<!-- Body Section -->
 <body>
-
-  <!-- Logo -->
-  <div id="logo-section" style="text-align: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
-  </div>
-
-  <!-- Top-Right Menu Bar -->
+  <!-- Top Menu -->
   <div class="top-menu">
     <button id="menuToggle" class="menu-button">☰</button>
     <div id="menuDropdown" class="menu-dropdown">
@@ -108,24 +98,22 @@
     </div>
   </div>
 
-  <!-- JavaScript to toggle the menu -->
+  <!-- Script at end of body -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const toggleButton = document.getElementById('menuToggle');
-      const menuDropdown = document.getElementById('menuDropdown');
+      const toggleButton = document.getElementById("menuToggle");
+      const menuDropdown = document.getElementById("menuDropdown");
 
-      toggleButton.addEventListener('click', (e) => {
+      toggleButton.addEventListener("click", (e) => {
         e.stopPropagation();
-        menuDropdown.classList.toggle('show');
+        menuDropdown.classList.toggle("show");
       });
 
-      document.addEventListener('click', (e) => {
-        if (!document.querySelector('.top-menu').contains(e.target)) {
-          menuDropdown.classList.remove('show');
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".top-menu").contains(e.target)) {
+          menuDropdown.classList.remove("show");
         }
       });
     });
   </script>
-
 </body>
-</html>
