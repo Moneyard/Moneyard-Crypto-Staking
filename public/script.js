@@ -263,3 +263,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sections.forEach(section => observer.observe(section));
 });
+// Scroll-based animation for sections
+document.addEventListener("DOMContentLoaded", () => {
+  const animatedSections = document.querySelectorAll('.animated-section');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  animatedSections.forEach(section => {
+    observer.observe(section);
+  });
+
+  // Counter Animation
+  const counters = document.querySelectorAll('.counter');
+
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-target');
+      const current = +counter.innerText;
+      const increment = target / 100;
+
+      if (current < target) {
+        counter.innerText = Math.ceil(current + increment);
+        setTimeout(updateCount, 30);
+      } else {
+        counter.innerText = target;
+      }
+    };
+
+    const counterObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        updateCount();
+        counterObserver.disconnect(); // Run only once
+      }
+    });
+
+    counterObserver.observe(counter);
+  });
+});
