@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -5,40 +7,11 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- FontAwesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-
-<body>
-
-  <!-- Top-Right Menu Bar -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <!-- Moneyard Learning Section -->
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
-
-      <!-- My Account Section -->
-      <div class="menu-section right">
-        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content" style="display: none;">
-          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js" defer></script>
-
-  <!-- Menu Styles -->
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     .top-menu {
@@ -108,7 +81,76 @@
       cursor: pointer;
       font-size: 14px;
     }
+
+    #loginForm {
+      margin: 100px auto 0;
+      max-width: 400px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      display: none;
+    }
+
+    #loginForm h2 {
+      margin-top: 0;
+      color: #007a5a;
+    }
+
+    #loginForm input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    #loginForm button {
+      background-color: #007a5a;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
   </style>
+</head>
+
+<body>
+
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <!-- Moneyard Learning Section -->
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
+
+      <!-- My Account Section -->
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" id="loginTrigger">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Form Section -->
+  <div id="loginForm">
+    <h2>Login to Moneyard</h2>
+    <form>
+      <input type="text" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
   <!-- Menu Script -->
   <script>
@@ -119,6 +161,8 @@
       const learningContent = document.getElementById('learning-content');
       const accountHeader = document.getElementById('account-header');
       const accountContent = document.getElementById('account-content');
+      const loginTrigger = document.getElementById('loginTrigger');
+      const loginForm = document.getElementById('loginForm');
 
       // Toggle Menu Dropdown
       toggleButton.addEventListener('click', (e) => {
@@ -142,6 +186,17 @@
       accountHeader.addEventListener('click', () => {
         accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
       });
+
+      // Show login form
+      loginTrigger.addEventListener('click', () => {
+        loginForm.style.display = 'block';
+        menuDropdown.classList.remove('show');
+      });
+
+      // Prevent hash from affecting menu state
+      if (window.location.hash) {
+        history.replaceState("", document.title, window.location.pathname + window.location.search);
+      }
     });
   </script>
 
