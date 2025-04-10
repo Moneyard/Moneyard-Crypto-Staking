@@ -6,11 +6,10 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
     }
 
     .top-menu {
@@ -37,7 +36,7 @@
       background: white;
       border: 1px solid #ddd;
       border-radius: 8px;
-      display: none;
+      display: none !important;
       flex-direction: column;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -46,7 +45,7 @@
     }
 
     .menu-dropdown.show {
-      display: flex;
+      display: flex !important;
     }
 
     .menu-section {
@@ -71,6 +70,16 @@
       list-style: disc;
     }
 
+    .login-button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
     #welcome-text {
       color: #006400;
       font-size: 2.5rem;
@@ -88,8 +97,6 @@
     #intro {
       text-align: center;
       padding: 20px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
     }
 
     .highlighted { font-weight: bold; }
@@ -102,8 +109,6 @@
       padding: 20px;
       border: 1px solid #eee;
       border-radius: 12px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
     }
 
     .growth-boxes {
@@ -120,20 +125,12 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       margin: 10px;
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
-    }
-
-    .growth-card:hover {
-      transform: scale(1);
     }
 
     .counter {
       font-size: 2rem;
       color: #28a745;
       margin-top: 10px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
     }
 
     footer {
@@ -153,8 +150,6 @@
       background-color: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
-      opacity: 0;
-      animation: fadeIn 0.5s forwards;
     }
 
     .modal-content {
@@ -188,24 +183,6 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-    }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    @keyframes slideUp {
-      0% {
-        transform: translateY(50px);
-      }
-      100% {
-        transform: translateY(0);
-      }
     }
   </style>
 </head>
@@ -318,8 +295,8 @@
       </div>
       <div class="growth-card">
         <h3>Multiply Growth</h3>
-        <div class="counter" data-target="50">0</div>
-        <span>% Potential</span>
+        <div class="counter" data-target="35">0</div>
+        <span>% Bonus Returns</span>
       </div>
     </div>
   </section>
@@ -385,29 +362,13 @@
       document.getElementById(modalName).style.display = 'none';
     }
 
-    // Toggle between forms (Sign Up / Login)
+    // Example for toggling between forms (Sign up/Login)
     function toggleForms() {
       const signupForm = document.getElementById('signup-form');
       const loginForm = document.getElementById('login-form');
       signupForm.style.display = (signupForm.style.display === 'none') ? 'block' : 'none';
       loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
     }
-
-    // Animation for counters
-    document.querySelectorAll('.counter').forEach(counter => {
-      let count = 0;
-      const target = +counter.getAttribute('data-target');
-      const increment = target / 200;
-
-      const interval = setInterval(() => {
-        count += increment;
-        if (count >= target) {
-          count = target;
-          clearInterval(interval);
-        }
-        counter.textContent = Math.round(count);
-      }, 10);
-    });
   </script>
 </body>
 </html>
