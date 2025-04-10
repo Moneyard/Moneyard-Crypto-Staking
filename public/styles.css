@@ -405,3 +405,19 @@ select {
   font-weight: bold;
   color: #007a5a;
 }
+.animated-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.animated-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.counter {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #007a5a;
+}
