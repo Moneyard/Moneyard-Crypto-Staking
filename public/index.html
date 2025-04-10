@@ -16,7 +16,7 @@
       <!-- Moneyard Learning Section -->
       <div class="menu-section left">
         <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content">
+        <ul id="learning-content" style="display: none;">
           <li>Learn about Crypto Staking</li>
           <li>High-Yield Savings Tools</li>
           <li>Micro-Investing Data</li>
@@ -26,7 +26,7 @@
       <!-- My Account Section -->
       <div class="menu-section right">
         <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content">
+        <div id="account-content" style="display: none;">
           <button class="login-button" onclick="location.href='index.html#login'">Login</button>
         </div>
       </div>
@@ -66,12 +66,11 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       display: none;
-      flex-direction: row; /* Align items horizontally */
+      flex-direction: column;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 16px;
       gap: 12px;
-      justify-content: space-between; /* Ensures left and right sections */
     }
 
     .menu-dropdown.show {
@@ -79,7 +78,7 @@
     }
 
     .menu-section {
-      width: 48%; /* Ensure sections take up equal space */
+      width: 100%;
     }
 
     .menu-section h3 {
@@ -116,6 +115,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       const toggleButton = document.getElementById('menuToggle');
       const menuDropdown = document.getElementById('menuDropdown');
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
 
       // Toggle Menu Dropdown
       toggleButton.addEventListener('click', (e) => {
@@ -128,6 +131,16 @@
         if (!document.querySelector('.top-menu').contains(e.target)) {
           menuDropdown.classList.remove('show');
         }
+      });
+
+      // Toggle Moneyard Learning content visibility
+      learningHeader.addEventListener('click', () => {
+        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
+      });
+
+      // Toggle My Account content visibility
+      accountHeader.addEventListener('click', () => {
+        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
       });
     });
   </script>
