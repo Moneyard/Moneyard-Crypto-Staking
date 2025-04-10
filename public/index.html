@@ -1,78 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Add FontAwesome link to your head section -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard – Crypto Staking Made Simple</title>
+  <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
-  <script defer src="script.js"></script>
+  <!-- FontAwesome CDN for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="landing-body">
 
-  <!-- Hero Header -->
-  <header class="hero">
-    <h1>Moneyard</h1>
-    <p>Simple. Secure. Built for Growth.</p>
-  </header>
+<body>
 
-  <!-- Signup/Login Box -->
-  <section id="auth-section" class="section auth-box">
-    <div id="signup-form">
-      <h2>Create Account</h2>
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <input type="text" placeholder="Referral Code (optional)" />
-      <button>Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms('login')">Log In</a></p>
+  <!-- Logo -->
+  <div id="logo-section" style="text-align: center;">
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
+  </div>
+
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <!-- Moneyard Learning Section -->
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
+
+      <!-- My Account Section -->
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro Section -->
+  <section id="intro">
+    <h1 id="welcome-text">WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span></h1>
+    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
+    <p style="color: #006400;">We are committed to providing financial literacy, education, and effortless crypto staking for wealth builders and crypto beginners.</p>
+  </section>
+
+  <!-- Forms -->
+  <div id="forms">
+    <div id="signup-form" class="form">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-username" placeholder="Username" />
+      <input type="password" id="signup-password" placeholder="Password" />
+      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
+      <button onclick="signup()">Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
     </div>
 
-    <div id="login-form" style="display: none;">
-      <h2>Log In</h2>
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <button>Login</button>
-      <p>Forgot password? <a href="#">Reset</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms('signup')">Create One</a></p>
+    <div id="login-form" class="form" style="display: none;">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p><a href="#">Forgot password?</a></p>
+      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
     </div>
-  </section>
+  </div>
 
-  <!-- Simplicity Section -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
-    <img src="M.png" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <!-- Security Section -->
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <!-- Growth Section -->
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 15% APY. Use Multiply and X-Account Plus to boost your crypto.</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
-    </div>
-  </section>
-
-  <!-- Offers Section -->
-  <section class="section" id="offers">
-    <h2>Get Started with These Offers</h2>
-    <ul class="offers-list">
-      <li>Deposit $300 → <strong>Get $30</strong> in Moneyard</li>
-      <li>Buy $500 in Crypto → <strong>Earn $100</strong> in Moneyard</li>
-      <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>
-      <li>Open X-Account Plus with $100 → <strong>Earn another $35</strong> in WXT</li>
-    </ul>
-  </section>
-
+  <!-- Footer -->
   <footer>
-    <p>© 2025 Moneyard. Your crypto journey starts here.</p>
+    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
   </footer>
+
+  <script src="script.js" defer></script>
+
+  <!-- Menu Styles -->
+  <style>
+    .top-menu {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+
+    .menu-button {
+      background-color: #007a5a;
+      color: white;
+      font-size: 24px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: none;
+      flex-direction: row;
+      width: 320px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 16px;
+      gap: 12px;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .menu-dropdown.show {
+      display: flex;
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .menu-section {
+      width: 50%;
+    }
+
+    .menu-section h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #007a5a;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .menu-section ul {
+      padding-left: 16px;
+    }
+
+    .menu-section ul li {
+      font-size: 14px;
+      margin-bottom: 6px;
+      list-style: disc;
+    }
+
+    .login-button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Menu Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButton = document.getElementById('menuToggle');
+      const menuDropdown = document.getElementById('menuDropdown');
+
+      // Toggle Menu Dropdown
+      toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!document.querySelector('.top-menu').contains(e.target)) {
+          menuDropdown.classList.remove('show');
+        }
+      });
+
+      // Toggle Moneyard Learning content visibility
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+
+      learningHeader.addEventListener('click', () => {
+        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
+      });
+
+      // Toggle My Account content visibility
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
+
+      accountHeader.addEventListener('click', () => {
+        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
+      });
+    });
+  </script>
 
 </body>
 </html>
