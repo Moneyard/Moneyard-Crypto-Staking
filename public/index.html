@@ -1,130 +1,311 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- FontAwesome CDN for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
 
-  <!-- Logo -->
-  <div id="logo-section" style="text-align: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
-  </div>
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <!-- Moneyard Learning Section -->
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
 
-  <!-- Intro Section -->
-  <section id="intro">
-    <h1 id="welcome-text">WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span></h1>
-    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
-    <p style="color: #006400;">We are committed to providing financial literacy, education and effortless crypto staking for wealth builders and crypto beginners.</p>
-  </section>
-
-  <!-- Forms -->
-  <div id="forms">
-    <div id="signup-form" class="form">
-      <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" />
-      <input type="password" id="signup-password" placeholder="Password" />
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
-      <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
-    </div>
-
-    <div id="login-form" class="form" style="display: none;">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+      <!-- My Account Section -->
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Sections (Growth, Security, Simplicity etc.) -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits and animated guides make it easy for beginners.</p>
-    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 27% APY. Use Multiply and High-Yield Savings Plus to boost your crypto.</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
+  <!-- Main Content Section -->
+  <section id="landing" class="fadeIn">
+    <div class="header">
+      <img src="M.png" alt="Moneyard" />
+      <h1>Welcome to Moneyard</h1>
+      <p>Your platform for high-yield staking, investing, and savings.</p>
     </div>
-  </section>
-
-  <section class="section" id="offers">
-    <h2>Get Started with These Special Offers</h2>
-    <ul class="offers-list">
-      <li>Deposit $100 → <strong>Get $20</strong> in Moneyard</li>
-      <li>Stake $150 → <strong>Earn $35</strong> in Moneyard</li>
-      <li>Multiply with $100 → <strong>Receive $25</strong> in Moneyard</li>
-      <li>High-Yield Savings with $100 → <strong>Earn another $25</strong></li>
-    </ul>
-  </section>
-
-  <section class="section animated-section" id="growth-tracker">
-    <h2>Watch Your Crypto Grow</h2>
-    <div class="growth-boxes">
-      <div class="growth-card">
-        <h3>Staking APY</h3>
-        <div class="counter" data-target="27">0</div>
-        <span>% Annual Yield</span>
+    <div class="stats">
+      <div class="stat-item fadeIn">
+        <div class="counter" data-target="5000">0</div>
+        <span>Total Users</span>
       </div>
-      <div class="growth-card">
-        <h3>High-Yield Savings</h3>
-        <div class="counter" data-target="12">0</div>
-        <span>% Per Annum</span>
+      <div class="stat-item fadeIn">
+        <div class="counter" data-target="2000">0</div>
+        <span>Deposits</span>
       </div>
-      <div class="growth-card">
-        <h3>Multiply Growth</h3>
-        <div class="counter" data-target="35">0</div>
-        <span>% Bonus Returns</span>
+      <div class="stat-item fadeIn">
+        <div class="counter" data-target="50">0</div>
+        <span>% Potential</span>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer with Buttons -->
   <footer>
-    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
+    <div id="footer-buttons">
+      <button class="button" onclick="openModal('depositModal')">Deposit</button>
+      <button class="button" onclick="openModal('withdrawModal')">Withdraw</button>
+      <button class="button" onclick="openModal('transferModal')">Transfer</button>
+    </div>
   </footer>
 
-  <!-- JavaScript -->
+  <!-- Modal for Deposit -->
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('depositModal')">&times;</span>
+      <h2>Deposit Funds</h2>
+      <form>
+        <input type="number" placeholder="Amount to Deposit" />
+        <button>Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Withdraw -->
+  <div id="withdrawModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
+      <h2>Withdraw Funds</h2>
+      <form>
+        <input type="number" placeholder="Amount to Withdraw" />
+        <button>Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Transfer -->
+  <div id="transferModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('transferModal')">&times;</span>
+      <h2>Transfer Funds</h2>
+      <form>
+        <input type="text" placeholder="Recipient's Address" />
+        <input type="number" placeholder="Amount to Transfer" />
+        <button>Submit</button>
+      </form>
+    </div>
+  </div>
+
   <script src="script.js" defer></script>
+
+  <!-- Menu Styles -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Top Menu Styles */
+    .top-menu {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+
+    .menu-button {
+      background-color: #007a5a;
+      color: white;
+      font-size: 24px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      width: 320px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .menu-dropdown.show {
+      display: flex;
+    }
+
+    .menu-section {
+      width: 100%;
+    }
+
+    .menu-section h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #007a5a;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .menu-section ul {
+      padding-left: 16px;
+    }
+
+    .menu-section ul li {
+      font-size: 14px;
+      margin-bottom: 6px;
+      list-style: disc;
+    }
+
+    .login-button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Animations */
+    .fadeIn {
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Growth Cards */
+    .stat-item {
+      width: 30%;
+      text-align: center;
+      padding: 20px;
+      background: #f4f4f4;
+      border-radius: 8px;
+      margin: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .stat-item:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+      text-align: center;
+    }
+
+    .modal .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .modal .close:hover {
+      color: black;
+    }
+
+  </style>
+
+  <!-- Menu Script -->
   <script>
-    // Toggle between Sign Up and Login forms
-    function toggleForms() {
-      const signupForm = document.getElementById('signup-form');
-      const loginForm = document.getElementById('login-form');
-      signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-      loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButton = document.getElementById('menuToggle');
+      const menuDropdown = document.getElementById('menuDropdown');
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
+
+      // Toggle Menu Dropdown
+      toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!document.querySelector('.top-menu').contains(e.target)) {
+          menuDropdown.classList.remove('show');
+        }
+      });
+
+      // Toggle Moneyard Learning content visibility
+      learningHeader.addEventListener('click', () => {
+        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
+      });
+
+      // Toggle My Account content visibility
+      accountHeader.addEventListener('click', () => {
+        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
+      });
+    });
+
+    // Open and close modals
+    function openModal(modalName) {
+      document.getElementById(modalName).style.display = 'flex';
     }
 
-    // Dummy signup function
-    function signup() {
-      const username = document.getElementById('signup-username').value;
-      const password = document.getElementById('signup-password').value;
-      const refcode = document.getElementById('signup-refcode').value;
-      console.log(`Sign Up with: ${username}, ${password}, ${refcode}`);
-      // Add further backend logic here for signup
+    function closeModal(modalName) {
+      document.getElementById(modalName).style.display = 'none';
     }
 
-    // Dummy login function
-    function login() {
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-      console.log(`Login with: ${username}, ${password}`);
-      // Add further backend logic here for login
-    }
+    // Animation for counters
+    document.querySelectorAll('.counter').forEach(counter => {
+      let count = 0;
+      const target = +counter.getAttribute('data-target');
+      const increment = target / 200;
+
+      const interval = setInterval(() => {
+        count += increment;
+        if (count >= target) {
+          count = target;
+          clearInterval(interval);
+        }
+        counter.textContent = Math.round(count);
+      }, 10);
+    });
   </script>
+
 </body>
 </html>
