@@ -6,77 +6,9 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
-  body {
-    background-color: #FFA94D !important;
-  }
-</style>
-</head>
-<body>
-
-  <!-- Top-Right Menu Bar -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
-
-      <div class="menu-section right">
-        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content" style="display: none;">
-          <button class="login-button" onclick="showAuthForm('login')">Login</button>
-          <button class="login-button" onclick="showAuthForm('signup')">Sign Up</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <!-- Auth Form Box -->
-    <div id="auth-form" style="display: none;">
-      <!-- Login Form -->
-      <div id="login-form-section">
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="handleLogin(event)">
-          <input type="email" id="loginEmail" placeholder="Email" required><br>
-          <input type="password" id="loginPassword" placeholder="Password" required><br>
-          <button type="submit">Login</button>
-        </form>
-        <a href="#" id="forgot-password-link">Forgot Password?</a><br>
-        <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
-      </div>
-
-      <!-- Signup Form -->
-      <div id="signup-form-section" style="display: none;">
-        <h2>Sign Up</h2>
-        <form id="signupForm" onsubmit="handleSignup(event)">
-          <input type="email" id="signupEmail" placeholder="Email" required><br>
-          <input type="password" id="signupPassword" placeholder="Password" required><br>
-          <button type="submit">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
-      </div>
-    </div>
-
-    <!-- Forgot Password Modal -->
-    <div id="forgot-password-modal" style="display: none;">
-      <h2>Forgot Password</h2>
-      <form id="forgot-password-form">
-        <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
-        <button type="submit">Send Reset Link</button>
-      </form>
-      <button onclick="closeForgotPasswordModal()">Close</button>
-    </div>
-  </div>
-
-  <!-- Inline Styles -->
   <style>
     body {
+      background-color: #FFA94D !important;
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 60px 20px 20px;
@@ -143,12 +75,6 @@
       margin: 4px 0;
     }
 
-    .main-content {
-      max-width: 600px;
-      margin: auto;
-      text-align: center;
-    }
-
     #auth-form input {
       width: 80%;
       padding: 10px;
@@ -178,7 +104,142 @@
       margin: 20px auto;
       border-radius: 8px;
     }
+
+    .section {
+      margin: 40px auto;
+      max-width: 800px;
+      text-align: center;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .feature-image {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .offers-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .offers-list li {
+      padding: 10px 0;
+      font-size: 16px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+      background-color: #007a5a;
+    }
   </style>
+</head>
+<body>
+
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
+
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" onclick="showAuthForm('login')">Login</button>
+          <button class="login-button" onclick="showAuthForm('signup')">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Form Box -->
+  <div id="auth-form" style="display: none;">
+    <div id="login-form-section">
+      <h2>Login</h2>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="email" id="loginEmail" placeholder="Email" required><br>
+        <input type="password" id="loginPassword" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+      </form>
+      <a href="#" id="forgot-password-link">Forgot Password?</a><br>
+      <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
+    </div>
+
+    <div id="signup-form-section" style="display: none;">
+      <h2>Sign Up</h2>
+      <form id="signupForm" onsubmit="handleSignup(event)">
+        <input type="email" id="signupEmail" placeholder="Email" required><br>
+        <input type="password" id="signupPassword" placeholder="Password" required><br>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" style="display: none;">
+    <h2>Forgot Password</h2>
+    <form id="forgot-password-form">
+      <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
+      <button type="submit">Send Reset Link</button>
+    </form>
+    <button onclick="closeForgotPasswordModal()">Close</button>
+  </div>
+
+  <!-- Simplicity Section -->
+  <section class="section animated-section">
+    <h2>Simplicity First</h2>
+    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
+    <img src="M.png" alt="Moneyard Flow" class="feature-image grow-animation" />
+  </section>
+
+  <!-- Security Section -->
+  <section class="section animated-section">
+    <h2>Built-In Security</h2>
+    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
+    <div class="vault-animation">🔐</div>
+  </section>
+
+  <!-- Growth Section -->
+  <section class="section animated-section">
+    <h2>Real Growth for Real People</h2>
+    <p>Stake and earn up to 15% APY. Use Multiply and X-Account Plus to boost your crypto.</p>
+    <div class="progress-bar-container">
+      <div class="progress-bar"></div>
+    </div>
+  </section>
+
+  <!-- Offers Section -->
+  <section class="section" id="offers">
+    <h2>Get Started with These Offers</h2>
+    <ul class="offers-list">
+      <li>Deposit $300 → <strong>Get $30</strong> in Moneyard</li>
+      <li>Buy $500 in Crypto → <strong>Earn $100</strong> in Moneyard</li>
+      <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>
+      <li>Open X-Account Plus with $100 → <strong>Earn another $35</strong> in WXT</li>
+    </ul>
+  </section>
+
+  <!-- Referral Section -->
+  <section class="section animated-section" id="referral-bonus">
+    <h2>Earn More with Referrals</h2>
+    <p>Invite your friends and get <strong>5% bonus</strong> whenever they stake with Moneyard.</p>
+  </section>
+
+  <footer>
+    <p>© 2025 Moneyard. Your crypto journey starts here.</p>
+  </footer>
 
   <!-- Scripts -->
   <script>
@@ -245,12 +306,10 @@
       }
     }
 
-    // Updated handleLogin function
     function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-      
       fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -259,26 +318,23 @@
       .then(res => res.json())
       .then(data => {
         if (data.error) {
-          alert(data.error); // Show actual error message
+          alert(data.error);
         } else if (data.success) {
           localStorage.setItem('userId', data.userId);
           localStorage.setItem('email', email);
-          window.location.href = '/dashboard'; // Redirect to dashboard
+          window.location.href = '/dashboard';
         }
         document.getElementById('loginForm').reset();
-        closeAuthForm();
       })
       .catch(err => {
         alert(`Login failed! Error: ${err.message}`);
       });
     }
 
-    // Updated handleSignup function
     function handleSignup(e) {
       e.preventDefault();
       const email = document.getElementById('signupEmail').value;
       const password = document.getElementById('signupPassword').value;
-      
       fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -287,7 +343,7 @@
       .then(res => res.json())
       .then(data => {
         if (data.error) {
-          alert(data.error); // Show actual error message
+          alert(data.error);
         } else {
           alert('Signup successful! Please login.');
           document.getElementById('signupForm').reset();
@@ -302,99 +358,3 @@
 
 </body>
 </html>
-
-  <!-- Simplicity Section -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
-    <img src="M.png" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <!-- Security Section -->
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <!-- Growth Section -->
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 15% APY. Use Multiply and X-Account Plus to boost your crypto.</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
-    </div>
-  </section>
-
-  <!-- Offers Section -->
-  <section class="section" id="offers">
-    <h2>Get Started with These Offers</h2>
-    <ul class="offers-list">
-      <li>Deposit $300 → <strong>Get $30</strong> in Moneyard</li>
-      <li>Buy $500 in Crypto → <strong>Earn $100</strong> in Moneyard</li>
-      <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>
-      <li>Open X-Account Plus with $100 → <strong>Earn another $35</strong> in WXT</li>
-    </ul>
-  </section>
-
-  <footer>
-    <p>© 2025 Moneyard. Your crypto journey starts here.</p>
-  </footer>
-
-</body>
-</html>
-
-<!-- New Section: Referral Bonus -->
-<section class="section animated-section" id="referral-bonus">
-  <h2>Earn More with Referrals</h2>
-  <p>Invite your friends and get <strong>5% bonus</strong> whenever they stake with Moneyard. Share your referral code and grow together!</p>
-  <div style="text-align: center; margin-top: 20px;">
-    <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-size: 1rem;">Copy My Referral Code</button>
-  </div>
-</section>
-
-<!-- New Section: Why Choose Moneyard -->
-<section class="section animated-section" id="why-choose">
-  <h2>Why Choose Moneyard?</h2>
-  <ul style="list-style: none; padding-left: 0;">
-    <li>✔ Effortless onboarding for beginners</li>
-    <li>✔ Real-time earnings tracker</li>
-    <li>✔ High-security 2FA and encryption</li>
-    <li>✔ Instant deposits & staking returns</li>
-    <li>✔ 24/7 support and community access</li>
-  </ul>
-</section>
-
-<!-- Live Growth Tracker Section -->
-<section class="section animated-section" id="growth-tracker">
-  <h2>Watch Your Crypto Grow</h2>
-  <p>Real-time growth with staking, savings, and multiply features.</p>
-
-  <div class="growth-boxes">
-    <div class="growth-card">
-      <h3>Staking APY</h3>
-      <div class="counter" data-target="15">0</div>
-      <span>% Annual Yield</span>
-    </div>
-    <div class="growth-card">
-      <h3>High-Yield Savings</h3>
-      <div class="counter" data-target="9">0</div>
-      <span>% Per Annum</span>
-    </div>
-    <div class="growth-card">
-      <h3>Multiply Growth</h3>
-      <div class="counter" data-target="35">0</div>
-      <span>% Bonus Returns</span>
-    </div>
-  </div>
-</section>
-
-<!-- New Section: Community Invite -->
-<section class="section animated-section" id="community">
-  <h2>Join Our Growing Community</h2>
-  <p>Be a part of a global movement towards decentralized, smart wealth building. Connect with others, share insights, and stay updated with the latest in crypto finance.</p>
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="#" style="background-color: #006400; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 1rem;">Join Telegram Group</a>
-  </div>
-</section>
-
