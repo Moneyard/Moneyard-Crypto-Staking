@@ -49,15 +49,25 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     status TEXT DEFAULT 'pending',
     date TEXT
 )`);
+
 // Signup Route
 app.post('/signup', async (req, res) => {
     const { email, password } = req.body;
+
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
+    // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Insert the new user into the database
     db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword], function(err) {
-        if (err) return res.status(400).json({ error: 'User already exists or invalid data' });
+        if (err) {
+            // Handle user already exists error
+            if (err.code === 'SQLITE_CONSTRAINT') {
+                return res.status(400).json({ error: 'User already exists' });
+            }
+            return res.status(500).json({ error: 'Error creating user' });
+        }
         res.json({ success: true, userId: this.lastID });
     });
 });
@@ -66,17 +76,21 @@ app.post('/signup', async (req, res) => {
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
         if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
 
+        // Compare the entered password with the stored hash
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
 
+        // On success, return the userId and a success message (you can add a token here if needed)
         res.json({ success: true, userId: user.id });
     });
 });
 
-// Nodemailer setup
+// Nodemailer setup for password reset emails
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -251,31 +265,7 @@ app.post('/admin/approve-withdrawal', (req, res) => {
     });
 });
 
-app.post('/admin/reject-withdrawal', (req, res) => {
-    const { withdrawalId } = req.body;
-
-    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Withdrawal rejected' });
-    });
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
-
-app.get('/admin/get-withdrawals', (req, res) => {
-    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ withdrawals: rows });
-    });
-});
-
-app.post('/admin/update-withdrawal', (req, res) => {
-    const { id, status } = req.body;
-    if (!['approved', 'rejected'].includes(status)) return res.status(400).json({ error: 'Invalid status' });
-
-    db.run('UPDATE transactions SET status = ? WHERE id = ?', [status, id], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: `Withdrawal ${status}` });
-    });
-});
-
-// Start Server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
