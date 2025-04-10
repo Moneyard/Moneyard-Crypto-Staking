@@ -1,11 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- FontAwesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <!-- Moneyard Learning Section -->
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
+
+      <!-- My Account Section -->
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+
+  <!-- Menu Styles -->
+.menu-dropdown {
+  display: none !important;
+}
 
   <style>
     body {
@@ -36,7 +69,7 @@
       background: white;
       border: 1px solid #ddd;
       border-radius: 8px;
-      display: none !important;
+      display: none;
       flex-direction: column;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -45,7 +78,7 @@
     }
 
     .menu-dropdown.show {
-      display: flex !important;
+      display: flex;
     }
 
     .menu-section {
@@ -79,7 +112,102 @@
       cursor: pointer;
       font-size: 14px;
     }
+  </style>
 
+  <!-- Menu Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButton = document.getElementById('menuToggle');
+      const menuDropdown = document.getElementById('menuDropdown');
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
+
+      // Toggle Menu Dropdown
+      toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!document.querySelector('.top-menu').contains(e.target)) {
+          menuDropdown.classList.remove('show');
+        }
+      });
+
+      // Toggle Moneyard Learning content visibility
+      learningHeader.addEventListener('click', () => {
+        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
+      });
+
+      // Toggle My Account content visibility
+      accountHeader.addEventListener('click', () => {
+        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
+      });
+    });
+  </script>
+<!-- Add this just before </body> -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleButton = document.getElementById('menuToggle');
+    const menuDropdown = document.getElementById('menuDropdown');
+    const learningSection = document.getElementById('learning-header').parentElement;
+    const accountSection = document.getElementById('account-header').parentElement;
+
+    // Initially hide sections
+    learningSection.style.display = 'none';
+    accountSection.style.display = 'none';
+
+    // Toggle Menu Dropdown and show hidden sections
+    toggleButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('show');
+
+      // Show sections when menu is toggled open
+      if (menuDropdown.classList.contains('show')) {
+        learningSection.style.display = 'block';
+        accountSection.style.display = 'block';
+      } else {
+        learningSection.style.display = 'none';
+        accountSection.style.display = 'none';
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!document.querySelector('.top-menu').contains(e.target)) {
+        menuDropdown.classList.remove('show');
+        learningSection.style.display = 'none';
+        accountSection.style.display = 'none';
+      }
+    });
+
+    // Toggle Moneyard Learning content visibility
+    document.getElementById('learning-header').addEventListener('click', () => {
+      const content = document.getElementById('learning-content');
+      content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
+    });
+
+    // Toggle My Account content visibility
+    document.getElementById('account-header').addEventListener('click', () => {
+      const content = document.getElementById('account-content');
+      content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
     #welcome-text {
       color: #006400;
       font-size: 2.5rem;
@@ -103,118 +231,17 @@
     .blue { color: #0000FF; }
     .green { color: #4CAF50; }
 
-    /* Optional layout/animation */
-    .animated-section {
-      margin: 40px 20px;
-      padding: 20px;
-      border: 1px solid #eee;
-      border-radius: 12px;
-    }
-
-    .growth-boxes {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
-
-    .growth-card {
-      flex: 1;
-      min-width: 120px;
-      text-align: center;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin: 10px;
-    }
-
-    .counter {
-      font-size: 2rem;
-      color: #28a745;
-      margin-top: 10px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #f0f0f0;
-    }
-
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 50%;
-      text-align: center;
-    }
-
-    .close {
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      position: absolute;
-      top: 10px;
-      right: 15px;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .form button {
-      background-color: #007a5a;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+    /* Additional layout or animation styles can go here */
   </style>
 </head>
 
 <body>
-  <!-- Top Menu -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
-      <div class="menu-section right">
-        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content" style="display: none;">
-          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Logo -->
   <div id="logo-section" style="text-align: center;">
     <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
   </div>
 
-  <!-- Intro -->
+  <!-- Intro Section -->
   <section id="intro">
     <h1 id="welcome-text">WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span></h1>
     <p id="tagline">Grow Your Crypto, Effortlessly!</p>
@@ -242,14 +269,7 @@
     </div>
   </div>
 
-  <!-- Buttons to open modals -->
-  <div style="text-align: center; margin-top: 30px;">
-    <button onclick="openModal('depositModal')">Deposit Funds</button>
-    <button onclick="openModal('withdrawModal')">Withdraw Funds</button>
-    <button onclick="openModal('transferModal')">Transfer Funds</button>
-  </div>
-
-  <!-- Animated Sections -->
+  <!-- Sections -->
   <section class="section animated-section">
     <h2>Simplicity First</h2>
     <p>Start investing in minutes. One-tap deposits and animated guides make it easy for beginners.</p>
@@ -303,72 +323,10 @@
 
   <!-- Footer -->
   <footer>
-    <div id="footer-buttons">
-      <button class="button" onclick="openModal('depositModal')">Deposit</button>
-      <button class="button" onclick="openModal('withdrawModal')">Withdraw</button>
-      <button class="button" onclick="openModal('transferModal')">Transfer</button>
-    </div>
+    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
   </footer>
 
-  <!-- Modal for Deposit -->
-  <div id="depositModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('depositModal')">&times;</span>
-      <h2>Deposit Funds</h2>
-      <form>
-        <input type="number" placeholder="Amount to Deposit" />
-        <button>Submit</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal for Withdraw -->
-  <div id="withdrawModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
-      <h2>Withdraw Funds</h2>
-      <form>
-        <input type="number" placeholder="Amount to Withdraw" />
-        <button>Submit</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal for Transfer -->
-  <div id="transferModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('transferModal')">&times;</span>
-      <h2>Transfer Funds</h2>
-      <form>
-        <input type="text" placeholder="Recipient's Address" />
-        <input type="number" placeholder="Amount to Transfer" />
-        <button>Submit</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // Toggle menu visibility
-    document.getElementById('menuToggle').addEventListener('click', function() {
-      document.getElementById('menuDropdown').classList.toggle('show');
-    });
-
-    // Open and close modals
-    function openModal(modalName) {
-      document.getElementById(modalName).style.display = 'flex';
-    }
-
-    function closeModal(modalName) {
-      document.getElementById(modalName).style.display = 'none';
-    }
-
-    // Example for toggling between forms (Sign up/Login)
-    function toggleForms() {
-      const signupForm = document.getElementById('signup-form');
-      const loginForm = document.getElementById('login-form');
-      signupForm.style.display = (signupForm.style.display === 'none') ? 'block' : 'none';
-      loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
-    }
-  </script>
+  <!-- JavaScript -->
+  <script src="script.js" defer></script>
 </body>
 </html>
