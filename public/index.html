@@ -1,16 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- FontAwesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Top-Right Menu Bar -->
+  <div class="top-menu">
+    <button id="menuToggle" class="menu-button">☰</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <!-- Moneyard Learning Section -->
+      <div class="menu-section left">
+        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <ul id="learning-content" style="display: none;">
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
+        </ul>
+      </div>
+
+      <!-- My Account Section -->
+      <div class="menu-section right">
+        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+        <div id="account-content" style="display: none;">
+          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+
+  <!-- Menu Styles -->
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
     }
 
     .top-menu {
@@ -71,208 +99,51 @@
       list-style: disc;
     }
 
-    #welcome-text {
-      color: #006400;
-      font-size: 2.5rem;
-      text-align: center;
-      margin-top: 60px;
-    }
-
-    #tagline {
-      color: #006400;
-      font-size: 1.5rem;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #intro {
-      text-align: center;
-      padding: 20px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
-    }
-
-    .highlighted { font-weight: bold; }
-    .blue { color: #0000FF; }
-    .green { color: #4CAF50; }
-
-    /* Optional layout/animation */
-    .animated-section {
-      margin: 40px 20px;
-      padding: 20px;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
-    }
-
-    .growth-boxes {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
-
-    .growth-card {
-      flex: 1;
-      min-width: 120px;
-      text-align: center;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin: 10px;
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
-    }
-
-    .growth-card:hover {
-      transform: scale(1);
-    }
-
-    .counter {
-      font-size: 2rem;
-      color: #28a745;
-      margin-top: 10px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #f0f0f0;
-    }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    @keyframes slideUp {
-      0% {
-        transform: translateY(50px);
-      }
-      100% {
-        transform: translateY(0);
-      }
+    .login-button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
     }
   </style>
-</head>
 
-<body>
-  <!-- Top Menu -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
-      <div class="menu-section right">
-        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content" style="display: none;">
-          <button class="login-button" onclick="location.href='index.html#login'">Login</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Logo -->
-  <div id="logo-section" style="text-align: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
-  </div>
-
-  <!-- Intro -->
-  <section id="intro">
-    <h1 id="welcome-text">WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span></h1>
-    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
-    <p style="color: #006400;">We are committed to providing financial literacy, education, and effortless crypto staking for wealth builders and crypto beginners.</p>
-  </section>
-
-  <!-- Forms -->
-  <div id="forms">
-    <div id="signup-form" class="form">
-      <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" />
-      <input type="password" id="signup-password" placeholder="Password" />
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
-      <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
-    </div>
-
-    <div id="login-form" class="form" style="display: none;">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
-    </div>
-  </div>
-
-  <!-- Buttons (No Modal Functionality) -->
-  <div style="text-align: center; margin-top: 30px;">
-    <button onclick="location.href='deposit.html'">Deposit Funds</button>
-    <button onclick="location.href='withdraw.html'">Withdraw Funds</button>
-    <button onclick="location.href='transfer.html'">Transfer Funds</button>
-  </div>
-
-  <!-- Animated Sections -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits and animated guides make it easy for beginners.</p>
-    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 27% APY with our proven strategies.</p>
-    <div class="growth-boxes">
-      <div class="growth-card">
-        <h3>Staking Growth</h3>
-        <p class="counter">20% APR</p>
-      </div>
-      <div class="growth-card">
-        <h3>High-Yield Savings</h3>
-        <p class="counter">15% APR</p>
-      </div>
-      <div class="growth-card">
-        <h3>Micro-Investing</h3>
-        <p class="counter">12% APR</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Moneyard. All rights reserved.</p>
-  </footer>
-
+  <!-- Menu Script -->
   <script>
-    // JavaScript to handle menu toggle and forms toggling
-    document.getElementById('menuToggle').addEventListener('click', function() {
-      document.getElementById('menuDropdown').classList.toggle('show');
-    });
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButton = document.getElementById('menuToggle');
+      const menuDropdown = document.getElementById('menuDropdown');
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
 
-    function toggleForms() {
-      const signupForm = document.getElementById('signup-form');
-      const loginForm = document.getElementById('login-form');
-      signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-      loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-    }
+      // Toggle Menu Dropdown
+      toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!document.querySelector('.top-menu').contains(e.target)) {
+          menuDropdown.classList.remove('show');
+        }
+      });
+
+      // Toggle Moneyard Learning content visibility
+      learningHeader.addEventListener('click', () => {
+        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
+      });
+
+      // Toggle My Account content visibility
+      accountHeader.addEventListener('click', () => {
+        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
+      });
+    });
   </script>
+
 </body>
 </html>
