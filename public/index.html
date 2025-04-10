@@ -1,28 +1,18 @@
-<!-- Add FontAwesome link to your head section -->
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <!-- FontAwesome CDN for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-
 <!-- Top-Right Menu Bar -->
 <div class="top-menu">
   <button id="menuToggle" class="menu-button">☰</button>
   <div id="menuDropdown" class="menu-dropdown">
     <div class="menu-section left">
-      <h3><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-      <ul>
+      <h3 id="learningToggle">Moneyard Learning</h3>
+      <ul id="learningList" style="display: none;">
         <li>Learn about Crypto Staking</li>
         <li>High-Yield Savings Tools</li>
         <li>Micro-Investing Data</li>
       </ul>
     </div>
     <div class="menu-section right">
-      <h3><i class="fas fa-user"></i> My Account</h3>
-      <button class="login-button" onclick="location.href='index.html#login'">Login</button>
+      <h3 id="accountToggle">My Account</h3>
+      <button id="loginButton" class="login-button" onclick="location.href='index.html#login'" style="display: none;">Login</button>
     </div>
   </div>
 </div>
@@ -79,6 +69,7 @@
     font-size: 16px;
     color: #007a5a;
     margin-bottom: 8px;
+    cursor: pointer; /* Make the section clickable */
   }
 
   .menu-section ul {
@@ -107,11 +98,30 @@
   document.addEventListener("DOMContentLoaded", () => {
     const toggleButton = document.getElementById('menuToggle');
     const menuDropdown = document.getElementById('menuDropdown');
+    const learningToggle = document.getElementById('learningToggle');
+    const learningList = document.getElementById('learningList');
+    const accountToggle = document.getElementById('accountToggle');
+    const loginButton = document.getElementById('loginButton');
 
     toggleButton.addEventListener('click', (e) => {
-      // Prevent click event from closing the dropdown immediately
       e.stopPropagation();
       menuDropdown.classList.toggle('show');
+    });
+
+    // Toggle Moneyard Learning section
+    learningToggle.addEventListener('click', () => {
+      // Collapse/Expand the learning list
+      if (learningList.style.display === 'none' || learningList.style.display === '') {
+        learningList.style.display = 'block';
+      } else {
+        learningList.style.display = 'none';
+      }
+    });
+
+    // Show Login button when My Account is clicked
+    accountToggle.addEventListener('click', () => {
+      // Toggle the visibility of the Login button
+      loginButton.style.display = (loginButton.style.display === 'none') ? 'block' : 'none';
     });
 
     // Close the menu if clicking outside of the menu area
