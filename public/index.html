@@ -140,19 +140,21 @@
 </head>
 <body>
 
-   <!-- Logo & Navbar -->
-  <div class="navbar">
-    <div class="logo" style="display: flex; align-items: center;">
-      <img src="20250409_162622.jpg" alt="">
-      <span>Moneyard</span>
-    </div>
-    <div class="menu">
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Support</a>
-    </div>
+ <!-- Green Menu Bar with Organized Logo -->
+<div class="navbar" style="display: flex; justify-content: space-between; align-items: center; background-color: green; padding: 12px 20px;">
+  <!-- Logo on the left -->
+  <div class="logo" style="display: flex; align-items: center;">
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" style="height: 40px; margin-right: 12px;">
+    <span style="color: white; font-size: 22px; font-weight: bold;">Moneyard</span>
   </div>
 
+  <!-- Top-right menu links -->
+  <div class="menu">
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Home</a>
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">About</a>
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Support</a>
+  </div>
+</div>
 
   <!-- Top-Right Menu Bar -->
   <div class="top-menu">
@@ -296,49 +298,128 @@
     <div class="sparkline"></div>
   </div>
 </div>
-</section>
+</div>
+</div>
 
-  <!-- Footer -->
-  <footer>
+ 
+ <footer>
     <p>© 2025 Moneyard. Your crypto journey starts here.</p>
   </footer>
 
   <!-- Scripts -->
   <script>
-    const toggleButton = document.getElementById('menuToggle');
-    const menuDropdown = document.getElementById('menuDropdown');
-    const learningHeader = document.getElementById('learning-header');
-    const learningContent = document.getElementById('learning-content');
-    const accountHeader = document.getElementById('account-header');
-    const accountContent = document.getElementById('account-content');
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButton = document.getElementById('menuToggle');
+      const menuDropdown = document.getElementById('menuDropdown');
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
 
-    toggleButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      menuDropdown.classList.toggle('show');
+      toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!document.querySelector('.top-menu').contains(e.target)) {
+          menuDropdown.classList.remove('show');
+        }
+      });
+
+      learningHeader.addEventListener('click', () => {
+        learningContent.style.display = learningContent.style.display === 'none' ? 'block' : 'none';
+      });
+
+      accountHeader.addEventListener('click', () => {
+        accountContent.style.display = accountContent.style.display === 'none' ? 'block' : 'none';
+      });
+
+      document.getElementById("forgot-password-link").onclick = () => {
+        document.getElementById("forgot-password-modal").style.display = "block";
+      };
+
+      document.getElementById("forgot-password-form").onsubmit = function(e) {
+        e.preventDefault();
+        const email = document.getElementById("forgot-password-email").value;
+        fetch('/api/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.success ? "Reset link sent!" : "Error: " + data.message);
+          closeForgotPasswordModal();
+        })
+        .catch(err => alert("Error: " + err.message));
+      };
     });
-
-    document.addEventListener('click', () => menuDropdown.classList.remove('show'));
-
-    learningHeader.addEventListener('click', () => {
-      learningContent.style.display = learningContent.style.display === 'none' ? 'block' : 'none';
-    });
-
-    accountHeader.addEventListener('click', () => {
-      accountContent.style.display = accountContent.style.display === 'none' ? 'block' : 'none';
-    });
-
-    function showAuthForm(type) {
-      const form = document.getElementById('auth-form');
-      const login = document.getElementById('login-form-section');
-      const signup = document.getElementById('signup-form-section');
-      form.style.display = 'block';
-      login.style.display = type === 'login' ? 'block' : 'none';
-      signup.style.display = type === 'signup' ? 'block' : 'none';
-    }
 
     function closeForgotPasswordModal() {
-      document.getElementById('forgot-password-modal').style.display = 'none';
+      document.getElementById("forgot-password-modal").style.display = "none";
+    }
+
+    function showAuthForm(type) {
+      document.getElementById('auth-form').style.display = 'block';
+      if (type === 'login') {
+        document.getElementById('login-form-section').style.display = 'block';
+        document.getElementById('signup-form-section').style.display = 'none';
+      } else {
+        document.getElementById('signup-form-section').style.display = 'block';
+        document.getElementById('login-form-section').style.display = 'none';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+        } else if (data.success) {
+          localStorage.setItem('userId', data.userId);
+          localStorage.setItem('email', email);
+          window.location.href = '/dashboard';
+        }
+        document.getElementById('loginForm').reset();
+      })
+      .catch(err => {
+        alert(`Login failed! Error: ${err.message}`);
+      });
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert('Signup successful! Please login.');
+          document.getElementById('signupForm').reset();
+          showAuthForm('login');
+        }
+      })
+      .catch(err => {
+        alert(`Signup failed! Error: ${err.message}`);
+      });
     }
   </script>
+
 </body>
 </html>
