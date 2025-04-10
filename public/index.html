@@ -36,15 +36,7 @@
   <script src="script.js" defer></script>
 
   <!-- Menu Styles -->
-.menu-dropdown {
-  display: none !important;
-}
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-
     .top-menu {
       position: fixed;
       top: 10px;
@@ -70,19 +62,24 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       display: none;
-      flex-direction: column;
+      flex-direction: row;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 16px;
       gap: 12px;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .menu-dropdown.show {
       display: flex;
+      visibility: visible;
+      opacity: 1;
     }
 
     .menu-section {
-      width: 100%;
+      width: 50%;
     }
 
     .menu-section h3 {
@@ -119,10 +116,6 @@
     document.addEventListener("DOMContentLoaded", () => {
       const toggleButton = document.getElementById('menuToggle');
       const menuDropdown = document.getElementById('menuDropdown');
-      const learningHeader = document.getElementById('learning-header');
-      const learningContent = document.getElementById('learning-content');
-      const accountHeader = document.getElementById('account-header');
-      const accountContent = document.getElementById('account-content');
 
       // Toggle Menu Dropdown
       toggleButton.addEventListener('click', (e) => {
@@ -138,195 +131,22 @@
       });
 
       // Toggle Moneyard Learning content visibility
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+
       learningHeader.addEventListener('click', () => {
         learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
       });
 
       // Toggle My Account content visibility
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
+
       accountHeader.addEventListener('click', () => {
         accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
       });
     });
   </script>
-<!-- Add this just before </body> -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const toggleButton = document.getElementById('menuToggle');
-    const menuDropdown = document.getElementById('menuDropdown');
-    const learningSection = document.getElementById('learning-header').parentElement;
-    const accountSection = document.getElementById('account-header').parentElement;
 
-    // Initially hide sections
-    learningSection.style.display = 'none';
-    accountSection.style.display = 'none';
-
-    // Toggle Menu Dropdown and show hidden sections
-    toggleButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      menuDropdown.classList.toggle('show');
-
-      // Show sections when menu is toggled open
-      if (menuDropdown.classList.contains('show')) {
-        learningSection.style.display = 'block';
-        accountSection.style.display = 'block';
-      } else {
-        learningSection.style.display = 'none';
-        accountSection.style.display = 'none';
-      }
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!document.querySelector('.top-menu').contains(e.target)) {
-        menuDropdown.classList.remove('show');
-        learningSection.style.display = 'none';
-        accountSection.style.display = 'none';
-      }
-    });
-
-    // Toggle Moneyard Learning content visibility
-    document.getElementById('learning-header').addEventListener('click', () => {
-      const content = document.getElementById('learning-content');
-      content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
-    });
-
-    // Toggle My Account content visibility
-    document.getElementById('account-header').addEventListener('click', () => {
-      const content = document.getElementById('account-content');
-      content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
-    });
-  });
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    #welcome-text {
-      color: #006400;
-      font-size: 2.5rem;
-      text-align: center;
-      margin-top: 60px;
-    }
-
-    #tagline {
-      color: #006400;
-      font-size: 1.5rem;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #intro {
-      text-align: center;
-      padding: 20px;
-    }
-
-    .highlighted { font-weight: bold; }
-    .blue { color: #0000FF; }
-    .green { color: #4CAF50; }
-
-    /* Additional layout or animation styles can go here */
-  </style>
-</head>
-
-<body>
-  <!-- Logo -->
-  <div id="logo-section" style="text-align: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
-  </div>
-
-  <!-- Intro Section -->
-  <section id="intro">
-    <h1 id="welcome-text">WELCOME TO <span class="blue">MONE</span><span class="green">YARD</span></h1>
-    <p id="tagline">Grow Your Crypto, Effortlessly!</p>
-    <p style="color: #006400;">We are committed to providing financial literacy, education and effortless crypto staking for wealth builders and crypto beginners.</p>
-  </section>
-
-  <!-- Forms -->
-  <div id="forms">
-    <div id="signup-form" class="form">
-      <h2>Sign Up</h2>
-      <input type="text" id="signup-username" placeholder="Username" />
-      <input type="password" id="signup-password" placeholder="Password" />
-      <input type="text" id="signup-refcode" placeholder="Reference Code (optional)" />
-      <button onclick="signup()">Sign Up</button>
-      <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
-    </div>
-
-    <div id="login-form" class="form" style="display: none;">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
-      <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
-    </div>
-  </div>
-
-  <!-- Sections -->
-  <section class="section animated-section">
-    <h2>Simplicity First</h2>
-    <p>Start investing in minutes. One-tap deposits and animated guides make it easy for beginners.</p>
-    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
-  </section>
-
-  <section class="section animated-section">
-    <h2>Built-In Security</h2>
-    <p>Your funds are safe with password + OTP, email confirmation, and encryption.</p>
-    <div class="vault-animation">🔐</div>
-  </section>
-
-  <section class="section animated-section">
-    <h2>Real Growth for Real People</h2>
-    <p>Stake and earn up to 27% APY. Use Multiply and High-Yield Savings Plus to boost your crypto.</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
-    </div>
-  </section>
-
-  <section class="section" id="offers">
-    <h2>Get Started with These Special Offers</h2>
-    <ul class="offers-list">
-      <li>Deposit $100 → <strong>Get $20</strong> in Moneyard</li>
-      <li>Stake $150 → <strong>Earn $35</strong> in Moneyard</li>
-      <li>Multiply with $100 → <strong>Receive $25</strong> in Moneyard</li>
-      <li>High-Yield Savings with $100 → <strong>Earn another $25</strong></li>
-    </ul>
-  </section>
-
-  <section class="section animated-section" id="growth-tracker">
-    <h2>Watch Your Crypto Grow</h2>
-    <div class="growth-boxes">
-      <div class="growth-card">
-        <h3>Staking APY</h3>
-        <div class="counter" data-target="27">0</div>
-        <span>% Annual Yield</span>
-      </div>
-      <div class="growth-card">
-        <h3>High-Yield Savings</h3>
-        <div class="counter" data-target="12">0</div>
-        <span>% Per Annum</span>
-      </div>
-      <div class="growth-card">
-        <h3>Multiply Growth</h3>
-        <div class="counter" data-target="35">0</div>
-        <span>% Bonus Returns</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
-  </footer>
-
-  <!-- JavaScript -->
-  <script src="script.js" defer></script>
 </body>
 </html>
