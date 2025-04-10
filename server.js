@@ -49,16 +49,29 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     status TEXT DEFAULT 'pending',
     date TEXT
 )`);
+
 // Signup Route
 app.post('/signup', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+    }
 
-    db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword], function(err) {
-        if (err) return res.status(400).json({ error: 'User already exists or invalid data' });
-        res.json({ success: true, userId: this.lastID });
+    // Check if user already exists
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (user) return res.status(400).json({ error: 'Email already in use' });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword], function(err) {
+            if (err) return res.status(500).json({ error: 'Failed to register user' });
+            res.json({ success: true, userId: this.lastID });
+        });
     });
 });
 
@@ -261,21 +274,13 @@ app.post('/admin/reject-withdrawal', (req, res) => {
 });
 
 app.get('/admin/get-withdrawals', (req, res) => {
-    db.all('SELECT * FROM transactions WHERE type = "withdrawal" ORDER BY date DESC', (err, rows) => {
+    db.all("SELECT * FROM withdrawals", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ withdrawals: rows });
     });
 });
 
-app.post('/admin/update-withdrawal', (req, res) => {
-    const { id, status } = req.body;
-    if (!['approved', 'rejected'].includes(status)) return res.status(400).json({ error: 'Invalid status' });
-
-    db.run('UPDATE transactions SET status = ? WHERE id = ?', [status, id], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: `Withdrawal ${status}` });
-    });
-});
-
 // Start Server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
