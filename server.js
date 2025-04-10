@@ -12,6 +12,32 @@ const transporter = nodemailer.createTransport({
 
 // Route to handle forgot password requests
 app.post('/api/forgot-password', (req, res) => {
+// Reset Password Route
+app.post('/api/reset-password', (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) {
+    return res.status(400).json({ success: false, message: 'Invalid request.' });
+  }
+
+  // Step 1: Find user by token
+  db.get('SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > ?', [token, Date.now()], (err, user) => {
+    if (err) return res.status(500).json({ success: false, message: 'Database error.' });
+    if (!user) return res.status(400).json({ success: false, message: 'Token is invalid or expired.' });
+
+    // Step 2: Hash new password
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) return res.status(500).json({ success: false, message: 'Error hashing password.' });
+
+      // Step 3: Update user's password & clear token
+      db.run('UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?', [hashedPassword, user.id], function(err) {
+        if (err) return res.status(500).json({ success: false, message: 'Failed to update password.' });
+
+        res.json({ success: true, message: 'Password has been reset.' });
+      });
+    });
+  });
+});
+
     const { email } = req.body;
 
     // Generate a unique reset token
