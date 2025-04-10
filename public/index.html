@@ -1,12 +1,14 @@
-<!-- Head Section -->
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- FontAwesome CDN -->
+  <!-- FontAwesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* Consolidated CSS */
     .top-menu {
       position: fixed;
       top: 10px;
@@ -22,6 +24,11 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .menu-button:hover {
+      background-color: #005f46;
     }
 
     .menu-dropdown {
@@ -31,17 +38,20 @@
       background: white;
       border: 1px solid #ddd;
       border-radius: 8px;
-      display: none;
+      display: flex;
       flex-direction: row;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 16px;
       gap: 12px;
-      transition: all 0.3s ease;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .menu-dropdown.show {
-      display: flex;
+      visibility: visible;
+      opacity: 1;
     }
 
     .menu-section {
@@ -53,16 +63,26 @@
       font-size: 16px;
       color: #007a5a;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .menu-section ul {
       padding-left: 16px;
+      margin: 0;
     }
 
     .menu-section ul li {
       font-size: 14px;
       margin-bottom: 6px;
       list-style: disc;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .menu-section ul li:hover {
+      color: #007a5a;
     }
 
     .login-button {
@@ -73,18 +93,25 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
+      transition: background-color 0.3s;
+      width: 100%;
     }
+
+    .login-button:hover {
+      background-color: #218838;
+    }
+
+    /* Rest of your existing styles... */
   </style>
 </head>
 
-<!-- Body Section -->
 <body>
-  <!-- Top Menu -->
+  <!-- Top-Right Menu Bar -->
   <div class="top-menu">
     <button id="menuToggle" class="menu-button">☰</button>
     <div id="menuDropdown" class="menu-dropdown">
       <div class="menu-section left">
-        <h3><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+        <h3><i class="fas fa-graduation-cap"></i>Moneyard Learning</h3>
         <ul>
           <li>Learn about Crypto Staking</li>
           <li>High-Yield Savings Tools</li>
@@ -92,28 +119,44 @@
         </ul>
       </div>
       <div class="menu-section right">
-        <h3><i class="fas fa-user"></i> My Account</h3>
+        <h3><i class="fas fa-user"></i>My Account</h3>
         <button class="login-button" onclick="location.href='index.html#login'">Login</button>
       </div>
     </div>
   </div>
 
-  <!-- Script at end of body -->
+  <!-- Rest of your body content... -->
+
   <script>
+    // Improved JavaScript with touch support
     document.addEventListener("DOMContentLoaded", () => {
-      const toggleButton = document.getElementById("menuToggle");
-      const menuDropdown = document.getElementById("menuDropdown");
+      const toggleButton = document.getElementById('menuToggle');
+      const menuDropdown = document.getElementById('menuDropdown');
 
-      toggleButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        menuDropdown.classList.toggle("show");
-      });
+      // Toggle menu
+      function toggleMenu() {
+        menuDropdown.classList.toggle('show');
+      }
 
-      document.addEventListener("click", (e) => {
-        if (!document.querySelector(".top-menu").contains(e.target)) {
-          menuDropdown.classList.remove("show");
+      // Close menu when clicking outside
+      function closeMenu(e) {
+        if (!toggleButton.contains(e.target) && !menuDropdown.contains(e.target)) {
+          menuDropdown.classList.remove('show');
+        }
+      }
+
+      // Event listeners
+      toggleButton.addEventListener('click', toggleMenu);
+      document.addEventListener('click', closeMenu);
+      document.addEventListener('touchstart', closeMenu); // For mobile devices
+
+      // Close menu on ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          menuDropdown.classList.remove('show');
         }
       });
     });
   </script>
 </body>
+</html>
