@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- FontAwesome for icons -->
+  <!-- FontAwesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     .top-menu {
@@ -38,11 +38,15 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 16px;
       gap: 12px;
-      transition: all 0.3s ease;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .menu-dropdown.show {
       display: flex;
+      visibility: visible;
+      opacity: 1;
     }
 
     .menu-section {
@@ -79,16 +83,22 @@
 </head>
 
 <body>
+
+  <!-- Logo -->
+  <div id="logo-section" style="text-align: center;">
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
+  </div>
+
   <!-- Top-Right Menu Bar -->
   <div class="top-menu">
-    <button id="menuToggle" class="menu-button"><i class="fas fa-bars"></i></button>
+    <button id="menuToggle" class="menu-button">☰</button>
     <div id="menuDropdown" class="menu-dropdown">
       <div class="menu-section left">
-        <h3><i class="fas fa-graduation-cap"></i> Learning</h3>
+        <h3><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
         <ul>
-          <li>Crypto Staking</li>
-          <li>Savings Tools</li>
-          <li>Micro-Investing</li>
+          <li>Learn about Crypto Staking</li>
+          <li>High-Yield Savings Tools</li>
+          <li>Micro-Investing Data</li>
         </ul>
       </div>
       <div class="menu-section right">
@@ -98,23 +108,7 @@
     </div>
   </div>
 
-  <!-- Logo -->
-  <div id="logo-section" style="text-align: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
-  </div>
-
-  <!-- Intro Section -->
-  <section id="intro" style="text-align: center; padding: 20px;">
-    <h1 id="welcome-text" style="color: #006400; font-size: 2.5rem;">
-      WELCOME TO <span style="color: #0000FF;">MONE</span><span style="color: #4CAF50;">YARD</span>
-    </h1>
-    <p id="tagline" style="color: #006400; font-size: 1.5rem;">Grow Your Crypto, Effortlessly!</p>
-    <p style="color: #006400;">We are committed to financial literacy, education, and effortless crypto staking.</p>
-  </section>
-
-  <!-- Add your signup/login forms and other sections below -->
-
-  <!-- JavaScript for menu toggle -->
+  <!-- JavaScript to toggle the menu -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const toggleButton = document.getElementById('menuToggle');
@@ -132,5 +126,6 @@
       });
     });
   </script>
+
 </body>
 </html>
