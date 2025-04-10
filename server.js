@@ -10,8 +10,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// SQLite database setup
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+// SQLite database setup - Adjusted for Heroku's dynamic file system
+const db = new sqlite3.Database(process.env.DATABASE_URL || './database.sqlite', (err) => {
     if (err) return console.error('Failed to connect to DB:', err);
     console.log('Connected to SQLite database.');
 });
@@ -261,30 +261,4 @@ app.post('/admin/update-withdrawal', (req, res) => {
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-});
-// API: Handle fund transfers
-app.post('/transfer', (req, res) => {
-  const { userId, amount, recipientId } = req.body;
-
-  if (!amount || !recipientId || amount <= 0) {
-    return res.status(400).json({ error: 'Invalid transfer request' });
-  }
-
-  // Subtract from sender
-  db.run(`
-    INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-    VALUES (?, 'transfer-out', ?, '', '', 'completed', datetime('now'))
-  `, [userId, amount], function(err) {
-    if (err) return res.status(500).json({ error: 'Error sending funds' });
-
-    // Add to recipient
-    db.run(`
-      INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-      VALUES (?, 'transfer-in', ?, '', '', 'completed', datetime('now'))
-    `, [recipientId, amount], function(err) {
-      if (err) return res.status(500).json({ error: 'Error crediting recipient' });
-
-      res.json({ message: 'Transfer successful' });
-    });
-  });
 });
