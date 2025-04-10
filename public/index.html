@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- FontAwesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
@@ -82,29 +81,30 @@
       font-size: 14px;
     }
 
-    #loginForm {
-      margin: 100px auto 0;
+    .form-container {
+      margin: 120px auto 0;
       max-width: 400px;
       padding: 20px;
       border: 1px solid #ccc;
       border-radius: 8px;
       background-color: #f9f9f9;
       display: none;
+      transition: all 0.3s ease;
     }
 
-    #loginForm h2 {
+    .form-container h2 {
       margin-top: 0;
       color: #007a5a;
     }
 
-    #loginForm input {
+    .form-container input {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       font-size: 14px;
     }
 
-    #loginForm button {
+    .form-container button {
       background-color: #007a5a;
       color: white;
       padding: 10px 16px;
@@ -112,6 +112,32 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
+      width: 100%;
+    }
+
+    .form-toggle {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .form-toggle a {
+      color: #007a5a;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      text-align: right;
+      font-size: 13px;
+      margin-top: -8px;
+      margin-bottom: 10px;
+    }
+
+    .forgot-password a {
+      color: #007a5a;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -122,7 +148,6 @@
   <div class="top-menu">
     <button id="menuToggle" class="menu-button">☰</button>
     <div id="menuDropdown" class="menu-dropdown">
-      <!-- Moneyard Learning Section -->
       <div class="menu-section left">
         <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
         <ul id="learning-content" style="display: none;">
@@ -132,27 +157,42 @@
         </ul>
       </div>
 
-      <!-- My Account Section -->
       <div class="menu-section right">
         <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
         <div id="account-content" style="display: none;">
-          <button class="login-button" id="loginTrigger">Login</button>
+          <button class="login-button" id="loginTrigger">Login / Signup</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Login Form Section -->
-  <div id="loginForm">
+  <!-- Login Form -->
+  <div id="loginForm" class="form-container">
     <h2>Login to Moneyard</h2>
     <form>
       <input type="text" placeholder="Email" required />
       <input type="password" placeholder="Password" required />
+      <div class="forgot-password">
+        <a href="#">Forgot Password?</a>
+      </div>
       <button type="submit">Login</button>
     </form>
+    <div class="form-toggle">Don't have an account? <a id="showSignup">Sign up</a></div>
   </div>
 
-  <!-- Menu Script -->
+  <!-- Signup Form -->
+  <div id="signupForm" class="form-container">
+    <h2>Create Your Moneyard Account</h2>
+    <form>
+      <input type="text" placeholder="Full Name" required />
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Create Password" required />
+      <button type="submit">Sign Up</button>
+    </form>
+    <div class="form-toggle">Already have an account? <a id="showLogin">Log in</a></div>
+  </div>
+
+  <!-- JavaScript Logic -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const toggleButton = document.getElementById('menuToggle');
@@ -163,37 +203,45 @@
       const accountContent = document.getElementById('account-content');
       const loginTrigger = document.getElementById('loginTrigger');
       const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      const showSignup = document.getElementById('showSignup');
+      const showLogin = document.getElementById('showLogin');
 
-      // Toggle Menu Dropdown
       toggleButton.addEventListener('click', (e) => {
         e.stopPropagation();
         menuDropdown.classList.toggle('show');
       });
 
-      // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
         if (!document.querySelector('.top-menu').contains(e.target)) {
           menuDropdown.classList.remove('show');
         }
       });
 
-      // Toggle Moneyard Learning content visibility
       learningHeader.addEventListener('click', () => {
         learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
       });
 
-      // Toggle My Account content visibility
       accountHeader.addEventListener('click', () => {
         accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
       });
 
-      // Show login form
       loginTrigger.addEventListener('click', () => {
         loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
         menuDropdown.classList.remove('show');
       });
 
-      // Prevent hash from affecting menu state
+      showSignup.addEventListener('click', () => {
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
+      });
+
+      showLogin.addEventListener('click', () => {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+      });
+
       if (window.location.hash) {
         history.replaceState("", document.title, window.location.pathname + window.location.search);
       }
