@@ -132,84 +132,35 @@
 
     footer {
       text-align: center;
-      padding: 30px 20px;
+      padding: 20px;
       color: #fff;
       background-color: #007a5a;
-      margin-top: 40px;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: green;
-      padding: 10px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
-
-    .logo img {
-      height: 40px;
-      margin-right: 10px;
-    }
-
-    .logo span {
-      color: white;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .menu a {
-      color: white;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-
-    .growth-boxes {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 60px;
-    }
-
-    .growth-card {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      width: 200px;
-      text-align: center;
-    }
-
-    .counter {
-      font-size: 36px;
-      color: #007a5a;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <!-- Logo & Navbar -->
-  <div class="navbar">
-    <div class="logo" style="display: flex; align-items: center;">
-      <img src="20250409_162622.jpg" alt="Moneyard Logo">
-      <span>Moneyard</span>
-    </div>
-    <div class="menu">
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Support</a>
-    </div>
+ <!-- Green Menu Bar -->
+<div class="navbar" style="display: flex; justify-content: space-between; align-items: center; background-color: green; padding: 10px;">
+  <!-- Logo on the left -->
+  <div class="logo" style="display: flex; align-items: center;">
+    <img src="20250409_162622.jpg" style="height: 40px; margin-right: 10px;">
+    <span style="color: white; font-size: 20px; font-weight: bold;">Moneyard</span>
   </div>
 
-  <!-- Top-Right Menu -->
+  <!-- Menu on the right -->
+  <div class="menu">
+    <a href="#" style="color: white; margin: 0 10px;">Home</a>
+    <a href="#" style="color: white; margin: 0 10px;">About</a>
+    <a href="#" style="color: white; margin: 0 10px;">Support</a>
+  </div>
+</div>
+
+  <!-- Top-Right Menu Bar -->
   <div class="top-menu">
     <button id="menuToggle" class="menu-button">☰</button>
     <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section">
+      <div class="menu-section left">
         <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
         <ul id="learning-content" style="display: none;">
           <li>Learn about Crypto Staking</li>
@@ -217,7 +168,8 @@
           <li>Micro-Investing Data</li>
         </ul>
       </div>
-      <div class="menu-section">
+
+      <div class="menu-section right">
         <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
         <div id="account-content" style="display: none;">
           <button class="login-button" onclick="showAuthForm('login')">Login</button>
@@ -227,35 +179,129 @@
     </div>
   </div>
 
-  <!-- Sections (Simplicity, Security, Growth, Offers, Referral, Tracker) -->
-  <section class="section"><h2>Simplicity First</h2><p>Start investing in minutes...</p></section>
-  <section class="section"><h2>Built-In Security</h2><p>Your funds are safe...</p></section>
-  <section class="section"><h2>Real Growth for Real People</h2><p>Stake and earn up to 27% APY...</p></section>
-  <section class="section" id="offers"><h2>Get Started with These Offers</h2></section>
-  <section class="section" id="referral-bonus"><h2>Earn More with Referrals</h2></section>
+  <!-- Auth Form Box -->
+  <div id="auth-form" style="display: none;">
+    <div id="login-form-section">
+      <h2>Login</h2>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="email" id="loginEmail" placeholder="Email" required><br>
+        <input type="password" id="loginPassword" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+      </form>
+      <a href="#" id="forgot-password-link">Forgot Password?</a><br>
+      <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
+    </div>
 
-  <!-- Growth Tracker Section with Margin Below -->
-  <section class="section" id="growth-tracker">
-    <h2>Watch Your Crypto Grow</h2>
-    <p>Real-time growth with staking, savings, and multiply features.</p>
-    <div class="growth-boxes">
-      <div class="growth-card">
-        <h3>Staking APY</h3>
-        <div class="counter">27</div>
-        <span>% Annual Yield</span>
-      </div>
-      <div class="growth-card">
-        <h3>High-Yield Savings</h3>
-        <div class="counter">12</div>
-        <span>% Per Annum</span>
-      </div>
-      <div class="growth-card">
-        <h3>Multiply Growth</h3>
-        <div class="counter">55</div>
-        <span>% Bonus Returns</span>
-      </div>
+    <div id="signup-form-section" style="display: none;">
+      <h2>Sign Up</h2>
+      <form id="signupForm" onsubmit="handleSignup(event)">
+        <input type="email" id="signupEmail" placeholder="Email" required><br>
+        <input type="password" id="signupPassword" placeholder="Password" required><br>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" style="display: none;">
+    <h2>Forgot Password</h2>
+    <form id="forgot-password-form">
+      <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
+      <button type="submit">Send Reset Link</button>
+    </form>
+    <button onclick="closeForgotPasswordModal()">Close</button>
+  </div>
+
+  <!-- Simplicity Section -->
+  <section class="section animated-section">
+    <h2>Simplicity First</h2>
+    <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
+    <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
+  </section>
+
+  <!-- Security Section -->
+  <section class="section animated-section">
+    <h2>Built-In Security</h2>
+    <p>Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
+    <div class="vault-animation">🔐</div>
+  </section>
+
+  <!-- Growth Section -->
+  <section class="section animated-section">
+    <h2>Real Growth for Real People</h2>
+    <p>Stake and earn up to 27% APY. Use Multiply and High-Yield Savings Account Plus to boost your crypto.</p>
+    <div class="progress-bar-container">
+      <div class="progress-bar"></div>
     </div>
   </section>
+
+  <!-- Offers Section -->
+  <section class="section" id="offers">
+    <h2>Get Started with These Offers</h2>
+    <ul class="offers-list">
+      <li>Deposit $100 → <strong>Get $15</strong> in Moneyard</li>
+      <li>Buy $150 in Crypto → <strong>Earn $25</strong> in Moneyard</li>
+      <li>Open Multiply with $100 → <strong>Receive $35</strong> in Moneyard</li>
+      <li>Open Moneyerd High-Yield Savings Account Plus with $80 → <strong>Earn another $15</strong> in Moneyard</li>
+    </ul>
+  </section>
+
+  <!-- Referral Section -->
+  <section class="section animated-section" id="referral-bonus">
+    <h2>Earn More with Referrals</h2>
+    <p>Invite your friends and get <strong>5% bonus</strong> whenever they stake with Moneyard.</p>
+  </section>
+
+  <!-- Live Growth Tracker Section -->
+<section class="section animated-section" id="growth-tracker">
+  <h2>Watch Your Crypto Grow</h2>
+  <p>Real-time growth with staking, savings, and multiply features.</p>
+
+  <div class="growth-boxes">
+    <div class="growth-card">
+      <h3>Staking APY</h3>
+      <div class="counter" data-target="15">27</div>
+      <span>% Annual Yield</span>
+    </div>
+    <div class="growth-card">
+      <h3>High-Yield Savings</h3>
+      <div class="counter" data-target="9">12</div>
+      <span>% Per Annum</span>
+    </div>
+    <div class="growth-card">
+      <h3>Multiply Growth</h3>
+      <div class="counter" data-target="35">55</div>
+      <span>% Bonus Returns</span>
+    </div>
+  </div>
+</section>
+  <div class="growth-boxes">
+  <div class="growth-card" data-tooltip="Earn 27% annually by staking your crypto safely.">
+    <h3>Staking APY</h3>
+    <div class="counter" data-target="20">27</div>
+    <span>% Annual Yield</span>
+    <div class="sparkline"></div>
+  </div>
+
+  <div class="growth-card" data-tooltip="Save and earn up to 9% interest per year, just like a bank—but smarter.">
+    <h3>High-Yield Savings</h3>
+    <div class="counter" data-target="9">12</div>
+    <span>% Per Annum</span>
+    <div class="sparkline"></div>
+  </div>
+
+  <div class="growth-card pulse" data-tooltip="Multiply your deposits and earn bonus rewards up to 45%!">
+    <h3>Multiply Growth</h3>
+    <div class="counter" data-target="45">55</div>
+    <span>% Bonus Returns</span>
+    <div class="sparkline"></div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</section>
 
   <!-- Footer -->
   <footer>
