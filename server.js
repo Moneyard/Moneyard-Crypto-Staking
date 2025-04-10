@@ -4,6 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,10 +14,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Ensure database file exists (for SQLite on Heroku)
+const dbPath = process.env.DATABASE_URL || './database.sqlite';
+if (!fs.existsSync(dbPath)) {
+    fs.closeSync(fs.openSync(dbPath, 'w'));
+}
+
 // SQLite setup
-const db = new sqlite3.Database(process.env.DATABASE_URL || './database.sqlite', (err) => {
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) return console.error('DB Error:', err);
-    console.log('Connected to SQLite.');
+    console.log('Connected to SQLite:', dbPath);
 });
 
 // Create necessary tables
@@ -50,18 +57,14 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     date TEXT
 )`);
 
-// Signup Route
-app.post('/signup', async (req, res) => {
+// API Routes with `/api` prefix
+app.post('/api/signup', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
-    // Validate email format
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
-    }
+    if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
 
-    // Check if user already exists
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
         if (err) return res.status(500).json({ error: 'Database error' });
         if (user) return res.status(400).json({ error: 'Email already in use' });
@@ -75,8 +78,7 @@ app.post('/signup', async (req, res) => {
     });
 });
 
-// Login Route
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
@@ -98,7 +100,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Password Reset - Request Link
+// Password Reset Routes
 app.post('/api/forgot-password', (req, res) => {
     const { email } = req.body;
     const token = crypto.randomBytes(20).toString('hex');
@@ -126,7 +128,6 @@ app.post('/api/forgot-password', (req, res) => {
     );
 });
 
-// Password Reset - Submit New Password
 app.post('/api/reset-password', (req, res) => {
     const { token, password } = req.body;
     if (!token || !password) return res.status(400).json({ message: 'Invalid request' });
@@ -146,139 +147,12 @@ app.post('/api/reset-password', (req, res) => {
     });
 });
 
-// Serve static pages
+// Static Pages
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 
-// Deposit Wallet Addresses
-const walletAddresses = {
-    TRC20: "TXYZ1234567890TRONADDRESS",
-    BEP20: "0x1234567890BNBADDRESS"
-};
-
-// Get Deposit Address
-app.post('/get-deposit-address', (req, res) => {
-    const { network } = req.body;
-    if (!walletAddresses[network]) return res.status(400).json({ error: 'Invalid network' });
-    res.json({ address: walletAddresses[network] });
-});
-
-// Log Deposit
-app.post('/log-deposit', (req, res) => {
-    const { userId, amount, network, txId } = req.body;
-    if (amount < 15 || amount > 1000) return res.status(400).json({ error: 'Invalid amount range' });
-
-    db.run(`INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date) VALUES (?, "deposit", ?, ?, ?, "pending", datetime("now"))`,
-        [userId, amount, network, txId],
-        function(err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ message: 'Deposit logged.' });
-        });
-});
-
-// Confirm Deposit
-function updateUserBalance(userId, amount) {
-    return new Promise((resolve, reject) => {
-        db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], function(err) {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
-}
-
-app.post('/confirm-deposit', (req, res) => {
-    const { userId, txId, amount } = req.body;
-
-    db.run(`UPDATE transactions SET status = 'confirmed' WHERE user_id = ? AND tx_id = ?`,
-        [userId, txId],
-        async function(err) {
-            if (err) return res.status(500).json({ error: err.message });
-            try {
-                await updateUserBalance(userId, amount);
-                res.json({ message: 'Confirmed and balance updated' });
-            } catch (error) {
-                res.status(500).json({ error: 'Balance update failed' });
-            }
-        });
-});
-
-// Get Transaction History
-app.get('/get-transaction-history', (req, res) => {
-    const userId = req.query.userId || 1;
-
-    db.all(`SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC`, [userId], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ transactions: rows });
-    });
-});
-
-// Get User Summary
-app.get('/user-summary', (req, res) => {
-    const userId = req.query.userId;
-
-    if (!userId) return res.status(400).json({ error: 'User ID required' });
-
-    db.get(`SELECT SUM(amount) AS totalDeposit FROM transactions WHERE user_id = ? AND type = 'deposit'`, [userId], (err, row) => {
-        if (err) return res.status(500).json({ error: 'DB error' });
-
-        const totalDeposit = row?.totalDeposit || 0;
-        const balance = totalDeposit * 0.9;
-        res.json({ totalDeposit, balance });
-    });
-});
-
-// Full Assets Summary
-app.get('/user/assets-summary', (req, res) => {
-    const userId = req.query.userId || 1;
-
-    db.get(`SELECT SUM(amount) as totalDeposits FROM transactions WHERE user_id = ? AND type = 'deposit' AND status = 'confirmed'`, [userId], (err, depositRow) => {
-        if (err) return res.status(500).json({ error: err.message });
-
-        db.get(`SELECT SUM(amount) as pendingWithdrawals FROM withdrawals WHERE user_id = ? AND status = 'pending'`, [userId], (err, withdrawalRow) => {
-            if (err) return res.status(500).json({ error: err.message });
-
-            const deposits = depositRow?.totalDeposits || 0;
-            const earnings = deposits * 0.1;
-            const pendingWithdrawals = withdrawalRow?.pendingWithdrawals || 0;
-            const totalValue = deposits + earnings - pendingWithdrawals;
-
-            res.json({ totalDeposits: deposits, earnings, pendingWithdrawals, totalValue });
-        });
-    });
-});
-
-// Admin Routes
-app.get('/admin/withdrawals', (req, res) => {
-    db.all("SELECT * FROM withdrawals WHERE status = 'pending'", (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ withdrawals: rows });
-    });
-});
-
-app.post('/admin/approve-withdrawal', (req, res) => {
-    const { withdrawalId } = req.body;
-
-    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Withdrawal approved' });
-    });
-});
-
-app.post('/admin/reject-withdrawal', (req, res) => {
-    const { withdrawalId } = req.body;
-
-    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: 'Withdrawal rejected' });
-    });
-});
-
-app.get('/admin/get-withdrawals', (req, res) => {
-    db.all("SELECT * FROM withdrawals", (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ withdrawals: rows });
-    });
-});
+// More Routes...
+// ...
 
 // Start Server
 app.listen(PORT, () => {
