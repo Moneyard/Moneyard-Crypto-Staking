@@ -6,10 +6,11 @@
   <title>Moneyard</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     .top-menu {
@@ -36,7 +37,7 @@
       background: white;
       border: 1px solid #ddd;
       border-radius: 8px;
-      display: none !important;
+      display: none;
       flex-direction: column;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -45,7 +46,7 @@
     }
 
     .menu-dropdown.show {
-      display: flex !important;
+      display: flex;
     }
 
     .menu-section {
@@ -70,16 +71,6 @@
       list-style: disc;
     }
 
-    .login-button {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
     #welcome-text {
       color: #006400;
       font-size: 2.5rem;
@@ -97,6 +88,8 @@
     #intro {
       text-align: center;
       padding: 20px;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
     }
 
     .highlighted { font-weight: bold; }
@@ -109,6 +102,8 @@
       padding: 20px;
       border: 1px solid #eee;
       border-radius: 12px;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
     }
 
     .growth-boxes {
@@ -125,12 +120,20 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       margin: 10px;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .growth-card:hover {
+      transform: scale(1);
     }
 
     .counter {
       font-size: 2rem;
       color: #28a745;
       margin-top: 10px;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
     }
 
     footer {
@@ -150,6 +153,8 @@
       background-color: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
     }
 
     .modal-content {
@@ -183,6 +188,24 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      0% {
+        transform: translateY(50px);
+      }
+      100% {
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -242,6 +265,13 @@
     </div>
   </div>
 
+  <!-- Buttons to open modals -->
+  <div style="text-align: center; margin-top: 30px;">
+    <button onclick="openModal('depositModal')">Deposit Funds</button>
+    <button onclick="openModal('withdrawModal')">Withdraw Funds</button>
+    <button onclick="openModal('transferModal')">Transfer Funds</button>
+  </div>
+
   <!-- Animated Sections -->
   <section class="section animated-section">
     <h2>Simplicity First</h2>
@@ -288,111 +318,96 @@
       </div>
       <div class="growth-card">
         <h3>Multiply Growth</h3>
-        <div class="counter" data-target="35">0</div>
-        <span>% Bonus Returns</span>
+        <div class="counter" data-target="50">0</div>
+        <span>% Potential</span>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
-    <p>© 2025 Moneyard. Your crypto and micro-investing journey starts here.</p>
+    <div id="footer-buttons">
+      <button class="button" onclick="openModal('depositModal')">Deposit</button>
+      <button class="button" onclick="openModal('withdrawModal')">Withdraw</button>
+      <button class="button" onclick="openModal('transferModal')">Transfer</button>
+    </div>
   </footer>
 
-  <!-- Modals for Deposit, Withdraw, and Transfer -->
+  <!-- Modal for Deposit -->
   <div id="depositModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('depositModal')">&times;</span>
       <h2>Deposit Funds</h2>
-      <p>Select your payment method:</p>
-      <!-- Payment Methods (Add actual logic as needed) -->
-      <button>Bank/Mobile/Card</button>
-      <button>TRC20/BEP20</button>
-      <button>Mobile Payments (Airtel/MTN)</button>
+      <form>
+        <input type="number" placeholder="Amount to Deposit" />
+        <button>Submit</button>
+      </form>
     </div>
   </div>
 
+  <!-- Modal for Withdraw -->
   <div id="withdrawModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
       <h2>Withdraw Funds</h2>
-      <p>Enter the amount you want to withdraw:</p>
-      <input type="number" placeholder="Amount" />
-      <button>Submit Withdrawal</button>
+      <form>
+        <input type="number" placeholder="Amount to Withdraw" />
+        <button>Submit</button>
+      </form>
     </div>
   </div>
 
+  <!-- Modal for Transfer -->
   <div id="transferModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('transferModal')">&times;</span>
       <h2>Transfer Funds</h2>
-      <p>Enter recipient details:</p>
-      <input type="text" placeholder="Recipient Username" />
-      <input type="number" placeholder="Amount" />
-      <button>Submit Transfer</button>
+      <form>
+        <input type="text" placeholder="Recipient's Address" />
+        <input type="number" placeholder="Amount to Transfer" />
+        <button>Submit</button>
+      </form>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggleButton = document.getElementById('menuToggle');
-      const menuDropdown = document.getElementById('menuDropdown');
-      const learningHeader = document.getElementById('learning-header');
-      const learningContent = document.getElementById('learning-content');
-      const accountHeader = document.getElementById('account-header');
-      const accountContent = document.getElementById('account-content');
-
-      menuDropdown.classList.remove('show');
-
-      toggleButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menuDropdown.classList.toggle('show');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!document.querySelector('.top-menu').contains(e.target)) {
-          menuDropdown.classList.remove('show');
-        }
-      });
-
-      learningHeader.addEventListener('click', () => {
-        learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
-      });
-
-      accountHeader.addEventListener('click', () => {
-        accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
-      });
+    // Toggle menu visibility
+    document.getElementById('menuToggle').addEventListener('click', function() {
+      document.getElementById('menuDropdown').classList.toggle('show');
     });
 
-    function toggleForms() {
-      const signupForm = document.getElementById('signup-form');
-      const loginForm = document.getElementById('login-form');
-      if (signupForm.style.display === 'none') {
-        signupForm.style.display = 'block';
-        loginForm.style.display = 'none';
-      } else {
-        signupForm.style.display = 'none';
-        loginForm.style.display = 'block';
-      }
-    }
-
-    function signup() {
-      alert("Signup logic to be added.");
-    }
-
-    function login() {
-      alert("Login logic to be added.");
-    }
-
-    // Modal functions
+    // Open and close modals
     function openModal(modalName) {
-      document.getElementById(modalName).style.display = "flex";
+      document.getElementById(modalName).style.display = 'flex';
     }
 
     function closeModal(modalName) {
-      document.getElementById(modalName).style.display = "none";
+      document.getElementById(modalName).style.display = 'none';
     }
+
+    // Toggle between forms (Sign Up / Login)
+    function toggleForms() {
+      const signupForm = document.getElementById('signup-form');
+      const loginForm = document.getElementById('login-form');
+      signupForm.style.display = (signupForm.style.display === 'none') ? 'block' : 'none';
+      loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
+    }
+
+    // Animation for counters
+    document.querySelectorAll('.counter').forEach(counter => {
+      let count = 0;
+      const target = +counter.getAttribute('data-target');
+      const increment = target / 200;
+
+      const interval = setInterval(() => {
+        count += increment;
+        if (count >= target) {
+          count = target;
+          clearInterval(interval);
+        }
+        counter.textContent = Math.round(count);
+      }, 10);
+    });
   </script>
 </body>
 </html>
