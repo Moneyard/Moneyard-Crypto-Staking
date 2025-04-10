@@ -49,6 +49,32 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     status TEXT DEFAULT 'pending',
     date TEXT
 )`);
+// Signup Route
+app.post('/signup', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword], function(err) {
+        if (err) return res.status(400).json({ error: 'User already exists or invalid data' });
+        res.json({ success: true, userId: this.lastID });
+    });
+});
+
+// Login Route
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+        if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
+
+        res.json({ success: true, userId: user.id });
+    });
+});
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
