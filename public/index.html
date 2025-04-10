@@ -3,42 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard</title>
+  <title>Moneyard Menu</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    .top-menu {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000;
+    /* Basic Menu styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
     }
 
-    .menu-button {
-      background-color: #007a5a;
+    #menu-toggle {
+      display: block;
+      padding: 1rem;
+      background-color: #1e90ff;
       color: white;
-      font-size: 24px;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
+      text-align: center;
       cursor: pointer;
+    }
+
+    #menu {
+      display: none;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+
+    #menu a {
+      display: block;
+      padding: 0.5rem 0;
+      color: #333;
+      text-decoration: none;
+    }
+
+    #menu a:hover {
+      background-color: #f0f0f0;
     }
   </style>
 </head>
 
 <body>
-  <!-- Logo -->
-  <div id="logo-section" style="text-align: center;">
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" id="logo" />
+
+  <div id="menu-toggle"><i class="fas fa-bars"></i> Menu</div>
+
+  <div id="menu">
+    <a href="#">Dashboard</a>
+    <a href="#">Assets</a>
+    <a href="#">Deposit</a>
+    <a href="#">Withdraw</a>
+    <a href="#">Settings</a>
   </div>
 
-  <!-- Top-Right Menu Button (kept) -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-  </div>
+  <script>
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu');
 
-  <!-- Page content continues here -->
-  <!-- Example: Intro, Forms, Sections, etc. -->
+    toggle.addEventListener('click', () => {
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+  </script>
+
 </body>
 </html>
