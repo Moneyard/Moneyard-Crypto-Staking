@@ -268,3 +268,22 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver.observe(counter);
   });
 });
+function handleForgotPassword() {
+  const email = document.getElementById('email').value;
+  if (!email) {
+    alert('Please enter your email first so we can send the reset link.');
+    return;
+  }
+
+  // Send email to backend to start password reset
+  fetch('/api/forgot-password', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email})
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || 'If this email exists, a reset link has been sent.');
+  })
+  .catch(() => alert('Failed to send reset link. Please try again.'));
+}
