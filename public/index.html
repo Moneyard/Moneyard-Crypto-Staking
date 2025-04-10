@@ -37,6 +37,10 @@
 
   <!-- Menu Styles -->
   <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
     .top-menu {
       position: fixed;
       top: 10px;
@@ -62,24 +66,19 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       display: none;
-      flex-direction: row;
+      flex-direction: column;
       width: 320px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 16px;
       gap: 12px;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .menu-dropdown.show {
       display: flex;
-      visibility: visible;
-      opacity: 1;
     }
 
     .menu-section {
-      width: 50%;
+      width: 100%;
     }
 
     .menu-section h3 {
@@ -116,6 +115,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       const toggleButton = document.getElementById('menuToggle');
       const menuDropdown = document.getElementById('menuDropdown');
+      const learningHeader = document.getElementById('learning-header');
+      const learningContent = document.getElementById('learning-content');
+      const accountHeader = document.getElementById('account-header');
+      const accountContent = document.getElementById('account-content');
 
       // Toggle Menu Dropdown
       toggleButton.addEventListener('click', (e) => {
@@ -131,17 +134,11 @@
       });
 
       // Toggle Moneyard Learning content visibility
-      const learningHeader = document.getElementById('learning-header');
-      const learningContent = document.getElementById('learning-content');
-
       learningHeader.addEventListener('click', () => {
         learningContent.style.display = (learningContent.style.display === 'none' || learningContent.style.display === '') ? 'block' : 'none';
       });
 
       // Toggle My Account content visibility
-      const accountHeader = document.getElementById('account-header');
-      const accountContent = document.getElementById('account-content');
-
       accountHeader.addEventListener('click', () => {
         accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
       });
