@@ -33,75 +33,6 @@
     </div>
   </div>
 
-  <!-- Main Content Section -->
-  <section id="landing" class="fadeIn">
-    <div class="header">
-      <img src="M.png" alt="Moneyard" />
-      <h1>Welcome to Moneyard</h1>
-      <p>Your platform for high-yield staking, investing, and savings.</p>
-    </div>
-    <div class="stats">
-      <div class="stat-item fadeIn">
-        <div class="counter" data-target="5000">0</div>
-        <span>Total Users</span>
-      </div>
-      <div class="stat-item fadeIn">
-        <div class="counter" data-target="2000">0</div>
-        <span>Deposits</span>
-      </div>
-      <div class="stat-item fadeIn">
-        <div class="counter" data-target="50">0</div>
-        <span>% Potential</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer with Buttons -->
-  <footer>
-    <div id="footer-buttons">
-      <button class="button" onclick="openModal('depositModal')">Deposit</button>
-      <button class="button" onclick="openModal('withdrawModal')">Withdraw</button>
-      <button class="button" onclick="openModal('transferModal')">Transfer</button>
-    </div>
-  </footer>
-
-  <!-- Modal for Deposit -->
-  <div id="depositModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('depositModal')">&times;</span>
-      <h2>Deposit Funds</h2>
-      <form>
-        <input type="number" placeholder="Amount to Deposit" />
-        <button>Submit</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal for Withdraw -->
-  <div id="withdrawModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
-      <h2>Withdraw Funds</h2>
-      <form>
-        <input type="number" placeholder="Amount to Withdraw" />
-        <button>Submit</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal for Transfer -->
-  <div id="transferModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('transferModal')">&times;</span>
-      <h2>Transfer Funds</h2>
-      <form>
-        <input type="text" placeholder="Recipient's Address" />
-        <input type="number" placeholder="Amount to Transfer" />
-        <button>Submit</button>
-      </form>
-    </div>
-  </div>
-
   <script src="script.js" defer></script>
 
   <!-- Menu Styles -->
@@ -110,7 +41,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Top Menu Styles */
     .top-menu {
       position: fixed;
       top: 10px;
@@ -178,73 +108,6 @@
       cursor: pointer;
       font-size: 14px;
     }
-
-    /* Animations */
-    .fadeIn {
-      animation: fadeIn 1s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    /* Growth Cards */
-    .stat-item {
-      width: 30%;
-      text-align: center;
-      padding: 20px;
-      background: #f4f4f4;
-      border-radius: 8px;
-      margin: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .stat-item:hover {
-      transform: scale(1.05);
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.5s ease;
-    }
-
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 400px;
-      text-align: center;
-    }
-
-    .modal .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 30px;
-      color: #aaa;
-      cursor: pointer;
-    }
-
-    .modal .close:hover {
-      color: black;
-    }
-
   </style>
 
   <!-- Menu Script -->
@@ -279,31 +142,6 @@
       accountHeader.addEventListener('click', () => {
         accountContent.style.display = (accountContent.style.display === 'none' || accountContent.style.display === '') ? 'block' : 'none';
       });
-    });
-
-    // Open and close modals
-    function openModal(modalName) {
-      document.getElementById(modalName).style.display = 'flex';
-    }
-
-    function closeModal(modalName) {
-      document.getElementById(modalName).style.display = 'none';
-    }
-
-    // Animation for counters
-    document.querySelectorAll('.counter').forEach(counter => {
-      let count = 0;
-      const target = +counter.getAttribute('data-target');
-      const increment = target / 200;
-
-      const interval = setInterval(() => {
-        count += increment;
-        if (count >= target) {
-          count = target;
-          clearInterval(interval);
-        }
-        counter.textContent = Math.round(count);
-      }, 10);
     });
   </script>
 
