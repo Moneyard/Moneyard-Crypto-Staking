@@ -116,6 +116,22 @@ loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
+<script>
+  document.getElementById('forgotPasswordLink').addEventListener('click', () => {
+    document.getElementById('forgotPasswordForm').style.display = 'block';
+  });
+
+  document.getElementById('sendResetLink').addEventListener('click', async () => {
+    const email = document.getElementById('resetEmail').value;
+    const res = await fetch('/api/request-password-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    alert(data.message || data.error);
+  });
+</script>
 
   fetch("/api/login", {
     method: "POST",
