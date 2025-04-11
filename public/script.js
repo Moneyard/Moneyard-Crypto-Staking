@@ -1,75 +1,93 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const loginForm = document.getElementById("loginForm");
-  const signupForm = document.getElementById("signupForm");
-  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-
-  const loginEmail = document.getElementById("loginEmail");
-  const loginPassword = document.getElementById("loginPassword");
-  const signupUsername = document.getElementById("signupUsername");
-  const signupEmail = document.getElementById("signupEmail");
-  const signupPassword = document.getElementById("signupPassword");
-  const resetEmail = document.getElementById("resetEmail");
-
-  // Toggle function
-  function toggleForm(formId) {
-    document.querySelectorAll(".form").forEach(f => f.classList.remove("active"));
-    document.getElementById(formId).classList.add("active");
-  }
-
-  // Signup
-  signupForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const response = await fetch("/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: signupUsername.value,
-        email: signupEmail.value,
-        password: signupPassword.value,
-      }),
+    // Handle form switching
+    document.getElementById("goToSignup").addEventListener("click", () => {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("signupForm").style.display = "block";
     });
-    const result = await response.json();
-    alert(result.message);
-    if (response.ok) {
-      signupForm.reset();
-      toggleForm("loginForm");
-    }
-  });
 
-  // Login
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: loginEmail.value,
-        password: loginPassword.value,
-      }),
+    document.getElementById("goToLogin").addEventListener("click", () => {
+        document.getElementById("signupForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
     });
-    const result = await response.json();
-    if (response.ok && result.token) {
-      localStorage.setItem("token", result.token);
-      window.location.href = "dashboard.html";
-    } else {
-      alert(result.message || "Login failed.");
-    }
-  });
 
-  // Forgot Password
-  const sendResetBtn = document.getElementById("sendResetLink");
-  sendResetBtn.addEventListener("click", async () => {
-    if (!resetEmail.value) return alert("Please enter your email.");
-    const response = await fetch("/api/forgot-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: resetEmail.value }),
+    document.getElementById("forgotPasswordLink").addEventListener("click", () => {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("forgotPasswordForm").style.display = "block";
     });
-    const result = await response.json();
-    alert(result.message);
-    if (response.ok) {
-      forgotPasswordForm.reset();
-      toggleForm("loginForm");
+
+    document.getElementById("goToLoginFromForgot").addEventListener("click", () => {
+        document.getElementById("forgotPasswordForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+    });
+
+    // Login form handler
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Login successful!");
+                        localStorage.setItem("userId", data.userId);
+                        localStorage.setItem("username", data.username);
+                        window.location.href = "/dashboard"; // Redirect to dashboard after successful login
+                    } else {
+                        alert(data.error || "Unable to login");
+                    }
+                })
+                .catch(() => alert("Login request failed."));
+        });
     }
-  });
+
+    // Signup form handler
+    const signupForm = document.getElementById("signupForm");
+    if (signupForm) {
+        signupForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const username = document.getElementById("signupUsername").value;
+            const email = document.getElementById("signupEmail").value;
+            const password = document.getElementById("signupPassword").value;
+
+            fetch("/api/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Signup successful. Please log in.");
+                        document.getElementById("signupForm").style.display = "none";
+                        document.getElementById("loginForm").style.display = "block";
+                    } else {
+                        alert(data.error || "Signup failed.");
+                    }
+                })
+                .catch(() => alert("Signup request failed."));
+        });
+    }
+
+    // Forgot Password display toggle
+    const resetBtn = document.getElementById("sendResetLink");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", async () => {
+            const email = document.getElementById("resetEmail").value;
+            const res = await fetch('/api/request-password-reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            alert(data.message || data.error);
+        });
+    }
 });
