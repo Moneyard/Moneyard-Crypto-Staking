@@ -493,39 +493,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  <!-- LOGIN LOGIC -->
-<script>
-// LOGIN LOGIC
-const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-  loginForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // LOGIN LOGIC
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
 
-    try {
-      const res = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
+      try {
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.ok) {
-        window.location.href = "dashboard.html";
-      } else {
-        alert(data.error || "Invalid credentials. Try again.");
+        if (res.ok) {
+          window.location.href = "dashboard.html";
+        } else {
+          alert(data.error || "Invalid credentials.");
+        }
+      } catch (err) {
+        console.error("Login failed:", err);
+        alert("Something went wrong. Please try again.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Server error. Please try again later.");
-    }
-  });
-}
+    });
+  }
+});
 </script>
 
 </body>
