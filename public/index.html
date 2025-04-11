@@ -494,30 +494,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   <script>
-// LOGIN LOGIC
+// SECURE LOGIN LOGIC (Connects to backend /api/login)
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-    
+
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      localStorage.setItem("token", data.token); // optional for protected routes
-      window.location.href = "dashboard.html";
-    } else {
-      alert(data.message || "Login failed. Please check your credentials.");
+      if (response.ok) {
+        // Optional: store token for protected routes
+        localStorage.setItem("token", data.token);
+        window.location.href = "dashboard.html";
+      } else {
+        alert(data.error || "Login failed. Check your credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("An error occurred. Please try again.");
     }
   });
 }
