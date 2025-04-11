@@ -488,15 +488,18 @@ document.querySelectorAll(".menu-section h3").forEach(header => {
     }
   });
 });
-</script>
-
 <script>
-// STEP 2: Signup/Login + Redirect Logic
-function showAuthForm(formType) {
-  document.getElementById("auth-form").style.display = "block";
-  document.getElementById("login-form-section").style.display = formType === "login" ? "block" : "none";
-  document.getElementById("signup-form-section").style.display = formType === "signup" ? "block" : "none";
-}
+// Menu toggle functionality (click on menu headings to show/hide contents)
+document.querySelectorAll(".menu-section h3").forEach(header => {
+  header.addEventListener("click", () => {
+    const content = header.nextElementSibling;
+    if (content) {
+      content.style.display = content.style.display === "none" ? "block" : "none";
+    }
+  });
+});
+
+// Show login/signup forms
 function showAuthForm(formType) {
   document.getElementById("auth-form").style.display = "block";
   document.getElementById("login-form-section").style.display = formType === "login" ? "block" : "none";
@@ -528,13 +531,13 @@ signupPassword.addEventListener('input', function () {
 document.getElementById("signupForm").addEventListener("submit", function (e) {
   e.preventDefault();
   alert("Sign Up Successful!");
-  showAuthForm("login");
+  showAuthForm("login"); // Switch to login after signup
 });
 
 // Handle Login
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  window.location.href = "dashboard.html";
+  window.location.href = "dashboard.html"; // Redirect on login
 });
 </script>
 
