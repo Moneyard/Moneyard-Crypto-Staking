@@ -8,19 +8,17 @@ function toggleForms(type) {
   } else {
     signup.style.display = 'block';
     login.style.display = 'none';
+  }
+}
 
-// Example using localStorage
+// Display username from localStorage on dashboard
 window.addEventListener('DOMContentLoaded', () => {
   const username = localStorage.getItem('username');
   if (username) {
-    document.getElementById('summary-username').textContent = username;
+    const usernameEl = document.getElementById('summary-username');
+    if (usernameEl) usernameEl.textContent = username;
   }
 });
-// After a successful login API call
-localStorage.setItem('username', response.username); // Adjust to your response format
-
-  }
-}
 
 // Handle forgot password
 function handleForgotPassword() {
@@ -62,7 +60,7 @@ function loadUserSummary() {
   fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById('summary-username').innerText = localStorage.getItem('email');
+      document.getElementById('summary-username').innerText = localStorage.getItem('username') || '';
       document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
       document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
     })
@@ -115,10 +113,11 @@ function navigateTo(page) {
 function logout() {
   localStorage.removeItem('userId');
   localStorage.removeItem('email');
+  localStorage.removeItem('username');
   window.location.href = "index.html";
 }
 
-// DOMContentLoaded for all setup
+// DOMContentLoaded setup
 document.addEventListener('DOMContentLoaded', () => {
   // Animate sections
   const sections = document.querySelectorAll('.animated-section');
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
 
-      const res = await fetch("/signup", {
+      const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -173,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
 
-      const res = await fetch("/login", {
+      const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -184,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Login successful!");
         localStorage.setItem("userId", data.userId);
         localStorage.setItem("email", email);
+        localStorage.setItem("username", data.username); // Save username for dashboard
         window.location.href = "/dashboard";
       } else {
         alert(data.error || "Login failed.");
