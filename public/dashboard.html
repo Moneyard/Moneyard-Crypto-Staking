@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    body {
-      background-color: #FFA94D !important;
-    }
-  </style>
+<style>
+  body {
+    background-color: #FFA94D !important;
+  }
+</style>
 </head>
 <body style="padding-top: 60px; padding-bottom: 20px;">
   <!-- Logout Button -->
@@ -86,24 +86,6 @@
 
   <script src="script.js"></script>
 
-  <!-- Username loader script -->
-  <script>
-    window.onload = function () {
-      const username = localStorage.getItem('username');
-      if (username) {
-        document.getElementById('summary-username').textContent = username;
-      } else {
-        document.getElementById('summary-username').textContent = 'Guest';
-      }
-    };
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = 'index.html';
-    }
-  </script>
-
-  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <button class="nav-btn" onclick="navigateTo('home')">Home</button>
     <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
@@ -115,16 +97,16 @@
     function navigateTo(page) {
       switch(page) {
         case 'home':
-          window.location.href = 'index.html';
+          window.location.href = 'index.html'; // Redirects to index.html
           break;
         case 'referral':
-          window.location.href = 'referral.html';
+          window.location.href = 'referral.html'; // Adjust with your referral page path
           break;
         case 'stake':
-          window.location.href = 'stake.html';
+          window.location.href = 'stake.html'; // Adjust with your stake page path
           break;
         case 'assets':
-          window.location.href = 'assets.html';
+          window.location.href = 'assets.html'; // Adjust with your assets page path
           break;
         default:
           console.log("Invalid page");
