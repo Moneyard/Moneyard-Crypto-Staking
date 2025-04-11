@@ -104,9 +104,7 @@ app.post('/api/login', (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
 
-        res.json({ success: true, userId: user.id });
-    });
-});
+        res.json({ success: true, token, username: user.username });
 
 // Rest of the routes remain unchanged
 // ... [Keep all other routes from part 1]
