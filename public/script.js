@@ -11,6 +11,28 @@ function toggleForms(type) {
   }
 }
 
+// Example using localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  // Load username from localStorage if available
+  const username = localStorage.getItem('username');
+  if (username) {
+    document.getElementById('summary-username').textContent = username;
+  } else {
+    document.getElementById('summary-username').textContent = 'Loading...'; // Default text if username is not found
+  }
+});
+
+// After a successful login API call, store the username in localStorage
+function handleLoginSuccess(response) {
+  if (response.success) {
+    localStorage.setItem('username', response.username); // Store username in localStorage
+    localStorage.setItem('userId', response.userId); // Store userId in localStorage
+    window.location.href = "/dashboard"; // Redirect to dashboard after login
+  } else {
+    alert(response.error || "Login failed.");
+  }
+}
+
 // Handle forgot password
 function handleForgotPassword() {
   const email = document.getElementById('email').value;
@@ -51,7 +73,7 @@ function loadUserSummary() {
   fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
-      const username = localStorage.getItem('username') || localStorage.getItem('email') || 'User';
+      const username = localStorage.getItem('username') || 'User';  // Default to 'User' if username is not set
       document.getElementById('summary-username').innerText = username;
       document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
       document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
@@ -105,7 +127,7 @@ function navigateTo(page) {
 function logout() {
   localStorage.removeItem('userId');
   localStorage.removeItem('email');
-  localStorage.removeItem('username');
+  localStorage.removeItem('username'); // Remove username from localStorage
   window.location.href = "index.html";
 }
 
@@ -171,15 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const data = await res.json();
-      if (data.success) {
-        alert("Login successful!");
-        localStorage.setItem("userId", data.userId);
-        localStorage.setItem("email", email);
-        localStorage.setItem("username", data.username || ''); // store username
-        window.location.href = "/dashboard";
-      } else {
-        alert(data.error || "Login failed.");
-      }
+      handleLoginSuccess(data);
     });
   }
 });
