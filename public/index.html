@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard</title>
+  <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    body { 
-      background-color: #FFA94D !important; 
-      font-family: Arial, sans-serif; 
-      margin: 0; 
-      padding: 60px 20px 20px; 
+    body {
+      background-color: #FFA94D !important;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 60px 20px 20px;
     }
 
     .top-menu {
@@ -74,12 +75,6 @@
       margin: 4px 0;
     }
 
-    .main-content {
-      max-width: 600px;
-      margin: auto;
-      text-align: center;
-    }
-
     #auth-form input {
       width: 80%;
       padding: 10px;
@@ -97,29 +92,24 @@
       cursor: pointer;
     }
 
+    #auth-form small {
+      font-size: 12px;
+      color: red;
+    }
+
     a {
       color: #007a5a;
     }
 
-    /* Password Validation Styles */
-    #password-requirements ul li {
-      margin: 3px 0;
-      font-size: 0.8em;
-    }
-    #password-requirements ul li i {
-      margin-right: 5px;
-    }
-    #password-requirements small {
-      color: #666;
-      display: block;
-      margin-bottom: 5px;
-    }
-    #signupButton:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
+    #forgot-password-modal {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      max-width: 400px;
+      margin: 20px auto;
+      border-radius: 8px;
     }
 
-    /* Additional Content Styles */
     .section {
       margin: 40px auto;
       max-width: 800px;
@@ -150,162 +140,158 @@
       padding: 20px;
       color: #fff;
       background-color: #007a5a;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      left: 0;
-    }
-
-    .counter {
-      font-size: 2.5em;
-      font-weight: bold;
-      color: #007a5a;
-      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top-Right Menu Bar -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
-      <div class="menu-section right">
-        <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
-        <div id="account-content" style="display: none;">
-          <button class="login-button" onclick="showAuthForm('login')">Login</button>
-          <button class="login-button" onclick="showAuthForm('signup')">Sign Up</button>
-        </div>
+<!-- Navbar -->
+<div class="navbar" style="display: flex; justify-content: space-between; align-items: center; background-color: green; padding: 12px 20px;">
+  <div class="logo" style="display: flex; align-items: center;">
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" style="height: 40px; margin-right: 12px;">
+    <span style="color: white; font-size: 22px; font-weight: bold;">Moneyard</span>
+  </div>
+  <div class="menu">
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Home</a>
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">About</a>
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Support</a>
+  </div>
+</div>
+
+<!-- Top Menu -->
+<div class="top-menu">
+  <button id="menuToggle" class="menu-button">☰</button>
+  <div id="menuDropdown" class="menu-dropdown">
+    <div class="menu-section left">
+      <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
+      <ul id="learning-content" style="display: none;">
+        <li>Learn about Crypto Staking</li>
+        <li>High-Yield Savings Tools</li>
+        <li>Micro-Investing Data</li>
+      </ul>
+    </div>
+
+    <div class="menu-section right">
+      <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
+      <div id="account-content" style="display: none;">
+        <button class="login-button" onclick="showAuthForm('login')">Login</button>
+        <button class="login-button" onclick="showAuthForm('signup')">Sign Up</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <h1>Welcome to Moneyard</h1>
-    <p>Your trusted crypto staking platform.</p>
-
-    <!-- Auth Forms -->
-    <div id="auth-form" style="display: none;">
-      <!-- Login Form -->
-      <div id="login-form-section">
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="handleLogin(event)">
-          <input type="email" id="loginEmail" placeholder="Email" required><br>
-          <input type="password" id="loginPassword" placeholder="Password" required><br>
-          <button type="submit">Login</button>
-        </form>
-        <a href="#" id="forgot-password-link">Forgot Password?</a><br>
-        <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
-      </div>
-
-      <!-- Signup Form -->
-      <div id="signup-form-section" style="display: none;">
-        <h2>Sign Up</h2>
-        <form id="signupForm" onsubmit="handleSignup(event)">
-          <input type="email" id="signupEmail" placeholder="Email" required><br>
-          <input type="password" id="signupPassword" placeholder="Password" required 
-                 oninput="validatePassword(this.value)"><br>
-          <div id="password-requirements" style="text-align: left; width: 80%; margin: 10px auto;">
-            <small>Password must contain:</small>
-            <ul style="list-style: none; padding-left: 0; margin: 5px 0;">
-              <li id="req-lower" style="color: red;"><i class="fas fa-times"></i> 1 lowercase letter</li>
-              <li id="req-upper" style="color: red;"><i class="fas fa-times"></i> 1 uppercase letter</li>
-              <li id="req-number" style="color: red;"><i class="fas fa-times"></i> 1 number</li>
-              <li id="req-length" style="color: red;"><i class="fas fa-times"></i> Minimum 5 characters</li>
-            </ul>
-          </div>
-          <button type="submit" id="signupButton" disabled>Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
-      </div>
-    </div>
-
-    <!-- Main Content Sections -->
-    <div class="section">
-      <h2>Grow Your Crypto, Effortlessly</h2>
-      <p>We are committed to provide financial literacy/education appealing to users seeking wealth growth...</p>
-      
-      <div class="section">
-        <h3>Simplicity First</h3>
-        <img src="data:image/png;base64,..." class="feature-image" alt="Simple interface">
-        <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
-      </div>
-
-      <div class="section">
-        <h3>Built-In Security</h3>
-        <p>🔐 Your funds are safe with password + OTP verification, email confirmation, and encryption.</p>
-      </div>
-
-      <div class="section">
-        <h3>Real Growth for Real People</h3>
-        <p>Stake and earn up to 27% APY. Use Multiply and High-Yield Savings Account Plus to boost your crypto.</p>
-      </div>
-
-      <div class="section">
-        <h3>Earn More with Referrals</h3>
-        <p>Invite your friends and get 5% bonus whenever they stake with Moneyard.</p>
-      </div>
-
-      <div class="section">
-        <div class="counter" data-target="27">0</div>
-        <p>Staking APY</p>
-        <div class="counter" data-target="12">0</div>
-        <p>High-Yield Savings</p>
-        <div class="counter" data-target="55">0</div>
-        <p>Multiply Growth</p>
-      </div>
-    </div>
+<!-- Auth Form -->
+<div id="auth-form" style="display: none;">
+  <div id="login-form-section">
+    <h2>Login</h2>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <input type="email" id="loginEmail" placeholder="Email" required><br>
+      <input type="password" id="loginPassword" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+    <a href="#" id="forgot-password-link">Forgot Password?</a><br>
+    <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
   </div>
 
-  <footer>
-    © 2025 Moneyard. Your crypto journey starts here.
-  </footer>
+  <div id="signup-form-section" style="display: none;">
+    <h2>Sign Up</h2>
+    <form id="signupForm" onsubmit="handleSignup(event)">
+      <input type="email" id="signupEmail" placeholder="Email" required><br>
+      <input type="password" id="signupPassword" placeholder="Password" required oninput="validatePassword()"><br>
+      <small id="passwordHint">Password must be at least 8 characters, include a number, a special character, and a capital letter.</small><br>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
+  </div>
+</div>
 
-  <script>
-    // Password Validation
-    function validatePassword(password) {
-      const requirements = {
-        lower: /[a-z]/.test(password),
-        upper: /[A-Z]/.test(password),
-        number: /\d/.test(password),
-        length: password.length >= 5
-      };
+<!-- Forgot Password Modal -->
+<div id="forgot-password-modal" style="display: none;">
+  <h2>Forgot Password</h2>
+  <form id="forgot-password-form">
+    <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
+    <button type="submit">Send Reset Link</button>
+  </form>
+  <button onclick="closeForgotPasswordModal()">Close</button>
+</div>
 
-      // Update requirement indicators
-      document.getElementById('req-lower').style.color = requirements.lower ? 'green' : 'red';
-      document.getElementById('req-upper').style.color = requirements.upper ? 'green' : 'red';
-      document.getElementById('req-number').style.color = requirements.number ? 'green' : 'red';
-      document.getElementById('req-length').style.color = requirements.length ? 'green' : 'red';
-      
-      // Update icons
-      document.querySelectorAll('#password-requirements li i').forEach(icon => {
-        icon.className = requirements[icon.parentElement.id.split('-')[1]] ? 
-          'fas fa-check' : 'fas fa-times';
-      });
+<!-- Sections -->
+<section class="section animated-section">
+  <h2>Grow Your Crypto, Effortlessly</h2>
+  <p>We are committed to provide financial literacy...</p>
+  <img src="20250409_162622.jpg" class="feature-image grow-animation" />
+</section>
 
-      // Enable/disable submit button
-      const isValid = Object.values(requirements).every(v => v);
-      document.getElementById('signupButton').disabled = !isValid;
-      
-      return isValid;
-    }
+<section class="section animated-section">
+  <h2>Simplicity First</h2>
+  <p>Start investing in minutes...</p>
+</section>
 
-    // Existing JavaScript functionality
-    document.addEventListener("DOMContentLoaded", () => {
-      // ... (keep all existing DOMContentLoaded code)
-    });
+<section class="section animated-section">
+  <h2>Built-In Security</h2>
+  <p>Your funds are safe with password + OTP verification...</p>
+  <div class="vault-animation">🔐</div>
+</section>
 
-    // ... (keep all existing functions like handleLogin, handleSignup, etc.)
-  </script>
+<section class="section animated-section">
+  <h2>Real Growth for Real People</h2>
+  <p>Stake and earn up to 27% APY...</p>
+  <div class="progress-bar-container"><div class="progress-bar"></div></div>
+</section>
+
+<section class="section" id="offers">
+  <h2>Get Started with These Offers</h2>
+  <ul class="offers-list">
+    <li>Deposit $100 → <strong>Get $15</strong></li>
+    <li>Buy $150 in Crypto → <strong>Earn $25</strong></li>
+    <li>Open Multiply with $100 → <strong>Receive $35</strong></li>
+    <li>Open Savings Plus with $80 → <strong>Earn another $15</strong></li>
+  </ul>
+</section>
+
+<section class="section animated-section" id="referral-bonus">
+  <h2>Earn More with Referrals</h2>
+  <p>Invite your friends and get <strong>5% bonus</strong>...</p>
+</section>
+
+<section class="section animated-section" id="growth-tracker">
+  <h2>Watch Your Crypto Grow</h2>
+  <p>Real-time growth with staking, savings, and multiply features.</p>
+  <div class="growth-boxes">
+    <div class="growth-card"><h3>Staking APY</h3><div class="counter">27</div><span>% Annual Yield</span></div>
+    <div class="growth-card"><h3>High-Yield Savings</h3><div class="counter">12</div><span>% Per Annum</span></div>
+    <div class="growth-card"><h3>Multiply Growth</h3><div class="counter">55</div><span>% Bonus Returns</span></div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 Moneyard. All rights reserved.
+</footer>
+
+<!-- Script -->
+<script>
+  function showAuthForm(type) {
+    document.getElementById('auth-form').style.display = 'block';
+    document.getElementById('login-form-section').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('signup-form-section').style.display = type === 'signup' ? 'block' : 'none';
+  }
+
+  function closeForgotPasswordModal() {
+    document.getElementById('forgot-password-modal').style.display = 'none';
+  }
+
+  document.getElementById('forgot-password-link').addEventListener('click', function() {
+    document.getElementById('forgot-password-modal').style.display = 'block';
+  });
+
+  function validatePassword() {
+    const password = document.getElementById('signupPassword').value;
+    const hint = document.getElementById('passwordHint');
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]).{8,}$/;
+    hint.style.color = regex.test(password) ? 'green' : 'red';
+  }
+</script>
 
 </body>
 </html>
