@@ -1,15 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Set background color
   document.body.style.backgroundColor = '#FFA94D';
 
-  // Only attempt to load the user summary if the user is logged in
   if (isUserLoggedIn()) {
     loadUserSummary();
   } else {
     console.log('User is not logged in. Skipping user summary load.');
   }
 
-  // Observer animation for sections (optional, used for animated sections)
   const sections = document.querySelectorAll('.animated-section');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -23,77 +20,141 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.1 });
 
   sections.forEach(section => observer.observe(section));
+
+  // Forgot password handler
+  const forgotLink = document.getElementById('forgotPasswordLink');
+  const resetBtn = document.getElementById('sendResetLink');
+
+  if (forgotLink) {
+    forgotLink.addEventListener('click', () => {
+      document.getElementById('forgotPasswordForm').style.display = 'block';
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', async () => {
+      const email = document.getElementById('resetEmail').value;
+      const res = await fetch('/api/request-password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      alert(data.message || data.error);
+    });
+  }
+
+  // Login form handler
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            localStorage.setItem('userId', data.user.id);
+            localStorage.setItem('username', data.user.username);
+            window.location.href = "/dashboard";
+          } else {
+            alert(data.error || "Unable to login");
+          }
+        })
+        .catch(() => alert("Login request failed."));
+    });
+  }
+
+  // Signup form handler
+  const signupForm = document.getElementById('signupForm');
+  if (signupForm) {
+    signupForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const username = document.getElementById("signupUsername").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const refCode = document.getElementById("signupReferral").value;
+
+      fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password, referralCode: refCode })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("Signup successful! Please log in.");
+            document.getElementById("signupForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+          } else {
+            alert(data.error || "Signup failed");
+          }
+        })
+        .catch(() => alert("Signup request failed."));
+    });
+  }
 });
 
-// Utility: Check if user is logged in
+// Utility
 function isUserLoggedIn() {
   return !!localStorage.getItem('userId') && !!localStorage.getItem('username');
 }
 
-// Load and display the user summary
 function loadUserSummary() {
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
 
   if (!userId || !username) {
-    console.log("Missing userId or username. Redirecting to login.");
     window.location.href = "index.html";
     return;
   }
 
-  // Display username immediately
   const usernameElement = document.getElementById('summary-username');
-  if (usernameElement) {
-    usernameElement.innerText = username;
-  }
+  if (usernameElement) usernameElement.innerText = username;
 
-  // Fetch user summary from backend
   fetch(`/user-summary?userId=${userId}`)
     .then(response => response.json())
     .then(data => {
       if (data && data.totalDeposit !== undefined && data.balance !== undefined) {
         document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
         document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
-      } else {
-        console.log("No valid summary data returned.");
       }
     })
-    .catch(error => {
-      console.error("Error fetching user summary:", error);
-    });
+    .catch(error => console.error("Error fetching user summary:", error));
 }
 
-// Logout function
 function logout() {
-  localStorage.removeItem('userId');
-  localStorage.removeItem('username');
+  localStorage.clear();
   window.location.href = "index.html";
 }
 
-// Deposit logic
+// Deposit
 function getDepositAddress() {
   const network = document.getElementById('network').value;
   const addressEl = document.getElementById('deposit-address');
   const copyBtn = document.getElementById('copy-button');
 
-  if (!network) {
-    addressEl.innerText = "Please select a network.";
-    copyBtn.style.display = "none";
-    return;
-  }
-
-  // Sample static addresses (replace with API if needed)
   const addresses = {
     Tron: "TXXxyTronAddress12345",
     BNB: "bnb1qwertyBep20Address"
   };
 
-  const address = addresses[network];
-  addressEl.innerText = `Deposit Address: ${address}`;
+  if (!network || !addresses[network]) {
+    addressEl.innerText = "Please select a valid network.";
+    copyBtn.style.display = "none";
+    return;
+  }
+
+  addressEl.innerText = `Deposit Address: ${addresses[network]}`;
   copyBtn.style.display = "inline-block";
 }
 
-// Copy address to clipboard
 function copyToClipboard() {
   const text = document.getElementById('deposit-address').innerText.replace("Deposit Address: ", "");
   navigator.clipboard.writeText(text)
@@ -101,7 +162,6 @@ function copyToClipboard() {
     .catch(() => alert("Failed to copy address"));
 }
 
-// Submit deposit
 function logDeposit() {
   const userId = localStorage.getItem('userId');
   const amount = parseFloat(document.getElementById('deposit-amount').value);
@@ -112,47 +172,7 @@ function logDeposit() {
     return;
   }
 
-loginForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-<script>
-  document.getElementById('forgotPasswordLink').addEventListener('click', () => {
-    document.getElementById('forgotPasswordForm').style.display = 'block';
-  });
-
-  document.getElementById('sendResetLink').addEventListener('click', async () => {
-    const email = document.getElementById('resetEmail').value;
-    const res = await fetch('/api/request-password-reset', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    const data = await res.json();
-    alert(data.message || data.error);
-  });
-</script>
-
-  fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert("Login successful!");
-        // You can redirect or save token here if you implement one
-        window.location.href = "/dashboard";
-      } else {
-        alert(data.error || "Unable to login");
-      }
-    })
-    .catch(() => alert("Login request failed."));
-});
-
-
-fetch('/deposit', {
+  fetch('/deposit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, amount, network })
@@ -169,7 +189,7 @@ fetch('/deposit', {
     .catch(() => alert("Deposit error. Try again."));
 }
 
-// Submit withdrawal
+// Withdraw
 function submitWithdrawal() {
   const userId = localStorage.getItem('userId');
   const amount = parseFloat(document.getElementById('withdraw-amount').value);
@@ -193,7 +213,7 @@ function submitWithdrawal() {
     .catch(() => alert("Error processing withdrawal."));
 }
 
-// Earnings calculator
+// Calculator
 function calculateEarnings() {
   const deposit = parseFloat(document.getElementById('deposit-input').value);
   const resultEl = document.getElementById('calculated-earnings');
@@ -203,9 +223,11 @@ function calculateEarnings() {
     return;
   }
 
-  const dailyEarnings = deposit * 0.01; // Example: 1% daily
+  const dailyEarnings = deposit * 0.01;
   resultEl.innerText = `Estimated Daily Earnings: ${dailyEarnings.toFixed(2)} USDT`;
 }
+
+// Animated counters
 function animateCounters() {
   const counters = document.querySelectorAll('.counter');
   counters.forEach(counter => {
@@ -224,20 +246,3 @@ function animateCounters() {
     updateCount();
   });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Existing observer animation
-  const sections = document.querySelectorAll('.animated-section');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        if (entry.target.id === 'growth-tracker') {
-          animateCounters();
-        }
-      }
-    });
-  }, { threshold: 0.1 });
-
-  sections.forEach(section => observer.observe(section));
-});
