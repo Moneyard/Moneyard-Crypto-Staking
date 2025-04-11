@@ -520,5 +520,39 @@ form.addEventListener('submit', function (event) {
       });
     });
   </script>
+document.addEventListener("DOMContentLoaded", function () {
+  const signupForm = document.getElementById("signup-form");
+  const signupPassword = document.getElementById("signupPassword");
+  const signupButton = document.getElementById("signupButton");
+
+  function isValidPassword(password) {
+    // Customize this as needed
+    return password.length >= 6;
+  }
+
+  signupPassword.addEventListener("input", () => {
+    if (isValidPassword(signupPassword.value)) {
+      signupButton.disabled = false;
+    } else {
+      signupButton.disabled = true;
+    }
+  });
+
+  signupForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const email = document.getElementById("signupEmail").value;
+    const password = signupPassword.value;
+
+    if (!email || !isValidPassword(password)) {
+      alert("Fill out valid email and password.");
+      return;
+    }
+
+    // Perform sign-up logic here
+    alert("Signing up with " + email);
+    // Example API call placeholder
+  });
+});
+</script>
 </body>
 </html>
