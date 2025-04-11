@@ -295,6 +295,47 @@
       <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
     </div>
   </div>
+<script>
+// Get elements
+const passwordInput = document.getElementById('signupPassword');
+const signupButton = document.getElementById('signupButton');
+const form = document.getElementById('signup-form');
+
+// Function to validate password
+function validatePassword(password) {
+  // Example password validation: must contain at least one letter, one number, and be at least 6 characters long
+  const minLength = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/;
+  return minLength.test(password);
+}
+
+// Listen for password input and enable/disable signup button
+passwordInput.addEventListener('input', function () {
+  const password = passwordInput.value;
+  if (validatePassword(password)) {
+    signupButton.removeAttribute('disabled');
+  } else {
+    signupButton.setAttribute('disabled', 'true');
+  }
+});
+
+// Handle form submission
+form.addEventListener('submit', function (event) {
+  event.preventDefault(); // Prevent form from submitting the default way
+
+  // Gather form input values
+  const email = document.getElementById('signupEmail').value;
+  const password = passwordInput.value;
+
+  // You can add additional validation or send the form data to your backend
+  if (email && password) {
+    console.log('Form submitted');
+    alert('Sign Up Successful!');
+    // Here, you can also perform an API call to handle user registration
+  } else {
+    alert('Please complete all fields.');
+  }
+});
+</script>
 
   <!-- All original sections preserved -->
   <!-- Growth Section -->
