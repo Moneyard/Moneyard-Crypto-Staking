@@ -377,164 +377,128 @@
   </footer>
 
   <script>
-    // Password Validation Function
-    function validatePassword(password) {
-      const requirements = {
-        lower: /[a-z]/.test(password),
-        upper: /[A-Z]/.test(password),
-        number: /\d/.test(password),
-        length: password.length >= 5
-      };
-
-      // Update indicators
-      document.getElementById('req-lower').style.color = requirements.lower ? 'green' : 'red';
-      document.getElementById('req-upper').style.color = requirements.upper ? 'green' : 'red';
-      document.getElementById('req-number').style.color = requirements.number ? 'green' : 'red';
-      document.getElementById('req-length').style.color = requirements.length ? 'green' : 'red';
-      
-      // Update icons
-      document.querySelectorAll('#password-requirements li i').forEach(icon => {
-        icon.className = requirements[icon.parentElement.id.split('-')[1]] ? 
-          'fas fa-check' : 'fas fa-times';
-      });
-
-      // Toggle submit button
-      const isValid = Object.values(requirements).every(v => v);
-      document.getElementById('signupButton').disabled = !isValid;
-      
-      return isValid;
-    }
-
-    // Original Scripts Preserved
-    document.addEventListener("DOMContentLoaded", () => {
-      // Menu functionality
-      const toggleButton = document.getElementById('menuToggle');
-      const menuDropdown = document.getElementById('menuDropdown');
-      
-      toggleButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menuDropdown.classList.toggle('show');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!document.querySelector('.top-menu').contains(e.target)) {
-          menuDropdown.classList.remove('show');
-        }
-      });
-
-      // Learning section toggle
-      document.getElementById('learning-header').addEventListener('click', () => {
-        const content = document.getElementById('learning-content');
-        content.style.display = content.style.display === 'none' ? 'block' : 'none';
-      });
-
-      // Account section toggle
-      document.getElementById('account-header').addEventListener('click', () => {
-        const content = document.getElementById('account-content');
-        content.style.display = content.style.display === 'none' ? 'block' : 'none';
-      });
-
-      // Forgot password functionality
-      document.getElementById("forgot-password-link").onclick = () => {
-        document.getElementById("forgot-password-modal").style.display = "block";
-        return false;
-      };
-
-      // Counter animations
-      document.querySelectorAll('.counter').forEach(counter => {
-        const target = +counter.getAttribute('data-target');
-        let current = 0;
-        const updateCounter = () => {
-          if (current < target) {
-            current++;
-            counter.textContent = current;
-            setTimeout(updateCounter, 50);
-          }
-        };
-        updateCounter();
-      });
-    });
-
-    // Auth form functions
-    function showAuthForm(type) {
-      document.getElementById('auth-form').style.display = 'block';
-      document.getElementById('login-form-section').style.display = type === 'login' ? 'block' : 'none';
-      document.getElementById('signup-form-section').style.display = type === 'signup' ? 'block' : 'none';
-    }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      // Existing login logic
-    }
-
-    function handleSignup(e) {
-      e.preventDefault();
-      // Existing signup logic
-    }
-
-    // Tooltip initialization
-    document.querySelectorAll('[data-tooltip]').forEach(element => {
-      element.addEventListener('mouseenter', function() {
-        this.setAttribute('title', this.dataset.tooltip);
-      });
-    });
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  // MENU TOGGLE
-  document.querySelectorAll(".menu-section h3").forEach(header => {
-    header.addEventListener("click", () => {
-      const content = header.nextElementSibling;
-      if (content) {
-        content.style.display = content.style.display === "none" ? "block" : "none";
-      }
-    });
-  });
-
-  // TOGGLE LOGIN / SIGNUP FORMS
-  window.showAuthForm = function (formType) {
-    document.getElementById("auth-form").style.display = "block";
-    document.getElementById("login-form-section").style.display = formType === "login" ? "block" : "none";
-    document.getElementById("signup-form-section").style.display = formType === "signup" ? "block" : "none";
+// PASSWORD VALIDATION FUNCTION
+function validatePassword(password) {
+  const requirements = {
+    lower: /[a-z]/.test(password),
+    upper: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+    length: password.length >= 5
   };
 
-  // SIGNUP PASSWORD VALIDATION
-  const signupPassword = document.getElementById('signupPassword');
-  const signupButton = document.getElementById('signupButton');
-  if (signupPassword && signupButton) {
-    signupPassword.addEventListener('input', function () {
-      const password = signupPassword.value;
-      const lower = /[a-z]/.test(password);
-      const upper = /[A-Z]/.test(password);
-      const number = /[0-9]/.test(password);
-      const length = password.length >= 5;
+  // Update indicators
+  document.getElementById('req-lower').style.color = requirements.lower ? 'green' : 'red';
+  document.getElementById('req-upper').style.color = requirements.upper ? 'green' : 'red';
+  document.getElementById('req-number').style.color = requirements.number ? 'green' : 'red';
+  document.getElementById('req-length').style.color = requirements.length ? 'green' : 'red';
 
-      document.getElementById("req-lower").style.color = lower ? "green" : "red";
-      document.getElementById("req-upper").style.color = upper ? "green" : "red";
-      document.getElementById("req-number").style.color = number ? "green" : "red";
-      document.getElementById("req-length").style.color = length ? "green" : "red";
+  // Update icons if present
+  document.querySelectorAll('#password-requirements li i').forEach(icon => {
+    const key = icon.parentElement.id.split('-')[1];
+    icon.className = requirements[key] ? 'fas fa-check' : 'fas fa-times';
+  });
 
-      signupButton.disabled = !(lower && upper && number && length);
+  return Object.values(requirements).every(v => v);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // MENU BAR FUNCTIONALITY
+  const toggleButton = document.getElementById('menuToggle');
+  const menuDropdown = document.getElementById('menuDropdown');
+
+  if (toggleButton && menuDropdown) {
+    toggleButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!document.querySelector('.top-menu').contains(e.target)) {
+        menuDropdown.classList.remove('show');
+      }
     });
   }
 
-  // SIGNUP SUBMIT
+  // LEARNING + ACCOUNT SECTION TOGGLE
+  const learningHeader = document.getElementById('learning-header');
+  const learningContent = document.getElementById('learning-content');
+  const accountHeader = document.getElementById('account-header');
+  const accountContent = document.getElementById('account-content');
+
+  if (learningHeader && learningContent) {
+    learningHeader.addEventListener('click', () => {
+      learningContent.style.display = learningContent.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  if (accountHeader && accountContent) {
+    accountHeader.addEventListener('click', () => {
+      accountContent.style.display = accountContent.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  // COUNTER ANIMATION (Growth Tracker)
+  document.querySelectorAll('.counter').forEach(counter => {
+    const target = +counter.getAttribute('data-target');
+    let current = 0;
+    const updateCounter = () => {
+      if (current < target) {
+        current++;
+        counter.textContent = current;
+        setTimeout(updateCounter, 50);
+      }
+    };
+    updateCounter();
+  });
+
+  // TOOLTIP HOVER
+  document.querySelectorAll('[data-tooltip]').forEach(element => {
+    element.addEventListener('mouseenter', function () {
+      this.setAttribute('title', this.dataset.tooltip);
+    });
+  });
+
+  // SHOW AUTH FORM (signup/login toggle)
+  window.showAuthForm = function (type) {
+    document.getElementById("auth-form").style.display = "block";
+    document.getElementById("signup-form-section").style.display = type === "signup" ? "block" : "none";
+    document.getElementById("login-form-section").style.display = type === "login" ? "block" : "none";
+  };
+
+  // FORGOT PASSWORD LINK
+  const forgotLink = document.getElementById("forgot-password-link");
+  if (forgotLink) {
+    forgotLink.onclick = () => {
+      document.getElementById("forgot-password-modal").style.display = "block";
+      return false;
+    };
+  }
+
+  // SIGNUP LOGIC
+  const signupPassword = document.getElementById('signupPassword');
+  const signupButton = document.getElementById('signupButton');
+
+  if (signupPassword && signupButton) {
+    signupPassword.addEventListener('input', function () {
+      signupButton.disabled = !validatePassword(signupPassword.value);
+    });
+  }
+
   const signupForm = document.getElementById("signupForm");
   if (signupForm) {
     signupForm.addEventListener("submit", function (e) {
       e.preventDefault();
       alert("Sign Up Successful!");
-      showAuthForm("login"); // Go to login view
+      showAuthForm("login");
     });
   }
 
-  // LOGIN SUBMIT
+  // LOGIN LOGIC
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      // You can verify user login here (optional)
-      window.location.href = "dashboard.html"; // Redirect to dashboard
+      window.location.href = "dashboard.html";
     });
   }
 });
