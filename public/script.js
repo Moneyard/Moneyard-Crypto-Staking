@@ -112,7 +112,31 @@ function logDeposit() {
     return;
   }
 
-  fetch('/deposit', {
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("Login successful!");
+        // You can redirect or save token here if you implement one
+        window.location.href = "/dashboard";
+      } else {
+        alert(data.error || "Unable to login");
+      }
+    })
+    .catch(() => alert("Login request failed."));
+});
+
+
+fetch('/deposit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, amount, network })
