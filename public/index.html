@@ -255,6 +255,131 @@
         <div id="account-content" style="display: none;">
           <button class="login-button" onclick="showAuthForm('login')">Login</button>
           <button class="login-button" onclick="showAuthForm('signup')">Sign Up</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- All previous head content remains the same -->
+  <!-- ... -->
+</head>
+<body>
+  <!-- All previous body content remains the same -->
+  <!-- ... -->
+
+  <!-- Add Forgot Password Modal (was missing in original code) -->
+  <div id="forgot-password-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h2>Forgot Password</h2>
+    <form id="forgot-password-form">
+      <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
+      <button type="submit">Send Reset Link</button>
+    </form>
+    <button onclick="closeForgotPasswordModal()" style="margin-top: 10px;">Close</button>
+  </div>
+
+  <script>
+    // Password Validation Function (existing)
+    function validatePassword(password) {
+      const requirements = {
+        lower: /[a-z]/.test(password),
+        upper: /[A-Z]/.test(password),
+        number: /\d/.test(password),
+        length: password.length >= 5
+      };
+
+      document.getElementById('req-lower').style.color = requirements.lower ? 'green' : 'red';
+      document.getElementById('req-upper').style.color = requirements.upper ? 'green' : 'red';
+      document.getElementById('req-number').style.color = requirements.number ? 'green' : 'red';
+      document.getElementById('req-length').style.color = requirements.length ? 'green' : 'red';
+      
+      document.querySelectorAll('#password-requirements li i').forEach(icon => {
+        icon.className = requirements[icon.parentElement.id.split('-')[1]] ? 
+          'fas fa-check' : 'fas fa-times';
+      });
+
+      const isValid = Object.values(requirements).every(v => v);
+      document.getElementById('signupButton').disabled = !isValid;
+      
+      return isValid;
+    }
+
+    // Enhanced Auth Functions
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      // Simple validation
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      // Mock API call
+      console.log('Login attempt with:', { email, password });
+      alert('Login successful! Redirecting...');
+      document.getElementById('auth-form').style.display = 'none';
+      document.getElementById('loginForm').reset();
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+
+      if (!validatePassword(password)) {
+        alert('Please meet all password requirements');
+        return;
+      }
+
+      // Mock API call
+      console.log('Signup attempt with:', { email, password });
+      alert('Signup successful! Welcome to Moneyard!');
+      document.getElementById('auth-form').style.display = 'none';
+      document.getElementById('signupForm').reset();
+    }
+
+    // Forgot Password Functions
+    function closeForgotPasswordModal() {
+      document.getElementById("forgot-password-modal").style.display = "none";
+    }
+
+    document.getElementById("forgot-password-form").addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById("forgot-password-email").value;
+      console.log('Password reset requested for:', email);
+      alert('If an account exists, we\'ve sent a reset link to ' + email);
+      closeForgotPasswordModal();
+    });
+
+    // Enhanced DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", () => {
+      // Existing event listeners...
+
+      // Add click handler for forgot password link
+      document.getElementById("forgot-password-link").addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById("forgot-password-modal").style.display = "block";
+      });
+
+      // Add click handler for document to close modals
+      document.addEventListener('click', (e) => {
+        if (e.target === document.getElementById("forgot-password-modal")) {
+          closeForgotPasswordModal();
+        }
+      });
+
+      // Add keyboard handler for ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeForgotPasswordModal();
+          document.getElementById('auth-form').style.display = 'none';
+        }
+      });
+    });
+
+    // Rest of existing scripts...
+  </script>
+</body>
+</html>
         </div>
       </div>
     </div>
