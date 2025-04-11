@@ -255,111 +255,6 @@
         <div id="account-content" style="display: none;">
           <button class="login-button" onclick="showAuthForm('login')">Login</button>
           <button class="login-button" onclick="showAuthForm('signup')">Sign Up</button>
-      <script>
-  // Toggle between Sign Up and Login forms
-  function showAuthForm(formType) {
-    const loginFormSection = document.getElementById('login-form-section');
-    const signupFormSection = document.getElementById('signup-form-section');
-
-    if (formType === 'login') {
-      loginFormSection.style.display = 'block';
-      signupFormSection.style.display = 'none';
-    } else if (formType === 'signup') {
-      signupFormSection.style.display = 'block';
-      loginFormSection.style.display = 'none';
-    }
-  }
-
-  // Handle Login form submission
-  function handleLogin(event) {
-    event.preventDefault();  // Prevent form from submitting
-
-    const loginEmail = document.getElementById('loginEmail').value;
-    const loginPassword = document.getElementById('loginPassword').value;
-
-    // You can implement your API call here (e.g., fetch API or AJAX)
-    console.log('Logging in with:', loginEmail, loginPassword);
-
-    // Example response: If login is successful, you can redirect or display success message
-    alert('Login successful');
-  }
-
-  // Handle Sign Up form submission
-  function handleSignup(event) {
-    event.preventDefault();  // Prevent form from submitting
-
-    const signupEmail = document.getElementById('signupEmail').value;
-    const signupPassword = document.getElementById('signupPassword').value;
-
-    // You can implement your API call here (e.g., fetch API or AJAX)
-    console.log('Signing up with:', signupEmail, signupPassword);
-
-    // Example response: If signup is successful, you can redirect or display success message
-    alert('Sign Up successful');
-  }
-
-  // Validate Password Requirements on Sign-Up
-  function validatePassword(password) {
-    const requirements = {
-      lower: /[a-z]/.test(password),
-      upper: /[A-Z]/.test(password),
-      number: /\d/.test(password),
-      length: password.length >= 5
-    };
-
-    // Update indicators
-    document.getElementById('req-lower').style.color = requirements.lower ? 'green' : 'red';
-    document.getElementById('req-upper').style.color = requirements.upper ? 'green' : 'red';
-    document.getElementById('req-number').style.color = requirements.number ? 'green' : 'red';
-    document.getElementById('req-length').style.color = requirements.length ? 'green' : 'red';
-
-    // Enable the Sign Up button based on requirements
-    const signUpButton = document.getElementById('signupButton');
-    signUpButton.disabled = !(requirements.lower && requirements.upper && requirements.number && requirements.length);
-  }
-</script>
-// Get elements
-const passwordInput = document.getElementById('signupPassword');
-const signupButton = document.getElementById('signupButton');
-const form = document.getElementById('signup-form');
-
-// Function to validate password
-function validatePassword(password) {
-  // Example password validation: must contain at least one letter, one number, and be at least 6 characters long
-  const minLength = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/;
-  return minLength.test(password);
-}
-
-// Listen for password input and enable/disable signup button
-passwordInput.addEventListener('input', function () {
-  const password = passwordInput.value;
-  if (validatePassword(password)) {
-    signupButton.removeAttribute('disabled');
-  } else {
-    signupButton.setAttribute('disabled', 'true');
-  }
-});
-
-// Handle form submission
-form.addEventListener('submit', function (event) {
-  event.preventDefault(); // Prevent form from submitting the default way
-
-  // Gather form input values
-  const email = document.getElementById('signupEmail').value;
-  const password = passwordInput.value;
-
-  // You can add additional validation or send the form data to your backend
-  if (email && password) {
-    console.log('Form submitted');
-    alert('Sign Up Successful!');
-    // Here, you can also perform an API call to handle user registration
-  } else {
-    alert('Please complete all fields.');
-  }
-});
-</script>
-
-
         </div>
       </div>
     </div>
@@ -395,7 +290,7 @@ form.addEventListener('submit', function (event) {
             <li id="req-length" style="color: red;"><i class="fas fa-times"></i> Minimum 5 characters</li>
           </ul>
         </div>
-        <button type="submit" id="signupButton" enabled>Sign Up</button>
+        <button type="submit" id="signupButton" disabled>Sign Up</button>
       </form>
       <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
     </div>
@@ -456,21 +351,21 @@ form.addEventListener('submit', function (event) {
     <div class="growth-boxes">
       <div class="growth-card" data-tooltip="Earn 27% annually by staking your crypto safely.">
         <h3>Staking APY</h3>
-        <div class="counter" data-target="27">35</div>
+        <div class="counter" data-target="20">27</div>
         <span>% Annual Yield</span>
         <div class="sparkline"></div>
       </div>
 
       <div class="growth-card" data-tooltip="Save and earn up to 9% interest per year, just like a bank—but smarter.">
         <h3>High-Yield Savings</h3>
-        <div class="counter" data-target="12">16</div>
+        <div class="counter" data-target="9">12</div>
         <span>% Per Annum</span>
         <div class="sparkline"></div>
       </div>
 
       <div class="growth-card pulse" data-tooltip="Multiply your deposits and earn bonus rewards up to 45%!">
         <h3>Multiply Growth</h3>
-        <div class="counter" data-target="49">55</div>
+        <div class="counter" data-target="45">55</div>
         <span>% Bonus Returns</span>
         <div class="sparkline"></div>
       </div>
