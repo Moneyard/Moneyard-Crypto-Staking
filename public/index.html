@@ -494,39 +494,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  // LOGIN LOGIC
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
+// LOGIN LOGIC
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
-
-      try {
-        const res = await fetch("/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          window.location.href = "dashboard.html";
-        } else {
-          alert(data.error || "Invalid credentials.");
-        }
-      } catch (err) {
-        console.error("Login failed:", err);
-        alert("Something went wrong. Please try again.");
-      }
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
     });
-  }
-});
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("token", data.token); // optional for protected routes
+      window.location.href = "dashboard.html";
+    } else {
+      alert(data.message || "Login failed. Please check your credentials.");
+    }
+  });
+}
 </script>
 
 </body>
