@@ -273,73 +273,28 @@
       <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
     </div>
 
-    <!-- Signup Form Section -->
-<div id="signup-form-section" style="display: none;">
-  <h2>Sign Up</h2>
-  <form id="signupForm">
-    <input type="email" id="signupEmail" placeholder="Email" required><br>
-    <input type="password" id="signupPassword" placeholder="Password" required
-           oninput="validatePassword(this.value)"><br>
-    <div id="password-errors" style="color: red; font-size: 0.9em; text-align: left; width: 80%; margin: 0 auto;"></div>
-    <div id="password-requirements" style="text-align: left; width: 80%; margin: 10px auto;">
-      <small>Password must contain:</small>
-      <ul style="list-style: none; padding-left: 0; margin: 5px 0;">
-        <li id="req-lower" style="color: red;"><i class="fas fa-times"></i> 1 lowercase letter</li>
-        <li id="req-upper" style="color: red;"><i class="fas fa-times"></i> 1 uppercase letter</li>
-        <li id="req-number" style="color: red;"><i class="fas fa-times"></i> 1 number</li>
-        <li id="req-length" style="color: red;"><i class="fas fa-times"></i> Minimum 5 characters</li>
-      </ul>
+    <!-- Updated Signup Form -->
+    <div id="signup-form-section" style="display: none;">
+      <h2>Sign Up</h2>
+      <form id="signupForm" onsubmit="handleSignup(event)">
+        <input type="email" id="signupEmail" placeholder="Email" required><br>
+        <input type="password" id="signupPassword" placeholder="Password" required
+               oninput="validatePassword(this.value)"><br>
+        <div id="password-errors" style="color: red; font-size: 0.9em; text-align: left; width: 80%; margin: 0 auto;"></div>
+        <div id="password-requirements" style="text-align: left; width: 80%; margin: 10px auto;">
+          <small>Password must contain:</small>
+          <ul style="list-style: none; padding-left: 0; margin: 5px 0;">
+            <li id="req-lower" style="color: red;"><i class="fas fa-times"></i> 1 lowercase letter</li>
+            <li id="req-upper" style="color: red;"><i class="fas fa-times"></i> 1 uppercase letter</li>
+            <li id="req-number" style="color: red;"><i class="fas fa-times"></i> 1 number</li>
+            <li id="req-length" style="color: red;"><i class="fas fa-times"></i> Minimum 5 characters</li>
+          </ul>
+        </div>
+        <button type="submit" id="signupButton" disabled>Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
     </div>
-    <button type="submit" id="signupButton" disabled>Sign Up</button>
-  </form>
-  <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
-</div>
-
-<script>
-// Get elements
-const passwordInput = document.getElementById('signupPassword');
-const signupButton = document.getElementById('signupButton');
-const form = document.getElementById('signupForm');
-
-// Validate password against requirements
-function validatePassword(password) {
-  const hasLower = /[a-z]/.test(password);
-  const hasUpper = /[A-Z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const isLongEnough = password.length >= 5;
-
-  document.getElementById('req-lower').style.color = hasLower ? 'green' : 'red';
-  document.getElementById('req-upper').style.color = hasUpper ? 'green' : 'red';
-  document.getElementById('req-number').style.color = hasNumber ? 'green' : 'red';
-  document.getElementById('req-length').style.color = isLongEnough ? 'green' : 'red';
-
-  const isValid = hasLower && hasUpper && hasNumber && isLongEnough;
-  signupButton.disabled = !isValid;
-  return isValid;
-}
-
-// Listen to input changes
-passwordInput.addEventListener('input', function () {
-  validatePassword(passwordInput.value);
-});
-
-// Handle form submit
-form.addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  const email = document.getElementById('signupEmail').value;
-  const password = passwordInput.value;
-
-  if (email && password && validatePassword(password)) {
-    console.log('Form submitted');
-    alert('Sign Up Successful!');
-    // Add your backend API call here
-  } else {
-    alert('Please complete all fields and meet password requirements.');
-  }
-});
-</script>
-
+  </div>
 
   <!-- All original sections preserved -->
   <!-- Growth Section -->
@@ -523,39 +478,68 @@ form.addEventListener('submit', function (event) {
         this.setAttribute('title', this.dataset.tooltip);
       });
     });
-  </script>
-document.addEventListener("DOMContentLoaded", function () {
-  const signupForm = document.getElementById("signup-form");
-  const signupPassword = document.getElementById("signupPassword");
-  const signupButton = document.getElementById("signupButton");
+<script>
+// Toggle login/signup forms
+function showAuthForm(type) {
+  document.getElementById('auth-form').style.display = 'block';
+  if (type === 'login') {
+    document.getElementById('login-form-section').style.display = 'block';
+    document.getElementById('signup-form-section').style.display = 'none';
+  } else {
+    document.getElementById('login-form-section').style.display = 'none';
+    document.getElementById('signup-form-section').style.display = 'block';
+  }
+}
 
-  function isValidPassword(password) {
-    // Customize this as needed
-    return password.length >= 6;
+// Password validation
+function validatePassword(password) {
+  const lower = /[a-z]/.test(password);
+  const upper = /[A-Z]/.test(password);
+  const number = /[0-9]/.test(password);
+  const length = password.length >= 5;
+
+  document.getElementById('req-lower').style.color = lower ? 'green' : 'red';
+  document.getElementById('req-upper').style.color = upper ? 'green' : 'red';
+  document.getElementById('req-number').style.color = number ? 'green' : 'red';
+  document.getElementById('req-length').style.color = length ? 'green' : 'red';
+
+  const allValid = lower && upper && number && length;
+  document.getElementById('signupButton').disabled = !allValid;
+}
+
+// Signup handler
+function handleSignup(event) {
+  event.preventDefault();
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+
+  if (!email || !password) {
+    alert('Please fill all fields.');
+    return;
   }
 
-  signupPassword.addEventListener("input", () => {
-    if (isValidPassword(signupPassword.value)) {
-      signupButton.disabled = false;
-    } else {
-      signupButton.disabled = true;
-    }
-  });
+  alert('Sign Up Successful!');
+  showAuthForm('login');
+}
 
-  signupForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = document.getElementById("signupEmail").value;
-    const password = signupPassword.value;
+// Login handler
+function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
 
-    if (!email || !isValidPassword(password)) {
-      alert("Fill out valid email and password.");
-      return;
-    }
+  if (!email || !password) {
+    alert('Please enter your credentials.');
+    return;
+  }
 
-    // Perform sign-up logic here
-    alert("Signing up with " + email);
-    // Example API call placeholder
-  });
+  alert('Login successful!');
+  window.location.href = 'dashboard.html';
+}
+
+// Password input listener for enabling signup
+document.getElementById('signupPassword').addEventListener('input', function () {
+  validatePassword(this.value);
 });
 </script>
 </body>
