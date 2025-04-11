@@ -20,36 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("loginForm").style.display = "block";
     });
 
-    // Login form handler
-    const loginForm = document.getElementById("loginForm");
-    if (loginForm) {
-        loginForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
-
-            fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Login successful!");
-                        localStorage.setItem("userId", data.userId);
-                        localStorage.setItem("username", data.username);
-                        window.location.href = "/dashboard"; // Redirect to dashboard after successful login
-                    } else {
-                        alert(data.error || "Unable to login");
-                    }
-                })
-                .catch(() => alert("Login request failed."));
-        });
-    }
-
     // Signup form handler
-    const signupForm = document.getElementById("signupForm");
+    const signupForm = document.getElementById("signupFormElement");
     if (signupForm) {
         signupForm.addEventListener("submit", function (e) {
             e.preventDefault();
@@ -76,7 +48,35 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Forgot Password display toggle
+    // Login form handler
+    const loginForm = document.getElementById("loginFormElement");
+    if (loginForm) {
+        loginForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Login successful!");
+                        localStorage.setItem("userId", data.userId);
+                        localStorage.setItem("username", data.username);
+                        window.location.href = "/dashboard"; // Redirect to dashboard after successful login
+                    } else {
+                        alert(data.error || "Unable to login");
+                    }
+                })
+                .catch(() => alert("Login request failed."));
+        });
+    }
+
+    // Forgot Password form handler
     const resetBtn = document.getElementById("sendResetLink");
     if (resetBtn) {
         resetBtn.addEventListener("click", async () => {
