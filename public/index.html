@@ -401,6 +401,7 @@ function validatePassword(password) {
   return Object.values(requirements).every(v => v);
 }
 
+<script>
 document.addEventListener("DOMContentLoaded", () => {
   // MENU BAR FUNCTIONALITY
   const toggleButton = document.getElementById('menuToggle');
@@ -474,7 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // SIGNUP LOGIC
+  // SIGNUP PASSWORD VALIDATION
   const signupPassword = document.getElementById('signupPassword');
   const signupButton = document.getElementById('signupButton');
 
@@ -484,6 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // SIGNUP FORM HANDLER
   const signupForm = document.getElementById("signupForm");
   if (signupForm) {
     signupForm.addEventListener("submit", function (e) {
@@ -493,10 +495,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+  // LOGIN FORM HANDLER (MERGED)
   const loginForm = document.querySelector("#loginForm");
-
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -529,6 +529,11 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("Unable to login. Please try again.");
         });
     });
+  }
+
+  // PASSWORD VALIDATION FUNCTION (if not already defined)
+  function validatePassword(password) {
+    return password.length >= 6;
   }
 });
 </script>
