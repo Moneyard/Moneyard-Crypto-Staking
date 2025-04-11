@@ -5,14 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    body {
-      background-color: #FFA94D !important;
-    }
-  </style>
 </head>
 <body style="padding-top: 60px; padding-bottom: 20px;">
-
   <!-- Logout Button -->
   <div class="logout-container">
     <button class="logout-button" onclick="logout()">Log Out</button>
@@ -35,9 +29,11 @@
       <option value="Tron">TRC20 (Tron)</option>
       <option value="BNB">BEP20 (BNB Smart Chain)</option>
     </select>
+
     <button onclick="getDepositAddress()">Get Deposit Address</button>
     <p id="deposit-address" style="margin-top: 10px;"></p>
     <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
+
     <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
     <button onclick="logDeposit()">Submit Deposit</button>
   </section>
@@ -83,29 +79,12 @@
     </table>
   </section>
 
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <button class="nav-btn" onclick="navigateTo('home')">Home</button>
-    <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
-    <button class="nav-btn active" onclick="navigateTo('stake')">Stake</button>
-    <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
-  </div>
-
   <script src="script.js"></script>
-  <script>
-    function navigateTo(page) {
-      const pages = {
-        home: 'index.html',
-        referral: 'referral.html',
-        stake: 'stake.html',
-        assets: 'assets.html'
-      };
-      if (pages[page]) {
-        window.location.href = pages[page];
-      } else {
-        console.log("Invalid page");
-      }
-    }
-  </script>
 </body>
 </html>
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+  <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
+  <button class="nav-btn active" onclick="navigateTo('stake')">Stake</button>
+  <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
+</div>
