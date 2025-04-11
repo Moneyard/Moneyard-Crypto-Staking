@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Set background color
   document.body.style.backgroundColor = '#FFA94D';
 
+  // Load user summary if logged in
   if (isUserLoggedIn()) {
     loadUserSummary();
-  } else {
-    console.log('User is not logged in. Skipping user summary load.');
   }
 
+  // Observer animation
   const sections = document.querySelectorAll('.animated-section');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -18,34 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }, { threshold: 0.1 });
-
   sections.forEach(section => observer.observe(section));
 
-  // Forgot password handler
-  const forgotLink = document.getElementById('forgotPasswordLink');
-  const resetBtn = document.getElementById('sendResetLink');
-
-  if (forgotLink) {
-    forgotLink.addEventListener('click', () => {
-      document.getElementById('forgotPasswordForm').style.display = 'block';
-    });
-  }
-
-  if (resetBtn) {
-    resetBtn.addEventListener('click', async () => {
-      const email = document.getElementById('resetEmail').value;
-      const res = await fetch('/api/request-password-reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json();
-      alert(data.message || data.error);
-    });
-  }
-
   // Login form handler
-  const loginForm = document.getElementById('loginForm');
+  const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -60,8 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            localStorage.setItem('userId', data.user.id);
-            localStorage.setItem('username', data.user.username);
+            alert("Login successful!");
+            localStorage.setItem("userId", data.userId);
+            localStorage.setItem("username", data.username);
             window.location.href = "/dashboard";
           } else {
             alert(data.error || "Unable to login");
@@ -72,40 +50,63 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Signup form handler
-  const signupForm = document.getElementById('signupForm');
+  const signupForm = document.getElementById("signupForm");
   if (signupForm) {
     signupForm.addEventListener("submit", function (e) {
       e.preventDefault();
       const username = document.getElementById("signupUsername").value;
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
-      const refCode = document.getElementById("signupReferral").value;
 
       fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password, referralCode: refCode })
+        body: JSON.stringify({ username, email, password })
       })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            alert("Signup successful! Please log in.");
+            alert("Signup successful. Please log in.");
             document.getElementById("signupForm").style.display = "none";
             document.getElementById("loginForm").style.display = "block";
           } else {
-            alert(data.error || "Signup failed");
+            alert(data.error || "Signup failed.");
           }
         })
         .catch(() => alert("Signup request failed."));
     });
   }
+
+  // Forgot Password display toggle
+  const forgotLink = document.getElementById("forgotPasswordLink");
+  if (forgotLink) {
+    forgotLink.addEventListener("click", () => {
+      document.getElementById("forgotPasswordForm").style.display = 'block';
+    });
+  }
+
+  // Send Reset Password
+  const resetBtn = document.getElementById("sendResetLink");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", async () => {
+      const email = document.getElementById("resetEmail").value;
+      const res = await fetch('/api/request-password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      alert(data.message || data.error);
+    });
+  }
 });
 
-// Utility
+// Check if logged in
 function isUserLoggedIn() {
   return !!localStorage.getItem('userId') && !!localStorage.getItem('username');
 }
 
+// Load user summary
 function loadUserSummary() {
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
@@ -116,7 +117,9 @@ function loadUserSummary() {
   }
 
   const usernameElement = document.getElementById('summary-username');
-  if (usernameElement) usernameElement.innerText = username;
+  if (usernameElement) {
+    usernameElement.innerText = username;
+  }
 
   fetch(`/user-summary?userId=${userId}`)
     .then(response => response.json())
@@ -126,11 +129,15 @@ function loadUserSummary() {
         document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
       }
     })
-    .catch(error => console.error("Error fetching user summary:", error));
+    .catch(error => {
+      console.error("Error fetching user summary:", error);
+    });
 }
 
+// Logout
 function logout() {
-  localStorage.clear();
+  localStorage.removeItem('userId');
+  localStorage.removeItem('username');
   window.location.href = "index.html";
 }
 
@@ -140,18 +147,19 @@ function getDepositAddress() {
   const addressEl = document.getElementById('deposit-address');
   const copyBtn = document.getElementById('copy-button');
 
+  if (!network) {
+    addressEl.innerText = "Please select a network.";
+    copyBtn.style.display = "none";
+    return;
+  }
+
   const addresses = {
     Tron: "TXXxyTronAddress12345",
     BNB: "bnb1qwertyBep20Address"
   };
 
-  if (!network || !addresses[network]) {
-    addressEl.innerText = "Please select a valid network.";
-    copyBtn.style.display = "none";
-    return;
-  }
-
-  addressEl.innerText = `Deposit Address: ${addresses[network]}`;
+  const address = addresses[network];
+  addressEl.innerText = `Deposit Address: ${address}`;
   copyBtn.style.display = "inline-block";
 }
 
@@ -189,7 +197,7 @@ function logDeposit() {
     .catch(() => alert("Deposit error. Try again."));
 }
 
-// Withdraw
+// Withdrawal
 function submitWithdrawal() {
   const userId = localStorage.getItem('userId');
   const amount = parseFloat(document.getElementById('withdraw-amount').value);
@@ -213,7 +221,7 @@ function submitWithdrawal() {
     .catch(() => alert("Error processing withdrawal."));
 }
 
-// Calculator
+// Earnings calculator
 function calculateEarnings() {
   const deposit = parseFloat(document.getElementById('deposit-input').value);
   const resultEl = document.getElementById('calculated-earnings');
@@ -227,7 +235,7 @@ function calculateEarnings() {
   resultEl.innerText = `Estimated Daily Earnings: ${dailyEarnings.toFixed(2)} USDT`;
 }
 
-// Animated counters
+// Counter animation
 function animateCounters() {
   const counters = document.querySelectorAll('.counter');
   counters.forEach(counter => {
