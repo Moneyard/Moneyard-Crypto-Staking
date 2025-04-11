@@ -1,117 +1,113 @@
 const express = require('express');
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 
+// Initialize app and database
 const app = express();
-const PORT = process.env.PORT || 3000;
+const db = new sqlite3.Database('./moneyard.db');
+const secret = 'your-secret-key';  // Replace with your actual secret key
 
-// Middleware
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.json());  // Parse JSON request bodies
 
-// Database setup
-const dbPath = process.env.DATABASE_URL || './database.sqlite';
-if (!fs.existsSync(dbPath)) {
-    fs.closeSync(fs.openSync(dbPath, 'w'));
-}
+// Example: /login endpoint
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
 
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) return console.error('DB Error:', err);
-    console.log('Connected to SQLite:', dbPath);
-});
-
-// Create tables
-db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE,
-    password TEXT,
-    balance REAL DEFAULT 0,
-    reset_token TEXT,
-    reset_token_expiry INTEGER
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS transactions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    type TEXT,
-    amount REAL,
-    network TEXT,
-    tx_id TEXT,
-    status TEXT,
-    date TEXT
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    amount REAL,
-    wallet_address TEXT,
-    password TEXT,
-    status TEXT DEFAULT 'pending',
-    date TEXT
-)`);
-
-// Signup Route
-app.post('/api/signup', async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
-
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
+  // Query database for the user
+  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, error: 'Database error' });
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({ 
-            error: 'Password must contain at least 1 lowercase, 1 uppercase letter, 1 number, and be at least 5 characters long'
-        });
+    if (!user) {
+      return res.json({ success: false, error: 'User not found' });
     }
 
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (user) return res.status(400).json({ error: 'Email already in use' });
+    // Compare the provided password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.json({ success: false, error: 'Invalid password' });
+    }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
-            [email, hashedPassword], 
-            function(err) {
-                if (err) return res.status(500).json({ error: 'Failed to register user' });
-                res.json({ success: true, userId: this.lastID });
-            }
-        );
+    // Return the userId and username along with a success flag
+    res.json({
+      success: true,
+      userId: user.id,
+      username: user.username,  // Ensure that the username is included
     });
+  });
 });
 
-// Login Route (updated to return username/email)
-app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
+// Example: /user-summary endpoint
+app.get('/user-summary', (req, res) => {
+  const userId = req.query.userId;  // Retrieve the userId from the query parameter
 
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-        if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
+  if (!userId) {
+    return res.status(400).json({ success: false, error: 'User ID is required' });
+  }
 
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
+  // Fetch user data including deposits and balance
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, error: 'Database error' });
+    }
 
-        res.json({ 
-            success: true, 
-            userId: user.id,
-            username: user.email
-        });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Example of fetching deposits and balance (adjust query as needed)
+    db.get('SELECT SUM(amount) AS totalDeposit FROM deposits WHERE userId = ?', [userId], (err, depositData) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, error: 'Failed to fetch deposit data' });
+      }
+
+      const totalDeposit = depositData.totalDeposit || 0;
+
+      // Fetch the balance (this can be based on your platform's calculation)
+      const balance = user.balance || 0;
+
+      // Return the user summary with username
+      res.json({
+        success: true,
+        username: user.username, // Include username in the response
+        totalDeposit: totalDeposit,
+        balance: balance,
+      });
     });
+  });
 });
 
-// Serve frontend files
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+// Example: /signup endpoint (just for reference)
+app.post('/signup', (req, res) => {
+  const { email, password, username } = req.body;
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  // Hash the password before saving it
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, error: 'Password hashing failed' });
+    }
+
+    // Save the user to the database
+    db.run('INSERT INTO users (email, password, username) VALUES (?, ?, ?)', [email, hashedPassword, username], function(err) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, error: 'Failed to sign up' });
+      }
+
+      res.json({ success: true, userId: this.lastID, username: username });
+    });
+  });
+});
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
