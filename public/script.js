@@ -1,128 +1,256 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard | Sign Up or Log In</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #FFA94D;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    .auth-container {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      width: 100%;
-      max-width: 400px;
-      transition: all 0.5s ease;
-      position: relative;
-    }
-    .form {
-      display: none;
-      flex-direction: column;
-      gap: 1rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.4s ease-in-out;
-    }
-    .form.active {
-      display: flex;
-      opacity: 1;
-      transform: translateY(0);
-    }
-    input {
-      padding: 0.75rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      outline: none;
-    }
-    button {
-      padding: 0.75rem;
-      background: #2b8a3e;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #237032;
-    }
-    .toggle-link {
-      text-align: center;
-      margin-top: 10px;
-      color: #0077cc;
-      cursor: pointer;
-    }
-    h2 {
-      text-align: center;
-      color: #2b8a3e;
-    }
-  </style>
-</head>
-<body>
+document.addEventListener("DOMContentLoaded", () => {
+  // Set background color
+  document.body.style.backgroundColor = '#FFA94D';
 
-<div class="auth-container">
-  <!-- Login Form -->
-  <form id="loginForm" class="form active">
-    <h2>Log In</h2>
-    <input type="email" id="loginEmail" placeholder="Email" required />
-    <input type="password" id="loginPassword" placeholder="Password" required />
-    <button type="submit">Log In</button>
-    <div class="toggle-link" id="goToSignup">Don't have an account? Sign Up</div>
-    <div class="toggle-link" id="forgotPasswordLink">Forgot Password?</div>
-  </form>
-
-  <!-- Sign Up Form -->
-  <form id="signupForm" class="form">
-    <h2>Sign Up</h2>
-    <input type="text" id="signupUsername" placeholder="Username" required />
-    <input type="email" id="signupEmail" placeholder="Email" required />
-    <input type="password" id="signupPassword" placeholder="Password" required />
-    <button type="submit">Create Account</button>
-    <div class="toggle-link" id="goToLogin">Already have an account? Log In</div>
-  </form>
-
-  <!-- Forgot Password Form -->
-  <div id="forgotPasswordForm" class="form">
-    <h2>Reset Password</h2>
-    <input type="email" id="resetEmail" placeholder="Enter your email" required />
-    <button id="sendResetLink">Send Reset Link</button>
-    <div class="toggle-link" id="backToLogin">Back to Login</div>
-  </div>
-</div>
-
-<script>
-  // Toggle between forms
-  document.getElementById("goToSignup").addEventListener("click", () => {
-    toggleForm("signupForm");
-  });
-  document.getElementById("goToLogin").addEventListener("click", () => {
-    toggleForm("loginForm");
-  });
-  document.getElementById("forgotPasswordLink").addEventListener("click", () => {
-    toggleForm("forgotPasswordForm");
-  });
-  document.getElementById("backToLogin").addEventListener("click", () => {
-    toggleForm("loginForm");
-  });
-
-  function toggleForm(id) {
-    document.querySelectorAll(".form").forEach(f => f.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+  // Load user summary if logged in
+  if (isUserLoggedIn()) {
+    loadUserSummary();
   }
-</script>
 
-<script src="script.js"></script>
-</body>
-</html>
+  // Observer animation
+  const sections = document.querySelectorAll('.animated-section');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        if (entry.target.id === 'growth-tracker') {
+          animateCounters();
+        }
+      }
+    });
+  }, { threshold: 0.1 });
+  sections.forEach(section => observer.observe(section));
+
+  // Login form handler
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("Login successful!");
+            localStorage.setItem("userId", data.userId);
+            localStorage.setItem("username", data.username);
+            window.location.href = "/dashboard";
+          } else {
+            alert(data.error || "Unable to login");
+          }
+        })
+        .catch(() => alert("Login request failed."));
+    });
+  }
+
+  // Signup form handler
+  const signupForm = document.getElementById("signupForm");
+  if (signupForm) {
+    signupForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const username = document.getElementById("signupUsername").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("Signup successful. Please log in.");
+            document.getElementById("signupForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+          } else {
+            alert(data.error || "Signup failed.");
+          }
+        })
+        .catch(() => alert("Signup request failed."));
+    });
+  }
+
+  // Forgot Password display toggle
+  const forgotLink = document.getElementById("forgotPasswordLink");
+  if (forgotLink) {
+    forgotLink.addEventListener("click", () => {
+      document.getElementById("forgotPasswordForm").style.display = 'block';
+    });
+  }
+
+  // Send Reset Password
+  const resetBtn = document.getElementById("sendResetLink");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", async () => {
+      const email = document.getElementById("resetEmail").value;
+      const res = await fetch('/api/request-password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      alert(data.message || data.error);
+    });
+  }
+});
+
+// Check if logged in
+function isUserLoggedIn() {
+  return !!localStorage.getItem('userId') && !!localStorage.getItem('username');
+}
+
+// Load user summary
+function loadUserSummary() {
+  const userId = localStorage.getItem('userId');
+  const username = localStorage.getItem('username');
+
+  if (!userId || !username) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const usernameElement = document.getElementById('summary-username');
+  if (usernameElement) {
+    usernameElement.innerText = username;
+  }
+
+  fetch(`/user-summary?userId=${userId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.totalDeposit !== undefined && data.balance !== undefined) {
+        document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
+        document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching user summary:", error);
+    });
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('username');
+  window.location.href = "index.html";
+}
+
+// Deposit
+function getDepositAddress() {
+  const network = document.getElementById('network').value;
+  const addressEl = document.getElementById('deposit-address');
+  const copyBtn = document.getElementById('copy-button');
+
+  if (!network) {
+    addressEl.innerText = "Please select a network.";
+    copyBtn.style.display = "none";
+    return;
+  }
+
+  const addresses = {
+    Tron: "TXXxyTronAddress12345",
+    BNB: "bnb1qwertyBep20Address"
+  };
+
+  const address = addresses[network];
+  addressEl.innerText = `Deposit Address: ${address}`;
+  copyBtn.style.display = "inline-block";
+}
+
+function copyToClipboard() {
+  const text = document.getElementById('deposit-address').innerText.replace("Deposit Address: ", "");
+  navigator.clipboard.writeText(text)
+    .then(() => alert("Address copied!"))
+    .catch(() => alert("Failed to copy address"));
+}
+
+function logDeposit() {
+  const userId = localStorage.getItem('userId');
+  const amount = parseFloat(document.getElementById('deposit-amount').value);
+  const network = document.getElementById('network').value;
+
+  if (!userId || isNaN(amount) || amount < 15 || amount > 1000 || !network) {
+    alert("Please enter a valid amount (15 - 1000 USDT) and select a network.");
+    return;
+  }
+
+  fetch('/deposit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, amount, network })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("Deposit submitted!");
+        loadUserSummary();
+      } else {
+        alert(data.message || "Deposit failed.");
+      }
+    })
+    .catch(() => alert("Deposit error. Try again."));
+}
+
+// Withdrawal
+function submitWithdrawal() {
+  const userId = localStorage.getItem('userId');
+  const amount = parseFloat(document.getElementById('withdraw-amount').value);
+  const address = document.getElementById('withdraw-address').value;
+  const password = document.getElementById('withdraw-password').value;
+
+  if (!userId || isNaN(amount) || amount < 10 || !address || !password) {
+    alert("Fill in all fields correctly. Minimum withdrawal is 10 USDT.");
+    return;
+  }
+
+  fetch('/withdraw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, amount, address, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || "Withdrawal requested.");
+    })
+    .catch(() => alert("Error processing withdrawal."));
+}
+
+// Earnings calculator
+function calculateEarnings() {
+  const deposit = parseFloat(document.getElementById('deposit-input').value);
+  const resultEl = document.getElementById('calculated-earnings');
+
+  if (isNaN(deposit) || deposit <= 0) {
+    resultEl.innerText = "Enter a valid deposit amount.";
+    return;
+  }
+
+  const dailyEarnings = deposit * 0.01;
+  resultEl.innerText = `Estimated Daily Earnings: ${dailyEarnings.toFixed(2)} USDT`;
+}
+
+// Counter animation
+function animateCounters() {
+  const counters = document.querySelectorAll('.counter');
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-target');
+      const count = +counter.innerText;
+      const increment = target / 100;
+
+      if (count < target) {
+        counter.innerText = Math.ceil(count + increment);
+        setTimeout(updateCount, 50);
+      } else {
+        counter.innerText = target;
+      }
+    };
+    updateCount();
+  });
+}
