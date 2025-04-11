@@ -318,3 +318,29 @@ a:hover {
   from { width: 0; opacity: 0; }
   to { width: 100%; opacity: 1; }
 }
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  z-index: 1000;
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 15px 0;
+  font-size: 16px;
+  text-align: center;
+  border: none;
+  background: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.nav-btn.active {
+  font-weight: bold;
+  color: #FFA94D;
+}
