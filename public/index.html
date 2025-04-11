@@ -479,67 +479,54 @@
       });
     });
 <script>
-// Toggle login/signup forms
-function showAuthForm(type) {
-  document.getElementById('auth-form').style.display = 'block';
-  if (type === 'login') {
-    document.getElementById('login-form-section').style.display = 'block';
-    document.getElementById('signup-form-section').style.display = 'none';
-  } else {
-    document.getElementById('login-form-section').style.display = 'none';
-    document.getElementById('signup-form-section').style.display = 'block';
-  }
+// Menu Toggle
+document.querySelectorAll(".menu-section h3").forEach(header => {
+  header.addEventListener("click", () => {
+    const content = header.nextElementSibling;
+    content.style.display = content.style.display === "none" ? "block" : "none";
+  });
+});
+
+// Show Auth Forms
+function showAuthForm(formType) {
+  document.getElementById("auth-form").style.display = "block";
+  document.getElementById("login-form-section").style.display = formType === "login" ? "block" : "none";
+  document.getElementById("signup-form-section").style.display = formType === "signup" ? "block" : "none";
 }
 
-// Password validation
+// Password Validation
 function validatePassword(password) {
   const lower = /[a-z]/.test(password);
   const upper = /[A-Z]/.test(password);
   const number = /[0-9]/.test(password);
   const length = password.length >= 5;
 
-  document.getElementById('req-lower').style.color = lower ? 'green' : 'red';
-  document.getElementById('req-upper').style.color = upper ? 'green' : 'red';
-  document.getElementById('req-number').style.color = number ? 'green' : 'red';
-  document.getElementById('req-length').style.color = length ? 'green' : 'red';
+  document.getElementById("req-lower").style.color = lower ? "green" : "red";
+  document.getElementById("req-upper").style.color = upper ? "green" : "red";
+  document.getElementById("req-number").style.color = number ? "green" : "red";
+  document.getElementById("req-length").style.color = length ? "green" : "red";
 
-  const allValid = lower && upper && number && length;
-  document.getElementById('signupButton').disabled = !allValid;
+  return lower && upper && number && length;
 }
 
-// Signup handler
-function handleSignup(event) {
-  event.preventDefault();
-  const email = document.getElementById('signupEmail').value;
-  const password = document.getElementById('signupPassword').value;
+// Handle Signup
+const signupPassword = document.getElementById('signupPassword');
+const signupButton = document.getElementById('signupButton');
+signupPassword.addEventListener('input', function () {
+  signupButton.disabled = !validatePassword(signupPassword.value);
+});
 
-  if (!email || !password) {
-    alert('Please fill all fields.');
-    return;
-  }
+document.getElementById("signupForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  alert("Sign Up Successful!");
+  showAuthForm("login");
+});
 
-  alert('Sign Up Successful!');
-  showAuthForm('login');
-}
-
-// Login handler
-function handleLogin(event) {
-  event.preventDefault();
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-
-  if (!email || !password) {
-    alert('Please enter your credentials.');
-    return;
-  }
-
-  alert('Login successful!');
-  window.location.href = 'dashboard.html';
-}
-
-// Password input listener for enabling signup
-document.getElementById('signupPassword').addEventListener('input', function () {
-  validatePassword(this.value);
+// Handle Login
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  // Example: redirect after login
+  window.location.href = "dashboard.html";
 });
 </script>
 </body>
