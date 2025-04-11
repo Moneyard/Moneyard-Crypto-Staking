@@ -494,40 +494,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   <script>
-// SECURE LOGIN LOGIC (Connects to backend /api/login)
-const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-  loginForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
+// Final working login logic without breaking Menu Bar
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("loginForm");
 
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        // Optional: store token for protected routes
-        localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
-      } else {
-        alert(data.error || "Login failed. Check your credentials.");
+        if (response.ok) {
+          // Store login data if needed
+          localStorage.setItem("userEmail", email);
+          window.location.href = "dashboard.html";
+        } else {
+          alert(data.error || "Login failed. Please try again.");
+        }
+
+      } catch (err) {
+        alert("An error occurred. Please try again.");
+        console.error(err);
       }
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("An error occurred. Please try again.");
-    }
-  });
-}
+    });
+  }
+});
 </script>
-
 </body>
 </html>
