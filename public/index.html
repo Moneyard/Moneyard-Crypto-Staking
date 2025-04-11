@@ -376,31 +376,6 @@
     <p>© 2025 Moneyard. Your crypto journey starts here.</p>
   </footer>
 
-  <script>
-// PASSWORD VALIDATION FUNCTION
-function validatePassword(password) {
-  const requirements = {
-    lower: /[a-z]/.test(password),
-    upper: /[A-Z]/.test(password),
-    number: /\d/.test(password),
-    length: password.length >= 5
-  };
-
-  // Update indicators
-  document.getElementById('req-lower').style.color = requirements.lower ? 'green' : 'red';
-  document.getElementById('req-upper').style.color = requirements.upper ? 'green' : 'red';
-  document.getElementById('req-number').style.color = requirements.number ? 'green' : 'red';
-  document.getElementById('req-length').style.color = requirements.length ? 'green' : 'red';
-
-  // Update icons if present
-  document.querySelectorAll('#password-requirements li i').forEach(icon => {
-    const key = icon.parentElement.id.split('-')[1];
-    icon.className = requirements[key] ? 'fas fa-check' : 'fas fa-times';
-  });
-
-  return Object.values(requirements).every(v => v);
-}
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   // MENU BAR FUNCTIONALITY
