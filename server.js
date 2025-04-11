@@ -15,17 +15,14 @@ const tokens = []; // Store generated JWT tokens
 app.post('/api/signup', (req, res) => {
     const { username, email, password } = req.body;
 
-    // Simple validation (improve in real-world scenario)
     if (!username || !email || !password) {
         return res.status(400).json({ error: 'Please fill in all fields' });
     }
 
-    // Check if user already exists
     if (users.find(user => user.email === email)) {
         return res.status(400).json({ error: 'Email already in use' });
     }
 
-    // Hash password and store user
     bcrypt.hash(password, 10, (err, hashedPassword) => {
         if (err) return res.status(500).json({ error: 'Failed to hash password' });
 
