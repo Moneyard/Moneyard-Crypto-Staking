@@ -3,122 +3,126 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard - Crypto Staking Platform</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-
-  <!-- Existing navbar/menu and top sections remain unchanged -->
-
-  <!-- AUTH SECTION START -->
+  <title>Moneyard | Sign Up or Log In</title>
   <style>
-    .auth-form {
-      max-width: 350px;
-      margin: 40px auto;
-      padding: 25px 20px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #FFA94D;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-
-    .auth-form input, .auth-form button {
+    .auth-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       width: 100%;
-      margin-bottom: 15px;
-      padding: 12px;
-      font-size: 14px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+      max-width: 400px;
+      transition: all 0.5s ease;
+      position: relative;
     }
-
-    .auth-form button {
-      background-color: #2c9c6b;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-    }
-
-    .auth-form button:hover {
-      background-color: #217e54;
-    }
-
-    .auth-form p {
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .auth-form a {
-      color: #2c9c6b;
-      text-decoration: none;
-    }
-
-    .auth-form a:hover {
-      text-decoration: underline;
-    }
-
-    .hidden {
+    .form {
       display: none;
+      flex-direction: column;
+      gap: 1rem;
       opacity: 0;
       transform: translateY(20px);
+      transition: all 0.4s ease-in-out;
     }
-
-    .visible {
-      display: block;
+    .form.active {
+      display: flex;
       opacity: 1;
       transform: translateY(0);
     }
-  </style>
-
-  <div id="signupForm" class="auth-form visible">
-    <h2>Sign Up</h2>
-    <form>
-      <input type="text" id="signupUsername" placeholder="Username" required>
-      <input type="email" id="signupEmail" placeholder="Email" required>
-      <input type="password" id="signupPassword" placeholder="Password" required>
-      <button type="submit">Create Account</button>
-    </form>
-    <p>Already have an account? <a href="#" onclick="switchForm('signupForm', 'loginForm')">Login here</a></p>
-  </div>
-
-  <div id="loginForm" class="auth-form hidden">
-    <h2>Login</h2>
-    <form>
-      <input type="email" id="loginEmail" placeholder="Email" required>
-      <input type="password" id="loginPassword" placeholder="Password" required>
-      <button type="submit">Log In</button>
-    </form>
-    <p><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
-    <p>Don't have an account? <a href="#" onclick="switchForm('loginForm', 'signupForm')">Sign up here</a></p>
-  </div>
-
-  <div id="forgotPasswordForm" class="auth-form hidden">
-    <h2>Reset Password</h2>
-    <input type="email" id="resetEmail" placeholder="Enter your email" required>
-    <button id="sendResetLink">Send Reset Link</button>
-    <p><a href="#" onclick="switchForm('forgotPasswordForm', 'loginForm')">Back to Login</a></p>
-  </div>
-
-  <script>
-    function switchForm(hideId, showId) {
-      const hideForm = document.getElementById(hideId);
-      const showForm = document.getElementById(showId);
-      hideForm.classList.remove('visible');
-      hideForm.classList.add('hidden');
-      setTimeout(() => {
-        showForm.classList.remove('hidden');
-        showForm.classList.add('visible');
-      }, 200);
+    input {
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      outline: none;
     }
+    button {
+      padding: 0.75rem;
+      background: #2b8a3e;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #237032;
+    }
+    .toggle-link {
+      text-align: center;
+      margin-top: 10px;
+      color: #0077cc;
+      cursor: pointer;
+    }
+    h2 {
+      text-align: center;
+      color: #2b8a3e;
+    }
+  </style>
+</head>
+<body>
 
-    document.getElementById('forgotPasswordLink').addEventListener('click', () => {
-      switchForm('loginForm', 'forgotPasswordForm');
-    });
-  </script>
-  <!-- AUTH SECTION END -->
+<div class="auth-container">
+  <!-- Login Form -->
+  <form id="loginForm" class="form active">
+    <h2>Log In</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button type="submit">Log In</button>
+    <div class="toggle-link" id="goToSignup">Don't have an account? Sign Up</div>
+    <div class="toggle-link" id="forgotPasswordLink">Forgot Password?</div>
+  </form>
 
-  <!-- The rest of your landing page sections (promo, growth tracker, dashboard) remain intact -->
+  <!-- Sign Up Form -->
+  <form id="signupForm" class="form">
+    <h2>Sign Up</h2>
+    <input type="text" id="signupUsername" placeholder="Username" required />
+    <input type="email" id="signupEmail" placeholder="Email" required />
+    <input type="password" id="signupPassword" placeholder="Password" required />
+    <button type="submit">Create Account</button>
+    <div class="toggle-link" id="goToLogin">Already have an account? Log In</div>
+  </form>
 
-  <script src="script.js"></script>
+  <!-- Forgot Password Form -->
+  <div id="forgotPasswordForm" class="form">
+    <h2>Reset Password</h2>
+    <input type="email" id="resetEmail" placeholder="Enter your email" required />
+    <button id="sendResetLink">Send Reset Link</button>
+    <div class="toggle-link" id="backToLogin">Back to Login</div>
+  </div>
+</div>
+
+<script>
+  // Toggle between forms
+  document.getElementById("goToSignup").addEventListener("click", () => {
+    toggleForm("signupForm");
+  });
+  document.getElementById("goToLogin").addEventListener("click", () => {
+    toggleForm("loginForm");
+  });
+  document.getElementById("forgotPasswordLink").addEventListener("click", () => {
+    toggleForm("forgotPasswordForm");
+  });
+  document.getElementById("backToLogin").addEventListener("click", () => {
+    toggleForm("loginForm");
+  });
+
+  function toggleForm(id) {
+    document.querySelectorAll(".form").forEach(f => f.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+</script>
+
+<script src="script.js"></script>
 </body>
 </html>
