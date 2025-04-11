@@ -493,39 +493,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
+    // LOGIN LOGIC
   const loginForm = document.getElementById("loginForm");
-
   if (loginForm) {
-    loginForm.addEventListener("submit", async function (e) {
+    loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
-
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-
-      try {
-        const response = await fetch("/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem("userEmail", email);
-          window.location.href = "dashboard.html";
-        } else {
-          alert(data.error || "Invalid login credentials");
-        }
-
-      } catch (err) {
-        alert("Server error. Please try again later.");
-        console.error("Login error:", err);
-      }
+      window.location.href = "dashboard.html";
     });
   }
 });
