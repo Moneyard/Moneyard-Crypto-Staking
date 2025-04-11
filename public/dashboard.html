@@ -5,113 +5,156 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-<style>
-  body {
-    background-color: #FFA94D !important;
-  }
-</style>
+  <style>
+    body {
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      background-color: green;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .navbar .brand {
+      display: flex;
+      align-items: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .dashboard {
+      padding: 20px;
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: green;
+    }
+
+    .welcome-msg {
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #444;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .actions button {
+      margin: 10px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .actions button:hover {
+      background-color: #1e7e34;
+    }
+
+    footer {
+      background-color: #007a5a;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  </style>
 </head>
-<body style="padding-top: 60px; padding-bottom: 20px;">
-  <!-- Logout Button -->
-  <div class="logout-container">
-    <button class="logout-button" onclick="logout()">Log Out</button>
+<body>
+
+  <div class="navbar">
+    <div class="brand">
+      <img src="20250409_162622.jpg" alt="Logo" />
+      Moneyard
+    </div>
+    <div id="userGreeting">Welcome</div>
   </div>
 
-  <!-- User Summary -->
-  <section id="user-summary" class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-  </section>
+  <div class="dashboard">
+    <div class="section welcome-msg" id="welcomeText">
+      Loading user info...
+    </div>
 
-  <!-- Deposit Section -->
-  <section id="deposit-section" class="form">
-    <h3>Deposit Funds</h3>
-    <label for="network">Choose Network:</label>
-    <select id="network" onchange="getDepositAddress()">
-      <option value="">-- Select Network --</option>
-      <option value="Tron">TRC20 (Tron)</option>
-      <option value="BNB">BEP20 (BNB Smart Chain)</option>
-    </select>
+    <div class="section">
+      <h2>Est. Total Value</h2>
+      <p id="balanceAmount">$0.00</p>
+    </div>
 
-    <button onclick="getDepositAddress()">Get Deposit Address</button>
-    <p id="deposit-address" style="margin-top: 10px;"></p>
-    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
+    <div class="section actions">
+      <button onclick="alert('Deposit Clicked')">Deposit</button>
+      <button onclick="alert('Withdraw Clicked')">Withdraw</button>
+      <button onclick="alert('Transfer Clicked')">Transfer</button>
+    </div>
 
-    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <button onclick="logDeposit()">Submit Deposit</button>
-  </section>
-
-  <!-- Withdraw Section -->
-  <section id="withdraw-section" class="form">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
-    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-    <button onclick="submitWithdrawal()">Request Withdrawal</button>
-    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
-      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
-    </p>
-  </section>
-
-  <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings"></p>
-  </section>
-
-  <!-- Transaction History -->
-  <section id="transaction-history-section" class="form">
-    <h3>Transaction History</h3>
-    <table id="transaction-history-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Network</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Transaction rows injected here -->
-      </tbody>
-    </table>
-  </section>
-
-  <script src="script.js"></script>
-
-  <div class="bottom-nav">
-    <button class="nav-btn" onclick="navigateTo('home')">Home</button>
-    <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
-    <button class="nav-btn active" onclick="navigateTo('stake')">Stake</button>
-    <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
+    <div class="section">
+      <h3>Transaction History</h3>
+      <ul id="transactionList">
+        <li>No transactions yet.</li>
+      </ul>
+    </div>
   </div>
+
+  <footer>
+    &copy; 2025 Moneyard. All rights reserved.
+  </footer>
 
   <script>
-    function navigateTo(page) {
-      switch(page) {
-        case 'home':
-          window.location.href = 'index.html'; // Redirects to index.html
-          break;
-        case 'referral':
-          window.location.href = 'referral.html'; // Adjust with your referral page path
-          break;
-        case 'stake':
-          window.location.href = 'stake.html'; // Adjust with your stake page path
-          break;
-        case 'assets':
-          window.location.href = 'assets.html'; // Adjust with your assets page path
-          break;
-        default:
-          console.log("Invalid page");
-          break;
-      }
+    // Load email from localStorage
+    const userEmail = localStorage.getItem("userEmail");
+
+    // Greet user or fallback if not found
+    const greeting = document.getElementById("userGreeting");
+    const welcomeText = document.getElementById("welcomeText");
+
+    if (userEmail) {
+      greeting.innerText = `Welcome, ${userEmail}`;
+      welcomeText.innerText = `Hello ${userEmail}, here’s your dashboard overview.`;
+    } else {
+      greeting.innerText = "Welcome";
+      welcomeText.innerText = "Couldn't load user info. Please log in again.";
+    }
+
+    // Simulate total balance
+    const storedBalance = localStorage.getItem("totalBalance") || "0.00";
+    document.getElementById("balanceAmount").innerText = `$${parseFloat(storedBalance).toFixed(2)}`;
+
+    // Load transactions
+    const storedTxs = JSON.parse(localStorage.getItem("transactions") || "[]");
+    const txList = document.getElementById("transactionList");
+    txList.innerHTML = "";
+
+    if (storedTxs.length === 0) {
+      txList.innerHTML = "<li>No transactions yet.</li>";
+    } else {
+      storedTxs.forEach(tx => {
+        const li = document.createElement("li");
+        li.textContent = `${tx.date} - ${tx.type.toUpperCase()} - $${tx.amount}`;
+        txList.appendChild(li);
+      });
     }
   </script>
 </body>
