@@ -8,6 +8,17 @@ function toggleForms(type) {
   } else {
     signup.style.display = 'block';
     login.style.display = 'none';
+
+// Example using localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  const username = localStorage.getItem('username');
+  if (username) {
+    document.getElementById('summary-username').textContent = username;
+  }
+});
+// After a successful login API call
+localStorage.setItem('username', response.username); // Adjust to your response format
+
   }
 }
 
