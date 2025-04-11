@@ -11,15 +11,6 @@ function toggleForms(type) {
   }
 }
 
-// Display username from localStorage on dashboard
-window.addEventListener('DOMContentLoaded', () => {
-  const username = localStorage.getItem('username');
-  if (username) {
-    const usernameEl = document.getElementById('summary-username');
-    if (usernameEl) usernameEl.textContent = username;
-  }
-});
-
 // Handle forgot password
 function handleForgotPassword() {
   const email = document.getElementById('email').value;
@@ -60,7 +51,8 @@ function loadUserSummary() {
   fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById('summary-username').innerText = localStorage.getItem('username') || '';
+      const username = localStorage.getItem('username') || localStorage.getItem('email') || 'User';
+      document.getElementById('summary-username').innerText = username;
       document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
       document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
     })
@@ -117,7 +109,7 @@ function logout() {
   window.location.href = "index.html";
 }
 
-// DOMContentLoaded setup
+// DOMContentLoaded for all setup
 document.addEventListener('DOMContentLoaded', () => {
   // Animate sections
   const sections = document.querySelectorAll('.animated-section');
@@ -147,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
 
-      const res = await fetch("/api/signup", {
+      const res = await fetch("/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -172,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
 
-      const res = await fetch("/api/login", {
+      const res = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -183,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Login successful!");
         localStorage.setItem("userId", data.userId);
         localStorage.setItem("email", email);
-        localStorage.setItem("username", data.username); // Save username for dashboard
+        localStorage.setItem("username", data.username || ''); // store username
         window.location.href = "/dashboard";
       } else {
         alert(data.error || "Login failed.");
