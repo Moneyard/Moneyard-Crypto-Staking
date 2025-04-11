@@ -478,6 +478,65 @@
         this.setAttribute('title', this.dataset.tooltip);
       });
     });
-  </script>
+ <script>
+// Menu toggle functionality (click on menu headings to show/hide contents)
+document.querySelectorAll(".menu-section h3").forEach(header => {
+  header.addEventListener("click", () => {
+    const content = header.nextElementSibling;
+    if (content) {
+      content.style.display = content.style.display === "none" ? "block" : "none";
+    }
+  });
+});
+</script>
+
+<script>
+// STEP 2: Signup/Login + Redirect Logic
+function showAuthForm(formType) {
+  document.getElementById("auth-form").style.display = "block";
+  document.getElementById("login-form-section").style.display = formType === "login" ? "block" : "none";
+  document.getElementById("signup-form-section").style.display = formType === "signup" ? "block" : "none";
+}
+function showAuthForm(formType) {
+  document.getElementById("auth-form").style.display = "block";
+  document.getElementById("login-form-section").style.display = formType === "login" ? "block" : "none";
+  document.getElementById("signup-form-section").style.display = formType === "signup" ? "block" : "none";
+}
+
+// Password Validation for Signup
+function validatePassword(password) {
+  const lower = /[a-z]/.test(password);
+  const upper = /[A-Z]/.test(password);
+  const number = /[0-9]/.test(password);
+  const length = password.length >= 5;
+
+  document.getElementById("req-lower").style.color = lower ? "green" : "red";
+  document.getElementById("req-upper").style.color = upper ? "green" : "red";
+  document.getElementById("req-number").style.color = number ? "green" : "red";
+  document.getElementById("req-length").style.color = length ? "green" : "red";
+
+  return lower && upper && number && length;
+}
+
+// Handle Signup
+const signupPassword = document.getElementById('signupPassword');
+const signupButton = document.getElementById('signupButton');
+signupPassword.addEventListener('input', function () {
+  signupButton.disabled = !validatePassword(signupPassword.value);
+});
+
+document.getElementById("signupForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  alert("Sign Up Successful!");
+  showAuthForm("login");
+});
+
+// Handle Login
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  window.location.href = "dashboard.html";
+});
+</script>
+
 </body>
 </html>
