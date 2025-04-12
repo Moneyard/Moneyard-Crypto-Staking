@@ -233,14 +233,3 @@ app.get('/api/active-stakes', (req, res) => {
     res.json({ stakes: rows });
   });
 });
-db.run(`
-  INSERT INTO stakes (userId, plan, amount, apy, startDate, status)
-  VALUES (?, ?, ?, ?, ?, ?)`,
-  [userId, plan, amount, apy, new Date().toISOString(), 'active'],
-  (err) => {
-    if (err) {
-      console.error("Staking failed:", err);
-      return res.status(500).json({ error: "Failed to create stake." });
-    }
-    res.json({ success: true, message: "Stake created successfully." });
-  });
