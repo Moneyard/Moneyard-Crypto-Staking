@@ -80,6 +80,37 @@
     <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings">0 USDT</span></p>
   </section>
 
+<!-- Staking Section -->
+<section id="staking-section" class="form">
+  <h3>Stake Your Funds</h3>
+
+  <label for="staking-plan">Choose Staking Plan:</label>
+  <select id="staking-plan">
+    <option value="flexible">Flexible (APY: 8%)</option>
+    <option value="locked">Locked (APY: 12%)</option>
+    <option value="high-yield">High-Yield (APY: 20%)</option>
+  </select>
+
+  <label for="staking-amount">Enter Amount to Stake (USDT):</label>
+  <input type="number" id="staking-amount" placeholder="Enter amount to stake" />
+
+  <button onclick="submitStaking()">Stake Now</button>
+
+  <!-- Staking Rewards Tracker -->
+  <h4>Your Active Stakes</h4>
+  <div id="active-stakes-list">
+    <!-- User stakes will show up here -->
+  </div>
+</section>
+
+<!-- Staking Rewards Section -->
+<section id="staking-rewards-section" class="form">
+  <h3>Your Staking Rewards</h3>
+  <p id="rewards-summary">Loading your rewards...</p>
+  <button onclick="claimRewards()">Claim Rewards</button>
+</section>
+
+
   <!-- Transaction History -->
   <section id="transaction-history-section" class="form">
     <h3>Transaction History</h3>
