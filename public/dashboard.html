@@ -2,58 +2,315 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    /* Keep your original styles here */
     body {
-      background: white;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 10px 20px;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .header-left h2 {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 20px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .deposit-btn {
+      background-color: #ff914d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .deposit-btn:hover {
+      background-color: #ff7a26;
+    }
+
+    .dropbtn {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #ffffff;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      z-index: 999;
+      min-width: 250px;
+      padding: 12px;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-info p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .dropdown-action-btn {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+      border-radius: 6px;
+    }
+
+    .dropdown-action-btn:hover {
+      background-color: #f0f8ff;
     }
 
     .logout-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      padding: 8px 16px;
-      background-color: #1e7f5c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
+      color: #b00020;
     }
 
-    .logout-btn:hover {
-      background-color: #145f45;
+    .form {
+      padding: 20px;
+      background-color: white;
+      margin: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: white;
+      border-top: 1px solid #ccc;
+      padding: 8px 0;
+    }
+
+    .footer-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #333;
+      text-align: center;
+    }
+
+    .footer-btn i {
+      font-size: 20px;
+    }
+
+    #greeting {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+    }
+
+    .highlight-animate {
+      font-weight: bold;
+      color: #007bff;
+      transition: all 0.3s ease;
+    }
+
+    /* Modal */
+    #deposit-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #deposit-modal .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+    }
+
+    #deposit-modal input,
+    #deposit-modal select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    #deposit-modal button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <!-- Add logout button -->
-  <button class="logout-btn" onclick="logout()">Logout</button>
 
-  <!-- Your dashboard content goes here -->
-  <h1>Welcome to Moneyard Dashboard</h1>
-  <p>Your staking and earnings summary appears here.</p>
+  <!-- HEADER -->
+  <div class="top-header">
+    <div class="header-left">
+      <h2>MONEYARD DASHBOARD</h2>
+    </div>
+    <div class="header-right">
+      <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
+      <div class="dropdown">
+        <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
+        <div class="dropdown-content">
+          <div class="dropdown-info">
+            <p><strong>Balance:</strong> <span id="dd-balance">$0.00</span></p>
+            <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
+          </div>
+          <hr />
+          <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button>
+          <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
+          <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
+          <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
+          <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
+          <button class="dropdown-action-btn" onclick="openHelp()">Get Help</button>
+          <hr />
+          <button class="dropdown-action-btn logout-btn" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- DEPOSIT MODAL -->
+  <div id="deposit-modal" class="modal">
+    <div class="modal-content">
+      <h3>Deposit Funds</h3>
+      <label>Amount (USDT):</label>
+      <input type="number" id="deposit-amount" placeholder="Enter amount" />
+      <label>Payment Method:</label>
+      <select id="deposit-method" onchange="updateAddressAndQR()">
+        <option value="TRC20">USDT - TRC20 (Tron)</option>
+        <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
+      </select>
+
+      <div id="address-section" class="qr-section">
+        <p><strong>Deposit Address:</strong></p>
+        <p id="wallet-address" class="wallet-address">Please select a network</p>
+        <button id="copy-btn" class="copy-btn" onclick="copyAddress()">Copy Address</button>
+        <div id="qr-display" class="qr-section">
+          <img id="qr-image" src="" alt="QR Code" />
+        </div>
+      </div>
+
+      <label>Transaction ID (optional):</label>
+      <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+      <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
+      <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
+      <p id="deposit-response" style="margin-top:10px;"></p>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
   <script>
-    function logout() {
-      // Clear any local storage or tokens if used
-      localStorage.clear();
-
-      // Optional: Clear cookies or sessionStorage if used
-      sessionStorage.clear();
-
-      // Redirect to homepage
-      window.location.href = "index.html";
+    function openDeposit() {
+      document.getElementById("deposit-modal").style.display = "flex";
     }
 
-    // Optional: Block access if user is not logged in
-    // if (!localStorage.getItem("user")) {
-    //   window.location.href = "index.html";
-    // }
+    function closeDeposit() {
+      document.getElementById("deposit-modal").style.display = "none";
+      document.getElementById("deposit-response").textContent = "";
+    }
+
+    function updateAddressAndQR() {
+      var method = document.getElementById("deposit-method").value;
+      var address = "";
+      var qrCodeUrl = "";
+
+      if (method === "TRC20") {
+        address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
+        qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
+      } else if (method === "BEP20") {
+        address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+        qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
+      }
+
+      document.getElementById("wallet-address").textContent = address;
+      document.getElementById("qr-image").src = qrCodeUrl;
+    }
+
+    function copyAddress() {
+      var address = document.getElementById("wallet-address").textContent;
+      navigator.clipboard.writeText(address);
+      alert("Address copied to clipboard");
+    }
+
+    function submitDeposit() {
+      var amount = document.getElementById("deposit-amount").value;
+      var txid = document.getElementById("deposit-txid").value;
+
+      if (amount <= 0) {
+        alert("Please enter a valid deposit amount.");
+        return;
+      }
+
+      document.getElementById("deposit-response").textContent = `Deposit of ${amount} USDT submitted. TxID: ${txid || "Not provided"}.`;
+      closeDeposit();
+    }
+
+    function logout() {
+  if (confirm("Are you sure you want to log out?")) {
+    // Clear login data
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    // Redirect to homepage
+    window.location.href = "index.html";
+  }
   </script>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <button class="footer-btn" onclick="openDeposit()">
+      <i class="fas fa-arrow-down"></i> Deposit
+    </button>
+    <button class="footer-btn">
+      <i class="fas fa-arrow-up"></i> Withdraw
+    </button>
+    <button class="footer-btn">
+      <i class="fas fa-exchange-alt"></i> Transfer
+    </button>
+  </div>
 </body>
 </html>
