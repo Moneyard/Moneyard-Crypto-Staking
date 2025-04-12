@@ -262,90 +262,47 @@
     }
 
     function openDeposit() {
-      alert("Deposit system coming soon or open modal!");
+      document.getElementById("deposit-modal").style.display = "flex";
     }
 
-    function openBonuses() {
-      alert("Open Bonuses Section");
+    function closeDeposit() {
+      document.getElementById("deposit-modal").style.display = "none";
+      document.getElementById("deposit-response").textContent = "";
     }
 
-    function openNotifications() {
-      alert("Show Notifications");
-    }
+    function submitDeposit() {
+      const amount = document.getElementById("deposit-amount").value;
+      const method = document.getElementById("deposit-method").value;
+      const txid = document.getElementById("deposit-txid").value;
 
-    function openReferral() {
-      alert("Open Referral Info");
-    }
-
-    function openSettings() {
-      alert("Open Account Settings");
-    }
-
-    function openHelp() {
-      alert("Open Help Center");
-    }
-
-    // Set greeting message
-    window.addEventListener("DOMContentLoaded", () => {
-      const hour = new Date().getHours();
-      let greeting = "Welcome!";
-      if (hour >= 5 && hour < 12) {
-        greeting = "Good Morning!";
-      } else if (hour >= 12 && hour < 18) {
-        greeting = "Good Afternoon!";
-      } else {
-        greeting = "Good Evening!";
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid deposit amount.");
+        return;
       }
-      document.getElementById("greeting").textContent = greeting;
 
-      document.getElementById("dd-balance").textContent = "$200.00";
-      document.getElementById("dd-available").textContent = "150 USDT";
-      document.getElementById("total-referrals").textContent = "5";
-      document.getElementById("referral-earnings").textContent = "12.5 USDT";
-    });
-  function openDeposit() {
-  document.getElementById("deposit-modal").style.display = "flex";
-}
-
-function closeDeposit() {
-  document.getElementById("deposit-modal").style.display = "none";
-  document.getElementById("deposit-response").textContent = "";
-}
-
-function submitDeposit() {
-  const amount = document.getElementById("deposit-amount").value;
-  const method = document.getElementById("deposit-method").value;
-  const txid = document.getElementById("deposit-txid").value;
-
-  if (!amount || amount <= 0) {
-    alert("Please enter a valid deposit amount.");
-    return;
-  }
-
-  fetch("/api/deposit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify({ amount, method, txid }),
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      document.getElementById("deposit-response").textContent = "Deposit submitted! Awaiting confirmation.";
-      document.getElementById("deposit-response").style.color = "green";
-    } else {
-      document.getElementById("deposit-response").textContent = data.message || "Deposit failed.";
-      document.getElementById("deposit-response").style.color = "red";
+      fetch("/api/deposit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount,
+          method,
+          txid
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("deposit-response").textContent = "Deposit successfully submitted!";
+        } else {
+          document.getElementById("deposit-response").textContent = "Error submitting deposit. Please try again.";
+        }
+      })
+      .catch(() => {
+        document.getElementById("deposit-response").textContent = "Error submitting deposit. Please try again.";
+      });
     }
-  })
-  .catch(err => {
-    document.getElementById("deposit-response").textContent = "Error submitting deposit.";
-    document.getElementById("deposit-response").style.color = "red";
-  });
-}
-
-</script>
+  </script>
 </body>
 </html>
