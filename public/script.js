@@ -23,7 +23,7 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
     if (data.success) {
       alert('Deposit successful and balance updated!');
       closeDepositModal();
-      loadUserBalance(); // reload balance
+      loadUserBalance(); // reload balance after deposit
     } else {
       alert(data.error || 'Deposit failed');
     }
@@ -34,26 +34,32 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
 
 // Function to open the Deposit modal when the Deposit button is clicked
 document.getElementById('depositButton')?.addEventListener('click', () => {
-  document.getElementById('depositModal').style.display = 'block';
+  const modal = document.getElementById('depositModal');
+  if (modal) {
+    modal.style.display = 'block';
+  }
 });
 
 // Close the Deposit modal when the close button is clicked
 document.getElementById('closeDepositModal')?.addEventListener('click', () => {
-  document.getElementById('depositModal').style.display = 'none';
+  closeDepositModal();
 });
+
+// Function to close the Deposit Modal
+function closeDepositModal() {
+  const modal = document.getElementById('depositModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
 
 // Function to close the modal if the user clicks outside it
 window.addEventListener('click', (event) => {
   const modal = document.getElementById('depositModal');
   if (event.target === modal) {
-    modal.style.display = 'none';
+    closeDepositModal();
   }
 });
-
-// Function to close the Deposit Modal
-function closeDepositModal() {
-  document.getElementById('depositModal').style.display = 'none';
-}
 
 // ========== DOMContentLoaded LOGIC ==========
 document.addEventListener('DOMContentLoaded', () => {
@@ -231,52 +237,4 @@ async function unstake(stakeId) {
   } else {
     alert(data.message || "Unstake failed.");
   }
-}
-
-function handleForgotPassword() {
-  const email = document.getElementById("email").value;
-  if (!email) {
-    alert("Enter your email to receive reset link.");
-    return;
-  }
-
-  fetch("/api/forgot-password", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  })
-    .then(res => res.json())
-    .then(data => alert(data.message || "Reset link sent."))
-    .catch(() => alert("Error sending reset link."));
-}
-
-function toggleForms(type) {
-  const signup = document.getElementById("signup-form");
-  const login = document.getElementById("login-form");
-  signup.style.display = type === 'login' ? 'none' : 'block';
-  login.style.display = type === 'login' ? 'block' : 'none';
-}
-
-function loadUserSummary() {
-  const userId = localStorage.getItem("userId");
-  if (!userId) return;
-
-  fetch(`/user-summary?userId=${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("summary-username").innerText = localStorage.getItem("email");
-      document.getElementById("summary-total").innerText = `${data.totalDeposit.toFixed(2)} USDT`;
-      document.getElementById("summary-balance").innerText = `${data.balance.toFixed(2)} USDT`;
-    });
-}
-
-function calculateEarnings() {
-  const amount = parseFloat(document.getElementById("deposit-input").value);
-  if (!amount || amount < 15 || amount > 1000) {
-    alert("Enter an amount between 15 and 1000 USDT.");
-    return;
-  }
-  const daily = amount * 0.08;
-  document.getElementById("calculated-earnings").innerText =
-    `Daily earnings: ${daily.toFixed(2)} USDT`;
 }
