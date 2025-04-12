@@ -56,11 +56,12 @@
       margin-top: 2rem;
     }
 
-    .stake-form input, .stake-form button {
+    .stake-form input, .stake-form select, .stake-form button {
       display: block;
       width: 100%;
       padding: 0.5rem;
       margin: 0.5rem 0;
+      font-size: 1rem;
     }
 
     #active-stakes {
@@ -88,41 +89,50 @@
 
   <div class="stake-section">
     <h2>Select a Staking Plan</h2>
-    <div id="stake-plans">Loading staking plans...</div>
-
-    <div class="stake-form">
-      <form id="stakeForm">
-        <input type="hidden" id="selectedPlanName" required />
-        <p id="selectedPlanDetails"></p>
-        <input type="number" id="stakeAmount" placeholder="Amount to Stake (USDT)" min="10" required />
-        <button type="submit">Stake Now</button>
-      </form>
-<!-- Staking Form -->
-<form id="stake-form">
-  <label for="stake-plan">Choose Stake Plan</label>
-  <select id="stake-plan" required>
-    <option value="Flexible">Flexible</option>
-    <option value="Locked">Locked</option>
-    <option value="High-Yield">High-Yield</option>
-  </select>
-
-  <label for="stake-amount">Amount to Stake</label>
-  <input type="number" id="stake-amount" placeholder="Enter amount to stake" required>
-
-  <button type="submit">Stake Funds</button>
-</form>
-
-<div id="stake-result"></div>
-
+    <div id="stake-plans">
+      <div class="stake-plan-card">
+        <h3>Flexible Plan</h3>
+        <p>Withdraw anytime, 5% APY</p>
+      </div>
+      <div class="stake-plan-card">
+        <h3>Locked Plan</h3>
+        <p>30 days lock, 10% APY</p>
+      </div>
+      <div class="stake-plan-card">
+        <h3>High-Yield Plan</h3>
+        <p>90 days lock, 20% APY</p>
+      </div>
     </div>
 
-<!-- Your Active Stakes Section -->
-<div class="active-stakes">
-  <h2>Your Active Stakes</h2>
-  <div id="active-stakes">
-    <p>Loading...</p>
+    <!-- Staking Form -->
+    <div class="stake-form">
+      <form id="stakeForm">
+        <label for="stake-plan">Choose Stake Plan</label>
+        <select id="stake-plan" required>
+          <option value="Flexible">Flexible</option>
+          <option value="Locked">Locked</option>
+          <option value="High-Yield">High-Yield</option>
+        </select>
+
+        <p id="selectedPlanDetails"></p>
+
+        <label for="stakeAmount">Amount to Stake</label>
+        <input type="number" id="stakeAmount" placeholder="Amount to Stake (USDT)" min="10" required />
+
+        <button type="submit">Stake Now</button>
+      </form>
+
+      <div id="stake-result"></div>
+    </div>
+
+    <!-- Your Active Stakes Section -->
+    <div class="active-stakes">
+      <h2>Your Active Stakes</h2>
+      <div id="active-stakes">
+        <p>Loading...</p>
+      </div>
+    </div>
   </div>
-</div>
 
   <script src="script.js"></script>
 </body>
