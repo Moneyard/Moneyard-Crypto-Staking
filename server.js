@@ -136,6 +136,24 @@ app.post('/api/deposit', (req, res) => {
     );
 });
 
+// Confirm deposit and auto-update user balance
+app.post('/api/confirm-deposit', (req, res) => {
+    const { depositId } = req.body;
+
+    db.get('SELECT * FROM transactions WHERE id = ? AND status = "pending"', [depositId], (err, deposit) => {
+        if (err || !deposit) return res.status(404).json({ error: 'Deposit not found or already confirmed' });
+
+        db.run('UPDATE transactions SET status = "confirmed" WHERE id = ?', [depositId], (err) => {
+            if (err) return res.status(500).json({ error: 'Failed to update deposit status' });
+
+            db.run('UPDATE users SET balance = balance + ? WHERE id = ?', [deposit.amount, deposit.user_id], (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update balance' });
+                res.json({ success: true, message: 'Deposit confirmed and balance updated' });
+            });
+        });
+    });
+});
+
 // View user deposit history
 app.get('/api/deposits', (req, res) => {
     const userId = req.query.userId;
