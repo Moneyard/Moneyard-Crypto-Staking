@@ -168,15 +168,6 @@ app.get('/api/stake-plans', (req, res) => {
   ];
   res.json(plans);
 });
-app.get('/api/active-stakes', authenticateToken, (req, res) => {
-  const userId = req.user.id;
-  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
-    if (err) {
-      return res.json({ success: false, message: 'Database error' });
-    }
-    res.json({ success: true, stakes: rows });
-  });
-});
 
 // Unstake (delete entry)
 app.post('/api/unstake', (req, res) => {
