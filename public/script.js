@@ -1,219 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const stakeForm = document.getElementById('stakeForm');
-  const planDropdown = document.getElementById('stake-plan');
-  const stakeAmountInput = document.getElementById('stake-amount');
-  const stakeResult = document.getElementById('stake-result');
-  const activeStakesContainer = document.getElementById('active-stakes');
-
-  // Handle staking form submit
-  stakeForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const plan = planDropdown.value;
-    const amount = parseFloat(stakeAmountInput.value);
-
-    if (!plan || isNaN(amount) || amount < 10) {
-      stakeResult.textContent = "Please enter a valid amount (min $10) and select a plan.";
-      stakeResult.style.color = "red";
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/stake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, amount })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        stakeResult.textContent = "Staking successful!";
-        stakeResult.style.color = "green";
-        stakeForm.reset();
-        loadActiveStakes();
-      } else {
-        stakeResult.textContent = data.message || "Failed to stake.";
-        stakeResult.style.color = "red";
-      }
-    } catch (err) {
-      stakeResult.textContent = "Network error. Please try again.";
-      stakeResult.style.color = "red";
-    }
-  });
-
-  // Fetch active stakes
-  async function loadActiveStakes() {
-    activeStakesContainer.innerHTML = "<p>Loading...</p>";
-
-    try {
-      const res = await fetch('/api/active-stakes');
-      const stakes = await res.json();
-
-      if (res.ok && Array.isArray(stakes)) {
-        if (stakes.length === 0) {
-          activeStakesContainer.innerHTML = "<p>No active stakes yet.</p>";
-          return;
-        }
-
-        activeStakesContainer.innerHTML = "";
-        stakes.forEach(stake => {
-          const stakeDiv = document.createElement('div');
-          stakeDiv.className = "stake-item";
-          stakeDiv.innerHTML = `
-            <p><strong>Plan:</strong> ${stake.plan}</p>
-            <p><strong>Amount:</strong> ${stake.amount} USDT</p>
-            <p><strong>Start Date:</strong> ${new Date(stake.startDate).toLocaleDateString()}</p>
-            <p><strong>Status:</strong> ${stake.status}</p>
-            <button onclick="unstake('${stake.id}')">Unstake</button>
-          `;
-          activeStakesContainer.appendChild(stakeDiv);
-        });
-      } else {
-        activeStakesContainer.innerHTML = "<p>Failed to load stakes.</p>";
-      }
-    } catch (err) {
-      activeStakesContainer.innerHTML = "<p>Error loading stakes.</p>";
-    }
-  }
-
-  // Unstake a plan
-  window.unstake = async function (stakeId) {
-    if (!confirm("Are you sure you want to unstake this plan?")) return;
-
-    try {
-      const res = await fetch(`/api/unstake/${stakeId}`, {
-        method: 'POST'
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        alert("Successfully unstaked.");
-        loadActiveStakes();
-      } else {
-        alert(result.message || "Unstake failed.");
-      }
-    } catch (err) {
-      alert("Network error.");
-    }
-  };
-
-  // Initial load
-  loadActiveStakes();
-});
-// Toggle between signup and login forms
-function toggleForms(type) {
-  const signup = document.getElementById('signup-form');
-  const login = document.getElementById('login-form');
-  if (type === 'login') {
-    signup.style.display = 'none';
-    login.style.display = 'block';
-  } else {
-    signup.style.display = 'block';
-    login.style.display = 'none';
-  }
-}
-
-// Handle forgot password
-function handleForgotPassword() {
-  const email = document.getElementById('email').value;
-  if (!email) {
-    alert('Please enter your email first so we can send the reset link.');
-    return;
-  }
-
-  fetch('/api/forgot-password', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || 'If this email exists, a reset link has been sent.');
-    })
-    .catch(() => alert('Failed to send reset link. Please try again.'));
-}
-
-// Calculate earnings (8% daily)
-function calculateEarnings() {
-  const depositAmount = parseFloat(document.getElementById('deposit-input').value);
-  if (!depositAmount || depositAmount < 15 || depositAmount > 1000) {
-    alert("Please enter a valid deposit amount between 15 and 1000 USDT.");
-    return;
-  }
-  const dailyEarnings = depositAmount * 0.08;
-  document.getElementById('calculated-earnings').innerText =
-    `Your daily earnings are: ${dailyEarnings.toFixed(2)} USDT.`;
-}
-
-// Load user summary
-function loadUserSummary() {
-  const userId = localStorage.getItem('userId');
-  if (!userId) return;
-
-  fetch(`/user-summary?userId=${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('summary-username').innerText = localStorage.getItem('email');
-      document.getElementById('summary-total').innerText = `${data.totalDeposit.toFixed(2)} USDT`;
-      document.getElementById('summary-balance').innerText = `${data.balance.toFixed(2)} USDT`;
-    })
-    .catch(err => {
-      console.error("Error loading summary:", err);
-      alert("Failed to load user summary.");
-    });
-}
-
-// Counter animation
-function animateCounters() {
-  const counters = document.querySelectorAll('.counter');
-  counters.forEach(counter => {
-    const updateCount = () => {
-      const target = +counter.getAttribute('data-target');
-      const count = +counter.innerText;
-      const increment = target / 100;
-
-      if (count < target) {
-        counter.innerText = Math.ceil(count + increment);
-        setTimeout(updateCount, 30);
-      } else {
-        counter.innerText = target;
-      }
-    };
-
-    const counterObserver = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        updateCount();
-        counterObserver.disconnect();
-      }
-    }, { threshold: 1 });
-
-    counterObserver.observe(counter);
-  });
-}
-
-// Navigation handler
-function navigateTo(page) {
-  const pages = {
-    home: 'dashboard.html',
-    referral: 'referral.html',
-    stake: 'stake.html',
-    assets: 'assets.html'
-  };
-  if (pages[page]) window.location.href = pages[page];
-}
-
-// Logout
-function logout() {
-  localStorage.removeItem('userId');
-  localStorage.removeItem('email');
-  window.location.href = "index.html";
-}
-
-// DOMContentLoaded for all setup
-document.addEventListener('DOMContentLoaded', () => {
-  // Animate sections
+  // Load animated sections
   const sections = document.querySelectorAll('.animated-section');
   const sectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -233,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserSummary();
   }
 
-  // Signup form
+  // Signup
   const signupForm = document.getElementById("signupForm");
   if (signupForm) {
     signupForm.addEventListener("submit", async (e) => {
@@ -258,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Login form
+  // Login
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -274,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await res.json();
       if (data.success) {
-        alert("Login successful!");
         localStorage.setItem("userId", data.userId);
         localStorage.setItem("email", email);
         window.location.href = "/dashboard";
@@ -284,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Stake: Load plans
+  // Load stake plans
   const stakePlansContainer = document.getElementById("stake-plans");
   if (stakePlansContainer) {
     fetch("/api/stake-plans")
@@ -302,13 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
           stakePlansContainer.appendChild(card);
         });
-      })
-      .catch(err => {
-        console.error("Failed to load stake plans:", err);
       });
   }
 
-  // Stake: Form handler
+  // Staking form
   const stakeForm = document.getElementById("stakeForm");
   if (stakeForm) {
     stakeForm.addEventListener("submit", async (e) => {
@@ -318,272 +100,186 @@ document.addEventListener('DOMContentLoaded', () => {
       const userId = localStorage.getItem("userId");
 
       if (!amount || amount < 10) {
-        alert("Please enter a valid staking amount (min 10 USDT).");
+        alert("Minimum stake is 10 USDT.");
         return;
       }
 
       const res = await fetch("/api/stake", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, amount, planName }),
+        body: JSON.stringify({ userId, plan: planName, amount }),
       });
 
       const data = await res.json();
-      if (data.success) {
+      if (res.ok) {
         alert("Staking successful!");
         stakeForm.reset();
-        loadUserStakes();
+        loadActiveStakes();
       } else {
-        alert(data.error || "Staking failed.");
+        alert(data.message || "Staking failed.");
       }
     });
   }
 
   // Load active stakes
   if (document.getElementById("active-stakes")) {
-    loadUserStakes();
+    loadActiveStakes();
   }
 });
 
-// Stake: Select plan
+// Select a plan
 function selectStakePlan(name, apy, duration) {
   document.getElementById("selectedPlanName").value = name;
-  document.getElementById("selectedPlanDetails").innerText = `${name} Plan - ${apy}% for ${duration} days`;
+  document.getElementById("selectedPlanInfo").innerText =
+    `Selected: ${name} | APY: ${apy}% | Duration: ${duration} days`;
 }
 
-// Stake: Load user stakes
-function loadUserStakes() {
-  const userId = localStorage.getItem("userId");
-  if (!userId) return;
+// Load active stakes
+async function loadActiveStakes() {
+  const userId = localStorage.getItem('userId');
+  const container = document.getElementById("active-stakes");
+  container.innerHTML = "<p>Loading...</p>";
 
-  fetch(`/api/user-stakes?userId=${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("active-stakes");
+  try {
+    const res = await fetch(`/api/active-stakes?userId=${userId}`);
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
       container.innerHTML = "";
-      if (!data.length) {
-        container.innerHTML = "<p>No active stakes found.</p>";
+      if (data.length === 0) {
+        container.innerHTML = "<p>No active stakes yet.</p>";
         return;
       }
+
       data.forEach(stake => {
         const div = document.createElement("div");
         div.className = "stake-item";
         div.innerHTML = `
-          <p>Plan: ${stake.plan}</p>
-          <p>Amount: ${stake.amount} USDT</p>
-          <p>Start: ${new Date(stake.startDate).toLocaleDateString()}</p>
-          <p>Ends: ${new Date(stake.endDate).toLocaleDateString()}</p>
-          <p>Earnings: ${stake.earnings.toFixed(2)} USDT</p>
-          <button onclick="unstake(${stake.id})">Unstake</button>
+          <p><strong>Plan:</strong> ${stake.plan}</p>
+          <p><strong>Amount:</strong> ${stake.amount} USDT</p>
+          <p><strong>Start:</strong> ${new Date(stake.startDate).toLocaleDateString()}</p>
+          <p><strong>Status:</strong> ${stake.status}</p>
+          <button onclick="unstake('${stake.id}')">Unstake</button>
         `;
         container.appendChild(div);
       });
-    })
-    .catch(err => {
-      console.error("Failed to load stakes:", err);
-    });
-}
-
-// Stake: Unstake
-function unstake(stakeId) {
-  if (!confirm("Are you sure you want to unstake?")) return;
-
-  fetch(`/api/unstake/${stakeId}`, { method: "POST" })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert("Unstaked successfully!");
-        loadUserStakes();
-      } else {
-        alert(data.error || "Unstake failed.");
-      }
-    })
-    .catch(() => alert("Unstake request failed."));
-}
-document.getElementById('stake-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
-
-  const plan = document.getElementById('stake-plan').value;
-  const amount = parseFloat(document.getElementById('stake-amount').value);
-  const userId = localStorage.getItem('userId');
-
-  if (!userId) {
-    alert('Please log in to stake funds.');
-    return;
-  }
-
-  if (!amount || amount < 10) {
-    alert('Please enter a valid amount greater than 10 USDT.');
-    return;
-  }
-
-  const response = await fetch('/api/stake', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, plan, amount })
-  });
-
-  const data = await response.json();
-
-  if (data.success) {
-    alert('Stake successful!');
-    document.getElementById('stake-form').reset();
-    document.getElementById('stake-result').innerText = `You have successfully staked ${amount} USDT in the ${plan} plan.`;
-  } else {
-    alert(data.error || 'Stake failed.');
-  }
-});
-async function loadUserStakes() {
-  const userId = localStorage.getItem('userId');
-  if (!userId) {
-    alert('Please log in to view your stakes.');
-    return;
-  }
-
-  const response = await fetch(`/api/user-stakes?userId=${userId}`);
-  const data = await response.json();
-
-  if (data.success) {
-    const stakesContainer = document.getElementById('user-stakes');
-    stakesContainer.innerHTML = '';
-    data.stakes.forEach(stake => {
-      const stakeElement = document.createElement('div');
-      stakeElement.classList.add('stake-item');
-      stakeElement.innerHTML = `
-        <p>Plan: ${stake.plan}</p>
-        <p>Amount: ${stake.amount} USDT</p>
-        <p>APY: ${stake.apy}%</p>
-        <p>Staked on: ${new Date(stake.createdAt).toLocaleString()}</p>
-        <button onclick="unstake(${stake.id})">Unstake</button>
-      `;
-      stakesContainer.appendChild(stakeElement);
-    });
-  } else {
-    alert('Failed to load stakes.');
-  }
-}
-
-// Function to handle unstaking
-async function unstake(stakeId) {
-  const userId = localStorage.getItem('userId');
-  if (!userId) {
-    alert('Please log in to unstake.');
-    return;
-  }
-
-  const response = await fetch('/api/unstake', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stakeId, userId })
-  });
-
-  const data = await response.json();
-
-  if (data.success) {
-    alert('Unstake successful!');
-    loadUserStakes(); // Reload user stakes after unstaking
-  } else {
-    alert(data.error || 'Failed to unstake.');
-  }
-}
-// Stake function
-function stake(plan) {
-  const stakeAmount = document.getElementById(`${plan}-stake`).value;
-  if (!stakeAmount || parseFloat(stakeAmount) < 15) {
-    alert("Please enter a valid stake amount (minimum 15 USDT).");
-    return;
-  }
-
-  fetch(`/api/stake/${plan}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ amount: parseFloat(stakeAmount) })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert("Staking successful!");
     } else {
-      alert(data.error || "Staking failed.");
+      container.innerHTML = "<p>Failed to load stakes.</p>";
     }
-  })
-  .catch(err => {
-    console.error("Error staking:", err);
-    alert("Error staking. Please try again.");
-  });
+  } catch (err) {
+    container.innerHTML = "<p>Error loading stakes.</p>";
+  }
 }
-// Function to load and display the user's stakes
-async function loadUserStakes() {
-  const userId = localStorage.getItem('userId'); // Assuming user ID is stored in localStorage
-  if (!userId) {
-    alert('Please log in to view your stakes.');
+
+// Unstake handler
+async function unstake(stakeId) {
+  if (!confirm("Unstake this plan?")) return;
+
+  const res = await fetch(`/api/unstake/${stakeId}`, { method: "POST" });
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("Unstaked successfully.");
+    loadActiveStakes();
+  } else {
+    alert(data.message || "Unstake failed.");
+  }
+}
+
+// Forgot password
+function handleForgotPassword() {
+  const email = document.getElementById("email").value;
+  if (!email) {
+    alert("Enter your email to receive reset link.");
     return;
   }
 
-  const response = await fetch(`/api/user-stakes?userId=${userId}`);
-  const data = await response.json();
-
-  if (data.success) {
-    const stakesContainer = document.getElementById('stakes-list');
-    stakesContainer.innerHTML = ''; // Clear existing stakes
-
-    if (data.stakes.length === 0) {
-      stakesContainer.innerHTML = '<p>You have no active stakes.</p>';
-      return;
-    }
-
-    // Loop through stakes and create a list item for each one
-    data.stakes.forEach(stake => {
-      const stakeElement = document.createElement('div');
-      stakeElement.classList.add('stake-item');
-      stakeElement.innerHTML = `
-        <p><strong>Plan:</strong> ${stake.plan}</p>
-        <p><strong>Amount:</strong> ${stake.amount} USDT</p>
-        <p><strong>APY:</strong> ${stake.apy}%</p>
-        <p><strong>Staked On:</strong> ${new Date(stake.createdAt).toLocaleString()}</p>
-        <button onclick="unstake(${stake.id})">Unstake</button>
-      `;
-      stakesContainer.appendChild(stakeElement);
-    });
-  } else {
-    alert('Failed to load stakes.');
-  }
+  fetch("/api/forgot-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  })
+    .then(res => res.json())
+    .then(data => alert(data.message || "Reset link sent."))
+    .catch(() => alert("Error sending reset link."));
 }
-// Load user's stakes when the page loads
-window.addEventListener('DOMContentLoaded', (event) => {
-  loadUserStakes();
-});
-// Load active stakes when the page is loaded
-function loadActiveStakes() {
-  const userId = localStorage.getItem('userId');
+
+// Toggle forms
+function toggleForms(type) {
+  const signup = document.getElementById("signup-form");
+  const login = document.getElementById("login-form");
+  signup.style.display = type === 'login' ? 'none' : 'block';
+  login.style.display = type === 'login' ? 'block' : 'none';
+}
+
+// Load user summary
+function loadUserSummary() {
+  const userId = localStorage.getItem("userId");
   if (!userId) return;
 
-  fetch(`/api/active-stakes?userId=${userId}`)
+  fetch(`/user-summary?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
-      const activeStakesContainer = document.getElementById('active-stakes');
-      if (data.stakes && data.stakes.length > 0) {
-        const stakesList = data.stakes.map(stake => {
-          return `<div class="stake-item">
-                    <p>Plan: ${stake.plan}</p>
-                    <p>Amount: ${stake.amount} USDT</p>
-                    <p>APY: ${stake.apy}%</p>
-                    <p>Start Date: ${new Date(stake.startDate).toLocaleDateString()}</p>
-                  </div>`;
-        }).join('');
-        activeStakesContainer.innerHTML = stakesList;
-      } else {
-        activeStakesContainer.innerHTML = "<p>You have no active stakes.</p>";
-      }
-    })
-    .catch(err => {
-      console.error("Error loading active stakes:", err);
-      document.getElementById('active-stakes').innerHTML = "<p>Failed to load active stakes.</p>";
+      document.getElementById("summary-username").innerText = localStorage.getItem("email");
+      document.getElementById("summary-total").innerText = `${data.totalDeposit.toFixed(2)} USDT`;
+      document.getElementById("summary-balance").innerText = `${data.balance.toFixed(2)} USDT`;
     });
 }
 
-// Call the loadActiveStakes function when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-  // Load active stakes
-  loadActiveStakes();
-});
+// Earnings calculator
+function calculateEarnings() {
+  const amount = parseFloat(document.getElementById("deposit-input").value);
+  if (!amount || amount < 15 || amount > 1000) {
+    alert("Enter an amount between 15 and 1000 USDT.");
+    return;
+  }
+  const daily = amount * 0.08;
+  document.getElementById("calculated-earnings").innerText =
+    `Daily earnings: ${daily.toFixed(2)} USDT`;
+}
+
+// Counter animation
+function animateCounters() {
+  const counters = document.querySelectorAll(".counter");
+  counters.forEach(counter => {
+    const update = () => {
+      const target = +counter.getAttribute("data-target");
+      const count = +counter.innerText;
+      const increment = target / 100;
+
+      if (count < target) {
+        counter.innerText = Math.ceil(count + increment);
+        setTimeout(update, 30);
+      } else {
+        counter.innerText = target;
+      }
+    };
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        update();
+        observer.disconnect();
+      }
+    }, { threshold: 1 });
+
+    observer.observe(counter);
+  });
+}
+
+// Navigation
+function navigateTo(page) {
+  const pages = {
+    home: "dashboard.html",
+    referral: "referral.html",
+    stake: "stake.html",
+    assets: "assets.html",
+  };
+  if (pages[page]) window.location.href = pages[page];
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem("userId");
+  localStorage.removeItem("email");
+  window.location.href = "index.html";
+}
