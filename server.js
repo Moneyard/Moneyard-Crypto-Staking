@@ -139,6 +139,19 @@ app.post('/api/stake', (req, res) => {
   );
 });
 
+app.post('/api/stake', (req, res) => {
+  const { userId, plan, amount } = req.body;
+  const apy = plan === 'Flexible' ? 10 : plan === 'Locked' ? 20 : 30; // Example APY
+
+  db.run(`
+    INSERT INTO stakes (userId, plan, amount, apy)
+    VALUES (?, ?, ?, ?)`, [userId, plan, amount, apy], function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Staking failed' });
+      }
+      res.json({ success: true, stakeId: this.lastID });
+  });
+});
 // View user stakes
 app.get('/api/user-stakes', (req, res) => {
   const userId = req.query.userId;
@@ -188,15 +201,7 @@ app.get('/api/user-stakes', (req, res) => {
     res.json({ success: true, stakes: rows });
   });
 });
-app.get('/api/active-stakes', authenticateToken, (req, res) => {
-  const userId = req.user.id;
-  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
-    if (err) {
-      return res.json({ success: false, message: 'Database error' });
-    }
-    res.json({ success: true, stakes: rows });
-  });
-});
+
 app.post('/api/unstake', (req, res) => {
   const { stakeId, userId } = req.body;
 
