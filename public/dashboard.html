@@ -59,14 +59,6 @@
     <p id="calculated-earnings"></p>
   </section>
 
-<!-- User's Active Stakes Section -->
-<div id="user-stakes">
-  <h2>Your Active Stakes</h2>
-  <div id="stakes-list">
-    <!-- User's stakes will appear here -->
-  </div>
-</div>
-
   <!-- Transaction History -->
   <section id="transaction-history-section" class="form">
     <h3>Transaction History</h3>
@@ -92,29 +84,26 @@
   <div class="bottom-nav">
     <button class="nav-btn" onclick="navigateTo('home')">Home</button>
     <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
-    <button class="nav-btn active" onclick="navigateTo('stake')">Stake</button>
-    <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
+    <button class="nav-btn active" onclick="navigateTo('assets')">Assets</button>
   </div>
-<style>
-  body {
-    background-color: #FFA500; /* Warm orange */
-  }
-</style>
+
+  <style>
+    body {
+      background-color: #FFA500; /* Warm orange */
+    }
+  </style>
 
   <script>
     function navigateTo(page) {
       switch(page) {
         case 'home':
-          window.location.href = 'index.html'; // Redirects to index.html
+          window.location.href = 'index.html';
           break;
         case 'referral':
-          window.location.href = 'referral.html'; // Adjust with your referral page path
-          break;
-        case 'stake':
-          window.location.href = 'stake.html'; // Adjust with your stake page path
+          window.location.href = 'referral.html';
           break;
         case 'assets':
-          window.location.href = 'assets.html'; // Adjust with your assets page path
+          window.location.href = 'assets.html';
           break;
         default:
           console.log("Invalid page");
