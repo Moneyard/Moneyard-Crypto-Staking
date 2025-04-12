@@ -139,18 +139,202 @@
     <p id="microInvestingValue">$0.00</p>
   </div>
 
-!-- FOOTER -->
-  <div class="footer">
-    <button class="footer-btn" onclick="openDeposit()">
-      <i class="fas fa-arrow-down"></i> Deposit
-    </button>
-    <button class="footer-btn">
-      <i class="fas fa-arrow-up"></i> Withdraw
-    </button>
-    <button class="footer-btn">
-      <i class="fas fa-exchange-alt"></i> Transfer
-    </button>
+<!-- DEPOSIT MODAL -->
+<div id="deposit-modal" class="modal">
+  <div class="modal-content">
+    <h3>Deposit Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="deposit-amount" placeholder="Enter amount" />
+    <label>Payment Method:</label>
+    <select id="deposit-method" onchange="updateAddressAndQR()">
+      <option value="TRC20">USDT - TRC20 (Tron)</option>
+      <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
+    </select>
+
+    <div id="address-section" class="qr-section">
+      <p><strong>Deposit Address:</strong></p>
+      <p id="wallet-address" class="wallet-address">Please select a network</p>
+      <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+      <div class="qr-section">
+        <img id="qr-image" src="" alt="QR Code" />
+      </div>
+    </div>
+
+    <label>Transaction ID (optional):</label>
+    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+    <button class="modal-submit" onclick="submitDeposit()">Submit</button>
+    <button class="modal-cancel" onclick="closeDeposit()">Cancel</button>
+    <p id="deposit-response"></p>
   </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div id="withdraw-modal" class="modal">
+  <div class="modal-content">
+    <h3>Withdraw Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="withdraw-amount" placeholder="Enter amount" />
+    <label>Destination Address:</label>
+    <input type="text" id="withdraw-address" placeholder="Enter your wallet address" />
+    <label>Password:</label>
+    <input type="password" id="withdraw-password" placeholder="Enter password to confirm" />
+    <button class="modal-submit" onclick="submitWithdraw()">Withdraw</button>
+    <button class="modal-cancel" onclick="closeWithdraw()">Cancel</button>
+    <p id="withdraw-response"></p>
+  </div>
+</div>
+
+<!-- TRANSFER MODAL -->
+<div id="transfer-modal" class="modal">
+  <div class="modal-content">
+    <h3>Transfer Funds</h3>
+    <label>Recipient Email:</label>
+    <input type="email" id="transfer-email" placeholder="Enter recipient email" />
+    <label>Amount (USDT):</label>
+    <input type="number" id="transfer-amount" placeholder="Enter amount" />
+    <label>Password:</label>
+    <input type="password" id="transfer-password" placeholder="Enter password to confirm" />
+    <button class="modal-submit" onclick="submitTransfer()">Transfer</button>
+    <button class="modal-cancel" onclick="closeTransfer()">Cancel</button>
+    <p id="transfer-response"></p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <button class="footer-btn" onclick="openDeposit()">
+    <i class="fas fa-arrow-down"></i> Deposit
+  </button>
+  <button class="footer-btn" onclick="openWithdraw()">
+    <i class="fas fa-arrow-up"></i> Withdraw
+  </button>
+  <button class="footer-btn" onclick="openTransfer()">
+    <i class="fas fa-exchange-alt"></i> Transfer
+  </button>
+</div>
+
+<!-- SCRIPT -->
+<script>
+  // Open/Close Functions
+  function openDeposit() {
+    document.getElementById("deposit-modal").style.display = "flex";
+  }
+  function closeDeposit() {
+    document.getElementById("deposit-modal").style.display = "none";
+    document.getElementById("deposit-response").textContent = "";
+  }
+
+  function openWithdraw() {
+    document.getElementById("withdraw-modal").style.display = "flex";
+  }
+  function closeWithdraw() {
+    document.getElementById("withdraw-modal").style.display = "none";
+    document.getElementById("withdraw-response").textContent = "";
+  }
+
+  function openTransfer() {
+    document.getElementById("transfer-modal").style.display = "flex";
+  }
+  function closeTransfer() {
+    document.getElementById("transfer-modal").style.display = "none";
+    document.getElementById("transfer-response").textContent = "";
+  }
+
+  // Deposit logic
+  function updateAddressAndQR() {
+    var method = document.getElementById("deposit-method").value;
+    var address = "";
+    var qrCodeUrl = "";
+    if (method === "TRC20") {
+      address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
+    } else {
+      address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+    }
+    qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
+    document.getElementById("wallet-address").textContent = address;
+    document.getElementById("qr-image").src = qrCodeUrl;
+  }
+
+  function copyAddress() {
+    var address = document.getElementById("wallet-address").textContent;
+    navigator.clipboard.writeText(address);
+    alert("Address copied to clipboard");
+  }
+
+  function submitDeposit() {
+    var amount = document.getElementById("deposit-amount").value;
+    var txid = document.getElementById("deposit-txid").value;
+    if (amount <= 0) return alert("Enter a valid amount");
+    document.getElementById("deposit-response").textContent = `Deposit of ${amount} USDT submitted. TxID: ${txid || "N/A"}`;
+    closeDeposit();
+  }
+
+  function submitWithdraw() {
+    var amount = document.getElementById("withdraw-amount").value;
+    var address = document.getElementById("withdraw-address").value;
+    var password = document.getElementById("withdraw-password").value;
+    if (amount <= 0 || !address || !password) return alert("All fields required");
+    document.getElementById("withdraw-response").textContent = `Withdrawal request of ${amount} USDT submitted to ${address}`;
+    closeWithdraw();
+  }
+
+  function submitTransfer() {
+    var email = document.getElementById("transfer-email").value;
+    var amount = document.getElementById("transfer-amount").value;
+    var password = document.getElementById("transfer-password").value;
+    if (!email || amount <= 0 || !password) return alert("All fields required");
+    document.getElementById("transfer-response").textContent = `Transfer of ${amount} USDT sent to ${email}`;
+    closeTransfer();
+  }
+</script>
+
+<!-- STYLES (if not yet included) -->
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center; align-items: center;
+  }
+  .modal-content {
+    background: #fff;
+    padding: 20px; border-radius: 10px;
+    max-width: 400px; width: 90%;
+    text-align: center;
+  }
+  .modal-content input, .modal-content select {
+    width: 100%; padding: 8px; margin: 5px 0;
+    border: 1px solid #ccc; border-radius: 5px;
+  }
+  .modal-submit {
+    background-color: #28a745; color: white;
+    padding: 10px 20px; margin-top: 10px;
+    border: none; border-radius: 5px;
+  }
+  .modal-cancel {
+    background-color: #ccc; color: black;
+    padding: 10px 20px; margin: 10px 10px 0;
+    border: none; border-radius: 5px;
+  }
+  .footer {
+    position: fixed; bottom: 0;
+    width: 100%; background: white;
+    display: flex; justify-content: space-around;
+    padding: 10px 0; border-top: 1px solid #ccc;
+  }
+  .footer-btn {
+    background: #e8f5e9;
+    border: none; padding: 10px 20px;
+    border-radius: 10px; font-weight: bold;
+  }
+  .qr-section img {
+    width: 100px; margin-top: 10px;
+  }
+</style>
+
 </body>
 </html>
 
