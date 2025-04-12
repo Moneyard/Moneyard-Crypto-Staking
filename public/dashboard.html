@@ -5,27 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
       background-color: #fff;
       font-family: sans-serif;
       padding-bottom: 100px;
     }
-    button, .footer-btn, .logout-button {
-      background-color: #28a745 !important;
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      align-items: center;
+    }
+
+    .deposit-btn {
+      background-color: #ff7f3f;
       color: white;
       border: none;
       padding: 10px 20px;
-      margin: 5px;
-      cursor: pointer;
       border-radius: 8px;
       font-weight: bold;
-      transition: all 0.3s ease;
+      cursor: pointer;
     }
-    button:hover, .footer-btn:hover, .logout-button:hover {
-      opacity: 0.9;
-      transform: scale(1.05);
+
+    .user-icon {
+      position: relative;
+      font-size: 26px;
+      color: #333;
+      cursor: pointer;
     }
+
+    .user-menu {
+      display: none;
+      position: absolute;
+      top: 35px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      width: 220px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
+
+    .user-menu.active {
+      display: block;
+    }
+
+    .user-menu div {
+      padding: 12px 15px;
+      border-bottom: 1px solid #f1f1f1;
+      cursor: pointer;
+    }
+
+    .user-menu div:hover {
+      background-color: #f7f7f7;
+    }
+
+    .user-menu div.logout {
+      color: red;
+      font-weight: bold;
+    }
+
     .form {
       background: #f7f7f7;
       border-radius: 10px;
@@ -34,15 +77,18 @@
       max-width: 400px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+
     .highlight-animate {
       font-weight: bold;
       color: #1e7e34;
       animation: countUp 1s ease-out;
     }
+
     @keyframes countUp {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     .footer {
       position: fixed;
       bottom: 0;
@@ -53,189 +99,162 @@
       padding: 10px 0;
       box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
     }
+
     .footer-btn {
       flex: 1;
       margin: 0 5px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 8px;
+      padding: 8px;
+      font-weight: bold;
     }
-<style>
-  .menu-tab {
-    background-color: green;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px 5px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
 
-  .menu-tab:hover {
-    background-color: darkgreen;
-  }
+    .menu-tab {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-  .menu-tab-content {
-    margin: 20px auto;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #fff;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-</style>
-
-<head>
-<!-- Font Awesome CDN for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    .menu-tab-content {
+      margin: 20px auto;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #fff;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Logout -->
-  <div style="text-align: right; padding: 10px;">
-    <button class="logout-button" onclick="logout()">Logout</button>
+<!-- Top Bar -->
+<div class="top-bar">
+  <button class="deposit-btn" onclick="toggleTab('deposit')">Deposit</button>
+  <div class="user-icon" onclick="toggleUserMenu()">
+    <i class="fas fa-user-circle"></i>
+    <div class="user-menu" id="userMenu">
+      <div><strong>Balance:</strong> <span id="summary-balance-top">$0</span></div>
+      <div><strong>Available:</strong> <span id="summary-available-top">0 USDT</span></div>
+      <div onclick="toggleTab('deposit')">Deposit</div>
+      <div>Bonuses</div>
+      <div>Notifications</div>
+      <div onclick="location.href='referral.html'">Referral</div>
+      <div>Account Settings</div>
+      <div>Get Help</div>
+      <div class="logout" onclick="logout()">Logout</div>
+    </div>
   </div>
+</div>
 
-<div style="text-align: center; margin-top: 10px;">
+<!-- Menu Buttons -->
+<div style="text-align: center;">
   <button class="menu-tab" onclick="toggleTab('deposit')">Deposit</button>
   <button class="menu-tab" onclick="toggleTab('withdraw')">Withdraw</button>
 </div>
 
-  <!-- User Summary -->
-  <section class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
-  </section>
+<!-- Summary -->
+<section class="form">
+  <h3>Account Summary</h3>
+  <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+  <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
+  <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
+</section>
 
-  <!-- Earnings Calculator -->
-  <section class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Estimate your daily earnings.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate</button>
-    <p id="calculated-earnings" class="highlight-animate"></p>
-  </section>
+<!-- Earnings Calculator -->
+<section class="form">
+  <h3>Earnings Calculator</h3>
+  <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+  <button onclick="calculateEarnings()">Calculate</button>
+  <p id="calculated-earnings" class="highlight-animate"></p>
+</section>
 
-  <!-- Referral Section -->
-  <section class="form">
-    <h3>Referral Program</h3>
-    <p>Your Code:</p>
-    <input type="text" id="referral-code" readonly value="REF123ABC" />
-    <button onclick="copyReferralLink()">Copy Invite Link</button>
-    <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
-    <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
-  </section>
-   <!-- Deposit System -->
+<!-- Referral Section -->
+<section class="form">
+  <h3>Referral Program</h3>
+  <input type="text" id="referral-code" readonly value="REF123ABC" />
+  <button onclick="copyReferralLink()">Copy Invite Link</button>
+  <p><strong>Total Referrals:</strong> <span id="total-referrals">0</span></p>
+  <p><strong>Referral Earnings:</strong> <span id="referral-earnings">0 USDT</span></p>
+</section>
+
+<!-- Deposit Tab -->
 <section id="deposit-tab" class="menu-tab-content" style="display: none;">
   <h3>Deposit Funds</h3>
-  <label for="network">Choose Network:</label>
   <select id="network" onchange="getDepositAddress()">
     <option value="Tron">TRC20 (Tron)</option>
     <option value="BNB">BEP20 (BNB Smart Chain)</option>
   </select>
-  <button onclick="getDepositAddress()">Get Deposit Address</button>
-  <p id="deposit-address" style="margin-top: 10px;"></p>
+  <button onclick="getDepositAddress()">Get Address</button>
+  <p id="deposit-address"></p>
   <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
   <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
   <button onclick="logDeposit()">Submit Deposit</button>
 </section>
 
-<!-- Withdrawal System -->
+<!-- Withdraw Tab -->
 <section id="withdraw-tab" class="menu-tab-content" style="display: none;">
   <h3>Withdraw Funds</h3>
   <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
   <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
   <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
   <button onclick="submitWithdrawal()">Request Withdrawal</button>
-  <p style="margin-top: 10px; font-size: 14px; color: gray;">
-    Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
-  </p>
+  <p style="font-size: 14px; color: gray;">Withdrawals are processed within 24 hours.</p>
 </section>
 
-  <!-- Footer Navigation with Icons -->
+<!-- Footer Navigation -->
 <div class="footer">
-  <button class="footer-btn" onclick="location.href='dashboard.html'">
-    <i class="fas fa-home"></i><br>Home
-  </button>
-  <button class="footer-btn" onclick="location.href='stake.html'">
-    <i class="fas fa-coins"></i><br>Stake
-  </button>
-  <button class="footer-btn" onclick="location.href='referral.html'">
-    <i class="fas fa-users"></i><br>Referral
-  </button>
-  <button class="footer-btn" onclick="location.href='assets.html'">
-    <i class="fas fa-wallet"></i><br>Assets
-  </button>
+  <button class="footer-btn" onclick="location.href='dashboard.html'"><i class="fas fa-home"></i><br>Home</button>
+  <button class="footer-btn" onclick="location.href='stake.html'"><i class="fas fa-coins"></i><br>Stake</button>
+  <button class="footer-btn" onclick="location.href='referral.html'"><i class="fas fa-users"></i><br>Referral</button>
+  <button class="footer-btn" onclick="location.href='assets.html'"><i class="fas fa-wallet"></i><br>Assets</button>
 </div>
 
-  <script src="script.js"></script>
-  <script>
-    function animateNumber(element, end, duration = 1200) {
-      const start = 0;
-      const startTime = performance.now();
-      function step(currentTime) {
-        const progress = Math.min((currentTime - startTime) / duration, 1);
-        const value = Math.floor(progress * (end - start) + start);
-        element.textContent = value + " USDT";
-        if (progress < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    function animateReferrals(count, earnings) {
-      animateNumber(document.getElementById('summary-total'), count);
-      animateNumber(document.getElementById('summary-balance'), count * 0.8);
-      document.getElementById('total-referrals').textContent = count;
-      document.getElementById('referral-earnings').textContent = earnings + ' USDT';
-    }
-
-    function calculateEarnings() {
-      const input = parseFloat(document.getElementById('deposit-input').value);
-      const output = document.getElementById('calculated-earnings');
-      if (!isNaN(input) && input > 0) {
-        const earnings = (input * 0.08).toFixed(2);
-        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
-        output.classList.add("highlight-animate");
-      }
-    }
-
-    function copyReferralLink() {
-      const code = document.getElementById("referral-code");
-      navigator.clipboard.writeText(code.value).then(() => {
-        alert("Referral link copied!");
-      });
-    }
-
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    }
-
-    function openDeposit() { alert("Open Deposit Modal"); }
-    function openWithdraw() { alert("Open Withdraw Modal"); }
-    function openTransfer() { alert("Open Transfer Modal"); }
-
-    function goToPage(page) {
-      alert(`Navigate to ${page} page`);
-    }
-
-    // Example values
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("summary-username").textContent = "john_doe";
-      animateReferrals(5, 12.5);
-    });
-  
 <script>
-  function toggleTab(tab) {
-    const depositTab = document.getElementById("deposit-tab");
-    const withdrawTab = document.getElementById("withdraw-tab");
-
-    depositTab.style.display = tab === "deposit" ? "block" : "none";
-    withdrawTab.style.display = tab === "withdraw" ? "block" : "none";
+  function toggleUserMenu() {
+    document.getElementById("userMenu").classList.toggle("active");
   }
+
+  function toggleTab(tab) {
+    document.getElementById("deposit-tab").style.display = (tab === "deposit") ? "block" : "none";
+    document.getElementById("withdraw-tab").style.display = (tab === "withdraw") ? "block" : "none";
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+
+  function calculateEarnings() {
+    const input = parseFloat(document.getElementById('deposit-input').value);
+    if (!isNaN(input)) {
+      const earnings = (input * 0.08).toFixed(2);
+      document.getElementById('calculated-earnings').textContent = `Est. Daily Earnings: ${earnings} USDT`;
+    }
+  }
+
+  function copyReferralLink() {
+    const code = document.getElementById("referral-code");
+    navigator.clipboard.writeText(code.value).then(() => {
+      alert("Referral link copied!");
+    });
+  }
+
+  // Dummy Data Initialization
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("summary-username").textContent = "john_doe";
+    document.getElementById("summary-balance").textContent = "80 USDT";
+    document.getElementById("summary-total").textContent = "100 USDT";
+    document.getElementById("summary-balance-top").textContent = "$80";
+    document.getElementById("summary-available-top").textContent = "80 USDT";
+  });
 </script>
 
 </body>
