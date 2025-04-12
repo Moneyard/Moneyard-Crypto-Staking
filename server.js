@@ -115,3 +115,53 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+// Stake plans (Frontend loads these)
+app.get('/api/stake-plans', (req, res) => {
+  const plans = [
+    { name: 'Flexible', apy: 5 },
+    { name: 'Locked', apy: 10 },
+    { name: 'High-Yield', apy: 15 }
+  ];
+  res.json(plans);
+});
+
+// Stake funds
+app.post('/api/stake', (req, res) => {
+  const { userId, plan, amount } = req.body;
+  const planAPY = {
+    Flexible: 5,
+    Locked: 10,
+    'High-Yield': 15
+  }[plan];
+
+  if (!planAPY || amount < 10) {
+    return res.json({ success: false, error: 'Invalid plan or amount' });
+  }
+
+  db.run(
+    'INSERT INTO stakes (userId, plan, amount, apy) VALUES (?, ?, ?, ?)',
+    [userId, plan, amount, planAPY],
+    function (err) {
+      if (err) return res.json({ success: false, error: 'Stake failed' });
+      res.json({ success: true });
+    }
+  );
+});
+
+// View user stakes
+app.get('/api/user-stakes', (req, res) => {
+  const userId = req.query.userId;
+  db.all('SELECT * FROM stakes WHERE userId = ?', [userId], (err, rows) => {
+    if (err) return res.json({ success: false, error: 'Failed to load stakes' });
+    res.json({ success: true, stakes: rows });
+  });
+});
+
+// Unstake (delete entry)
+app.post('/api/unstake', (req, res) => {
+  const { stakeId, userId } = req.body;
+  db.run('DELETE FROM stakes WHERE id = ? AND userId = ?', [stakeId, userId], function (err) {
+    if (err) return res.json({ success: false, error: 'Unstake failed' });
+    res.json({ success: true });
+  });
+});
