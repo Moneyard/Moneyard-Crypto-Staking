@@ -219,3 +219,17 @@ app.post('/api/unstake', (req, res) => {
     res.json({ success: true });
   });
 });
+// API endpoint to fetch active stakes for a user
+app.get('/api/active-stakes', (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) return res.status(400).json({ error: 'User ID is required.' });
+
+  db.all("SELECT * FROM stakes WHERE userId = ? AND status = 'active'", [userId], (err, rows) => {
+    if (err) {
+      console.error("Error fetching active stakes:", err);
+      return res.status(500).json({ error: 'Failed to fetch active stakes.' });
+    }
+
+    res.json({ stakes: rows });
+  });
+});
