@@ -237,6 +237,84 @@ function calculateEarnings() {
   document.getElementById("calculated-earnings").innerText =
     `Daily earnings: ${daily.toFixed(2)} USDT`;
 }
+// ========== GOALS TRACKER ==========
+
+// Load goals from localStorage or backend (optional DB)
+function loadGoals() {
+  const goals = JSON.parse(localStorage.getItem('goals')) || [];
+  const goalsList = document.getElementById('goals-list');
+  goalsList.innerHTML = '';
+
+  goals.forEach((goal, index) => {
+    const percent = ((goal.progress / goal.target) * 100).toFixed(1);
+    const goalDiv = document.createElement('div');
+    goalDiv.style.marginBottom = '12px';
+    goalDiv.innerHTML = `
+      <strong>${goal.name}</strong><br>
+      <progress value="${goal.progress}" max="${goal.target}" style="width: 100%;"></progress>
+      <p>${goal.progress} / ${goal.target} USDT (${percent}%)</p>
+    `;
+    goalsList.appendChild(goalDiv);
+  });
+}
+
+// Add a new goal
+function addGoal() {
+  const name = document.getElementById('goal-name').value.trim();
+  const target = parseFloat(document.getElementById('goal-target').value);
+  const progress = parseFloat(document.getElementById('goal-progress').value);
+
+  if (!name || isNaN(target) || isNaN(progress) || target <= 0 || progress < 0) {
+    alert('Please enter valid goal details.');
+    return;
+  }
+
+  const goals = JSON.parse(localStorage.getItem('goals')) || [];
+  goals.push({ name, target, progress });
+  localStorage.setItem('goals', JSON.stringify(goals));
+
+  // Clear inputs and reload
+  document.getElementById('goal-name').value = '';
+  document.getElementById('goal-target').value = '';
+  document.getElementById('goal-progress').value = '';
+  loadGoals();
+}
+
+// Load goals when page is ready
+document.addEventListener('DOMContentLoaded', loadGoals);
+
+
+// ========== REFERRAL EARNINGS ==========
+
+function loadReferralData() {
+  const referralCode = localStorage.getItem('referralCode') || generateReferralCode();
+  document.getElementById('referral-code').value = `https://moneyard.com/signup?ref=${referralCode}`;
+
+  // Simulated data — in real use, fetch from backend
+  const totalReferrals = parseInt(localStorage.getItem('totalReferrals') || '3');
+  const earnings = totalReferrals * 5; // Example: 5 USDT per referral
+
+  document.getElementById('total-referrals').textContent = totalReferrals;
+  document.getElementById('referral-earnings').textContent = earnings + ' USDT';
+}
+
+function generateReferralCode() {
+  const code = 'MY' + Math.random().toString(36).substr(2, 6).toUpperCase();
+  localStorage.setItem('referralCode', code);
+  return code;
+}
+
+function copyReferralLink() {
+  const link = document.getElementById('referral-code');
+  link.select();
+  link.setSelectionRange(0, 99999); // for mobile
+  document.execCommand('copy');
+  alert('Referral link copied to clipboard!');
+}
+
+// Load referral info when page is ready
+document.addEventListener('DOMContentLoaded', loadReferralData);
+
 
 // Counter animation
 function animateCounters() {
