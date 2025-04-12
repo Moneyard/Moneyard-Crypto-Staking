@@ -187,28 +187,110 @@
 <body>
 
   <!-- HEADER -->
-  <div class="top-header">
-    <div class="header-left">
-      <h2>MONEYARD DASHBOARD</h2>
+<div class="top-header">
+  <div class="header-left">
+    <h2>MONEYARD DASHBOARD</h2>
+  </div>
+  <div class="header-right">
+    <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
+    <div class="dropdown">
+      <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
+      <div class="dropdown-content">
+        <div class="dropdown-info">
+          <p><strong>Balance:</strong> <span id="dd-balance">$0.00</span></p>
+          <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
+        </div>
+        <hr />
+        <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button> <!-- Link to deposit -->
+        <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
+        <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
+        <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
+        <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
+        <button class="dropdown-action-btn" onclick="openHelp()">Get Help</button>
+        <hr />
+        <button class="dropdown-action-btn logout-btn" onclick="logout()">Logout</button>
+      </div>
     </div>
-    <div class="header-right">
-      <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
-      <div class="dropdown">
-        <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
-        <div class="dropdown-content">
-          <div class="dropdown-info">
-            <p><strong>Balance:</strong> <span id="dd-balance">$0.00</span></p>
-            <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
-          </div>
-          <hr />
-          <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button>
-          <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
-          <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
-          <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
-          <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
-          <button class="dropdown-action-btn" onclick="openHelp()">Get Help</button>
-          <hr />
-          <button class="dropdown-action-btn logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- DEPOSIT MODAL -->
+<div id="deposit-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h3>Deposit Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="deposit-amount" placeholder="Enter amount" />
+    <label>Payment Method:</label>
+    <select id="deposit-method">
+      <option value="TRC20">USDT - TRC20</option>
+      <option value="BEP20">USDT - BEP20</option>
+      <option value="Bank">Bank Transfer</option>
+      <option value="Mobile">Mobile Money (Airtel/MTN)</option>
+    </select>
+    <label>Transaction ID (optional):</label>
+    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+    <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
+    <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
+    <p id="deposit-response" style="margin-top:10px;"></p>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+  // Open Deposit Modal
+  function openDeposit() {
+    document.getElementById("deposit-modal").style.display = "flex";
+  }
+
+  // Close Deposit Modal
+  function closeDeposit() {
+    document.getElementById("deposit-modal").style.display = "none";
+    document.getElementById("deposit-response").textContent = "";
+  }
+
+  // Handle deposit submission
+  function submitDeposit() {
+    const amount = document.getElementById("deposit-amount").value;
+    const method = document.getElementById("deposit-method").value;
+    const txid = document.getElementById("deposit-txid").value;
+    const response = document.getElementById("deposit-response");
+
+    if (!amount || amount <= 0) {
+      response.textContent = "Please enter a valid amount.";
+      return;
+    }
+
+    response.textContent = "Processing deposit...";
+    // Simulate backend request (for demo purposes)
+    setTimeout(() => {
+      response.textContent = `Deposit request for ${amount} USDT via ${method} submitted.`;
+    }, 1000);
+
+    // Optional: Fetch API to handle the backend logic if necessary
+    fetch("/api/deposit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ amount, method, txid }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        document.getElementById("deposit-response").textContent = data.message || "Deposit submitted!";
+      })
+      .catch(() => {
+        document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
+      });
+  }
+
+  // Logout functionality
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+</script>
+
         </div>
       </div>
     </div>
