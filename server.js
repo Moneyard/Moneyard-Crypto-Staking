@@ -200,6 +200,15 @@ app.get('/api/user-stakes', (req, res) => {
     res.json({ success: true, stakes: rows });
   });
 });
+app.get('/api/active-stakes', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
+    if (err) {
+      return res.json({ success: false, message: 'Database error' });
+    }
+    res.json({ success: true, stakes: rows });
+  });
+});
 app.post('/api/unstake', (req, res) => {
   const { stakeId, userId } = req.body;
 
