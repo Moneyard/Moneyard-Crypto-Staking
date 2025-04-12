@@ -180,3 +180,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+let selectedPlan = null;
+
+function selectPlan(plan, apy) {
+  selectedPlan = { name: plan, apy };
+  document.getElementById('selectedPlanName').innerText = plan;
+  document.getElementById('selectedPlanApy').innerText = apy;
+  document.getElementById('stakeFormSection').style.display = 'block';
+}
+
+function submitStake() {
+  const amount = parseFloat(document.getElementById('stakeAmount').value);
+  if (!selectedPlan || isNaN(amount) || amount <= 0) {
+    alert("Enter a valid amount and select a plan.");
+    return;
+  }
+
+  fetch('/stake', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ plan: selectedPlan.name, apy: selectedPlan.apy, amount })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    fetchUserStakes();
+  });
+}
+
+function fetchUserStakes() {
+  fetch('/user-stakes')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('userStakes');
+      container.innerHTML = '';
+      data.forEach(stake => {
+        const div = document.createElement('div');
+        div.className = 'stake-entry';
+        div.innerHTML = `
+          <p>${stake.plan} - $${stake.amount} - ${stake.apy}% APY</p>
+          <p>Start: ${stake.start_date} | Ends: ${stake.end_date || 'N/A'}</p>
+          <p>Status: ${stake.status}</p>
+          ${stake.status === 'active' ? `<button onclick="unstake(${stake.id})">Unstake</button>` : ''}
+        `;
+        container.appendChild(div);
+      });
+    });
+}
+
+function unstake(id) {
+  fetch('/unstake', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ stake_id: id })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    fetchUserStakes();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', fetchUserStakes);
