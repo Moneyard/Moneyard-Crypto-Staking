@@ -1,3 +1,107 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const stakeForm = document.getElementById('stakeForm');
+  const planDropdown = document.getElementById('stake-plan');
+  const stakeAmountInput = document.getElementById('stake-amount');
+  const stakeResult = document.getElementById('stake-result');
+  const activeStakesContainer = document.getElementById('active-stakes');
+
+  // Handle staking form submit
+  stakeForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const plan = planDropdown.value;
+    const amount = parseFloat(stakeAmountInput.value);
+
+    if (!plan || isNaN(amount) || amount < 10) {
+      stakeResult.textContent = "Please enter a valid amount (min $10) and select a plan.";
+      stakeResult.style.color = "red";
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/stake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, amount })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        stakeResult.textContent = "Staking successful!";
+        stakeResult.style.color = "green";
+        stakeForm.reset();
+        loadActiveStakes();
+      } else {
+        stakeResult.textContent = data.message || "Failed to stake.";
+        stakeResult.style.color = "red";
+      }
+    } catch (err) {
+      stakeResult.textContent = "Network error. Please try again.";
+      stakeResult.style.color = "red";
+    }
+  });
+
+  // Fetch active stakes
+  async function loadActiveStakes() {
+    activeStakesContainer.innerHTML = "<p>Loading...</p>";
+
+    try {
+      const res = await fetch('/api/active-stakes');
+      const stakes = await res.json();
+
+      if (res.ok && Array.isArray(stakes)) {
+        if (stakes.length === 0) {
+          activeStakesContainer.innerHTML = "<p>No active stakes yet.</p>";
+          return;
+        }
+
+        activeStakesContainer.innerHTML = "";
+        stakes.forEach(stake => {
+          const stakeDiv = document.createElement('div');
+          stakeDiv.className = "stake-item";
+          stakeDiv.innerHTML = `
+            <p><strong>Plan:</strong> ${stake.plan}</p>
+            <p><strong>Amount:</strong> ${stake.amount} USDT</p>
+            <p><strong>Start Date:</strong> ${new Date(stake.startDate).toLocaleDateString()}</p>
+            <p><strong>Status:</strong> ${stake.status}</p>
+            <button onclick="unstake('${stake.id}')">Unstake</button>
+          `;
+          activeStakesContainer.appendChild(stakeDiv);
+        });
+      } else {
+        activeStakesContainer.innerHTML = "<p>Failed to load stakes.</p>";
+      }
+    } catch (err) {
+      activeStakesContainer.innerHTML = "<p>Error loading stakes.</p>";
+    }
+  }
+
+  // Unstake a plan
+  window.unstake = async function (stakeId) {
+    if (!confirm("Are you sure you want to unstake this plan?")) return;
+
+    try {
+      const res = await fetch(`/api/unstake/${stakeId}`, {
+        method: 'POST'
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("Successfully unstaked.");
+        loadActiveStakes();
+      } else {
+        alert(result.message || "Unstake failed.");
+      }
+    } catch (err) {
+      alert("Network error.");
+    }
+  };
+
+  // Initial load
+  loadActiveStakes();
+});
 // Toggle between signup and login forms
 function toggleForms(type) {
   const signup = document.getElementById('signup-form');
