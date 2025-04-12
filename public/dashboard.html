@@ -5,7 +5,7 @@
   <title>Moneyard Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       margin: 0;
@@ -100,17 +100,81 @@
     .logout-btn {
       color: #b00020;
     }
+
+    .form {
+      background: #fff;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .form h3 {
+      margin-top: 0;
+    }
+
+    .highlight-animate {
+      font-weight: bold;
+      color: #2b8a3e;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .footer-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .footer-btn i {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
-<head>
-<!-- Font Awesome CDN for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
   <!-- HEADER SECTION -->
   <div class="top-header">
     <div class="header-left">
-      <img src="M.png" alt="Moneyard Logo" class="logo">
+      <img src=alt="Moneyard Dashboard" class="logo">
     </div>
 
     <div class="header-right">
@@ -137,17 +201,62 @@
     </div>
   </div>
 
-  <!-- You can place other dashboard sections here below -->
+  <!-- USER SUMMARY -->
+  <section class="form">
+    <h3>Account Summary</h3>
+    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+    <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
+    <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
+  </section>
 
+  <!-- EARNINGS CALCULATOR -->
+  <section class="form">
+    <h3>Earnings Calculator</h3>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+    <button onclick="calculateEarnings()">Calculate</button>
+    <p id="calculated-earnings" class="highlight-animate"></p>
+  </section>
+
+  <!-- REFERRAL PROGRAM -->
+  <section class="form">
+    <h3>Referral Program</h3>
+    <input type="text" id="referral-code" readonly value="REF123ABC" />
+    <button onclick="copyReferralLink()">Copy Invite Link</button>
+    <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
+    <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
+  </section>
+
+  <!-- FOOTER NAVIGATION -->
+  <div class="footer">
+    <button class="footer-btn" onclick="location.href='dashboard.html'">
+      <i class="fas fa-home"></i><br>Home
+    </button>
+    <button class="footer-btn" onclick="location.href='stake.html'">
+      <i class="fas fa-coins"></i><br>Stake
+    </button>
+    <button class="footer-btn" onclick="location.href='referral.html'">
+      <i class="fas fa-users"></i><br>Referral
+    </button>
+    <button class="footer-btn" onclick="location.href='assets.html'">
+      <i class="fas fa-wallet"></i><br>Assets
+    </button>
+  </div>
+
+  <!-- SCRIPT SECTION -->
+  <script src="script.js"></script>
   <script>
-    // Replace with dynamic values if available
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("dd-balance").textContent = "$200.00";
       document.getElementById("dd-available").textContent = "150 USDT";
+      document.getElementById("summary-username").textContent = "john_doe";
+      document.getElementById("summary-total").textContent = "100 USDT";
+      document.getElementById("summary-balance").textContent = "80 USDT";
+      document.getElementById("total-referrals").textContent = "5";
+      document.getElementById("referral-earnings").textContent = "12.5 USDT";
     });
 
     function openDeposit() {
-      alert("Open Deposit Modal");
+      alert("Deposit system coming soon or open modal!");
     }
 
     function openBonuses() {
@@ -171,42 +280,6 @@
     }
 
     function logout() {
-      alert("Logging out...");
-      // Add logout logic here
-    }
-      </div>
-      </div>
-    </div>
-  </div>
-
-    <!-- User Summary -->
-  <section class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
-  </section>
-
-  <!-- Earnings Calculator -->
-  <section class="form">
-    <h3>Earnings Calculator</h3>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate</button>
-    <p id="calculated-earnings" class="highlight-animate"></p>
-  </section>
-
-  <!-- Referral Section -->
-  <section class="form">
-    <h3>Referral Program</h3>
-    <input type="text" id="referral-code" readonly value="REF123ABC" />
-    <button onclick="copyReferralLink()">Copy Invite Link</button>
-    <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
-    <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
-  </section>
-
-  <script src="script.js"></script>
-  <script>
-    function logout() {
       localStorage.removeItem("token");
       window.location.href = "/";
     }
@@ -227,35 +300,6 @@
         alert("Referral link copied!");
       });
     }
-
-    function openDeposit() {
-      alert("Deposit system coming soon or open modal!");
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("summary-username").textContent = "john_doe";
-      document.getElementById("summary-total").textContent = "100 USDT";
-      document.getElementById("summary-balance").textContent = "80 USDT";
-      document.getElementById("total-referrals").textContent = "5";
-      document.getElementById("referral-earnings").textContent = "12.5 USDT";
-    });
-
-<!-- Footer Navigation with Icons -->
-<div class="footer">
-  <button class="footer-btn" onclick="location.href='dashboard.html'">
-    <i class="fas fa-home"></i><br>Home
-  </button>
-  <button class="footer-btn" onclick="location.href='stake.html'">
-    <i class="fas fa-coins"></i><br>Stake
-  </button>
-  <button class="footer-btn" onclick="location.href='referral.html'">
-    <i class="fas fa-users"></i><br>Referral
-  </button>
-  <button class="footer-btn" onclick="location.href='assets.html'">
-    <i class="fas fa-wallet"></i><br>Assets
-  </button>
-</div>
-
   </script>
 </body>
 </html>
