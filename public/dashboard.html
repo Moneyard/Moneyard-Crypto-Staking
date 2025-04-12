@@ -208,7 +208,14 @@
           <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
           <button class="dropdown-action-btn" onclick="openHelp()">Get Help</button>
           <hr />
-          <button class="dropdown-action-btn logout-btn" onclick="logout()">Logout</button>
+          <button class="dropdown-action-btn logout-btn" onclick=
+function logout() {
+  // Clear any stored user session data if applicable
+  localStorage.removeItem("token"); // optional if you're storing a token
+  alert("Logged out.");
+  window.location.href = "index.html"; // Redirect to homepage
+}
+</button>
         </div>
       </div>
     </div>
