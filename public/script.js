@@ -32,23 +32,27 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
   }
 });
 
+// Function to open the Deposit modal when the Deposit button is clicked
+document.getElementById('depositButton')?.addEventListener('click', () => {
+  document.getElementById('depositModal').style.display = 'block';
+});
+
+// Close the Deposit modal when the close button is clicked
+document.getElementById('closeDepositModal')?.addEventListener('click', () => {
+  document.getElementById('depositModal').style.display = 'none';
+});
+
+// Function to close the modal if the user clicks outside it
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('depositModal');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+// Function to close the Deposit Modal
 function closeDepositModal() {
   document.getElementById('depositModal').style.display = 'none';
-}
-
-async function loadUserBalance() {
-  const userId = localStorage.getItem('userId');
-  if (!userId) return;
-
-  try {
-    const res = await fetch(`/api/balance?userId=${userId}`);
-    const data = await res.json();
-    if (data.balance !== undefined) {
-      document.getElementById('userBalance').textContent = `$${data.balance.toFixed(2)}`;
-    }
-  } catch (err) {
-    console.error("Balance load error", err);
-  }
 }
 
 // ========== DOMContentLoaded LOGIC ==========
