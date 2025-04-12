@@ -87,53 +87,83 @@
 <body>
   <div class="header">Moneyard Staking</div>
 
-  <div class="stake-section">
-    <h2>Select a Staking Plan</h2>
-    <div id="stake-plans">
-      <div class="stake-plan-card">
-        <h3>Flexible Plan</h3>
-        <p>Withdraw anytime, 5% APY</p>
-      </div>
-      <div class="stake-plan-card">
-        <h3>Locked Plan</h3>
-        <p>30 days lock, 10% APY</p>
-      </div>
-      <div class="stake-plan-card">
-        <h3>High-Yield Plan</h3>
-        <p>90 days lock, 20% APY</p>
-      </div>
+  <!-- STAKE PAGE SECTION -->
+<section id="stake-section" style="background-color: #ffffff; padding: 2rem; font-family: Arial, sans-serif;">
+  <h2 style="text-align: center; color: #0d9488; font-size: 2rem;">Crypto Staking</h2>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+    <!-- USDT Stablecoin Staking Card -->
+    <div style="border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <h3 style="color: #059669;">USDT Stable Staking</h3>
+      <p>Earn steady returns by staking USDT on trusted platforms.</p>
+      <ul>
+        <li>APY: <strong>6–12%</strong></li>
+        <li>Compounds: Daily</li>
+        <li>Lock-in: 7 days minimum</li>
+      </ul>
+      <button onclick="openStakeModal('USDT')" style="background-color: #059669; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; margin-top: 1rem;">Stake USDT</button>
     </div>
 
-    <!-- Staking Form -->
-    <div class="stake-form">
-      <form id="stakeForm">
-        <label for="stake-plan">Choose Stake Plan</label>
-        <select id="stake-plan" required>
-          <option value="Flexible">Flexible</option>
-          <option value="Locked">Locked</option>
-          <option value="High-Yield">High-Yield</option>
-        </select>
-
-        <p id="selectedPlanDetails"></p>
-
-        <label for="stakeAmount">Amount to Stake</label>
-        <input type="number" id="stakeAmount" placeholder="Amount to Stake (USDT)" min="10" required />
-
-        <button type="submit">Stake Now</button>
-      </form>
-
-      <div id="stake-result"></div>
-    </div>
-
-    <!-- Your Active Stakes Section -->
-    <div class="active-stakes">
-      <h2>Your Active Stakes</h2>
-      <div id="active-stakes">
-        <p>Loading...</p>
-      </div>
+    <!-- DeFi Yield Pool Card -->
+    <div style="border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <h3 style="color: #2563eb;">DeFi Yield Pool</h3>
+      <p>Join decentralized yield farming for high APYs. Risk varies by pool.</p>
+      <ul>
+        <li>APY: <strong>10–25%</strong></li>
+        <li>Flexible withdrawal</li>
+        <li>Smart contract risk applies</li>
+      </ul>
+      <button onclick="openStakeModal('DeFi')" style="background-color: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; margin-top: 1rem;">Join DeFi Pool</button>
     </div>
   </div>
+</section>
 
-  <script src="script.js"></script>
+<!-- STAKE MODAL -->
+<div id="stakeModal" style="display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 999; justify-content: center; align-items: center;">
+  <div style="background-color: white; border-radius: 1rem; padding: 2rem; max-width: 400px; width: 90%;">
+    <h3 id="stakeTitle" style="margin-bottom: 1rem;"></h3>
+    <form id="stakeForm">
+      <label for="stakeAmount">Amount to Stake (USDT):</label>
+      <input type="number" id="stakeAmount" name="amount" required min="10" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
+
+      <label for="password">Your Password:</label>
+      <input type="password" id="password" name="password" required style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
+
+      <input type="hidden" id="stakeType" name="type">
+      <button type="submit" style="background-color: #0d9488; color: white; width: 100%; padding: 0.5rem; border: none; border-radius: 0.5rem;">Confirm Stake</button>
+    </form>
+    <button onclick="closeStakeModal()" style="margin-top: 1rem; color: #ef4444; background: none; border: none;">Cancel</button>
+  </div>
+</div>
+
+<script>
+  function openStakeModal(type) {
+    document.getElementById('stakeModal').style.display = 'flex';
+    document.getElementById('stakeType').value = type;
+    document.getElementById('stakeTitle').textContent = type === 'USDT' ? 'Stake USDT Stablecoin' : 'Join DeFi Yield Pool';
+  }
+
+  function closeStakeModal() {
+    document.getElementById('stakeModal').style.display = 'none';
+  }
+
+  document.getElementById('stakeForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const amount = document.getElementById('stakeAmount').value;
+    const password = document.getElementById('password').value;
+    const type = document.getElementById('stakeType').value;
+
+    const res = await fetch('/api/stake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, password, type })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+    if (data.success) closeStakeModal();
+  });
+</script>
+
 </body>
 </html>
