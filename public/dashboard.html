@@ -6,147 +6,256 @@
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    /* Styling for the deposit section */
+    .deposit-methods {
       background: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      padding: 20px;
-    }
-    h2, h3 {
-      color: #0a7745;
-    }
-    .deposit-section {
-      background: #f8f8f8;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 40px auto;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 10px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      background-color: #0a7745;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .network-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px auto;
+      max-width: 400px;
+      text-align: center;
     }
     .network-btn {
-      padding: 10px 16px;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
       font-weight: bold;
+    }
+    .active-network {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .wallet-display {
+      margin-top: 15px;
+      display: none;
+    }
+    .wallet-display.active {
+      display: block;
+    }
+    .copy-btn {
+      margin-top: 5px;
+      background-color: #28a745;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .qr-code {
+      margin-top: 10px;
+      width: 150px;
+      height: 150px;
+    }
+    .form-section {
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    button.submit-deposit {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
     }
-    .trc20-btn {
-      background-color: #00c4cc;
-      color: white;
+    /* Earnings calculator styling */
+    .earnings-calculator {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: center;
     }
-    .bep20-btn {
-      background-color: #f0b90b;
-      color: black;
-    }
-    #walletAddressContainer {
-      background: #fff;
-      border: 1px dashed #ccc;
+    .earnings-calculator input {
       padding: 10px;
-      border-radius: 6px;
+      margin: 10px 0;
+      width: 50%;
+      font-size: 16px;
     }
-    #walletAddress {
+    .earnings-calculator button {
+      background-color: #28a745;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+    /* Staking section styling */
+    .staking-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: #e9ecef;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .staking-plans {
+      display: flex;
+      justify-content: space-around;
+    }
+    .plan {
+      background-color: #007bff;
+      padding: 20px;
+      color: white;
+      border-radius: 8px;
+      width: 30%;
+    }
+    .plan h4 {
+      margin-bottom: 10px;
+    }
+    .plan p {
+      margin: 10px 0;
+    }
+    /* Footer Styling */
+    footer {
+      position: fixed;
+      bottom: 0;
       width: 100%;
-      padding: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      background-color: #343a40;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      justify-content: space-around;
+    }
+    footer button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    footer button:hover {
+      background-color: #218838;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Deposit Funds</h2>
 
-    <div class="deposit-section">
-      <!-- Payment Method Selection -->
-      <h3>Select Network:</h3>
-      <div class="network-buttons">
-        <button onclick="showAddress('TRC20')" class="network-btn trc20-btn">TRC20 (Tron)</button>
-        <button onclick="showAddress('BEP20')" class="network-btn bep20-btn">BEP20 (Binance)</button>
-      </div>
+  <!-- Deposit Button -->
+  <button id="topDepositBtn" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Deposit</button>
 
-      <!-- Wallet Address Display -->
-      <div id="walletAddressContainer" style="display:none; margin-top:10px;">
-        <label><strong>Wallet Address:</strong></label>
-        <input type="text" id="walletAddress" readonly />
-        <button onclick="copyWalletAddress()">Copy to Clipboard</button>
-      </div>
+  <!-- Deposit Method Section (TRC20 / BEP20) -->
+  <div class="deposit-methods">
+    <h3>Select Payment Method</h3>
+    <button class="network-btn" id="trc20Btn">TRC20 (Tron)</button>
+    <button class="network-btn" id="bep20Btn">BEP20 (BSC)</button>
 
-      <!-- Transaction ID -->
-      <div class="form-group">
-        <label for="txid">Transaction ID (TxID)</label>
-        <input type="text" id="txid" required />
-      </div>
+    <!-- TRC20 Wallet Address Display -->
+    <div id="trc20Display" class="wallet-display">
+      <p><strong>TRC20 Wallet Address:</strong></p>
+      <input type="text" id="trc20Address" readonly value="T9zP14ryhxcKJ7fN2uRDFpWz5z5UVeZzX8">
+      <button class="copy-btn" onclick="copyToClipboard('trc20Address')">Copy</button>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=T9zP14ryhxcKJ7fN2uRDFpWz5z5UVeZzX8&size=150x150" alt="TRC20 QR" class="qr-code">
+    </div>
 
-      <!-- Submit Button -->
-      <button onclick="submitDeposit()">Submit</button>
+    <!-- BEP20 Wallet Address Display -->
+    <div id="bep20Display" class="wallet-display">
+      <p><strong>BEP20 Wallet Address:</strong></p>
+      <input type="text" id="bep20Address" readonly value="0x7aF6b3C3Fe89496AE8F18d11191E645Aa945DdF2">
+      <button class="copy-btn" onclick="copyToClipboard('bep20Address')">Copy</button>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=0x7aF6b3C3Fe89496AE8F18d11191E645Aa945DdF2&size=150x150" alt="BEP20 QR" class="qr-code">
+    </div>
+
+    <!-- Transaction ID & Submit -->
+    <div class="form-section">
+      <input type="text" id="transactionID" placeholder="Enter Transaction ID">
+      <button class="submit-deposit" onclick="submitDeposit()">Submit</button>
     </div>
   </div>
 
+  <!-- Earnings Calculator -->
+  <div class="earnings-calculator">
+    <h3>Earnings Calculator</h3>
+    <input type="number" id="stakeAmount" placeholder="Enter Stake Amount">
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="estimatedEarnings"></p>
+  </div>
+
+  <!-- Staking Section -->
+  <div class="staking-section">
+    <h3>Staking Plans</h3>
+    <div class="staking-plans">
+      <div class="plan">
+        <h4>Flexible Plan</h4>
+        <p>APY: 10%</p>
+        <button>Start Staking</button>
+      </div>
+      <div class="plan">
+        <h4>Locked Plan</h4>
+        <p>APY: 15%</p>
+        <button>Start Staking</button>
+      </div>
+      <div class="plan">
+        <h4>High-Yield Plan</h4>
+        <p>APY: 25%</p>
+        <button>Start Staking</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Icon Deposit Button (Unchanged) -->
+  <button id="iconDepositBtn" style="position: absolute; top: 10px; right: 10px; background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Deposit Icon</button>
+
+  <!-- Home Button -->
+  <button id="homeBtn" style="position: absolute; top: 10px; left: 10px; background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Home</button>
+
+  <!-- Footer -->
+  <footer>
+    <button id="homeFooterBtn">Home</button>
+    <button id="referralFooterBtn">Referral</button>
+    <button id="stakeFooterBtn">Stake</button>
+    <button id="assetsFooterBtn">Assets</button>
+  </footer>
+
+  <!-- Script to handle selection and clipboard -->
   <script>
-    const walletAddresses = {
-      TRC20: "TX5uK3a7y9HUNgBtPgEbEbsm9wRJwtrN2X",
-      BEP20: "0xA91d1c05bDf14a34Dc48Bd0C23cD7CdD01797eB5"
-    };
+    // Toggle between TRC20 and BEP20 wallets
+    let trc20Btn = document.getElementById('trc20Btn');
+    let bep20Btn = document.getElementById('bep20Btn');
+    let trc20Display = document.getElementById('trc20Display');
+    let bep20Display = document.getElementById('bep20Display');
 
-    function showAddress(network) {
-      const address = walletAddresses[network];
-      document.getElementById('walletAddress').value = address;
-      document.getElementById('walletAddressContainer').style.display = 'block';
+    trc20Btn.addEventListener('click', function() {
+      trc20Display.classList.add('active');
+      bep20Display.classList.remove('active');
+    });
+
+    bep20Btn.addEventListener('click', function() {
+      bep20Display.classList.add('active');
+      trc20Display.classList.remove('active');
+    });
+
+    // Copy wallet address to clipboard
+    function copyToClipboard(id) {
+      let copyText = document.getElementById(id);
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+      document.execCommand("copy");
+      alert("Copied to clipboard: " + copyText.value);
     }
 
-    function copyWalletAddress() {
-      const addressField = document.getElementById('walletAddress');
-      addressField.select();
-      addressField.setSelectionRange(0, 99999); // For mobile
-      navigator.clipboard.writeText(addressField.value).then(() => {
-        alert('Address copied to clipboard!');
-      });
-    }
-
+    // Submit deposit (you can integrate backend API here)
     function submitDeposit() {
-      const txid = document.getElementById("txid").value;
-      const selectedAddress = document.getElementById("walletAddress").value;
+      let transactionID = document.getElementById('transactionID').value;
+      alert("Deposit Submitted with Transaction ID: " + transactionID);
+      // Here you would send the transaction ID to your backend API
+    }
 
-      if (!selectedAddress || !txid) {
-        alert("Please select a network and enter the Transaction ID.");
-        return;
-      }
-
-      // Replace this with your backend POST logic
-      alert("Deposit Submitted!\nTxID: " + txid + "\nTo Address: " + selectedAddress);
+    // Earnings Calculator
+    function calculateEarnings() {
+      let stakeAmount = document.getElementById('stakeAmount').value;
+      let earnings = stakeAmount * 0.1; // Example APY of 10%
+      document.getElementById('estimatedEarnings').innerText = "Estimated Earnings: $" + earnings;
     }
   </script>
 </body>
