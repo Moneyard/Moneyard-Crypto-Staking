@@ -5,7 +5,7 @@
   <title>Moneyard Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
       margin: 0;
@@ -22,8 +22,10 @@
       border-bottom: 1px solid #eaeaea;
     }
 
-    .logo {
-      height: 40px;
+    .header-left h2 {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 20px;
     }
 
     .header-right {
@@ -102,33 +104,22 @@
     }
 
     .form {
-      background: #fff;
       padding: 20px;
+      background-color: white;
       margin: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .form h3 {
-      margin-top: 0;
-    }
-
-    .highlight-animate {
-      font-weight: bold;
-      color: #2b8a3e;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
     .footer {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
-      background: #ffffff;
-      border-top: 1px solid #ddd;
+      width: 100%;
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
-      z-index: 1000;
+      background-color: white;
+      border-top: 1px solid #ccc;
+      padding: 8px 0;
     }
 
     .footer-btn {
@@ -136,36 +127,17 @@
       border: none;
       font-size: 14px;
       color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      text-align: center;
     }
 
     .footer-btn i {
       font-size: 20px;
-      margin-bottom: 4px;
     }
 
-    input[type="number"],
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
+    #greeting {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
     }
   </style>
 </head>
@@ -174,7 +146,7 @@
   <!-- HEADER SECTION -->
   <div class="top-header">
     <div class="header-left">
-      <img src=alt="Moneyard Dashboard" class="logo">
+      <h2>MONEYARD DASHBOARD</h2>
     </div>
 
     <div class="header-right">
@@ -201,15 +173,12 @@
     </div>
   </div>
 
-  <!-- USER SUMMARY -->
+  <!-- GREETING SECTION -->
   <section class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
+    <p id="greeting">Welcome!</p>
   </section>
 
-  <!-- EARNINGS CALCULATOR -->
+  <!-- Earnings Calculator -->
   <section class="form">
     <h3>Earnings Calculator</h3>
     <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
@@ -217,7 +186,7 @@
     <p id="calculated-earnings" class="highlight-animate"></p>
   </section>
 
-  <!-- REFERRAL PROGRAM -->
+  <!-- Referral Section -->
   <section class="form">
     <h3>Referral Program</h3>
     <input type="text" id="referral-code" readonly value="REF123ABC" />
@@ -226,7 +195,7 @@
     <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
   </section>
 
-  <!-- FOOTER NAVIGATION -->
+  <!-- Footer Navigation -->
   <div class="footer">
     <button class="footer-btn" onclick="location.href='dashboard.html'">
       <i class="fas fa-home"></i><br>Home
@@ -242,18 +211,30 @@
     </button>
   </div>
 
-  <!-- SCRIPT SECTION -->
+  <!-- Scripts -->
   <script src="script.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("dd-balance").textContent = "$200.00";
-      document.getElementById("dd-available").textContent = "150 USDT";
-      document.getElementById("summary-username").textContent = "john_doe";
-      document.getElementById("summary-total").textContent = "100 USDT";
-      document.getElementById("summary-balance").textContent = "80 USDT";
-      document.getElementById("total-referrals").textContent = "5";
-      document.getElementById("referral-earnings").textContent = "12.5 USDT";
-    });
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+
+    function calculateEarnings() {
+      const input = parseFloat(document.getElementById('deposit-input').value);
+      const output = document.getElementById('calculated-earnings');
+      if (!isNaN(input) && input > 0) {
+        const earnings = (input * 0.08).toFixed(2);
+        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
+        output.classList.add("highlight-animate");
+      }
+    }
+
+    function copyReferralLink() {
+      const code = document.getElementById("referral-code");
+      navigator.clipboard.writeText(code.value).then(() => {
+        alert("Referral link copied!");
+      });
+    }
 
     function openDeposit() {
       alert("Deposit system coming soon or open modal!");
@@ -279,27 +260,24 @@
       alert("Open Help Center");
     }
 
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    }
-
-    function calculateEarnings() {
-      const input = parseFloat(document.getElementById('deposit-input').value);
-      const output = document.getElementById('calculated-earnings');
-      if (!isNaN(input) && input > 0) {
-        const earnings = (input * 0.08).toFixed(2);
-        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
-        output.classList.add("highlight-animate");
+    // Set greeting message
+    window.addEventListener("DOMContentLoaded", () => {
+      const hour = new Date().getHours();
+      let greeting = "Welcome!";
+      if (hour >= 5 && hour < 12) {
+        greeting = "Good Morning!";
+      } else if (hour >= 12 && hour < 18) {
+        greeting = "Good Afternoon!";
+      } else {
+        greeting = "Good Evening!";
       }
-    }
+      document.getElementById("greeting").textContent = greeting;
 
-    function copyReferralLink() {
-      const code = document.getElementById("referral-code");
-      navigator.clipboard.writeText(code.value).then(() => {
-        alert("Referral link copied!");
-      });
-    }
+      document.getElementById("dd-balance").textContent = "$200.00";
+      document.getElementById("dd-available").textContent = "150 USDT";
+      document.getElementById("total-referrals").textContent = "5";
+      document.getElementById("referral-earnings").textContent = "12.5 USDT";
+    });
   </script>
 </body>
 </html>
