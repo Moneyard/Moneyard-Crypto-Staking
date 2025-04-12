@@ -5,133 +5,213 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background-color: #FFA500;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 60px 15px 80px;
+    }
+    h3, h4 {
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .card img.icon {
+      width: 30px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      opacity: 0.5;
+    }
+    .logout-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+    .logout-button {
+      background: crimson;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      border-top: 2px solid #ccc;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #007b5f;
+      color: white;
+      border: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+  </style>
 </head>
-<body style="padding-top: 60px; padding-bottom: 20px;">
-  <!-- Logout Button -->
+<body>
+
+  <!-- Logout -->
   <div class="logout-container">
     <button class="logout-button" onclick="logout()">Log Out</button>
   </div>
 
-  <!-- User Summary -->
-  <section id="user-summary" class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-  </section>
-
-  <!-- Deposit Section -->
-  <section id="deposit-section" class="form">
-    <h3>Deposit Funds</h3>
-    <label for="network">Choose Network:</label>
-    <select id="network" onchange="getDepositAddress()">
-      <option value="">-- Select Network --</option>
-      <option value="Tron">TRC20 (Tron)</option>
-      <option value="BNB">BEP20 (BNB Smart Chain)</option>
-    </select>
-    <button onclick="getDepositAddress()">Get Deposit Address</button>
-    <p id="deposit-address" style="margin-top: 10px;"></p>
-    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
-    <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-    <button onclick="logDeposit()">Submit Deposit</button>
-  </section>
-
-  <!-- Withdraw Section -->
-  <section id="withdraw-section" class="form">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
-    <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-    <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-    <button onclick="submitWithdrawal()">Request Withdrawal</button>
-    <p id="withdraw-info" style="margin-top: 10px; font-size: 14px; color: gray;">
-      Withdrawals are processed within 24 hours. Minimum withdrawal is 10 USDT.
-    </p>
-  </section>
-
-  <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="calculated-earnings"></p>
-  </section>
-
-  <!-- Goals Tracker -->
-  <section id="goals-tracker-section" class="form">
-    <h3>Savings & Investment Goals</h3>
-    <input type="text" id="goal-name" placeholder="Goal name (e.g. New Laptop)" />
-    <input type="number" id="goal-target" placeholder="Target amount (USDT)" />
-    <input type="number" id="goal-progress" placeholder="Current saved amount" />
-    <button onclick="addGoal()">Add Goal</button>
-
-    <div id="goals-list" style="margin-top: 15px;">
-      <!-- Goals will be listed here -->
+  <div class="dashboard-container">
+    
+    <!-- Account Summary -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/user-male-circle.png" class="icon" />
+      <h3>Account Summary</h3>
+      <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+      <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
+      <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
     </div>
-  </section>
 
-  <!-- Referral Earnings -->
-  <section id="referral-section" class="form">
-    <h3>Referral Earnings</h3>
-    <p>Invite friends and earn bonuses!</p>
-    <input type="text" id="referral-code" readonly />
-    <button onclick="copyReferralLink()">Copy Invite Link</button>
-    <p><strong>Total Referrals:</strong> <span id="total-referrals">0</span></p>
-    <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings">0 USDT</span></p>
-  </section>
+    <!-- Deposit -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/money-transfer.png" class="icon" />
+      <h3>Deposit Funds</h3>
+      <label for="network">Choose Network:</label>
+      <select id="network" onchange="getDepositAddress()">
+        <option value="">-- Select Network --</option>
+        <option value="Tron">TRC20 (Tron)</option>
+        <option value="BNB">BEP20 (BNB Smart Chain)</option>
+      </select>
+      <button onclick="getDepositAddress()">Get Deposit Address</button>
+      <p id="deposit-address"></p>
+      <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
+      <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
+      <button onclick="logDeposit()">Submit Deposit</button>
+    </div>
 
-<!-- Staking Section -->
-<section id="staking-section" class="form">
-  <h3>Stake Your Funds</h3>
+    <!-- Withdraw -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/safe-out.png" class="icon" />
+      <h3>Withdraw Funds</h3>
+      <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
+      <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
+      <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
+      <button onclick="submitWithdrawal()">Request Withdrawal</button>
+      <p id="withdraw-info">Withdrawals processed within 24 hrs. Min: 10 USDT.</p>
+    </div>
 
-  <label for="staking-plan">Choose Staking Plan:</label>
-  <select id="staking-plan">
-    <option value="flexible">Flexible (APY: 8%)</option>
-    <option value="locked">Locked (APY: 12%)</option>
-    <option value="high-yield">High-Yield (APY: 20%)</option>
-  </select>
+    <!-- Earnings Calculator -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/calculator.png" class="icon" />
+      <h3>Earnings Calculator</h3>
+      <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+      <button onclick="calculateEarnings()">Calculate Earnings</button>
+      <p id="calculated-earnings"></p>
+    </div>
 
-  <label for="staking-amount">Enter Amount to Stake (USDT):</label>
-  <input type="number" id="staking-amount" placeholder="Enter amount to stake" />
+    <!-- Goals Tracker -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/bullish.png" class="icon" />
+      <h3>Savings & Investment Goals</h3>
+      <input type="text" id="goal-name" placeholder="Goal name (e.g. New Laptop)" />
+      <input type="number" id="goal-target" placeholder="Target amount (USDT)" />
+      <input type="number" id="goal-progress" placeholder="Current saved amount" />
+      <button onclick="addGoal()">Add Goal</button>
+      <div id="goals-list" style="margin-top: 15px;"></div>
+    </div>
 
-  <button onclick="submitStaking()">Stake Now</button>
+    <!-- Referral Earnings -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/group-foreground-selected.png" class="icon" />
+      <h3>Referral Earnings</h3>
+      <p>Invite friends and earn bonuses!</p>
+      <input type="text" id="referral-code" readonly />
+      <button onclick="copyReferralLink()">Copy Invite Link</button>
+      <p><strong>Total Referrals:</strong> <span id="total-referrals">0</span></p>
+      <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings">0 USDT</span></p>
+    </div>
 
-  <!-- Staking Rewards Tracker -->
-  <h4>Your Active Stakes</h4>
-  <div id="active-stakes-list">
-    <!-- User stakes will show up here -->
+    <!-- Staking Section -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/coins.png" class="icon" />
+      <h3>Stake Your Funds</h3>
+      <label for="staking-plan">Choose Staking Plan:</label>
+      <select id="staking-plan">
+        <option value="flexible">Flexible (APY: 8%)</option>
+        <option value="locked">Locked (APY: 12%)</option>
+        <option value="high-yield">High-Yield (APY: 20%)</option>
+      </select>
+      <input type="number" id="staking-amount" placeholder="Enter amount to stake" />
+      <button onclick="submitStaking()">Stake Now</button>
+      <h4>Your Active Stakes</h4>
+      <div id="active-stakes-list"></div>
+    </div>
+
+    <!-- Staking Rewards -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/gift.png" class="icon" />
+      <h3>Your Staking Rewards</h3>
+      <p id="rewards-summary">Loading your rewards...</p>
+      <button onclick="claimRewards()">Claim Rewards</button>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="card">
+      <img src="https://img.icons8.com/ios-filled/50/time-machine.png" class="icon" />
+      <h3>Transaction History</h3>
+      <table id="transaction-history-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Network</th>
+            <th>Transaction ID</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
   </div>
-</section>
-
-<!-- Staking Rewards Section -->
-<section id="staking-rewards-section" class="form">
-  <h3>Your Staking Rewards</h3>
-  <p id="rewards-summary">Loading your rewards...</p>
-  <button onclick="claimRewards()">Claim Rewards</button>
-</section>
-
-
-  <!-- Transaction History -->
-  <section id="transaction-history-section" class="form">
-    <h3>Transaction History</h3>
-    <table id="transaction-history-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Network</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Transaction rows injected here -->
-      </tbody>
-    </table>
-  </section>
-
-  <script src="script.js"></script>
 
   <div class="bottom-nav">
     <button class="nav-btn" onclick="navigateTo('home')">Home</button>
@@ -139,27 +219,13 @@
     <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
   </div>
 
-  <style>
-    body {
-      background-color: #FFA500; /* Warm orange */
-    }
-  </style>
-
+  <script src="script.js"></script>
   <script>
     function navigateTo(page) {
       switch(page) {
-        case 'home':
-          window.location.href = 'index.html';
-          break;
-        case 'referral':
-          window.location.href = 'referral.html';
-          break;
-        case 'assets':
-          window.location.href = 'assets.html';
-          break;
-        default:
-          console.log("Invalid page");
-          break;
+        case 'home': window.location.href = 'index.html'; break;
+        case 'referral': window.location.href = 'referral.html'; break;
+        case 'assets': window.location.href = 'assets.html'; break;
       }
     }
   </script>
