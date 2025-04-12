@@ -8,224 +8,112 @@
   <style>
     body {
       background-color: #FFA500;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 60px 15px 80px;
+      font-family: sans-serif;
     }
-    h3, h4 {
-      margin-bottom: 10px;
-      color: #1a1a1a;
-    }
-    .dashboard-container {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    .card img.icon {
-      width: 30px;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      opacity: 0.5;
-    }
-    .logout-container {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 10;
-    }
-    .logout-button {
-      background: crimson;
+    .logout-button, button {
+      background-color: #28a745 !important;
       color: white;
       border: none;
-      padding: 8px 14px;
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
       border-radius: 6px;
+      transition: transform 0.2s ease;
     }
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: white;
-      border-top: 2px solid #ccc;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px;
+    .logout-button:hover,
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
     }
-    .nav-btn {
-      background: none;
-      border: none;
+    .highlight-animate {
       font-weight: bold;
-      color: #444;
+      font-size: 18px;
+      animation: countUp 2s ease-out forwards;
     }
-    input, select, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #007b5f;
-      color: white;
-      border: none;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      text-align: center;
+    @keyframes countUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0px);
+      }
     }
   </style>
 </head>
-<body>
+<body style="padding-top: 60px; padding-bottom: 20px;">
 
-  <!-- Logout -->
+  <!-- Logout Button -->
   <div class="logout-container">
     <button class="logout-button" onclick="logout()">Log Out</button>
   </div>
 
-  <div class="dashboard-container">
-    
-    <!-- Account Summary -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/user-male-circle.png" class="icon" />
-      <h3>Account Summary</h3>
-      <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-      <p><strong>Total Deposited:</strong> <span id="summary-total">0 USDT</span></p>
-      <p><strong>Available Balance:</strong> <span id="summary-balance">0 USDT</span></p>
-    </div>
+  <!-- User Summary -->
+  <section id="user-summary" class="form">
+    <h3>Account Summary</h3>
+    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
+    <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
+    <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
+  </section>
 
-    <!-- Deposit -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/money-transfer.png" class="icon" />
-      <h3>Deposit Funds</h3>
-      <label for="network">Choose Network:</label>
-      <select id="network" onchange="getDepositAddress()">
-        <option value="">-- Select Network --</option>
-        <option value="Tron">TRC20 (Tron)</option>
-        <option value="BNB">BEP20 (BNB Smart Chain)</option>
-      </select>
-      <button onclick="getDepositAddress()">Get Deposit Address</button>
-      <p id="deposit-address"></p>
-      <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
-      <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
-      <button onclick="logDeposit()">Submit Deposit</button>
-    </div>
+  <!-- Earnings Calculator -->
+  <section id="earnings-calculator-section" class="form">
+    <h3>Earnings Calculator</h3>
+    <p>Calculate your daily earnings based on your deposit.</p>
+    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <p id="calculated-earnings" class="highlight-animate"></p>
+  </section>
 
-    <!-- Withdraw -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/safe-out.png" class="icon" />
-      <h3>Withdraw Funds</h3>
-      <input type="number" id="withdraw-amount" placeholder="Amount to withdraw (min 10 USDT)" />
-      <input type="text" id="withdraw-address" placeholder="Your USDT wallet address" />
-      <input type="password" id="withdraw-password" placeholder="Withdrawal password" />
-      <button onclick="submitWithdrawal()">Request Withdrawal</button>
-      <p id="withdraw-info">Withdrawals processed within 24 hrs. Min: 10 USDT.</p>
-    </div>
-
-    <!-- Earnings Calculator -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/calculator.png" class="icon" />
-      <h3>Earnings Calculator</h3>
-      <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-      <button onclick="calculateEarnings()">Calculate Earnings</button>
-      <p id="calculated-earnings"></p>
-    </div>
-
-    <!-- Goals Tracker -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/bullish.png" class="icon" />
-      <h3>Savings & Investment Goals</h3>
-      <input type="text" id="goal-name" placeholder="Goal name (e.g. New Laptop)" />
-      <input type="number" id="goal-target" placeholder="Target amount (USDT)" />
-      <input type="number" id="goal-progress" placeholder="Current saved amount" />
-      <button onclick="addGoal()">Add Goal</button>
-      <div id="goals-list" style="margin-top: 15px;"></div>
-    </div>
-
-    <!-- Referral Earnings -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/group-foreground-selected.png" class="icon" />
-      <h3>Referral Earnings</h3>
-      <p>Invite friends and earn bonuses!</p>
-      <input type="text" id="referral-code" readonly />
-      <button onclick="copyReferralLink()">Copy Invite Link</button>
-      <p><strong>Total Referrals:</strong> <span id="total-referrals">0</span></p>
-      <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings">0 USDT</span></p>
-    </div>
-
-    <!-- Staking Section -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/coins.png" class="icon" />
-      <h3>Stake Your Funds</h3>
-      <label for="staking-plan">Choose Staking Plan:</label>
-      <select id="staking-plan">
-        <option value="flexible">Flexible (APY: 8%)</option>
-        <option value="locked">Locked (APY: 12%)</option>
-        <option value="high-yield">High-Yield (APY: 20%)</option>
-      </select>
-      <input type="number" id="staking-amount" placeholder="Enter amount to stake" />
-      <button onclick="submitStaking()">Stake Now</button>
-      <h4>Your Active Stakes</h4>
-      <div id="active-stakes-list"></div>
-    </div>
-
-    <!-- Staking Rewards -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/gift.png" class="icon" />
-      <h3>Your Staking Rewards</h3>
-      <p id="rewards-summary">Loading your rewards...</p>
-      <button onclick="claimRewards()">Claim Rewards</button>
-    </div>
-
-    <!-- Transaction History -->
-    <div class="card">
-      <img src="https://img.icons8.com/ios-filled/50/time-machine.png" class="icon" />
-      <h3>Transaction History</h3>
-      <table id="transaction-history-table">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Network</th>
-            <th>Transaction ID</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-  </div>
-
-  <div class="bottom-nav">
-    <button class="nav-btn" onclick="navigateTo('home')">Home</button>
-    <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
-    <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
-  </div>
+  <!-- Referral Earnings -->
+  <section id="referral-section" class="form">
+    <h3>Referral Earnings</h3>
+    <p>Invite friends and earn bonuses!</p>
+    <input type="text" id="referral-code" readonly />
+    <button onclick="copyReferralLink()">Copy Invite Link</button>
+    <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
+    <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
+  </section>
 
   <script src="script.js"></script>
+
+  <!-- Earnings animation logic -->
   <script>
-    function navigateTo(page) {
-      switch(page) {
-        case 'home': window.location.href = 'index.html'; break;
-        case 'referral': window.location.href = 'referral.html'; break;
-        case 'assets': window.location.href = 'assets.html'; break;
+    function animateNumber(element, end, duration = 1500) {
+      const start = 0;
+      const startTime = performance.now();
+
+      function animate(currentTime) {
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        element.textContent = value + " USDT";
+        if (progress < 1) requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // Example usage on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const total = document.getElementById('summary-total');
+      const balance = document.getElementById('summary-balance');
+      const referrals = document.getElementById('total-referrals');
+      const earnings = document.getElementById('referral-earnings');
+
+      // Simulated numbers (you can replace these with fetched backend values)
+      animateNumber(total, 100);
+      animateNumber(balance, 80);
+      animateNumber(referrals, 5, 1000);
+      animateNumber(earnings, 12, 1200);
+    });
+
+    function calculateEarnings() {
+      const input = parseFloat(document.getElementById('deposit-input').value);
+      const output = document.getElementById('calculated-earnings');
+      if (!isNaN(input) && input > 0) {
+        const earnings = (input * 0.08).toFixed(2); // Example 8% return
+        output.textContent = `Estimated Daily Earnings: ${earnings} USDT`;
+        output.classList.add("highlight-animate");
       }
     }
   </script>
