@@ -3,46 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stake - Moneyard</title>
+  <title>Moneyard - Stake</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+    }
+
+    .header {
+      padding: 1rem;
+      text-align: center;
+      background-color: #0f766e;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    .stake-section {
+      padding: 1.5rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .stake-plan-card {
+      background: #f0fdf4;
+      border: 2px solid #4ade80;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .stake-plan-card h3 {
+      color: #047857;
+    }
+
+    .stake-plan-card button {
+      background-color: #047857;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    .stake-form {
+      background: #f9fafb;
+      border: 2px dashed #22d3ee;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-top: 2rem;
+    }
+
+    .stake-form input, .stake-form button {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    #active-stakes {
+      margin-top: 2rem;
+    }
+
+    .stake-item {
+      background: #e0f2fe;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .stake-item button {
+      background: #dc2626;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 0.3rem;
+    }
+  </style>
 </head>
-<body class="stake-body">
-  <header>
-    <h2>Stake Crypto</h2>
-  </header>
+<body>
+  <div class="header">Moneyard Staking</div>
 
-  <section class="staking-plans">
-    <h3>Select a Staking Plan</h3>
-    <div class="plans-container">
-      <div class="plan-card" onclick="selectPlan('Flexible', 5)">
-        <h4>Flexible</h4>
-        <p>APY: 5%</p>
-        <button>Select</button>
-      </div>
-      <div class="plan-card" onclick="selectPlan('Locked', 10)">
-        <h4>Locked (30 days)</h4>
-        <p>APY: 10%</p>
-        <button>Select</button>
-      </div>
-      <div class="plan-card" onclick="selectPlan('High-Yield', 15)">
-        <h4>High-Yield (90 days)</h4>
-        <p>APY: 15%</p>
-        <button>Select</button>
-      </div>
+  <div class="stake-section">
+    <h2>Select a Staking Plan</h2>
+    <div id="stake-plans">Loading staking plans...</div>
+
+    <div class="stake-form">
+      <form id="stakeForm">
+        <input type="hidden" id="selectedPlanName" required />
+        <p id="selectedPlanDetails"></p>
+        <input type="number" id="stakeAmount" placeholder="Amount to Stake (USDT)" min="10" required />
+        <button type="submit">Stake Now</button>
+      </form>
     </div>
-  </section>
 
-  <section class="stake-form-section" id="stakeFormSection" style="display: none;">
-    <h3>Stake Funds</h3>
-    <p>Selected Plan: <span id="selectedPlanName"></span> (APY: <span id="selectedPlanApy"></span>%)</p>
-    <input type="number" id="stakeAmount" placeholder="Enter amount to stake"/>
-    <button onclick="submitStake()">Confirm Stake</button>
-  </section>
-
-  <section class="active-stakes">
-    <h3>Your Active Stakes</h3>
-    <div id="userStakes"></div>
-  </section>
+    <div id="active-stakes">
+      <h3>Your Active Stakes</h3>
+      <p>Loading...</p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
