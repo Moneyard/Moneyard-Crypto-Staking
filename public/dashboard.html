@@ -292,10 +292,14 @@
 
     <script>
   function logout() {
-    // Clear user session if stored
-    localStorage.removeItem("token"); // optional
-    alert("Logged out.");
-    // Redirect to homepage
+    // Clear any stored login/session data
+    localStorage.removeItem("token"); // or whatever key you used for login
+    sessionStorage.clear(); // optional, just to be safe
+
+    // Show confirmation message
+    alert("You have been logged out.");
+
+    // Redirect back to index.html (homepage)
     window.location.href = "index.html";
   }
 </script>
