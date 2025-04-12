@@ -1,175 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Moneyard Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
-      background-color: #fff;
-      font-family: sans-serif;
-      padding-bottom: 100px;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
     }
-    button, .footer-btn, .logout-button {
-      background-color: #28a745 !important;
+
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 10px 20px;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .logo {
+      height: 40px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .deposit-btn {
+      background-color: #ff914d;
       color: white;
       border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      cursor: pointer;
+      padding: 8px 16px;
+      font-weight: bold;
       border-radius: 8px;
-      font-weight: bold;
-      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-right: 16px;
+      transition: background-color 0.3s ease;
     }
-    button:hover, .footer-btn:hover, .logout-button:hover {
-      opacity: 0.9;
-      transform: scale(1.05);
+
+    .deposit-btn:hover {
+      background-color: #ff7a26;
     }
-    .form {
-      background: #f7f7f7;
+
+    .dropbtn {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #ffffff;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
       border-radius: 10px;
-      padding: 20px;
-      margin: 10px auto;
-      max-width: 400px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 999;
+      min-width: 250px;
+      padding: 12px;
     }
-    .highlight-animate {
-      font-weight: bold;
-      color: #1e7e34;
-      animation: countUp 1s ease-out;
+
+    .dropdown:hover .dropdown-content {
+      display: block;
     }
-    @keyframes countUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .dropdown-info p {
+      margin: 6px 0;
+      font-size: 14px;
     }
-    .footer {
-      position: fixed;
-      bottom: 0;
+
+    .dropdown-action-btn {
       width: 100%;
-      background-color: #f1f1f1;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+      border-radius: 6px;
     }
-    .footer-btn {
-      flex: 1;
-      margin: 0 5px;
+
+    .dropdown-action-btn:hover {
+      background-color: #f0f8ff;
     }
-    .deposit-btn {
-      background-color: #ff7f50 !important; /* warm orange */
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-weight: bold;
+
+    .logout-btn {
+      color: #b00020;
     }
   </style>
 </head>
 <body>
 
-  <!-- Logout -->
-  <div style="text-align: right; padding: 10px;">
-    <button class="logout-button" onclick="logout()">Logout</button>
+  <!-- HEADER SECTION -->
+  <div class="top-header">
+    <div class="header-left">
+      <img src="M.png" alt="Moneyard Logo" class="logo">
+    </div>
+
+    <div class="header-right">
+      <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
+
+      <div class="dropdown">
+        <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
+        <div class="dropdown-content">
+          <div class="dropdown-info">
+            <p><strong>Balance:</strong> <span id="dd-balance">$0.00</span></p>
+            <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
+          </div>
+          <hr>
+          <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button>
+          <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
+          <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
+          <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
+          <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
+          <button class="dropdown-action-btn" onclick="openHelp()">Get Help</button>
+          <hr>
+          <button class="dropdown-action-btn logout-btn" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- User Summary -->
-  <section class="form">
-    <h3>Account Summary</h3>
-    <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
-    <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
-    <p><strong>Available Balance:</strong> <span id="summary-balance" class="highlight-animate">0 USDT</span></p>
-  </section>
+  <!-- You can place other dashboard sections here below -->
 
-  <!-- Earnings Calculator -->
-  <section class="form">
-    <h3>Earnings Calculator</h3>
-    <p>Estimate your daily earnings.</p>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate</button>
-    <p id="calculated-earnings" class="highlight-animate"></p>
-  </section>
-
-  <!-- Referral Section -->
-  <section class="form">
-    <h3>Referral Program</h3>
-    <p>Your Code:</p>
-    <input type="text" id="referral-code" readonly value="REF123ABC" />
-    <button onclick="copyReferralLink()">Copy Invite Link</button>
-    <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
-    <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
-  </section>
-
-  <!-- Footer Navigation with Icons -->
-  <div class="footer">
-    <button class="footer-btn" onclick="location.href='dashboard.html'">
-      <i class="fas fa-home"></i><br>Home
-    </button>
-    <button class="footer-btn" onclick="location.href='stake.html'">
-      <i class="fas fa-coins"></i><br>Stake
-    </button>
-    <button class="footer-btn deposit-btn" onclick="openDeposit()">
-      <i class="fas fa-plus-circle"></i><br>Deposit
-    </button>
-    <button class="footer-btn" onclick="location.href='referral.html'">
-      <i class="fas fa-users"></i><br>Referral
-    </button>
-    <button class="footer-btn" onclick="location.href='assets.html'">
-      <i class="fas fa-user"></i><br>Profile
-    </button>
-  </div>
-
-  <script src="script.js"></script>
   <script>
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    }
-
-    function calculateEarnings() {
-      const input = parseFloat(document.getElementById('deposit-input').value);
-      const output = document.getElementById('calculated-earnings');
-      if (!isNaN(input) && input > 0) {
-        const earnings = (input * 0.08).toFixed(2);
-        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
-        output.classList.add("highlight-animate");
-      }
-    }
-
-    function copyReferralLink() {
-      const code = document.getElementById("referral-code");
-      navigator.clipboard.writeText(code.value).then(() => {
-        alert("Referral link copied!");
-      });
-    }
-
-    function animateNumber(element, end, duration = 1200) {
-      const start = 0;
-      const startTime = performance.now();
-      function step(currentTime) {
-        const progress = Math.min((currentTime - startTime) / duration, 1);
-        const value = Math.floor(progress * (end - start) + start);
-        element.textContent = value + " USDT";
-        if (progress < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    function animateReferrals(count, earnings) {
-      animateNumber(document.getElementById('summary-total'), count);
-      animateNumber(document.getElementById('summary-balance'), count * 0.8);
-      document.getElementById('total-referrals').textContent = count;
-      document.getElementById('referral-earnings').textContent = earnings + ' USDT';
-    }
+    // Replace with dynamic values if available
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("dd-balance").textContent = "$200.00";
+      document.getElementById("dd-available").textContent = "150 USDT";
+    });
 
     function openDeposit() {
-      alert("Deposit system coming soon or open modal!");
+      alert("Open Deposit Modal");
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("summary-username").textContent = "john_doe";
-      animateReferrals(5, 12.5);
-    });
+    function openBonuses() {
+      alert("Open Bonuses Section");
+    }
+
+    function openNotifications() {
+      alert("Show Notifications");
+    }
+
+    function openReferral() {
+      alert("Open Referral Info");
+    }
+
+    function openSettings() {
+      alert("Open Account Settings");
+    }
+
+    function openHelp() {
+      alert("Open Help Center");
+    }
+
+    function logout() {
+      alert("Logging out...");
+      // Add logout logic here
+    }
   </script>
 </body>
 </html>
