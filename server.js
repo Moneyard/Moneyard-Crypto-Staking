@@ -165,3 +165,57 @@ app.post('/api/unstake', (req, res) => {
     res.json({ success: true });
   });
 });
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS stakes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      plan TEXT NOT NULL,
+      amount REAL NOT NULL,
+      apy REAL NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+});
+app.get('/api/stake-plans', (req, res) => {
+  // Example: Provide predefined plans with APY values
+  const plans = [
+    { name: 'Flexible', apy: 10 },
+    { name: 'Locked', apy: 20 },
+    { name: 'High-Yield', apy: 30 }
+  ];
+  res.json(plans);
+});
+app.post('/api/stake', (req, res) => {
+  const { userId, plan, amount } = req.body;
+  const apy = plan === 'Flexible' ? 10 : plan === 'Locked' ? 20 : 30; // Example APY
+
+  db.run(`
+    INSERT INTO stakes (userId, plan, amount, apy)
+    VALUES (?, ?, ?, ?)`, [userId, plan, amount, apy], function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Staking failed' });
+      }
+      res.json({ success: true, stakeId: this.lastID });
+  });
+});
+app.get('/api/user-stakes', (req, res) => {
+  const { userId } = req.query;
+
+  db.all('SELECT * FROM stakes WHERE userId = ?', [userId], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to load stakes' });
+    }
+    res.json({ success: true, stakes: rows });
+  });
+});
+app.post('/api/unstake', (req, res) => {
+  const { stakeId, userId } = req.body;
+
+  db.run('DELETE FROM stakes WHERE id = ? AND userId = ?', [stakeId, userId], function (err) {
+    if (err || this.changes === 0) {
+      return res.status(500).json({ error: 'Unstaking failed' });
+    }
+    res.json({ success: true });
+  });
+});
