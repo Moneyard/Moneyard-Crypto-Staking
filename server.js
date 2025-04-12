@@ -89,7 +89,7 @@ app.post('/api/signup', async (req, res) => {
     });
 });
 
-// Login Route (updated to return username/email)
+// Login Route
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
