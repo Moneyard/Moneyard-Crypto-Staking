@@ -1,95 +1,117 @@
 const express = require('express');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const path = require('path');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
 
-// SQLite setup
-const db = new sqlite3.Database('./database.db');
+// Database setup
+const dbPath = process.env.DATABASE_URL || './database.sqlite';
+if (!fs.existsSync(dbPath)) {
+    fs.closeSync(fs.openSync(dbPath, 'w'));
+}
 
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) return console.error('DB Error:', err);
+    console.log('Connected to SQLite:', dbPath);
+});
+
+// Create tables
+db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE,
-    password TEXT
-  )`);
+    password TEXT,
+    balance REAL DEFAULT 0,
+    reset_token TEXT,
+    reset_token_expiry INTEGER
+)`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS stakes (
+db.run(`CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId INTEGER,
-    plan TEXT,
+    user_id INTEGER,
+    type TEXT,
     amount REAL,
-    apy REAL,
-    startDate TEXT,
+    network TEXT,
+    tx_id TEXT,
     status TEXT,
-    FOREIGN KEY(userId) REFERENCES users(id)
-  )`);
-});
+    date TEXT
+)`);
 
-// Signup
-app.post('/signup', (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return res.json({ success: false, error: 'Missing credentials' });
+db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    amount REAL,
+    wallet_address TEXT,
+    password TEXT,
+    status TEXT DEFAULT 'pending',
+    date TEXT
+)`);
 
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
-    if (err) return res.json({ success: false, error: 'Error encrypting password' });
+// Signup Route
+app.post('/api/signup', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
-    db.run('INSERT INTO users (email, password) VALUES (?, ?)', [email, hashedPassword], function (err) {
-      if (err) return res.json({ success: false, error: 'Email already in use' });
-      res.json({ success: true });
-    });
-  });
-});
-
-// Login
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-
-  db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
-    if (err || !user) return res.json({ success: false, error: 'Invalid login' });
-
-    bcrypt.compare(password, user.password, (err, match) => {
-      if (match) {
-        res.json({ success: true, userId: user.id });
-      } else {
-        res.json({ success: false, error: 'Invalid login' });
-      }
-    });
-  });
-});
-
-// Stake funds
-app.post('/api/stake', (req, res) => {
-  const { userId, plan, amount, apy } = req.body;
-  if (!userId || !plan || !amount || !apy) return res.status(400).json({ error: "Missing stake info" });
-
-  db.run(`
-    INSERT INTO stakes (userId, plan, amount, apy, startDate, status)
-    VALUES (?, ?, ?, ?, ?, ?)`,
-    [userId, plan, amount, apy, new Date().toISOString(), 'active'],
-    (err) => {
-      if (err) return res.status(500).json({ error: "Failed to create stake." });
-      res.json({ success: true, message: "Stake created successfully." });
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
     }
-  );
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ 
+            error: 'Password must contain at least 1 lowercase, 1 uppercase letter, 1 number, and be at least 5 characters long'
+        });
+    }
+
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (user) return res.status(400).json({ error: 'Email already in use' });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
+            [email, hashedPassword], 
+            function(err) {
+                if (err) return res.status(500).json({ error: 'Failed to register user' });
+                res.json({ success: true, userId: this.lastID });
+            }
+        );
+    });
 });
 
-// Get active stakes for user
-app.get('/api/stakes', (req, res) => {
-  const userId = req.query.userId;
-  if (!userId) return res.status(400).json({ error: "Missing userId" });
+// Login Route
+app.post('/api/login', (req, res) => {
+    const { email, password } = req.body;
 
-  db.all('SELECT * FROM stakes WHERE userId = ? AND status = "active"', [userId], (err, rows) => {
-    if (err) return res.status(500).json({ error: "Error fetching stakes" });
-    res.json({ success: true, stakes: rows });
-  });
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+        if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
+
+        res.json({ 
+            success: true, 
+            userId: user.id,
+            username: user.email
+        });
+    });
 });
+
+// Serve frontend files
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
