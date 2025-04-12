@@ -9,6 +9,51 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const app = express();
+const db = new sqlite3.Database('./moneyard.db');
+
+// Create table for staking if it doesn't exist
+db.run(`
+  CREATE TABLE IF NOT EXISTS stakes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    plan TEXT,
+    amount REAL,
+    apy REAL,
+    lock_period INTEGER,
+    start_date TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
+
+// API to submit a new stake
+app.post('/stake', (req, res) => {
+  const { userId, plan, amount, apy, lockPeriod } = req.body;
+  const query = 'INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date) VALUES (?, ?, ?, ?, ?, ?)';
+  db.run(query, [userId, plan, amount, apy, lockPeriod, new Date()], function(err) {
+    if (err) return res.status(500).send(err.message);
+    res.status(200).send({ message: 'Stake submitted successfully', stakeId: this.lastID });
+  });
+});
+
+// API to claim rewards (simple calculation for demo)
+app.post('/claim-rewards', (req, res) => {
+  const { userId } = req.body;
+
+  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
+    if (err) return res.status(500).send(err.message);
+
+    let totalRewards = 0;
+    rows.forEach(stake => {
+      totalRewards += (stake.amount * stake.apy / 100) * (stake.lock_period / 365);
+    });
+
+    res.status(200).send({ totalRewards: totalRewards.toFixed(2) });
+  });
+});
+
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
