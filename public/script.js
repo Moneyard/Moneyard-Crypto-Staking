@@ -1,4 +1,5 @@
-document.getElementById('depositForm').addEventListener('submit', async (e) => {
+// ========== DEPOSIT FUNCTIONALITY ==========
+document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const userId = localStorage.getItem('userId');
@@ -19,11 +20,10 @@ document.getElementById('depositForm').addEventListener('submit', async (e) => {
     });
 
     const data = await res.json();
-
     if (data.success) {
       alert('Deposit successful and balance updated!');
       closeDepositModal();
-      loadUserBalance(); // Optional: reload balance after deposit
+      loadUserBalance(); // reload balance
     } else {
       alert(data.error || 'Deposit failed');
     }
@@ -36,8 +36,23 @@ function closeDepositModal() {
   document.getElementById('depositModal').style.display = 'none';
 }
 
+async function loadUserBalance() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+
+  try {
+    const res = await fetch(`/api/balance?userId=${userId}`);
+    const data = await res.json();
+    if (data.balance !== undefined) {
+      document.getElementById('userBalance').textContent = `$${data.balance.toFixed(2)}`;
+    }
+  } catch (err) {
+    console.error("Balance load error", err);
+  }
+}
+
+// ========== DOMContentLoaded LOGIC ==========
 document.addEventListener('DOMContentLoaded', () => {
-  // Load animated sections
   const sections = document.querySelectorAll('.animated-section');
   const sectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -51,74 +66,59 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.1 });
 
   sections.forEach(section => sectionObserver.observe(section));
-async function loadUserBalance() {
-  const userId = localStorage.getItem('userId');
-  if (!userId) return;
 
-  const res = await fetch(`/api/balance?userId=${userId}`);
-  const data = await res.json();
-  if (data.balance !== undefined) {
-    document.getElementById('userBalance').textContent = `$${data.balance.toFixed(2)}`;
-  }
-}
-
-
-  // Load summary if logged in
   if (localStorage.getItem('userId')) {
     loadUserSummary();
+    loadUserBalance();
   }
 
   // Signup
   const signupForm = document.getElementById("signupForm");
-  if (signupForm) {
-    signupForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
+  signupForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
 
-      const res = await fetch("/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        alert("Signup successful! Please login.");
-        signupForm.reset();
-        toggleForms('login');
-      } else {
-        alert(data.error || "Signup failed.");
-      }
+    const res = await fetch("/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-  }
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Signup successful! Please login.");
+      signupForm.reset();
+      toggleForms('login');
+    } else {
+      alert(data.error || "Signup failed.");
+    }
+  });
 
   // Login
   const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-      const res = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("userId", data.userId);
-        localStorage.setItem("email", email);
-        window.location.href = "/dashboard";
-      } else {
-        alert(data.error || "Login failed.");
-      }
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-  }
 
-  // Load stake plans
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("email", email);
+      window.location.href = "/dashboard";
+    } else {
+      alert(data.error || "Login failed.");
+    }
+  });
+
+  // Stake plans
   const stakePlansContainer = document.getElementById("stake-plans");
   if (stakePlansContainer) {
     fetch("/api/stake-plans")
@@ -139,51 +139,46 @@ async function loadUserBalance() {
       });
   }
 
-  // Staking form
   const stakeForm = document.getElementById("stakeForm");
-  if (stakeForm) {
-    stakeForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const amount = parseFloat(document.getElementById("stakeAmount").value);
-      const planName = document.getElementById("selectedPlanName").value;
-      const userId = localStorage.getItem("userId");
+  stakeForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const amount = parseFloat(document.getElementById("stakeAmount").value);
+    const planName = document.getElementById("selectedPlanName").value;
+    const userId = localStorage.getItem("userId");
 
-      if (!amount || amount < 10) {
-        alert("Minimum stake is 10 USDT.");
-        return;
-      }
+    if (!amount || amount < 10) {
+      alert("Minimum stake is 10 USDT.");
+      return;
+    }
 
-      const res = await fetch("/api/stake", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, plan: planName, amount }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("Staking successful!");
-        stakeForm.reset();
-        loadActiveStakes();
-      } else {
-        alert(data.message || "Staking failed.");
-      }
+    const res = await fetch("/api/stake", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, plan: planName, amount }),
     });
-  }
 
-  // Load active stakes
+    const data = await res.json();
+    if (res.ok) {
+      alert("Staking successful!");
+      stakeForm.reset();
+      loadActiveStakes();
+    } else {
+      alert(data.message || "Staking failed.");
+    }
+  });
+
   if (document.getElementById("active-stakes")) {
     loadActiveStakes();
   }
 });
 
-// Select a plan
+// ========== OTHER FEATURES ==========
 function selectStakePlan(name, apy, duration) {
   document.getElementById("selectedPlanName").value = name;
   document.getElementById("selectedPlanInfo").innerText =
     `Selected: ${name} | APY: ${apy}% | Duration: ${duration} days`;
 }
 
-// Load active stakes
 async function loadActiveStakes() {
   const userId = localStorage.getItem('userId');
   const container = document.getElementById("active-stakes");
@@ -220,7 +215,6 @@ async function loadActiveStakes() {
   }
 }
 
-// Unstake handler
 async function unstake(stakeId) {
   if (!confirm("Unstake this plan?")) return;
 
@@ -235,7 +229,6 @@ async function unstake(stakeId) {
   }
 }
 
-// Forgot password
 function handleForgotPassword() {
   const email = document.getElementById("email").value;
   if (!email) {
@@ -253,7 +246,6 @@ function handleForgotPassword() {
     .catch(() => alert("Error sending reset link."));
 }
 
-// Toggle forms
 function toggleForms(type) {
   const signup = document.getElementById("signup-form");
   const login = document.getElementById("login-form");
@@ -261,7 +253,6 @@ function toggleForms(type) {
   login.style.display = type === 'login' ? 'block' : 'none';
 }
 
-// Load user summary
 function loadUserSummary() {
   const userId = localStorage.getItem("userId");
   if (!userId) return;
@@ -275,7 +266,6 @@ function loadUserSummary() {
     });
 }
 
-// Earnings calculator
 function calculateEarnings() {
   const amount = parseFloat(document.getElementById("deposit-input").value);
   if (!amount || amount < 15 || amount > 1000) {
@@ -285,187 +275,4 @@ function calculateEarnings() {
   const daily = amount * 0.08;
   document.getElementById("calculated-earnings").innerText =
     `Daily earnings: ${daily.toFixed(2)} USDT`;
-}
-// ========== GOALS TRACKER ==========
-
-// Load goals from localStorage or backend (optional DB)
-function loadGoals() {
-  const goals = JSON.parse(localStorage.getItem('goals')) || [];
-  const goalsList = document.getElementById('goals-list');
-  goalsList.innerHTML = '';
-
-  goals.forEach((goal, index) => {
-    const percent = ((goal.progress / goal.target) * 100).toFixed(1);
-    const goalDiv = document.createElement('div');
-    goalDiv.style.marginBottom = '12px';
-    goalDiv.innerHTML = `
-      <strong>${goal.name}</strong><br>
-      <progress value="${goal.progress}" max="${goal.target}" style="width: 100%;"></progress>
-      <p>${goal.progress} / ${goal.target} USDT (${percent}%)</p>
-    `;
-    goalsList.appendChild(goalDiv);
-  });
-}
-
-// Add a new goal
-function addGoal() {
-  const name = document.getElementById('goal-name').value.trim();
-  const target = parseFloat(document.getElementById('goal-target').value);
-  const progress = parseFloat(document.getElementById('goal-progress').value);
-
-  if (!name || isNaN(target) || isNaN(progress) || target <= 0 || progress < 0) {
-    alert('Please enter valid goal details.');
-    return;
-  }
-
-  const goals = JSON.parse(localStorage.getItem('goals')) || [];
-  goals.push({ name, target, progress });
-  localStorage.setItem('goals', JSON.stringify(goals));
-
-  // Clear inputs and reload
-  document.getElementById('goal-name').value = '';
-  document.getElementById('goal-target').value = '';
-  document.getElementById('goal-progress').value = '';
-  loadGoals();
-}
-
-// Load goals when page is ready
-document.addEventListener('DOMContentLoaded', loadGoals);
-
-
-// ========== REFERRAL EARNINGS ==========
-
-function loadReferralData() {
-  const referralCode = localStorage.getItem('referralCode') || generateReferralCode();
-  document.getElementById('referral-code').value = `https://moneyard.com/signup?ref=${referralCode}`;
-
-  // Simulated data — in real use, fetch from backend
-  const totalReferrals = parseInt(localStorage.getItem('totalReferrals') || '3');
-  const earnings = totalReferrals * 5; // Example: 5 USDT per referral
-
-  document.getElementById('total-referrals').textContent = totalReferrals;
-  document.getElementById('referral-earnings').textContent = earnings + ' USDT';
-}
-
-function generateReferralCode() {
-  const code = 'MY' + Math.random().toString(36).substr(2, 6).toUpperCase();
-  localStorage.setItem('referralCode', code);
-  return code;
-}
-
-function copyReferralLink() {
-  const link = document.getElementById('referral-code');
-  link.select();
-  link.setSelectionRange(0, 99999); // for mobile
-  document.execCommand('copy');
-  alert('Referral link copied to clipboard!');
-}
-
-// Load referral info when page is ready
-document.addEventListener('DOMContentLoaded', loadReferralData);
-// ========== STAKING SYSTEM LOGIC ==========
-
-// Store active stakes in localStorage for simplicity (backend integration will be needed for real data)
-function loadStakes() {
-  const stakes = JSON.parse(localStorage.getItem('userStakes')) || [];
-  const stakesList = document.getElementById('active-stakes-list');
-  stakesList.innerHTML = '';
-
-  stakes.forEach((stake, index) => {
-    const stakeDiv = document.createElement('div');
-    const rewards = (stake.amount * stake.apy / 100) * (stake.lockPeriod / 365); // Example rewards calculation
-    stakeDiv.innerHTML = `
-      <strong>Plan: ${stake.plan}</strong><br>
-      Amount: ${stake.amount} USDT<br>
-      APY: ${stake.apy}%<br>
-      Lock Period: ${stake.lockPeriod} days<br>
-      Estimated Rewards: ${rewards.toFixed(2)} USDT
-    `;
-    stakesList.appendChild(stakeDiv);
-  });
-}
-
-// Submit staking request (Save to localStorage for demo)
-function submitStaking() {
-  const amount = parseFloat(document.getElementById('staking-amount').value);
-  const plan = document.getElementById('staking-plan').value;
-  const apy = plan === 'flexible' ? 8 : (plan === 'locked' ? 12 : 20);
-  const lockPeriod = plan === 'flexible' ? 30 : (plan === 'locked' ? 90 : 180); // Lock periods for plans
-
-  if (isNaN(amount) || amount <= 0) {
-    alert('Please enter a valid amount to stake.');
-    return;
-  }
-
-  const stakes = JSON.parse(localStorage.getItem('userStakes')) || [];
-  stakes.push({ plan, amount, apy, lockPeriod });
-  localStorage.setItem('userStakes', JSON.stringify(stakes));
-
-  // Clear input and reload stakes
-  document.getElementById('staking-amount').value = '';
-  loadStakes();
-}
-
-// Calculate and show staking rewards
-function claimRewards() {
-  const stakes = JSON.parse(localStorage.getItem('userStakes')) || [];
-  let totalRewards = 0;
-
-  stakes.forEach(stake => {
-    totalRewards += (stake.amount * stake.apy / 100) * (stake.lockPeriod / 365);
-  });
-
-  document.getElementById('rewards-summary').textContent = `Total Rewards: ${totalRewards.toFixed(2)} USDT`;
-
-  // You could send this reward claim data to backend for processing
-}
-
-// Load stakes when the page is ready
-document.addEventListener('DOMContentLoaded', loadStakes);
-
-
-// Counter animation
-function animateCounters() {
-  const counters = document.querySelectorAll(".counter");
-  counters.forEach(counter => {
-    const update = () => {
-      const target = +counter.getAttribute("data-target");
-      const count = +counter.innerText;
-      const increment = target / 100;
-
-      if (count < target) {
-        counter.innerText = Math.ceil(count + increment);
-        setTimeout(update, 30);
-      } else {
-        counter.innerText = target;
-      }
-    };
-
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        update();
-        observer.disconnect();
-      }
-    }, { threshold: 1 });
-
-    observer.observe(counter);
-  });
-}
-
-// Navigation
-function navigateTo(page) {
-  const pages = {
-    home: "dashboard.html",
-    referral: "referral.html",
-    stake: "stake.html",
-    assets: "assets.html",
-  };
-  if (pages[page]) window.location.href = pages[page];
-}
-
-// Logout
-function logout() {
-  localStorage.removeItem("userId");
-  localStorage.removeItem("email");
-  window.location.href = "index.html";
 }
