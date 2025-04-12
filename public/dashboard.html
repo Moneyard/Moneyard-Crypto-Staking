@@ -186,7 +186,7 @@
 </head>
 <body>
 
-  <!-- HEADER -->
+<!-- HEADER -->
 <div class="top-header">
   <div class="header-left">
     <h2>MONEYARD DASHBOARD</h2>
@@ -201,7 +201,7 @@
           <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
         </div>
         <hr />
-        <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button> <!-- Link to deposit -->
+        <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button>
         <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
         <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
         <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
@@ -215,7 +215,7 @@
 </div>
 
 <!-- DEPOSIT MODAL -->
-<div id="deposit-modal" class="modal" style="display: none;">
+<div id="deposit-modal" class="modal">
   <div class="modal-content">
     <h3>Deposit Funds</h3>
     <label>Amount (USDT):</label>
@@ -235,20 +235,37 @@
   </div>
 </div>
 
+<!-- MAIN SECTIONS -->
+<section class="form">
+  <p id="greeting">Welcome!</p>
+</section>
+
+<section class="form">
+  <h3>Earnings Calculator</h3>
+  <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
+  <button onclick="calculateEarnings()">Calculate</button>
+  <p id="calculated-earnings" class="highlight-animate"></p>
+</section>
+
+<section class="form">
+  <h3>Referral Program</h3>
+  <input type="text" id="referral-code" readonly value="REF123ABC" />
+  <button onclick="copyReferralLink()">Copy Invite Link</button>
+  <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
+  <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
+</section>
+
 <!-- SCRIPT -->
 <script>
-  // Open Deposit Modal
   function openDeposit() {
     document.getElementById("deposit-modal").style.display = "flex";
   }
 
-  // Close Deposit Modal
   function closeDeposit() {
     document.getElementById("deposit-modal").style.display = "none";
     document.getElementById("deposit-response").textContent = "";
   }
 
-  // Handle deposit submission
   function submitDeposit() {
     const amount = document.getElementById("deposit-amount").value;
     const method = document.getElementById("deposit-method").value;
@@ -261,12 +278,7 @@
     }
 
     response.textContent = "Processing deposit...";
-    // Simulate backend request (for demo purposes)
-    setTimeout(() => {
-      response.textContent = `Deposit request for ${amount} USDT via ${method} submitted.`;
-    }, 1000);
 
-    // Optional: Fetch API to handle the backend logic if necessary
     fetch("/api/deposit", {
       method: "POST",
       headers: {
@@ -277,158 +289,36 @@
     })
       .then((res) => res.json())
       .then((data) => {
-        document.getElementById("deposit-response").textContent = data.message || "Deposit submitted!";
+        response.textContent = data.message || "Deposit submitted!";
       })
       .catch(() => {
-        document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
+        response.textContent = "Something went wrong. Try again.";
       });
   }
 
-  // Logout functionality
   function logout() {
     localStorage.removeItem("token");
     window.location.href = "/";
   }
+
+  function calculateEarnings() {
+    const amount = parseFloat(document.getElementById("deposit-input").value);
+    const result = amount ? (amount * 0.1).toFixed(2) : 0;
+    document.getElementById("calculated-earnings").textContent = `Est. Daily Earnings: ${result} USDT`;
+  }
+
+  function copyReferralLink() {
+    const code = document.getElementById("referral-code").value;
+    navigator.clipboard.writeText(`https://moneyard.com/signup?ref=${code}`);
+    alert("Referral link copied!");
+  }
+
+  function openBonuses() {}
+  function openNotifications() {}
+  function openReferral() {}
+  function openSettings() {}
+  function openHelp() {}
 </script>
 
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- GREETING -->
-  <section class="form">
-    <p id="greeting">Welcome!</p>
-  </section>
-
-  <!-- EARNINGS CALCULATOR -->
-  <section class="form">
-    <h3>Earnings Calculator</h3>
-    <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate</button>
-    <p id="calculated-earnings" class="highlight-animate"></p>
-  </section>
-
-  <!-- REFERRAL SECTION -->
-  <section class="form">
-    <h3>Referral Program</h3>
-    <input type="text" id="referral-code" readonly value="REF123ABC" />
-    <button onclick="copyReferralLink()">Copy Invite Link</button>
-    <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
-    <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
-  </section>
-
-  <!-- DEPOSIT MODAL -->
-  <div id="deposit-modal">
-    <div class="modal-content">
-      <h3>Deposit Funds</h3>
-      <label>Amount (USDT):</label>
-      <input type="number" id="deposit-amount" placeholder="Enter amount" />
-      <label>Payment Method:</label>
-      <select id="deposit-method">
-        <option value="TRC20">USDT - TRC20</option>
-        <option value="BEP20">USDT - BEP20</option>
-        <option value="Bank">Bank Transfer</option>
-        <option value="Mobile">Mobile Money (Airtel/MTN)</option>
-      </select>
-      <label>Transaction ID (optional):</label>
-      <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-      <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
-      <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
-      <p id="deposit-response" style="margin-top:10px;"></p>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
-    <button class="footer-btn" onclick="location.href='dashboard.html'">
-      <i class="fas fa-home"></i><br />Home
-    </button>
-    <button class="footer-btn" onclick="location.href='stake.html'">
-      <i class="fas fa-coins"></i><br />Stake
-    </button>
-    <button class="footer-btn" onclick="location.href='referral.html'">
-      <i class="fas fa-users"></i><br />Referral
-    </button>
-    <button class="footer-btn" onclick="location.href='assets.html'">
-      <i class="fas fa-wallet"></i><br />Assets
-    </button>
-  </div>
-
-  <!-- SCRIPT -->
-  <script src="script.js"></script>
-  <script>
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    }
-
-    function calculateEarnings() {
-      const input = parseFloat(document.getElementById('deposit-input').value);
-      const output = document.getElementById('calculated-earnings');
-      if (!isNaN(input) && input > 0) {
-        const earnings = (input * 0.08).toFixed(2);
-        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
-        output.classList.add("highlight-animate");
-      }
-    }
-
-    function copyReferralLink() {
-      const code = document.getElementById("referral-code");
-      navigator.clipboard.writeText(code.value).then(() => {
-        alert("Referral link copied!");
-      });
-    }
-
-    function openDeposit() {
-      document.getElementById("deposit-modal").style.display = "flex";
-    }
-
-    function closeDeposit() {
-      document.getElementById("deposit-modal").style.display = "none";
-      document.getElementById("deposit-response").textContent = "";
-    }
-
-    function submitDeposit() {
-      const amount = document.getElementById("deposit-amount").value;
-      const method = document.getElementById("deposit-method").value;
-      const txid = document.getElementById("deposit-txid").value;
-      const response = document.getElementById("deposit-response");
-
-      if (!amount || amount <= 0) {
-        response.textContent = "Please enter a valid amount.";
-        return;
-      }
-
-      response.textContent = "Processing deposit...";
-      // Simulate backend request
-      setTimeout(() => {
-        response.textContent = `Deposit request for ${amount} USDT via ${method} submitted.`;
-      }, 1000);
-    }
-      const txid = document.getElementById("deposit-txid").value;
-
-      if (!amount || amount <= 0) {
-        document.getElementById("deposit-response").textContent = "Please enter a valid amount.";
-        return;
-      }
-
-      fetch("/api/deposit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ amount, method, txid }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          document.getElementById("deposit-response").textContent = data.message || "Deposit submitted!";
-        })
-        .catch(() => {
-          document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
-        });
-    }
-  </script>
 </body>
 </html>
