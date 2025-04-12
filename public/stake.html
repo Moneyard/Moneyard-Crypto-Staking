@@ -97,6 +97,23 @@
         <input type="number" id="stakeAmount" placeholder="Amount to Stake (USDT)" min="10" required />
         <button type="submit">Stake Now</button>
       </form>
+<!-- Staking Form -->
+<form id="stake-form">
+  <label for="stake-plan">Choose Stake Plan</label>
+  <select id="stake-plan" required>
+    <option value="Flexible">Flexible</option>
+    <option value="Locked">Locked</option>
+    <option value="High-Yield">High-Yield</option>
+  </select>
+
+  <label for="stake-amount">Amount to Stake</label>
+  <input type="number" id="stake-amount" placeholder="Enter amount to stake" required>
+
+  <button type="submit">Stake Funds</button>
+</form>
+
+<div id="stake-result"></div>
+
     </div>
 
     <div id="active-stakes">
