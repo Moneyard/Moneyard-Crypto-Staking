@@ -54,7 +54,6 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     date TEXT
 )`);
 
-// Create table for staking if it doesn't exist
 db.run(`
   CREATE TABLE IF NOT EXISTS stakes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -113,6 +112,43 @@ app.post('/api/login', (req, res) => {
             userId: user.id,
             username: user.email
         });
+    });
+});
+
+// Deposit Funds
+app.post('/api/deposit', (req, res) => {
+    const { userId, amount, network, txId } = req.body;
+
+    if (!userId || !amount || !network || !txId) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    const now = new Date().toISOString();
+
+    db.run(`
+        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+        VALUES (?, 'deposit', ?, ?, ?, 'pending', ?)`,
+        [userId, amount, network, txId, now],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Deposit failed' });
+            res.json({ success: true, message: 'Deposit submitted', depositId: this.lastID });
+        }
+    );
+});
+
+// View user deposit history
+app.get('/api/deposits', (req, res) => {
+    const userId = req.query.userId;
+
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+    db.all(`
+        SELECT * FROM transactions 
+        WHERE user_id = ? AND type = 'deposit' 
+        ORDER BY date DESC
+    `, [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Failed to load deposits' });
+        res.json(rows);
     });
 });
 
