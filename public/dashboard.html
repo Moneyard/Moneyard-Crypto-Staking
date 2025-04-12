@@ -2,323 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background: #fff;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f9fa;
+      padding: 0;
     }
-
-    .top-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: white;
-      padding: 10px 20px;
-      border-bottom: 1px solid #eaeaea;
+    .container {
+      padding: 20px;
     }
-
-    .header-left h2 {
-      margin: 0;
-      color: #1a1a1a;
-      font-size: 20px;
+    h2, h3 {
+      color: #0a7745;
     }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-    }
-
-    .deposit-btn {
-      background-color: #ff914d;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-right: 16px;
-      transition: background-color 0.3s ease;
-    }
-
-    .deposit-btn:hover {
-      background-color: #ff7a26;
-    }
-
-    .dropbtn {
-      background: none;
-      border: none;
-      font-size: 28px;
-      cursor: pointer;
-      color: #333;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      background-color: #ffffff;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    .deposit-section {
+      background: #f8f8f8;
+      padding: 20px;
       border-radius: 10px;
-      z-index: 999;
-      min-width: 250px;
-      padding: 12px;
+      max-width: 500px;
+      margin: 40px auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
-    .dropdown:hover .dropdown-content {
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
       display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
-
-    .dropdown-info p {
-      margin: 6px 0;
-      font-size: 14px;
-    }
-
-    .dropdown-action-btn {
+    input[type="text"], input[type="number"] {
       width: 100%;
-      text-align: left;
-      background: none;
-      border: none;
-      padding: 8px 12px;
-      font-size: 14px;
-      cursor: pointer;
-      color: #333;
+      padding: 10px;
+      border: 1px solid #ccc;
       border-radius: 6px;
     }
-
-    .dropdown-action-btn:hover {
-      background-color: #f0f8ff;
-    }
-
-    .logout-btn {
-      color: #b00020;
-    }
-
-    .form {
-      padding: 20px;
-      background-color: white;
-      margin: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background-color: white;
-      border-top: 1px solid #ccc;
-      padding: 8px 0;
-    }
-
-    .footer-btn {
-      background: none;
+    button {
+      background-color: #0a7745;
+      color: white;
       border: none;
-      font-size: 14px;
-      color: #333;
-      text-align: center;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
     }
-
-    .footer-btn i {
-      font-size: 20px;
-    }
-
-    #greeting {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 0 0 10px 0;
-    }
-
-    .highlight-animate {
-      font-weight: bold;
-      color: #007bff;
-      transition: all 0.3s ease;
-    }
-
-    /* Modal */
-    #deposit-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #deposit-modal .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-    }
-
-    #deposit-modal input,
-    #deposit-modal select {
-      width: 100%;
-      padding: 8px;
+    .network-buttons {
+      display: flex;
+      gap: 10px;
       margin-bottom: 10px;
     }
-
-    #deposit-modal button {
-      padding: 10px 20px;
+    .network-btn {
+      padding: 10px 16px;
+      font-weight: bold;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
+    }
+    .trc20-btn {
+      background-color: #00c4cc;
+      color: white;
+    }
+    .bep20-btn {
+      background-color: #f0b90b;
+      color: black;
+    }
+    #walletAddressContainer {
+      background: #fff;
+      border: 1px dashed #ccc;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    #walletAddress {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Deposit Funds</h2>
 
-<!-- HEADER -->
-<div class="top-header">
-  <div class="header-left">
-    <h2>MONEYARD DASHBOARD</h2>
-  </div>
-  <div class="header-right">
-    <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
-    <div class="dropdown">
-      <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
-      <div class="dropdown-content">
-        <div class="dropdown-info">
-          <p><strong>Balance:</strong> <span id="dd-balance">$0.00</span></p>
-          <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
-        </div>
-        <hr />
-        <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button>
-        <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
-        <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
-        <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
-        <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
-        <button class="dropdown-action-btn" onclick="openHelp()">Get Help</button>
-        <hr />
-        <button class="dropdown-action-btn logout-btn" onclick="logout()">Logout</button>
+    <div class="deposit-section">
+      <!-- Payment Method Selection -->
+      <h3>Select Network:</h3>
+      <div class="network-buttons">
+        <button onclick="showAddress('TRC20')" class="network-btn trc20-btn">TRC20 (Tron)</button>
+        <button onclick="showAddress('BEP20')" class="network-btn bep20-btn">BEP20 (Binance)</button>
       </div>
+
+      <!-- Wallet Address Display -->
+      <div id="walletAddressContainer" style="display:none; margin-top:10px;">
+        <label><strong>Wallet Address:</strong></label>
+        <input type="text" id="walletAddress" readonly />
+        <button onclick="copyWalletAddress()">Copy to Clipboard</button>
+      </div>
+
+      <!-- Transaction ID -->
+      <div class="form-group">
+        <label for="txid">Transaction ID (TxID)</label>
+        <input type="text" id="txid" required />
+      </div>
+
+      <!-- Submit Button -->
+      <button onclick="submitDeposit()">Submit</button>
     </div>
   </div>
-</div>
 
-<!-- DEPOSIT MODAL -->
-<div id="deposit-modal" class="modal">
-  <div class="modal-content">
-    <h3>Deposit Funds</h3>
-    <label>Amount (USDT):</label>
-    <input type="number" id="deposit-amount" placeholder="Enter amount" />
-    <label>Payment Method:</label>
-    <select id="deposit-method">
-      <option value="TRC20">USDT - TRC20</option>
-      <option value="BEP20">USDT - BEP20</option>
-      <option value="Bank">Bank Transfer</option>
-      <option value="Mobile">Mobile Money (Airtel/MTN)</option>
-    </select>
-    <label>Transaction ID (optional):</label>
-    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-    <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
-    <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
-    <p id="deposit-response" style="margin-top:10px;"></p>
-  </div>
-</div>
+  <script>
+    const walletAddresses = {
+      TRC20: "TX5uK3a7y9HUNgBtPgEbEbsm9wRJwtrN2X",
+      BEP20: "0xA91d1c05bDf14a34Dc48Bd0C23cD7CdD01797eB5"
+    };
 
-<!-- MAIN SECTIONS -->
-<section class="form">
-  <p id="greeting">Welcome!</p>
-</section>
-
-<section class="form">
-  <h3>Earnings Calculator</h3>
-  <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-  <button onclick="calculateEarnings()">Calculate</button>
-  <p id="calculated-earnings" class="highlight-animate"></p>
-</section>
-
-<section class="form">
-  <h3>Referral Program</h3>
-  <input type="text" id="referral-code" readonly value="REF123ABC" />
-  <button onclick="copyReferralLink()">Copy Invite Link</button>
-  <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
-  <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
-</section>
-
-<!-- SCRIPT -->
-<script>
-  function openDeposit() {
-    document.getElementById("deposit-modal").style.display = "flex";
-  }
-
-  function closeDeposit() {
-    document.getElementById("deposit-modal").style.display = "none";
-    document.getElementById("deposit-response").textContent = "";
-  }
-
-  function submitDeposit() {
-    const amount = document.getElementById("deposit-amount").value;
-    const method = document.getElementById("deposit-method").value;
-    const txid = document.getElementById("deposit-txid").value;
-    const response = document.getElementById("deposit-response");
-
-    if (!amount || amount <= 0) {
-      response.textContent = "Please enter a valid amount.";
-      return;
+    function showAddress(network) {
+      const address = walletAddresses[network];
+      document.getElementById('walletAddress').value = address;
+      document.getElementById('walletAddressContainer').style.display = 'block';
     }
 
-    response.textContent = "Processing deposit...";
-
-    fetch("/api/deposit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ amount, method, txid }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        response.textContent = data.message || "Deposit submitted!";
-      })
-      .catch(() => {
-        response.textContent = "Something went wrong. Try again.";
+    function copyWalletAddress() {
+      const addressField = document.getElementById('walletAddress');
+      addressField.select();
+      addressField.setSelectionRange(0, 99999); // For mobile
+      navigator.clipboard.writeText(addressField.value).then(() => {
+        alert('Address copied to clipboard!');
       });
-  }
+    }
 
-  function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/";
-  }
+    function submitDeposit() {
+      const txid = document.getElementById("txid").value;
+      const selectedAddress = document.getElementById("walletAddress").value;
 
-  function calculateEarnings() {
-    const amount = parseFloat(document.getElementById("deposit-input").value);
-    const result = amount ? (amount * 0.1).toFixed(2) : 0;
-    document.getElementById("calculated-earnings").textContent = `Est. Daily Earnings: ${result} USDT`;
-  }
+      if (!selectedAddress || !txid) {
+        alert("Please select a network and enter the Transaction ID.");
+        return;
+      }
 
-  function copyReferralLink() {
-    const code = document.getElementById("referral-code").value;
-    navigator.clipboard.writeText(`https://moneyard.com/signup?ref=${code}`);
-    alert("Referral link copied!");
-  }
-
-  function openBonuses() {}
-  function openNotifications() {}
-  function openReferral() {}
-  function openSettings() {}
-  function openHelp() {}
-</script>
-
+      // Replace this with your backend POST logic
+      alert("Deposit Submitted!\nTxID: " + txid + "\nTo Address: " + selectedAddress);
+    }
+  </script>
 </body>
 </html>
