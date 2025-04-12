@@ -25,7 +25,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.log('Connected to SQLite:', dbPath);
 });
 
-// Create tables
+// Tables
 db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE,
@@ -59,29 +59,25 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
 db.run(`CREATE TABLE IF NOT EXISTS stakes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INTEGER NOT NULL,
-    plan TEXT NOT NULL,
+    strategy TEXT NOT NULL,
     amount REAL NOT NULL,
     apy REAL NOT NULL,
     status TEXT DEFAULT 'active',
     startDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`);
 
-// Signup Route
+// Signup
 app.post('/api/signup', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
-    }
+    if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({ 
-            error: 'Password must contain at least 1 lowercase, 1 uppercase letter, 1 number, and be at least 5 characters long'
-        });
-    }
+    if (!passwordRegex.test(password)) return res.status(400).json({ 
+        error: 'Password must contain at least 1 lowercase, 1 uppercase letter, 1 number, and be at least 5 characters long'
+    });
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
         if (err) return res.status(500).json({ error: 'Database error' });
@@ -99,7 +95,7 @@ app.post('/api/signup', async (req, res) => {
     });
 });
 
-// Login Route
+// Login
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -117,33 +113,33 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Get stake plans
+// DeFi staking plans (for USDT)
 app.get('/api/stake-plans', (req, res) => {
     const plans = [
-        { name: 'Flexible', apy: 10 },
-        { name: 'Locked', apy: 20 },
-        { name: 'High-Yield', apy: 30 }
+        { strategy: 'Stable Growth', apy: 8 },
+        { strategy: 'Yield Farming', apy: 15 },
+        { strategy: 'Liquidity Mining', apy: 22 }
     ];
     res.json(plans);
 });
 
-// Stake funds
+// Stake USDT funds
 app.post('/api/stake', (req, res) => {
-    const { userId, plan, amount } = req.body;
-    const planAPY = {
-        Flexible: 10,
-        Locked: 20,
-        'High-Yield': 30
-    }[plan];
+    const { userId, strategy, amount } = req.body;
+    const strategyAPY = {
+        'Stable Growth': 8,
+        'Yield Farming': 15,
+        'Liquidity Mining': 22
+    }[strategy];
 
-    if (!userId || !plan || !planAPY || amount < 10) {
-        return res.status(400).json({ message: 'Invalid input or plan.' });
+    if (!userId || !strategy || !strategyAPY || amount < 10) {
+        return res.status(400).json({ message: 'Invalid input or strategy.' });
     }
 
     db.run(`
-        INSERT INTO stakes (userId, plan, amount, apy)
+        INSERT INTO stakes (userId, strategy, amount, apy)
         VALUES (?, ?, ?, ?)`,
-        [userId, plan, amount, planAPY],
+        [userId, strategy, amount, strategyAPY],
         function (err) {
             if (err) return res.status(500).json({ message: 'Staking failed' });
             res.json({ success: true, stakeId: this.lastID });
@@ -151,7 +147,7 @@ app.post('/api/stake', (req, res) => {
     );
 });
 
-// View user active stakes
+// View user active DeFi stakes
 app.get('/api/active-stakes', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ message: 'Missing userId' });
@@ -171,7 +167,7 @@ app.post('/api/unstake/:id', (req, res) => {
     });
 });
 
-// Serve frontend files
+// Serve frontend
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 
