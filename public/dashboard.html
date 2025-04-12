@@ -7,50 +7,67 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      background-color: #FFA500;
+      background-color: #fff;
       font-family: sans-serif;
+      padding-bottom: 100px;
     }
-    .logout-button, button {
+    button, .footer-btn, .logout-button {
       background-color: #28a745 !important;
       color: white;
       border: none;
       padding: 10px 20px;
-      margin-top: 10px;
+      margin: 5px;
       cursor: pointer;
-      border-radius: 6px;
-      transition: transform 0.2s ease;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.3s ease;
     }
-    .logout-button:hover,
-    button:hover {
-      transform: scale(1.05);
+    button:hover, .footer-btn:hover, .logout-button:hover {
       opacity: 0.9;
+      transform: scale(1.05);
+    }
+    .form {
+      background: #f7f7f7;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 10px auto;
+      max-width: 400px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .highlight-animate {
       font-weight: bold;
-      font-size: 18px;
-      animation: countUp 2s ease-out forwards;
+      color: #1e7e34;
+      animation: countUp 1s ease-out;
     }
     @keyframes countUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0px);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #f1f1f1;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+    .footer-btn {
+      flex: 1;
+      margin: 0 5px;
     }
   </style>
 </head>
-<body style="padding-top: 60px; padding-bottom: 20px;">
+<body>
 
-  <!-- Logout Button -->
-  <div class="logout-container">
-    <button class="logout-button" onclick="logout()">Log Out</button>
+  <!-- Logout -->
+  <div style="text-align: right; padding: 10px;">
+    <button class="logout-button" onclick="logout()">Logout</button>
   </div>
 
   <!-- User Summary -->
-  <section id="user-summary" class="form">
+  <section class="form">
     <h3>Account Summary</h3>
     <p><strong>Username:</strong> <span id="summary-username">Loading...</span></p>
     <p><strong>Total Deposited:</strong> <span id="summary-total" class="highlight-animate">0 USDT</span></p>
@@ -58,64 +75,96 @@
   </section>
 
   <!-- Earnings Calculator -->
-  <section id="earnings-calculator-section" class="form">
+  <section class="form">
     <h3>Earnings Calculator</h3>
-    <p>Calculate your daily earnings based on your deposit.</p>
+    <p>Estimate your daily earnings.</p>
     <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
+    <button onclick="calculateEarnings()">Calculate</button>
     <p id="calculated-earnings" class="highlight-animate"></p>
   </section>
 
-  <!-- Referral Earnings -->
-  <section id="referral-section" class="form">
-    <h3>Referral Earnings</h3>
-    <p>Invite friends and earn bonuses!</p>
-    <input type="text" id="referral-code" readonly />
+  <!-- Referral Section -->
+  <section class="form">
+    <h3>Referral Program</h3>
+    <p>Your Code:</p>
+    <input type="text" id="referral-code" readonly value="REF123ABC" />
     <button onclick="copyReferralLink()">Copy Invite Link</button>
     <p><strong>Total Referrals:</strong> <span id="total-referrals" class="highlight-animate">0</span></p>
-    <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
+    <p><strong>Referral Earnings:</strong> <span id="referral-earnings" class="highlight-animate">0 USDT</span></p>
   </section>
 
-  <script src="script.js"></script>
+  <!-- Deposit / Withdraw / Transfer -->
+  <section class="form">
+    <h3>Actions</h3>
+    <button onclick="openDeposit()">Deposit</button>
+    <button onclick="openWithdraw()">Withdraw</button>
+    <button onclick="openTransfer()">Transfer</button>
+  </section>
 
-  <!-- Earnings animation logic -->
+  <!-- Footer Navigation -->
+  <div class="footer">
+    <button class="footer-btn" onclick="goToPage('home')">Home</button>
+    <button class="footer-btn" onclick="goToPage('stake')">Stake</button>
+    <button class="footer-btn" onclick="goToPage('referral')">Referral</button>
+    <button class="footer-btn" onclick="goToPage('assets')">Assets</button>
+  </div>
+
+  <script src="script.js"></script>
   <script>
-    function animateNumber(element, end, duration = 1500) {
+    function animateNumber(element, end, duration = 1200) {
       const start = 0;
       const startTime = performance.now();
-
-      function animate(currentTime) {
+      function step(currentTime) {
         const progress = Math.min((currentTime - startTime) / duration, 1);
         const value = Math.floor(progress * (end - start) + start);
         element.textContent = value + " USDT";
-        if (progress < 1) requestAnimationFrame(animate);
+        if (progress < 1) requestAnimationFrame(step);
       }
-      requestAnimationFrame(animate);
+      requestAnimationFrame(step);
     }
 
-    // Example usage on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      const total = document.getElementById('summary-total');
-      const balance = document.getElementById('summary-balance');
-      const referrals = document.getElementById('total-referrals');
-      const earnings = document.getElementById('referral-earnings');
-
-      // Simulated numbers (you can replace these with fetched backend values)
-      animateNumber(total, 100);
-      animateNumber(balance, 80);
-      animateNumber(referrals, 5, 1000);
-      animateNumber(earnings, 12, 1200);
-    });
+    function animateReferrals(count, earnings) {
+      animateNumber(document.getElementById('summary-total'), count);
+      animateNumber(document.getElementById('summary-balance'), count * 0.8);
+      document.getElementById('total-referrals').textContent = count;
+      document.getElementById('referral-earnings').textContent = earnings + ' USDT';
+    }
 
     function calculateEarnings() {
       const input = parseFloat(document.getElementById('deposit-input').value);
       const output = document.getElementById('calculated-earnings');
       if (!isNaN(input) && input > 0) {
-        const earnings = (input * 0.08).toFixed(2); // Example 8% return
-        output.textContent = `Estimated Daily Earnings: ${earnings} USDT`;
+        const earnings = (input * 0.08).toFixed(2);
+        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
         output.classList.add("highlight-animate");
       }
     }
+
+    function copyReferralLink() {
+      const code = document.getElementById("referral-code");
+      navigator.clipboard.writeText(code.value).then(() => {
+        alert("Referral link copied!");
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+
+    function openDeposit() { alert("Open Deposit Modal"); }
+    function openWithdraw() { alert("Open Withdraw Modal"); }
+    function openTransfer() { alert("Open Transfer Modal"); }
+
+    function goToPage(page) {
+      alert(`Navigate to ${page} page`);
+    }
+
+    // Example values
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("summary-username").textContent = "john_doe";
+      animateReferrals(5, 12.5);
+    });
   </script>
 </body>
 </html>
