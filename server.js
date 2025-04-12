@@ -9,8 +9,6 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-
 // API to claim rewards (simple calculation for demo)
 app.post('/claim-rewards', (req, res) => {
   const { userId } = req.body;
