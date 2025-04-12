@@ -6,16 +6,29 @@
   <title>Moneyard Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Styling for the deposit section */
+    /* Base Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    /* Deposit Section Styles */
     .deposit-methods {
       background: #fff;
       border: 1px solid #ccc;
       border-radius: 12px;
       padding: 16px;
       margin: 20px auto;
-      max-width: 400px;
+      max-width: 600px;
       text-align: center;
     }
+
     .network-btn {
       padding: 10px 20px;
       margin: 5px;
@@ -24,17 +37,21 @@
       cursor: pointer;
       font-weight: bold;
     }
+
     .active-network {
       background-color: #007bff;
       color: #fff;
     }
+
     .wallet-display {
       margin-top: 15px;
       display: none;
     }
+
     .wallet-display.active {
       display: block;
     }
+
     .copy-btn {
       margin-top: 5px;
       background-color: #28a745;
@@ -44,14 +61,17 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
     .qr-code {
       margin-top: 10px;
       width: 150px;
       height: 150px;
     }
+
     .form-section {
       margin-top: 20px;
     }
+
     input[type="text"] {
       padding: 10px;
       width: 100%;
@@ -59,6 +79,7 @@
       border-radius: 6px;
       margin-bottom: 10px;
     }
+
     button.submit-deposit {
       background-color: #007bff;
       color: white;
@@ -67,53 +88,7 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    /* Earnings calculator styling */
-    .earnings-calculator {
-      margin: 20px 0;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .earnings-calculator input {
-      padding: 10px;
-      margin: 10px 0;
-      width: 50%;
-      font-size: 16px;
-    }
-    .earnings-calculator button {
-      background-color: #28a745;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-    }
-    /* Staking section styling */
-    .staking-section {
-      margin: 20px 0;
-      padding: 20px;
-      background: #e9ecef;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .staking-plans {
-      display: flex;
-      justify-content: space-around;
-    }
-    .plan {
-      background-color: #007bff;
-      padding: 20px;
-      color: white;
-      border-radius: 8px;
-      width: 30%;
-    }
-    .plan h4 {
-      margin-bottom: 10px;
-    }
-    .plan p {
-      margin: 10px 0;
-    }
+
     /* Footer Styling */
     footer {
       position: fixed;
@@ -126,6 +101,7 @@
       display: flex;
       justify-content: space-around;
     }
+
     footer button {
       background-color: #28a745;
       color: white;
@@ -134,80 +110,159 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
     footer button:hover {
       background-color: #218838;
+    }
+
+    /* Earnings Calculator Styling */
+    .earnings-calculator {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .earnings-calculator input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 50%;
+      font-size: 16px;
+    }
+
+    .earnings-calculator button {
+      background-color: #28a745;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Staking Section Styling */
+    .staking-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: #e9ecef;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .staking-plans {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .plan {
+      background-color: #007bff;
+      padding: 20px;
+      color: white;
+      border-radius: 8px;
+      width: 30%;
+    }
+
+    .plan h4 {
+      margin-bottom: 10px;
+    }
+
+    .plan p {
+      margin: 10px 0;
+    }
+
+    /* Deposit Button and Person Icon Positioning */
+    #topDepositBtn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    #personIcon {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <!-- Deposit Button -->
-  <button id="topDepositBtn" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Deposit</button>
+  <button id="topDepositBtn">Deposit</button>
 
-  <!-- Deposit Method Section (TRC20 / BEP20) -->
-  <div class="deposit-methods">
-    <h3>Select Payment Method</h3>
-    <button class="network-btn" id="trc20Btn">TRC20 (Tron)</button>
-    <button class="network-btn" id="bep20Btn">BEP20 (BSC)</button>
+  <!-- Person Icon -->
+  <div id="personIcon">👤</div>
 
-    <!-- TRC20 Wallet Address Display -->
-    <div id="trc20Display" class="wallet-display">
-      <p><strong>TRC20 Wallet Address:</strong></p>
-      <input type="text" id="trc20Address" readonly value="T9zP14ryhxcKJ7fN2uRDFpWz5z5UVeZzX8">
-      <button class="copy-btn" onclick="copyToClipboard('trc20Address')">Copy</button>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?data=T9zP14ryhxcKJ7fN2uRDFpWz5z5UVeZzX8&size=150x150" alt="TRC20 QR" class="qr-code">
-    </div>
+  <div class="container">
+    <!-- Deposit Methods Section -->
+    <div class="deposit-methods">
+      <h3>Select Payment Method</h3>
+      <button class="network-btn" id="trc20Btn">TRC20 (Tron)</button>
+      <button class="network-btn" id="bep20Btn">BEP20 (BSC)</button>
 
-    <!-- BEP20 Wallet Address Display -->
-    <div id="bep20Display" class="wallet-display">
-      <p><strong>BEP20 Wallet Address:</strong></p>
-      <input type="text" id="bep20Address" readonly value="0x7aF6b3C3Fe89496AE8F18d11191E645Aa945DdF2">
-      <button class="copy-btn" onclick="copyToClipboard('bep20Address')">Copy</button>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?data=0x7aF6b3C3Fe89496AE8F18d11191E645Aa945DdF2&size=150x150" alt="BEP20 QR" class="qr-code">
-    </div>
-
-    <!-- Transaction ID & Submit -->
-    <div class="form-section">
-      <input type="text" id="transactionID" placeholder="Enter Transaction ID">
-      <button class="submit-deposit" onclick="submitDeposit()">Submit</button>
-    </div>
-  </div>
-
-  <!-- Earnings Calculator -->
-  <div class="earnings-calculator">
-    <h3>Earnings Calculator</h3>
-    <input type="number" id="stakeAmount" placeholder="Enter Stake Amount">
-    <button onclick="calculateEarnings()">Calculate Earnings</button>
-    <p id="estimatedEarnings"></p>
-  </div>
-
-  <!-- Staking Section -->
-  <div class="staking-section">
-    <h3>Staking Plans</h3>
-    <div class="staking-plans">
-      <div class="plan">
-        <h4>Flexible Plan</h4>
-        <p>APY: 10%</p>
-        <button>Start Staking</button>
+      <!-- TRC20 Wallet Address -->
+      <div id="trc20Display" class="wallet-display">
+        <p><strong>TRC20 Wallet Address:</strong></p>
+        <input type="text" id="trc20Address" readonly value="T9zP14ryhxcKJ7fN2uRDFpWz5z5UVeZzX8">
+        <button class="copy-btn" onclick="copyToClipboard('trc20Address')">Copy</button>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?data=T9zP14ryhxcKJ7fN2uRDFpWz5z5UVeZzX8&size=150x150" alt="TRC20 QR" class="qr-code">
       </div>
-      <div class="plan">
-        <h4>Locked Plan</h4>
-        <p>APY: 15%</p>
-        <button>Start Staking</button>
+
+      <!-- BEP20 Wallet Address -->
+      <div id="bep20Display" class="wallet-display">
+        <p><strong>BEP20 Wallet Address:</strong></p>
+        <input type="text" id="bep20Address" readonly value="0x7aF6b3C3Fe89496AE8F18d11191E645Aa945DdF2">
+        <button class="copy-btn" onclick="copyToClipboard('bep20Address')">Copy</button>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?data=0x7aF6b3C3Fe89496AE8F18d11191E645Aa945DdF2&size=150x150" alt="BEP20 QR" class="qr-code">
       </div>
-      <div class="plan">
-        <h4>High-Yield Plan</h4>
-        <p>APY: 25%</p>
-        <button>Start Staking</button>
+
+      <!-- Transaction ID & Submit -->
+      <div class="form-section">
+        <input type="text" id="transactionID" placeholder="Enter Transaction ID">
+        <button class="submit-deposit" onclick="submitDeposit()">Submit</button>
       </div>
     </div>
+
+    <!-- Earnings Calculator Section -->
+    <div class="earnings-calculator">
+      <h3>Earnings Calculator</h3>
+      <input type="number" id="stakeAmount" placeholder="Enter Stake Amount">
+      <button onclick="calculateEarnings()">Calculate Earnings</button>
+      <p id="estimatedEarnings"></p>
+    </div>
+
+    <!-- Staking Section -->
+    <div class="staking-section">
+      <h3>Staking Plans</h3>
+      <div class="staking-plans">
+        <div class="plan">
+          <h4>Flexible Plan</h4>
+          <p>APY: 10%</p>
+          <button>Start Staking</button>
+        </div>
+        <div class="plan">
+          <h4>Locked Plan</h4>
+          <p>APY: 15%</p>
+          <button>Start Staking</button>
+        </div>
+        <div class="plan">
+          <h4>High-Yield Plan</h4>
+          <p>APY: 25%</p>
+          <button>Start Staking</button>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <!-- Icon Deposit Button (Unchanged) -->
-  <button id="iconDepositBtn" style="position: absolute; top: 10px; right: 10px; background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Deposit Icon</button>
-
-  <!-- Home Button -->
-  <button id="homeBtn" style="position: absolute; top: 10px; left: 10px; background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 8px;">Home</button>
 
   <!-- Footer -->
   <footer>
@@ -235,28 +290,27 @@
       trc20Display.classList.remove('active');
     });
 
-    // Copy wallet address to clipboard
+    // Copy to clipboard
     function copyToClipboard(id) {
       let copyText = document.getElementById(id);
       copyText.select();
-      copyText.setSelectionRange(0, 99999); // For mobile devices
       document.execCommand("copy");
-      alert("Copied to clipboard: " + copyText.value);
     }
 
-    // Submit deposit (you can integrate backend API here)
-    function submitDeposit() {
-      let transactionID = document.getElementById('transactionID').value;
-      alert("Deposit Submitted with Transaction ID: " + transactionID);
-      // Here you would send the transaction ID to your backend API
-    }
-
-    // Earnings Calculator
+    // Earnings calculation
     function calculateEarnings() {
       let stakeAmount = document.getElementById('stakeAmount').value;
-      let earnings = stakeAmount * 0.1; // Example APY of 10%
-      document.getElementById('estimatedEarnings').innerText = "Estimated Earnings: $" + earnings;
+      let earnings = stakeAmount * 0.10; // Example: 10% APY
+      document.getElementById('estimatedEarnings').textContent = "Estimated Earnings: $" + earnings;
+    }
+
+    // Handle Deposit Submit
+    function submitDeposit() {
+      let transactionID = document.getElementById('transactionID').value;
+      console.log("Submitting deposit with Transaction ID:", transactionID);
+      alert("Deposit Submitted! Transaction ID: " + transactionID);
     }
   </script>
+
 </body>
 </html>
