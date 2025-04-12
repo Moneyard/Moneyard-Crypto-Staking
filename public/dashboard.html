@@ -29,11 +29,9 @@
       <option value="Tron">TRC20 (Tron)</option>
       <option value="BNB">BEP20 (BNB Smart Chain)</option>
     </select>
-
     <button onclick="getDepositAddress()">Get Deposit Address</button>
     <p id="deposit-address" style="margin-top: 10px;"></p>
     <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy Address</button>
-
     <input type="number" id="deposit-amount" placeholder="Enter amount (15 - 1000 USDT)" />
     <button onclick="logDeposit()">Submit Deposit</button>
   </section>
@@ -57,6 +55,29 @@
     <input type="number" id="deposit-input" placeholder="Enter deposit amount" />
     <button onclick="calculateEarnings()">Calculate Earnings</button>
     <p id="calculated-earnings"></p>
+  </section>
+
+  <!-- Goals Tracker -->
+  <section id="goals-tracker-section" class="form">
+    <h3>Savings & Investment Goals</h3>
+    <input type="text" id="goal-name" placeholder="Goal name (e.g. New Laptop)" />
+    <input type="number" id="goal-target" placeholder="Target amount (USDT)" />
+    <input type="number" id="goal-progress" placeholder="Current saved amount" />
+    <button onclick="addGoal()">Add Goal</button>
+
+    <div id="goals-list" style="margin-top: 15px;">
+      <!-- Goals will be listed here -->
+    </div>
+  </section>
+
+  <!-- Referral Earnings -->
+  <section id="referral-section" class="form">
+    <h3>Referral Earnings</h3>
+    <p>Invite friends and earn bonuses!</p>
+    <input type="text" id="referral-code" readonly />
+    <button onclick="copyReferralLink()">Copy Invite Link</button>
+    <p><strong>Total Referrals:</strong> <span id="total-referrals">0</span></p>
+    <p><strong>Total Referral Earnings:</strong> <span id="referral-earnings">0 USDT</span></p>
   </section>
 
   <!-- Transaction History -->
@@ -84,7 +105,7 @@
   <div class="bottom-nav">
     <button class="nav-btn" onclick="navigateTo('home')">Home</button>
     <button class="nav-btn" onclick="navigateTo('referral')">Referral</button>
-    <button class="nav-btn active" onclick="navigateTo('assets')">Assets</button>
+    <button class="nav-btn" onclick="navigateTo('assets')">Assets</button>
   </div>
 
   <style>
