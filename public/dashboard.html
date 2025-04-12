@@ -214,26 +214,34 @@
   </div>
 </div>
 
-<!-- DEPOSIT MODAL -->
-<div id="deposit-modal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <h3>Deposit Funds</h3>
-    <label>Amount (USDT):</label>
-    <input type="number" id="deposit-amount" placeholder="Enter amount" />
-    <label>Payment Method:</label>
-    <select id="deposit-method">
-      <option value="TRC20">USDT - TRC20</option>
-      <option value="BEP20">USDT - BEP20</option>
-      <option value="Bank">Bank Transfer</option>
-      <option value="Mobile">Mobile Money (Airtel/MTN)</option>
-    </select>
-    <label>Transaction ID (optional):</label>
-    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-    <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
-    <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
-    <p id="deposit-response" style="margin-top:10px;"></p>
-  </div>
-</div>
+  <!-- DEPOSIT MODAL -->
+  <div id="deposit-modal">
+    <div class="modal-content">
+      <h3>Deposit Funds</h3>
+      <label>Amount (USDT):</label>
+      <input type="number" id="deposit-amount" placeholder="Enter amount" />
+      <label>Payment Method:</label>
+      <select id="deposit-method" onchange="updateAddressAndQR()">
+        <option value="TRC20">USDT - TRC20 (Tron)</option>
+        <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
+      </select>
+
+      <div id="address-section" class="qr-section">
+        <p><strong>Deposit Address:</strong></p>
+        <p id="wallet-address" class="wallet-address">Please select a network</p>
+        <button id="copy-btn" class="copy-btn" onclick="copyAddress()">Copy Address</button>
+        <div id="qr-display" class="qr-section">
+          <img id="qr-image" src="" alt="QR Code" />
+        </div>
+      </div>
+
+      <label>Transaction ID (optional):</label>
+      <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+      <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
+      <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
+      <p id="deposit-response" style="margin-top:10px;"></p>
+    </div>
+  </div>
 
 <!-- SCRIPT -->
 <script>
@@ -429,6 +437,58 @@
           document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
         });
     }
-  </script>
+  <script>
+    function openDeposit() {
+      document.getElementById("deposit-modal").style.display = "flex";
+    }
+
+    function closeDeposit() {
+      document.getElementById("deposit-modal").style.display = "none";
+    }
+
+    function updateAddressAndQR() {
+      var method = document.getElementById("deposit-method").value;
+      var address = "";
+      var qrCodeUrl = "";
+
+      if (method === "TRC20") {
+        address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
+        qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
+      } else if (method === "BEP20") {
+        address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+        qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
+      }
+
+      document.getElementById("wallet-address").textContent = address;
+      document.getElementById("qr-image").src = qrCodeUrl;
+    }
+
+    function copyAddress() {
+      var addressText = document.getElementById("wallet-address").textContent;
+      navigator.clipboard.writeText(addressText).then(function () {
+        alert("Address copied to clipboard!");
+      });
+    }
+
+    function submitDeposit() {
+      var amount = document.getElementById("deposit-amount").value;
+      var txid = document.getElementById("deposit-txid").value;
+
+      // Handle deposit logic (send to backend, etc.)
+      document.getElementById("deposit-response").textContent = `Deposit of ${amount} is being processed...`;
+    }
+
+    function calculateEarnings() {
+      var depositAmount = document.getElementById("deposit-input").value;
+      // Perform earnings calculation based on deposit
+      document.getElementById("calculated-earnings").textContent = `Estimated earnings: ${depositAmount * 0.15} USDT`;
+    }
+
+    function redeemReferral() {
+      var referralCode = document.getElementById("referral-code").value;
+      // Handle referral logic
+    }
+  </script>
+
 </body>
 </html>
