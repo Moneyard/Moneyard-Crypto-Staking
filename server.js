@@ -177,19 +177,7 @@ app.get('/api/stake-plans', (req, res) => {
   ];
   res.json(plans);
 });
-app.post('/api/stake', (req, res) => {
-  const { userId, plan, amount } = req.body;
-  const apy = plan === 'Flexible' ? 10 : plan === 'Locked' ? 20 : 30; // Example APY
 
-  db.run(`
-    INSERT INTO stakes (userId, plan, amount, apy)
-    VALUES (?, ?, ?, ?)`, [userId, plan, amount, apy], function (err) {
-      if (err) {
-        return res.status(500).json({ error: 'Staking failed' });
-      }
-      res.json({ success: true, stakeId: this.lastID });
-  });
-});
 app.get('/api/user-stakes', (req, res) => {
   const { userId } = req.query;
 
