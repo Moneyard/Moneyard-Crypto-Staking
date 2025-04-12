@@ -324,6 +324,29 @@
         response.textContent = `Deposit request for ${amount} USDT via ${method} submitted.`;
       }, 1000);
     }
+      const txid = document.getElementById("deposit-txid").value;
+
+      if (!amount || amount <= 0) {
+        document.getElementById("deposit-response").textContent = "Please enter a valid amount.";
+        return;
+      }
+
+      fetch("/api/deposit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ amount, method, txid }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("deposit-response").textContent = data.message || "Deposit submitted!";
+        })
+        .catch(() => {
+          document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
+        });
+    }
   </script>
 </body>
 </html>
