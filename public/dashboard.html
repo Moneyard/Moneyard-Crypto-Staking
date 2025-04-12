@@ -290,19 +290,11 @@
       closeDeposit();
     }
 
-    <script>
-  function logout() {
-    // Debug log (check console if it's triggered)
-    console.log("Logout function triggered");
-
-    // Clear stored session data
-    localStorage.removeItem("userToken"); // Replace with your key if needed
-    sessionStorage.clear(); // Optional
-
-    // Redirect to index.html
-    window.location.href = "index.html";
-  }
-</script>
+    function logout() {
+      alert("Logged out.");
+      // Add logout functionality here
+    }
+  </script>
 
   <!-- FOOTER -->
   <div class="footer">
