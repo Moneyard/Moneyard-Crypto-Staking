@@ -55,18 +55,6 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     status TEXT DEFAULT 'pending',
     date TEXT
 )`);
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS stakes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
-      plan TEXT NOT NULL,
-      amount REAL NOT NULL,
-      apy REAL NOT NULL,
-      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-});
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
@@ -159,15 +147,6 @@ app.get('/api/user-stakes', (req, res) => {
     res.json({ success: true, stakes: rows });
   });
 });
-app.get('/api/stake-plans', (req, res) => {
-  // Example: Provide predefined plans with APY values
-  const plans = [
-    { name: 'Flexible', apy: 10 },
-    { name: 'Locked', apy: 20 },
-    { name: 'High-Yield', apy: 30 }
-  ];
-  res.json(plans);
-});
 
 // Unstake (delete entry)
 app.post('/api/unstake', (req, res) => {
@@ -177,11 +156,44 @@ app.post('/api/unstake', (req, res) => {
     res.json({ success: true });
   });
 });
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS stakes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      plan TEXT NOT NULL,
+      amount REAL NOT NULL,
+      apy REAL NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+});
+app.get('/api/stake-plans', (req, res) => {
+  // Example: Provide predefined plans with APY values
+  const plans = [
+    { name: 'Flexible', apy: 10 },
+    { name: 'Locked', apy: 20 },
+    { name: 'High-Yield', apy: 30 }
+  ];
+  res.json(plans);
+});
+app.post('/api/stake', (req, res) => {
+  const { userId, plan, amount } = req.body;
+  const apy = plan === 'Flexible' ? 10 : plan === 'Locked' ? 20 : 30; // Example APY
+
+  db.run(`
+    INSERT INTO stakes (userId, plan, amount, apy)
+    VALUES (?, ?, ?, ?)`, [userId, plan, amount, apy], function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Staking failed' });
+      }
+      res.json({ success: true, stakeId: this.lastID });
+  });
+});
 
 // Serve frontend files
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
-
 
 // Start server
 app.listen(PORT, () => {
