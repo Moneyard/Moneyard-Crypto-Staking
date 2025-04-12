@@ -296,3 +296,36 @@ function unstake(stakeId) {
     })
     .catch(() => alert("Unstake request failed."));
 }
+document.getElementById('stake-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const plan = document.getElementById('stake-plan').value;
+  const amount = parseFloat(document.getElementById('stake-amount').value);
+  const userId = localStorage.getItem('userId');
+
+  if (!userId) {
+    alert('Please log in to stake funds.');
+    return;
+  }
+
+  if (!amount || amount < 10) {
+    alert('Please enter a valid amount greater than 10 USDT.');
+    return;
+  }
+
+  const response = await fetch('/api/stake', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, plan, amount })
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    alert('Stake successful!');
+    document.getElementById('stake-form').reset();
+    document.getElementById('stake-result').innerText = `You have successfully staked ${amount} USDT in the ${plan} plan.`;
+  } else {
+    alert(data.error || 'Stake failed.');
+  }
+});
