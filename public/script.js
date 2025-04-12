@@ -449,3 +449,37 @@ async function loadUserStakes() {
 window.addEventListener('DOMContentLoaded', (event) => {
   loadUserStakes();
 });
+// Load active stakes when the page is loaded
+function loadActiveStakes() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+
+  fetch(`/api/active-stakes?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      const activeStakesContainer = document.getElementById('active-stakes');
+      if (data.stakes && data.stakes.length > 0) {
+        const stakesList = data.stakes.map(stake => {
+          return `<div class="stake-item">
+                    <p>Plan: ${stake.plan}</p>
+                    <p>Amount: ${stake.amount} USDT</p>
+                    <p>APY: ${stake.apy}%</p>
+                    <p>Start Date: ${new Date(stake.startDate).toLocaleDateString()}</p>
+                  </div>`;
+        }).join('');
+        activeStakesContainer.innerHTML = stakesList;
+      } else {
+        activeStakesContainer.innerHTML = "<p>You have no active stakes.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("Error loading active stakes:", err);
+      document.getElementById('active-stakes').innerHTML = "<p>Failed to load active stakes.</p>";
+    });
+}
+
+// Call the loadActiveStakes function when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Load active stakes
+  loadActiveStakes();
+});
