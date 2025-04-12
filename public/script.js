@@ -382,3 +382,70 @@ async function unstake(stakeId) {
     alert(data.error || 'Failed to unstake.');
   }
 }
+// Stake function
+function stake(plan) {
+  const stakeAmount = document.getElementById(`${plan}-stake`).value;
+  if (!stakeAmount || parseFloat(stakeAmount) < 15) {
+    alert("Please enter a valid stake amount (minimum 15 USDT).");
+    return;
+  }
+
+  fetch(`/api/stake/${plan}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: parseFloat(stakeAmount) })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Staking successful!");
+    } else {
+      alert(data.error || "Staking failed.");
+    }
+  })
+  .catch(err => {
+    console.error("Error staking:", err);
+    alert("Error staking. Please try again.");
+  });
+}
+// Function to load and display the user's stakes
+async function loadUserStakes() {
+  const userId = localStorage.getItem('userId'); // Assuming user ID is stored in localStorage
+  if (!userId) {
+    alert('Please log in to view your stakes.');
+    return;
+  }
+
+  const response = await fetch(`/api/user-stakes?userId=${userId}`);
+  const data = await response.json();
+
+  if (data.success) {
+    const stakesContainer = document.getElementById('stakes-list');
+    stakesContainer.innerHTML = ''; // Clear existing stakes
+
+    if (data.stakes.length === 0) {
+      stakesContainer.innerHTML = '<p>You have no active stakes.</p>';
+      return;
+    }
+
+    // Loop through stakes and create a list item for each one
+    data.stakes.forEach(stake => {
+      const stakeElement = document.createElement('div');
+      stakeElement.classList.add('stake-item');
+      stakeElement.innerHTML = `
+        <p><strong>Plan:</strong> ${stake.plan}</p>
+        <p><strong>Amount:</strong> ${stake.amount} USDT</p>
+        <p><strong>APY:</strong> ${stake.apy}%</p>
+        <p><strong>Staked On:</strong> ${new Date(stake.createdAt).toLocaleString()}</p>
+        <button onclick="unstake(${stake.id})">Unstake</button>
+      `;
+      stakesContainer.appendChild(stakeElement);
+    });
+  } else {
+    alert('Failed to load stakes.');
+  }
+}
+// Load user's stakes when the page loads
+window.addEventListener('DOMContentLoaded', (event) => {
+  loadUserStakes();
+});
