@@ -1,3 +1,41 @@
+document.getElementById('depositForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const userId = localStorage.getItem('userId');
+  const amount = parseFloat(document.getElementById('depositAmount').value);
+  const network = document.getElementById('depositNetwork').value;
+  const txId = document.getElementById('depositTxId').value;
+
+  if (!userId || !amount || !network || !txId) {
+    alert('Please fill all fields.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/deposit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, amount, network, txId })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      alert('Deposit successful and balance updated!');
+      closeDepositModal();
+      loadUserBalance(); // Optional: reload balance after deposit
+    } else {
+      alert(data.error || 'Deposit failed');
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+
+function closeDepositModal() {
+  document.getElementById('depositModal').style.display = 'none';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Load animated sections
   const sections = document.querySelectorAll('.animated-section');
@@ -13,6 +51,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.1 });
 
   sections.forEach(section => sectionObserver.observe(section));
+async function loadUserBalance() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+
+  const res = await fetch(`/api/balance?userId=${userId}`);
+  const data = await res.json();
+  if (data.balance !== undefined) {
+    document.getElementById('userBalance').textContent = `$${data.balance.toFixed(2)}`;
+  }
+}
+
 
   // Load summary if logged in
   if (localStorage.getItem('userId')) {
