@@ -2,28 +2,10 @@ const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// API to claim rewards (simple calculation for demo)
-app.post('/claim-rewards', (req, res) => {
-  const { userId } = req.body;
-
-  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
-    if (err) return res.status(500).send(err.message);
-
-    let totalRewards = 0;
-    rows.forEach(stake => {
-      totalRewards += (stake.amount * stake.apy / 100) * (stake.lock_period / 365);
-    });
-
-    res.status(200).send({ totalRewards: totalRewards.toFixed(2) });
-  });
-});
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Database setup
-const dbPath = process.env.DATABASE_URL || './database.sqlite';
+const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) {
     fs.closeSync(fs.openSync(dbPath, 'w'));
 }
@@ -72,15 +54,20 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     date TEXT
 )`);
 
-db.run(`CREATE TABLE IF NOT EXISTS stakes (
+// Create table for staking if it doesn't exist
+db.run(`
+  CREATE TABLE IF NOT EXISTS stakes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId INTEGER NOT NULL,
-    strategy TEXT NOT NULL,
-    amount REAL NOT NULL,
-    apy REAL NOT NULL,
+    user_id INTEGER,
+    plan TEXT,
+    amount REAL,
+    apy REAL,
+    lock_period INTEGER,
+    start_date TIMESTAMP,
     status TEXT DEFAULT 'active',
-    startDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)`);
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -141,21 +128,21 @@ app.get('/api/stake-plans', (req, res) => {
 
 // Stake USDT funds
 app.post('/api/stake', (req, res) => {
-    const { userId, strategy, amount } = req.body;
+    const { userId, plan, amount } = req.body;
     const strategyAPY = {
         'Stable Growth': 8,
         'Yield Farming': 15,
         'Liquidity Mining': 22
-    }[strategy];
+    }[plan];
 
-    if (!userId || !strategy || !strategyAPY || amount < 10) {
+    if (!userId || !plan || !strategyAPY || amount < 10) {
         return res.status(400).json({ message: 'Invalid input or strategy.' });
     }
 
     db.run(`
-        INSERT INTO stakes (userId, strategy, amount, apy)
-        VALUES (?, ?, ?, ?)`,
-        [userId, strategy, amount, strategyAPY],
+        INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [userId, plan, amount, strategyAPY, 30, new Date()],
         function (err) {
             if (err) return res.status(500).json({ message: 'Staking failed' });
             res.json({ success: true, stakeId: this.lastID });
@@ -168,7 +155,7 @@ app.get('/api/active-stakes', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ message: 'Missing userId' });
 
-    db.all('SELECT * FROM stakes WHERE userId = ? AND status = "active"', [userId], (err, rows) => {
+    db.all('SELECT * FROM stakes WHERE user_id = ? AND status = "active"', [userId], (err, rows) => {
         if (err) return res.status(500).json({ message: 'Error loading stakes' });
         res.json(rows);
     });
@@ -181,6 +168,22 @@ app.post('/api/unstake/:id', (req, res) => {
         if (err) return res.status(500).json({ message: 'Unstake failed' });
         res.json({ success: true });
     });
+});
+
+// API to claim rewards (simple calculation for demo)
+app.post('/claim-rewards', (req, res) => {
+  const { userId } = req.body;
+
+  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
+    if (err) return res.status(500).send(err.message);
+
+    let totalRewards = 0;
+    rows.forEach(stake => {
+      totalRewards += (stake.amount * stake.apy / 100) * (stake.lock_period / 365);
+    });
+
+    res.status(200).send({ totalRewards: totalRewards.toFixed(2) });
+  });
 });
 
 // Serve frontend
