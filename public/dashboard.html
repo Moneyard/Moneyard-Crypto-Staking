@@ -58,6 +58,9 @@
       margin: 0 5px;
     }
   </style>
+<head>
+<!-- Font Awesome CDN for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
@@ -101,13 +104,21 @@
     <button onclick="openTransfer()">Transfer</button>
   </section>
 
-  <!-- Footer Navigation -->
-  <div class="footer">
-    <button class="footer-btn" onclick="goToPage('home')">Home</button>
-    <button class="footer-btn" onclick="goToPage('stake')">Stake</button>
-    <button class="footer-btn" onclick="goToPage('referral')">Referral</button>
-    <button class="footer-btn" onclick="goToPage('assets')">Assets</button>
-  </div>
+  <!-- Footer Navigation with Icons -->
+<div class="footer">
+  <button class="footer-btn" onclick="location.href='dashboard.html'">
+    <i class="fas fa-home"></i><br>Home
+  </button>
+  <button class="footer-btn" onclick="location.href='stake.html'">
+    <i class="fas fa-coins"></i><br>Stake
+  </button>
+  <button class="footer-btn" onclick="location.href='referral.html'">
+    <i class="fas fa-users"></i><br>Referral
+  </button>
+  <button class="footer-btn" onclick="location.href='assets.html'">
+    <i class="fas fa-wallet"></i><br>Assets
+  </button>
+</div>
 
   <script src="script.js"></script>
   <script>
