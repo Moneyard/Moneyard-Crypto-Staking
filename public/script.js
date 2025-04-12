@@ -329,3 +329,56 @@ document.getElementById('stake-form').addEventListener('submit', async function 
     alert(data.error || 'Stake failed.');
   }
 });
+async function loadUserStakes() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    alert('Please log in to view your stakes.');
+    return;
+  }
+
+  const response = await fetch(`/api/user-stakes?userId=${userId}`);
+  const data = await response.json();
+
+  if (data.success) {
+    const stakesContainer = document.getElementById('user-stakes');
+    stakesContainer.innerHTML = '';
+    data.stakes.forEach(stake => {
+      const stakeElement = document.createElement('div');
+      stakeElement.classList.add('stake-item');
+      stakeElement.innerHTML = `
+        <p>Plan: ${stake.plan}</p>
+        <p>Amount: ${stake.amount} USDT</p>
+        <p>APY: ${stake.apy}%</p>
+        <p>Staked on: ${new Date(stake.createdAt).toLocaleString()}</p>
+        <button onclick="unstake(${stake.id})">Unstake</button>
+      `;
+      stakesContainer.appendChild(stakeElement);
+    });
+  } else {
+    alert('Failed to load stakes.');
+  }
+}
+
+// Function to handle unstaking
+async function unstake(stakeId) {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    alert('Please log in to unstake.');
+    return;
+  }
+
+  const response = await fetch('/api/unstake', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stakeId, userId })
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    alert('Unstake successful!');
+    loadUserStakes(); // Reload user stakes after unstaking
+  } else {
+    alert(data.error || 'Failed to unstake.');
+  }
+}
