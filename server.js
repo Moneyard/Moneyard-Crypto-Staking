@@ -7,12 +7,10 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Database setup
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) {
     fs.closeSync(fs.openSync(dbPath, 'w'));
@@ -74,11 +72,11 @@ app.post('/api/signup', async (req, res) => {
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
-
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
+
+    if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
     if (!passwordRegex.test(password)) return res.status(400).json({ 
-        error: 'Password must contain at least 1 lowercase, 1 uppercase letter, 1 number, and be at least 5 characters long'
+        error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters' 
     });
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
@@ -118,7 +116,6 @@ app.post('/api/login', (req, res) => {
 // Deposit Funds
 app.post('/api/deposit', (req, res) => {
     const { userId, amount, network, txId } = req.body;
-
     if (!userId || !amount || !network || !txId) {
         return res.status(400).json({ error: 'All fields are required' });
     }
@@ -127,50 +124,48 @@ app.post('/api/deposit', (req, res) => {
 
     db.run(`
         INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-        VALUES (?, 'deposit', ?, ?, ?, 'pending', ?)`,
+        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
         [userId, amount, network, txId, now],
         function (err) {
             if (err) return res.status(500).json({ error: 'Deposit failed' });
-            res.json({ success: true, message: 'Deposit submitted', depositId: this.lastID });
+
+            // Auto-update user balance
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update balance' });
+                res.json({ success: true, message: 'Deposit confirmed and balance updated' });
+            });
         }
     );
 });
 
-// Confirm deposit and auto-update user balance
-app.post('/api/confirm-deposit', (req, res) => {
-    const { depositId } = req.body;
-
-    db.get('SELECT * FROM transactions WHERE id = ? AND status = "pending"', [depositId], (err, deposit) => {
-        if (err || !deposit) return res.status(404).json({ error: 'Deposit not found or already confirmed' });
-
-        db.run('UPDATE transactions SET status = "confirmed" WHERE id = ?', [depositId], (err) => {
-            if (err) return res.status(500).json({ error: 'Failed to update deposit status' });
-
-            db.run('UPDATE users SET balance = balance + ? WHERE id = ?', [deposit.amount, deposit.user_id], (err) => {
-                if (err) return res.status(500).json({ error: 'Failed to update balance' });
-                res.json({ success: true, message: 'Deposit confirmed and balance updated' });
-            });
-        });
-    });
-});
-
-// View user deposit history
+// View deposit history
 app.get('/api/deposits', (req, res) => {
     const userId = req.query.userId;
-
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
-    db.all(`
-        SELECT * FROM transactions 
-        WHERE user_id = ? AND type = 'deposit' 
-        ORDER BY date DESC
-    `, [userId], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Failed to load deposits' });
-        res.json(rows);
+    db.all(`SELECT * FROM transactions WHERE user_id = ? AND type = 'deposit' ORDER BY date DESC`, 
+        [userId], 
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: 'Failed to load deposits' });
+            res.json(rows);
+        }
+    );
+});
+
+// Get user balance
+app.get('/api/balance', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+    db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, row) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (!row) return res.status(404).json({ error: 'User not found' });
+
+        res.json({ balance: row.balance });
     });
 });
 
-// DeFi staking plans (for USDT)
+// Get stake plans
 app.get('/api/stake-plans', (req, res) => {
     const plans = [
         { strategy: 'Stable Growth', apy: 8 },
@@ -180,7 +175,7 @@ app.get('/api/stake-plans', (req, res) => {
     res.json(plans);
 });
 
-// Stake USDT funds
+// Stake funds
 app.post('/api/stake', (req, res) => {
     const { userId, plan, amount } = req.body;
     const strategyAPY = {
@@ -193,18 +188,29 @@ app.post('/api/stake', (req, res) => {
         return res.status(400).json({ message: 'Invalid input or strategy.' });
     }
 
-    db.run(`
-        INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
-        VALUES (?, ?, ?, ?, ?, ?)`,
-        [userId, plan, amount, strategyAPY, 30, new Date()],
-        function (err) {
-            if (err) return res.status(500).json({ message: 'Staking failed' });
-            res.json({ success: true, stakeId: this.lastID });
-        }
-    );
+    // Check if user has enough balance
+    db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
+        if (err || !row) return res.status(400).json({ message: 'User not found' });
+        if (row.balance < amount) return res.status(400).json({ message: 'Insufficient balance' });
+
+        // Deduct and insert stake
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId], (err) => {
+            if (err) return res.status(500).json({ message: 'Balance update failed' });
+
+            db.run(`
+                INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
+                VALUES (?, ?, ?, ?, ?, ?)`,
+                [userId, plan, amount, strategyAPY, 30, new Date()],
+                function (err) {
+                    if (err) return res.status(500).json({ message: 'Staking failed' });
+                    res.json({ success: true, stakeId: this.lastID });
+                }
+            );
+        });
+    });
 });
 
-// View user active DeFi stakes
+// Get active stakes
 app.get('/api/active-stakes', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ message: 'Missing userId' });
@@ -224,20 +230,20 @@ app.post('/api/unstake/:id', (req, res) => {
     });
 });
 
-// API to claim rewards (simple calculation for demo)
+// Claim rewards
 app.post('/claim-rewards', (req, res) => {
-  const { userId } = req.body;
+    const { userId } = req.body;
 
-  db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
-    if (err) return res.status(500).send(err.message);
+    db.all('SELECT * FROM stakes WHERE user_id = ?', [userId], (err, rows) => {
+        if (err) return res.status(500).send(err.message);
 
-    let totalRewards = 0;
-    rows.forEach(stake => {
-      totalRewards += (stake.amount * stake.apy / 100) * (stake.lock_period / 365);
+        let totalRewards = 0;
+        rows.forEach(stake => {
+            totalRewards += (stake.amount * stake.apy / 100) * (stake.lock_period / 365);
+        });
+
+        res.status(200).send({ totalRewards: totalRewards.toFixed(2) });
     });
-
-    res.status(200).send({ totalRewards: totalRewards.toFixed(2) });
-  });
 });
 
 // Serve frontend
