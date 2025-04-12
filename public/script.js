@@ -314,6 +314,65 @@ function copyReferralLink() {
 
 // Load referral info when page is ready
 document.addEventListener('DOMContentLoaded', loadReferralData);
+// ========== STAKING SYSTEM LOGIC ==========
+
+// Store active stakes in localStorage for simplicity (backend integration will be needed for real data)
+function loadStakes() {
+  const stakes = JSON.parse(localStorage.getItem('userStakes')) || [];
+  const stakesList = document.getElementById('active-stakes-list');
+  stakesList.innerHTML = '';
+
+  stakes.forEach((stake, index) => {
+    const stakeDiv = document.createElement('div');
+    const rewards = (stake.amount * stake.apy / 100) * (stake.lockPeriod / 365); // Example rewards calculation
+    stakeDiv.innerHTML = `
+      <strong>Plan: ${stake.plan}</strong><br>
+      Amount: ${stake.amount} USDT<br>
+      APY: ${stake.apy}%<br>
+      Lock Period: ${stake.lockPeriod} days<br>
+      Estimated Rewards: ${rewards.toFixed(2)} USDT
+    `;
+    stakesList.appendChild(stakeDiv);
+  });
+}
+
+// Submit staking request (Save to localStorage for demo)
+function submitStaking() {
+  const amount = parseFloat(document.getElementById('staking-amount').value);
+  const plan = document.getElementById('staking-plan').value;
+  const apy = plan === 'flexible' ? 8 : (plan === 'locked' ? 12 : 20);
+  const lockPeriod = plan === 'flexible' ? 30 : (plan === 'locked' ? 90 : 180); // Lock periods for plans
+
+  if (isNaN(amount) || amount <= 0) {
+    alert('Please enter a valid amount to stake.');
+    return;
+  }
+
+  const stakes = JSON.parse(localStorage.getItem('userStakes')) || [];
+  stakes.push({ plan, amount, apy, lockPeriod });
+  localStorage.setItem('userStakes', JSON.stringify(stakes));
+
+  // Clear input and reload stakes
+  document.getElementById('staking-amount').value = '';
+  loadStakes();
+}
+
+// Calculate and show staking rewards
+function claimRewards() {
+  const stakes = JSON.parse(localStorage.getItem('userStakes')) || [];
+  let totalRewards = 0;
+
+  stakes.forEach(stake => {
+    totalRewards += (stake.amount * stake.apy / 100) * (stake.lockPeriod / 365);
+  });
+
+  document.getElementById('rewards-summary').textContent = `Total Rewards: ${totalRewards.toFixed(2)} USDT`;
+
+  // You could send this reward claim data to backend for processing
+}
+
+// Load stakes when the page is ready
+document.addEventListener('DOMContentLoaded', loadStakes);
 
 
 // Counter animation
