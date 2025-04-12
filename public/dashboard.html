@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Keep existing head content -->
   <meta charset="UTF-8" />
   <title>Moneyard Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    /* ... (keep existing styles intact) ... */
-
-    /* Updated Modal Styles */
+    /* Add modal-specific styles here */
     #deposit-modal {
       display: none;
       position: fixed;
@@ -29,14 +28,6 @@
       border-radius: 10px;
       max-width: 400px;
       width: 90%;
-      position: relative;
-    }
-
-    #deposit-modal input,
-    #deposit-modal select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
     }
 
     .qr-section {
@@ -51,133 +42,144 @@
       border-radius: 5px;
       margin: 10px 0;
     }
-
-    .copy-btn {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px 0;
-    }
-
-    .copy-btn:hover {
-      background: #0056b3;
-    }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- HEADER SECTION (Keep existing header) -->
   <div class="top-header">
-    <!-- ... (keep header content unchanged) ... -->
+    <!-- Your existing header content -->
   </div>
 
-  <!-- DEPOSIT MODAL -->
+  <!-- MAIN CONTENT -->
+  <section class="form">
+    <p id="greeting">Welcome!</p>
+  </section>
+
+  <section class="form">
+    <h3>Earnings Calculator</h3>
+    <!-- Keep calculator content -->
+  </section>
+
+  <section class="form">
+    <h3>Referral Program</h3>
+    <!-- Keep referral content -->
+  </section>
+
+  <!-- DEPOSIT MODAL (Place at BOTTOM before scripts) -->
   <div id="deposit-modal">
     <div class="modal-content">
       <h3>Deposit Funds</h3>
       <label>Amount (USDT):</label>
       <input type="number" id="deposit-amount" placeholder="Enter amount" />
+      
       <label>Payment Method:</label>
-      <select id="deposit-method" onchange="updateAddressAndQR()">
+      <select id="deposit-method">
         <option value="TRC20">USDT - TRC20 (Tron)</option>
         <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
         <option value="Bank">Bank Transfer</option>
         <option value="Mobile">Mobile Money (Airtel/MTN)</option>
       </select>
 
-      <div id="address-section" class="qr-section" style="display: none;">
+      <div id="address-section" class="qr-section" style="display:none;">
         <p><strong>Deposit Address:</strong></p>
-        <p id="wallet-address" class="wallet-address">Please select a network</p>
-        <button id="copy-btn" class="copy-btn" onclick="copyAddress()">Copy Address</button>
-        <div id="qr-display" class="qr-section">
-          <img id="qr-image" src="" alt="QR Code" />
+        <p id="wallet-address" class="wallet-address">Select network first</p>
+        <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+        <div id="qr-display">
+          <img id="qr-image" src="" alt="QR Code" style="max-width:200px;">
         </div>
       </div>
 
       <label>Transaction ID (optional):</label>
       <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-      <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
-      <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
+      
+      <div style="margin-top:20px;">
+        <button class="confirm-btn" onclick="submitDeposit()">Submit</button>
+        <button class="cancel-btn" onclick="closeDeposit()">Cancel</button>
+      </div>
       <p id="deposit-response" style="margin-top:10px;"></p>
     </div>
   </div>
 
-  <!-- ... (keep rest of the HTML content unchanged) ... -->
+  <!-- FOOTER (Keep existing footer) -->
+  <div class="footer">
+    <!-- Your existing footer content -->
+  </div>
 
-  <!-- SCRIPT -->
-  <script src="script.js"></script>
+  <!-- SCRIPTS -->
   <script>
-    // ... (keep existing functions intact) ... 
-
     // Deposit Modal Functions
     function updateAddressAndQR() {
       const method = document.getElementById("deposit-method").value;
       const addressSection = document.getElementById("address-section");
-      let address = "";
-      let qrCodeUrl = "";
-
-      if (method === "TRC20") {
-        address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
-        qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(address)}`;
+      
+      if (method === "TRC20" || method === "BEP20") {
         addressSection.style.display = "block";
-      } else if (method === "BEP20") {
-        address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
-        qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(address)}`;
-        addressSection.style.display = "block";
+        const address = method === "TRC20" 
+          ? "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f" 
+          : "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+        
+        document.getElementById("wallet-address").textContent = address;
+        document.getElementById("qr-image").src = 
+          `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(address)}&size=200x200`;
       } else {
         addressSection.style.display = "none";
       }
-
-      document.getElementById("wallet-address").textContent = address;
-      document.getElementById("qr-image").src = qrCodeUrl;
     }
 
     function copyAddress() {
-      const addressText = document.getElementById("wallet-address").textContent;
-      navigator.clipboard.writeText(addressText).then(() => {
-        alert("Address copied to clipboard!");
-      });
+      navigator.clipboard.writeText(document.getElementById("wallet-address").textContent)
+        .then(() => alert("Address copied!"));
     }
 
-    function submitDeposit() {
+    // Initialize on modal open
+    function openDeposit() {
+      document.getElementById("deposit-modal").style.display = "flex";
+      updateAddressAndQR(); // Initial update
+    }
+
+    // Keep existing functions with these additions
+    function closeDeposit() {
+      document.getElementById("deposit-modal").style.display = "none";
+    }
+
+    // Modified submit function
+    async function submitDeposit() {
       const amount = document.getElementById("deposit-amount").value;
       const method = document.getElementById("deposit-method").value;
       const txid = document.getElementById("deposit-txid").value;
-      const response = document.getElementById("deposit-response");
+      const responseEl = document.getElementById("deposit-response");
 
-      if (!amount || amount <= 0) {
-        response.textContent = "Please enter a valid amount.";
-        return;
+      try {
+        const response = await fetch("/api/deposit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
+          body: JSON.stringify({ amount, method, txid })
+        });
+
+        const data = await response.json();
+        responseEl.textContent = data.message || "Deposit submitted!";
+        responseEl.style.color = "#28a745";
+        
+        // Clear form after success
+        if (response.ok) {
+          document.getElementById("deposit-amount").value = "";
+          document.getElementById("deposit-txid").value = "";
+          setTimeout(closeDeposit, 2000);
+        }
+      } catch (error) {
+        responseEl.textContent = "Deposit failed. Please try again.";
+        responseEl.style.color = "#dc3545";
       }
-
-      if (["TRC20", "BEP20"].includes(method) && !txid) {
-        response.textContent = "Please provide transaction ID for crypto deposits.";
-        return;
-      }
-
-      response.textContent = "Processing deposit...";
-      
-      fetch("/api/deposit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        },
-        body: JSON.stringify({ amount, method, txid })
-      })
-      .then(res => res.json())
-      .then(data => {
-        response.textContent = data.message || "Deposit submitted!";
-      })
-      .catch(() => {
-        response.textContent = "Something went wrong. Try again.";
-      });
     }
 
-    // ... (keep remaining functions unchanged) ...
+    // Initialize event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('deposit-method').addEventListener('change', updateAddressAndQR);
+    });
   </script>
 </body>
 </html>
