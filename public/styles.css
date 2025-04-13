@@ -434,3 +434,36 @@ button:hover {
   margin-top: 10px;
   color: #333;
 }
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  color: #0a4e3a;
+  font-size: 1.1em;
+}
+
+.toggle-plus {
+  font-size: 1.5em;
+  color: #0a4e3a;
+  padding: 0 10px;
+  user-select: none;
+}
+
+.faq-answer {
+  display: none;
+  padding: 10px 0;
+  color: #333;
+  font-size: 0.95em;
+}
