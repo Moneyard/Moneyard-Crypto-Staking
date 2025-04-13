@@ -88,11 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
+    const fullName = document.getElementById("signupFullName").value; // Get full name
 
     const res = await fetch("/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, fullName }), // Send full name
     });
 
     const data = await res.json();
@@ -122,11 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.success) {
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("email", email);
+      localStorage.setItem("userFullName", data.fullName); // Store full name
       window.location.href = "/dashboard";
     } else {
       alert(data.error || "Login failed.");
     }
   });
+
+  // Fill greeting with full name
+  const fullName = localStorage.getItem("userFullName");
+  if (fullName && document.getElementById("userFullName")) {
+    document.getElementById("userFullName").textContent = fullName;
+  }
 
   // Stake plans
   const stakePlansContainer = document.getElementById("stake-plans");
