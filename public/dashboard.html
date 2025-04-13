@@ -469,117 +469,6 @@
         });
     }
 
-    // Add the fullName script here
-    document.getElementById('userFullName').textContent = localStorage.getItem('fullName') || 'User';
-       });
-    }
-
-<!-- Earn + Loan Scripts -->
-<script>
-  function toggleSection(id) {
-    const content = document.getElementById(id);
-    content.classList.toggle("active");
-  }
-
-  function calculateEarnings() {
-    const amount = parseFloat(document.getElementById("depositAmount").value || 0);
-    const apy = parseFloat(document.getElementById("apySelect").value || 0);
-    const days = parseInt(document.getElementById("durationSelect").value || 0);
-    const dailyRate = apy / 100 / 365;
-    let total = amount;
-
-    for (let i = 0; i < days; i++) {
-      total += total * dailyRate;
-    }
-
-    const interest = total - amount;
-    document.getElementById("interestResult").innerText =
-      `You earn ~$${interest.toFixed(2)} in ${days} days. Total: $${total.toFixed(2)}`;
-  }
-
-  function updateLTV() {
-    const btc = parseFloat(document.getElementById("btcAmount").value || 0);
-    const ltv = parseInt(document.getElementById("ltvSlider").value);
-    const price = 65000; // BTC price placeholder
-    const loan = btc * price * (ltv / 100);
-
-   function toggleDropdown(section) {
-  const content = document.getElementById('dropdown-' + section);
-  if (content.style.display === "none") {
-    content.style.display = "block";
-  } else {
-    content.style.display = "none";
-  }
-}
- document.getElementById("ltvValue").innerText = `${ltv}%`;
-    document.getElementById("loanResult").innerText = `$${loan.toFixed(2)}`;
-  }
-<script>
-  function toggleSection(id) {
-    const content = document.getElementById(id);
-    if (content.style.display === "none" || !content.style.display) {
-      content.style.display = "block";
-    } else {
-      content.style.display = "none";
-    }
-  }
-
-  function calculateEarnings() {
-    const amount = parseFloat(document.getElementById("depositAmount").value);
-    const apy = parseFloat(document.getElementById("apySelect").value);
-    const duration = parseInt(document.getElementById("durationSelect").value);
-    
-    if (!amount || amount <= 0) {
-      document.getElementById("interestResult").textContent = "Enter a valid amount.";
-      return;
-    }
-
-    const interest = (amount * (apy / 100)) * (duration / 365);
-    const total = amount + interest;
-
-    document.getElementById("interestResult").innerHTML =
-      `Estimated Earnings: <strong>$${interest.toFixed(2)}</strong><br>
-       Total Value at Maturity: <strong>$${total.toFixed(2)}</strong>`;
-  }
-
-  // Get Loan logic
-  document.addEventListener("DOMContentLoaded", function () {
-    const ltvSlider = document.getElementById("ltvSlider");
-    const btcAmountInput = document.getElementById("btcAmount");
-    const loanContent = document.getElementById("loanContent");
-
-    const loanOutput = document.createElement("p");
-    loanOutput.id = "loanResult";
-    loanContent.appendChild(loanOutput);
-
-    ltvSlider.addEventListener("input", updateLoanEstimate);
-    btcAmountInput.addEventListener("input", updateLoanEstimate);
-
-    function updateLoanEstimate() {
-      const btcAmount = parseFloat(btcAmountInput.value);
-      const ltv = parseInt(ltvSlider.value);
-
-      if (!btcAmount || btcAmount <= 0) {
-        loanOutput.textContent = "Enter a valid BTC collateral amount.";
-        return;
-      }
-
-      const btcToUsd = 60000; // estimated current BTC value in USD
-      const collateralValue = btcAmount * btcToUsd;
-      const loanValue = (collateralValue * ltv) / 100;
-
-      loanOutput.innerHTML =
-        `BTC Value: <strong>$${collateralValue.toFixed(2)}</strong><br>
-         Max Loan (@${ltv}% LTV): <strong>$${loanValue.toFixed(2)}</strong>`;
-    }
-  });
-<script>
-  // Toggle Collapsible Sections
-  function toggleSection(sectionId) {
-    const content = document.getElementById(sectionId);
-    content.style.display = content.style.display === 'none' || !content.style.display ? 'block' : 'none';
-  }
-
   // Earnings Calculator
   function calculateEarnings() {
     const deposit = parseFloat(document.getElementById("depositAmount").value);
@@ -591,29 +480,38 @@
       return;
     }
 
-    const interest = (deposit * (apy / 100)) * (duration / 365);
-    document.getElementById("interestResult").innerText = 
-      `Est. Earnings: $${interest.toFixed(2)} in ${duration} days.`;
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const depositAmountInput = document.getElementById("depositAmount");
+  const apySelect = document.getElementById("apySelect");
+  const estimatedEarningsEl = document.getElementById("estimatedEarnings");
+  const earnContent = document.getElementById("earnContent");
+
+  function calculateEarnings() {
+    const amount = parseFloat(depositAmountInput.value) || 0;
+    const apy = parseFloat(apySelect.value) || 0;
+
+    const estimated = amount * (apy / 100);
+    estimatedEarningsEl.textContent = `Est. Earnings: $${estimated.toFixed(2)}`;
   }
 
-  // Loan Estimation (Bonus Functionality)
-  document.getElementById("ltvSlider")?.addEventListener("input", function () {
-    const btcAmount = parseFloat(document.getElementById("btcAmount").value || 0);
-    const ltv = parseFloat(this.value);
-    const btcToUSDT = 60000; // Example BTC price
-
-    const collateralValue = btcAmount * btcToUSDT;
-    const loanAmount = collateralValue * (ltv / 100);
-
-    document.getElementById("loanAmountDisplay").innerText =
-      `Est. Loan: $${loanAmount.toFixed(2)} @ ${ltv}% LTV`;
+  // Show earnContent when either input is focused or changed
+  depositAmountInput.addEventListener("input", function () {
+    earnContent.style.display = "block";
+    calculateEarnings();
   });
 
-  // Optional: Show default hidden state
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("earnContent").style.display = "none";
-    document.getElementById("loanContent").style.display = "none";
+  apySelect.addEventListener("change", function () {
+    earnContent.style.display = "block";
+    calculateEarnings();
   });
+
+  // In case someone clicks outside, keep the earnings visible if already entered
+  if (depositAmountInput.value || apySelect.value) {
+    earnContent.style.display = "block";
+    calculateEarnings();
+  }
+});
 </script>
 </body>
 </html>
