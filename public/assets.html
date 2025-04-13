@@ -103,9 +103,65 @@
       transform: scale(1.05);
     }
 
-    .deposit-btn { background: #ff7f50; color: #fff; }
-    .withdraw-btn { background: #28a745; color: #fff; }
-    .transfer-btn { background: #b0b0b0; color: #000; }
+    .deposit-btn { background: #ff7f50; color: #fff; } /* Warm orange */
+    .withdraw-btn { background: #28a745; color: #fff; } /* Green */
+    .transfer-btn { background: #b0b0b0; color: #000; } /* Grey */
+
+    /* MODALS */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      animation: fadeIn 0.3s ease-in-out;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .close {
+      float: right;
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .modal-content button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -142,15 +198,46 @@
   </div>
 
   <div class="footer-buttons">
-    <button class="footer-btn deposit-btn" onclick="openDeposit()">
+    <button class="footer-btn deposit-btn" onclick="openModal('depositModal')">
       <i class="fas fa-arrow-down"></i> Deposit
     </button>
-    <button class="footer-btn withdraw-btn" onclick="openWithdraw()">
+    <button class="footer-btn withdraw-btn" onclick="openModal('withdrawModal')">
       <i class="fas fa-arrow-up"></i> Withdraw
     </button>
-    <button class="footer-btn transfer-btn" onclick="openTransfer()">
+    <button class="footer-btn transfer-btn" onclick="openModal('transferModal')">
       <i class="fas fa-exchange-alt"></i> Transfer
     </button>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('depositModal')">&times;</span>
+      <h3>Deposit Funds</h3>
+      <input type="text" placeholder="Amount in USD" />
+      <button class="deposit-btn">Confirm Deposit</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div id="withdrawModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
+      <h3>Withdraw Funds</h3>
+      <input type="text" placeholder="Amount to Withdraw" />
+      <button class="withdraw-btn">Request Withdrawal</button>
+    </div>
+  </div>
+
+  <!-- Transfer Modal -->
+  <div id="transferModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('transferModal')">&times;</span>
+      <h3>Transfer Funds</h3>
+      <input type="text" placeholder="Recipient Email" />
+      <input type="text" placeholder="Amount to Transfer" />
+      <button class="transfer-btn">Send</button>
+    </div>
   </div>
 
   <script>
@@ -168,20 +255,21 @@
       });
     }
 
-    function openDeposit() {
-      alert("Open Deposit Modal");
-      // Future: insert modal code or open deposit form
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
     }
 
-    function openWithdraw() {
-      alert("Open Withdraw Modal");
-      // Future: insert modal code or open withdraw form
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
     }
 
-    function openTransfer() {
-      alert("Open Transfer Modal");
-      // Future: insert modal code or open transfer form
-    }
+    // Optional: Close modal on outside click
+    window.onclick = function(event) {
+      ['depositModal', 'withdrawModal', 'transferModal'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (event.target == modal) modal.style.display = "none";
+      });
+    };
   </script>
 
 </body>
