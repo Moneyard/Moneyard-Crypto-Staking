@@ -293,29 +293,6 @@
     </div>
   </div>
 </section>
-<!-- EARN/LOAN SECTION -->
-<section class="form">
-  <div class="dropdown">
-    <div class="dropdown-header" onclick="toggleDropdown('apy')">
-      Earn USDT + View APY ▼
-    </div>
-    <div id="dropdown-apy" class="dropdown-content" style="display: none;">
-      <p>Earn up to <strong>20% APY</strong> on stablecoins deposited through Moneyard. Interest is calculated daily and paid weekly.</p>
-    </div>
-  </div>
-
-  <div class="dropdown" style="margin-top: 20px;">
-    <div class="dropdown-header" onclick="toggleDropdown('loan')">
-      Get Loan with Collateral ▼
-    </div>
-    <div id="dropdown-loan" class="dropdown-content" style="display: none;">
-      <label for="loanSlider">Select Loan-to-Value (LTV):</label>
-      <input type="range" id="loanSlider" min="10" max="80" value="50" oninput="updateLTVValue(this.value)">
-      <p>Current LTV: <span id="ltvValue">50%</span></p>
-      <p>Borrow instantly by using your crypto as collateral.</p>
-    </div>
-  </div>
-</section>
 
   <!-- EARNINGS CALCULATOR -->
 <section class="form">
@@ -536,6 +513,65 @@
  document.getElementById("ltvValue").innerText = `${ltv}%`;
     document.getElementById("loanResult").innerText = `$${loan.toFixed(2)}`;
   }
-  </script>
+<script>
+  function toggleSection(id) {
+    const content = document.getElementById(id);
+    if (content.style.display === "none" || !content.style.display) {
+      content.style.display = "block";
+    } else {
+      content.style.display = "none";
+    }
+  }
+
+  function calculateEarnings() {
+    const amount = parseFloat(document.getElementById("depositAmount").value);
+    const apy = parseFloat(document.getElementById("apySelect").value);
+    const duration = parseInt(document.getElementById("durationSelect").value);
+    
+    if (!amount || amount <= 0) {
+      document.getElementById("interestResult").textContent = "Enter a valid amount.";
+      return;
+    }
+
+    const interest = (amount * (apy / 100)) * (duration / 365);
+    const total = amount + interest;
+
+    document.getElementById("interestResult").innerHTML =
+      `Estimated Earnings: <strong>$${interest.toFixed(2)}</strong><br>
+       Total Value at Maturity: <strong>$${total.toFixed(2)}</strong>`;
+  }
+
+  // Get Loan logic
+  document.addEventListener("DOMContentLoaded", function () {
+    const ltvSlider = document.getElementById("ltvSlider");
+    const btcAmountInput = document.getElementById("btcAmount");
+    const loanContent = document.getElementById("loanContent");
+
+    const loanOutput = document.createElement("p");
+    loanOutput.id = "loanResult";
+    loanContent.appendChild(loanOutput);
+
+    ltvSlider.addEventListener("input", updateLoanEstimate);
+    btcAmountInput.addEventListener("input", updateLoanEstimate);
+
+    function updateLoanEstimate() {
+      const btcAmount = parseFloat(btcAmountInput.value);
+      const ltv = parseInt(ltvSlider.value);
+
+      if (!btcAmount || btcAmount <= 0) {
+        loanOutput.textContent = "Enter a valid BTC collateral amount.";
+        return;
+      }
+
+      const btcToUsd = 60000; // estimated current BTC value in USD
+      const collateralValue = btcAmount * btcToUsd;
+      const loanValue = (collateralValue * ltv) / 100;
+
+      loanOutput.innerHTML =
+        `BTC Value: <strong>$${collateralValue.toFixed(2)}</strong><br>
+         Max Loan (@${ltv}% LTV): <strong>$${loanValue.toFixed(2)}</strong>`;
+    }
+  });
+</script>
 </body>
 </html>
