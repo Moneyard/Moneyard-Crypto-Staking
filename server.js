@@ -101,22 +101,21 @@ app.post('/api/signup', async (req, res) => {
     });
 });
 
-// Login
+// Login route
 app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-        if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
+  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+    if (err) return res.status(500).json({ message: 'Server error' });
+    if (!user) return res.status(400).json({ message: 'User not found' });
 
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) return res.status(401).json({ message: 'Invalid password' });
 
-        res.json({ 
-            success: true, 
-            userId: user.id,
-            username: user.email
-        });
-    });
+    const token = jwt.sign({ id: user.id }, 'your_secret_key');
+    res.json({ token, fullName: user.fullName });
+  });
+});
 });
 
 // Deposit Funds
