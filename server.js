@@ -3,6 +3,7 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');  // Add JWT import
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -72,7 +73,7 @@ db.run(`CREATE TABLE IF NOT EXISTS stakes (
     FOREIGN KEY(user_id) REFERENCES users(id)
 )`);
 
-// Signup
+// Signup route
 app.post('/api/signup', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
@@ -103,22 +104,21 @@ app.post('/api/signup', async (req, res) => {
 
 // Login route
 app.post('/api/login', (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-    if (err) return res.status(500).json({ message: 'Server error' });
-    if (!user) return res.status(400).json({ message: 'User not found' });
+    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+        if (err) return res.status(500).json({ message: 'Server error' });
+        if (!user) return res.status(400).json({ message: 'User not found' });
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(401).json({ message: 'Invalid password' });
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) return res.status(401).json({ message: 'Invalid password' });
 
-    const token = jwt.sign({ id: user.id }, 'your_secret_key');
-    res.json({ token, fullName: user.fullName });
-  });
+        const token = jwt.sign({ id: user.id }, 'your_secret_key');  // Ensure the secret key is secure
+        res.json({ token, email: user.email });  // Adjusted to return email instead of fullName
+    });
 });
-});
 
-// Deposit Funds
+// Deposit Funds route
 app.post('/api/deposit', (req, res) => {
     const { userId, amount, network, txId } = req.body;
     if (!userId || !amount || !network || !txId) {
@@ -142,7 +142,7 @@ app.post('/api/deposit', (req, res) => {
     );
 });
 
-// Withdraw Funds
+// Withdraw Funds route
 app.post('/api/withdraw', (req, res) => {
     const { userId, amount, walletAddress, password } = req.body;
     if (!userId || !amount || !walletAddress || !password) {
@@ -174,7 +174,7 @@ app.post('/api/withdraw', (req, res) => {
     });
 });
 
-// Transfer Funds
+// Transfer Funds route
 app.post('/api/transfer', (req, res) => {
     const { fromUserId, toEmail, amount, password } = req.body;
     if (!fromUserId || !toEmail || !amount || !password) {
@@ -207,7 +207,7 @@ app.post('/api/transfer', (req, res) => {
     });
 });
 
-// View Transactions
+// View Transactions route
 app.get('/api/deposits', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -221,7 +221,7 @@ app.get('/api/deposits', (req, res) => {
     );
 });
 
-// Get user balance
+// Get user balance route
 app.get('/api/balance', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -234,7 +234,7 @@ app.get('/api/balance', (req, res) => {
     });
 });
 
-// Get stake plans
+// Get stake plans route
 app.get('/api/stake-plans', (req, res) => {
     const plans = [
         { strategy: 'Stable Growth', apy: 8 },
@@ -244,11 +244,7 @@ app.get('/api/stake-plans', (req, res) => {
     res.json(plans);
 });
 
-// Serve frontend
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
-
-// Start server
+// Server startup
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
