@@ -292,23 +292,38 @@
   <h2 style="text-align: center; font-size: 2em; margin-bottom: 30px; color: #0a4e3a;">Frequently Asked Questions</h2>
   <div class="faq-container">
     <div class="faq-item">
-      <button class="faq-question">What is Moneyard and how does it work?<span class="plus">+</span></button>
+      <div class="faq-question">
+        <span>What is Moneyard and how does it work?</span>
+        <span class="toggle-plus">+</span>
+      </div>
       <div class="faq-answer">Moneyard is a crypto staking and investing platform where you can deposit, earn daily returns, and track your growth securely.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-question">Is my money safe on Moneyard?<span class="plus">+</span></button>
+      <div class="faq-question">
+        <span>Is my money safe on Moneyard?</span>
+        <span class="toggle-plus">+</span>
+      </div>
       <div class="faq-answer">Yes. We implement top-level encryption and manual admin approvals to ensure all transactions are verified and protected.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-question">How do I deposit funds?<span class="plus">+</span></button>
+      <div class="faq-question">
+        <span>How do I deposit funds?</span>
+        <span class="toggle-plus">+</span>
+      </div>
       <div class="faq-answer">You can deposit via TRC20, BEP20, or local payment methods like mobile money and cards through your dashboard.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-question">Can I withdraw my earnings anytime?<span class="plus">+</span></button>
+      <div class="faq-question">
+        <span>Can I withdraw my earnings anytime?</span>
+        <span class="toggle-plus">+</span>
+      </div>
       <div class="faq-answer">Withdrawals are available 24/7 but may require OTP or email confirmation for security reasons.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-question">How long does it take to receive a withdrawal?<span class="plus">+</span></button>
+      <div class="faq-question">
+        <span>How long does it take to receive a withdrawal?</span>
+        <span class="toggle-plus">+</span>
+      </div>
       <div class="faq-answer">Withdrawals are processed within 1–6 hours, depending on admin approval and network traffic.</div>
     </div>
   </div>
@@ -431,6 +446,22 @@
         alert(`Signup failed! Error: ${err.message}`);
       });
     }
+document.querySelectorAll('.toggle-plus').forEach(plus => {
+  plus.addEventListener('click', (e) => {
+    const faqItem = e.target.closest('.faq-item');
+    const answer = faqItem.querySelector('.faq-answer');
+    const isOpen = answer.style.display === 'block';
+
+    // Close all
+    document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+    document.querySelectorAll('.toggle-plus').forEach(p => p.textContent = '+');
+
+    if (!isOpen) {
+      answer.style.display = 'block';
+      plus.textContent = '−'; // Change plus to minus
+    }
+  });
+});
   </script>
 
 </body>
