@@ -386,3 +386,51 @@ a:hover {
   border-radius: 8px;
   border: 1px solid #ddd;
 }
+#earningsSection, #loanSection {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#ltvSlider {
+  width: 100%;
+}
+
+#ltvValue {
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+#earningsResult, #loanResult {
+  font-size: 1.2em;
+  margin-top: 10px;
+  color: #333;
+}
