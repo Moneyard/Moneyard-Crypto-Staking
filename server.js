@@ -26,7 +26,6 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE,
     password TEXT,
-    full_name TEXT,
     balance REAL DEFAULT 0,
     reset_token TEXT,
     reset_token_expiry INTEGER
@@ -75,8 +74,8 @@ db.run(`CREATE TABLE IF NOT EXISTS stakes (
 
 // Signup
 app.post('/api/signup', async (req, res) => {
-    const { email, password, fullName } = req.body;
-    if (!email || !password || !fullName) return res.status(400).json({ error: 'Missing fields' });
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
@@ -92,8 +91,8 @@ app.post('/api/signup', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        db.run("INSERT INTO users (email, password, full_name) VALUES (?, ?, ?)", 
-            [email, hashedPassword, fullName], 
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
+            [email, hashedPassword], 
             function(err) {
                 if (err) return res.status(500).json({ error: 'Failed to register user' });
                 res.json({ success: true, userId: this.lastID });
@@ -115,8 +114,7 @@ app.post('/api/login', (req, res) => {
         res.json({ 
             success: true, 
             userId: user.id,
-            username: user.email,
-            fullName: user.full_name  // Send full name along with login data
+            username: user.email
         });
     });
 });
