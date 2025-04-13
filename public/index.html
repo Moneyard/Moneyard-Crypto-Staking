@@ -192,16 +192,18 @@
       <p>No account? <a href="#" onclick="showAuthForm('signup')">Sign Up</a></p>
     </div>
 
-    <div id="signup-form-section" style="display: none;">
-      <h2>Sign Up</h2>
-      <form id="signupForm" onsubmit="handleSignup(event)">
-        <input type="email" id="signupEmail" placeholder="Email" required><br>
-        <input type="password" id="signupPassword" placeholder="Password" required><br>
-        <button type="submit">Sign Up</button>
-      </form>
-      <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
-    </div>
-  </div>
+   <div id="signup-form-section" style="display: none;">
+  <h2>Sign Up</h2>
+  <form id="signupForm" onsubmit="handleSignup(event)">
+    <input type="text" id="signupFullName" placeholder="Full Name" required><br>
+    <input type="email" id="signupEmail" placeholder="Email" required><br>
+    <input type="password" id="signupPassword" placeholder="Password (min 8 chars)" required minlength="8"><br>
+    <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required><br>
+    <input type="text" id="signupReferralCode" placeholder="Referral Code (optional)"><br>
+    <button type="submit">Sign Up</button>
+  </form>
+  <p>Already have an account? <a href="#" onclick="showAuthForm('login')">Login</a></p>
+</div>
 
   <!-- Forgot Password Modal -->
   <div id="forgot-password-modal" style="display: none;">
