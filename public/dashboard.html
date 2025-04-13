@@ -290,6 +290,7 @@
       <p>Selected LTV: <span id="ltvValue">50%</span></p>
 
       <p>Loan Amount (USDT): <strong id="loanResult">—</strong></p>
+<p id="loanAmountDisplay" style="margin-top:10px; font-weight: bold;"></p>
     </div>
   </div>
 </section>
@@ -571,6 +572,47 @@
         `BTC Value: <strong>$${collateralValue.toFixed(2)}</strong><br>
          Max Loan (@${ltv}% LTV): <strong>$${loanValue.toFixed(2)}</strong>`;
     }
+  });
+<script>
+  // Toggle Collapsible Sections
+  function toggleSection(sectionId) {
+    const content = document.getElementById(sectionId);
+    content.style.display = content.style.display === 'none' || !content.style.display ? 'block' : 'none';
+  }
+
+  // Earnings Calculator
+  function calculateEarnings() {
+    const deposit = parseFloat(document.getElementById("depositAmount").value);
+    const apy = parseFloat(document.getElementById("apySelect").value);
+    const duration = parseInt(document.getElementById("durationSelect").value);
+
+    if (!deposit || !apy || !duration) {
+      document.getElementById("interestResult").innerText = "Please fill all fields.";
+      return;
+    }
+
+    const interest = (deposit * (apy / 100)) * (duration / 365);
+    document.getElementById("interestResult").innerText = 
+      `Est. Earnings: $${interest.toFixed(2)} in ${duration} days.`;
+  }
+
+  // Loan Estimation (Bonus Functionality)
+  document.getElementById("ltvSlider")?.addEventListener("input", function () {
+    const btcAmount = parseFloat(document.getElementById("btcAmount").value || 0);
+    const ltv = parseFloat(this.value);
+    const btcToUSDT = 60000; // Example BTC price
+
+    const collateralValue = btcAmount * btcToUSDT;
+    const loanAmount = collateralValue * (ltv / 100);
+
+    document.getElementById("loanAmountDisplay").innerText =
+      `Est. Loan: $${loanAmount.toFixed(2)} @ ${ltv}% LTV`;
+  });
+
+  // Optional: Show default hidden state
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("earnContent").style.display = "none";
+    document.getElementById("loanContent").style.display = "none";
   });
 </script>
 </body>
