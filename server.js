@@ -52,8 +52,15 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     date TEXT
 )`);
 
-db.run(`
-  CREATE TABLE IF NOT EXISTS stakes (
+db.run(`CREATE TABLE IF NOT EXISTS transfers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    from_user INTEGER,
+    to_user INTEGER,
+    amount REAL,
+    date TEXT
+)`);
+
+db.run(`CREATE TABLE IF NOT EXISTS stakes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     plan TEXT,
@@ -63,8 +70,7 @@ db.run(`
     start_date TIMESTAMP,
     status TEXT DEFAULT 'active',
     FOREIGN KEY(user_id) REFERENCES users(id)
-  )
-`);
+)`);
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -129,7 +135,6 @@ app.post('/api/deposit', (req, res) => {
         function (err) {
             if (err) return res.status(500).json({ error: 'Deposit failed' });
 
-            // Auto-update user balance
             db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
                 if (err) return res.status(500).json({ error: 'Failed to update balance' });
                 res.json({ success: true, message: 'Deposit confirmed and balance updated' });
@@ -138,7 +143,72 @@ app.post('/api/deposit', (req, res) => {
     );
 });
 
-// View deposit history
+// Withdraw Funds
+app.post('/api/withdraw', (req, res) => {
+    const { userId, amount, walletAddress, password } = req.body;
+    if (!userId || !amount || !walletAddress || !password) {
+        return res.status(400).json({ error: 'All fields required' });
+    }
+
+    db.get("SELECT * FROM users WHERE id = ?", [userId], async (err, user) => {
+        if (err || !user) return res.status(400).json({ error: 'User not found' });
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) return res.status(403).json({ error: 'Invalid password' });
+
+        if (user.balance < amount) {
+            return res.status(400).json({ error: 'Insufficient balance' });
+        }
+
+        const date = new Date().toISOString();
+
+        db.run("INSERT INTO withdrawals (user_id, amount, wallet_address, password, date) VALUES (?, ?, ?, ?, ?)", 
+            [userId, amount, walletAddress, password, date], (err) => {
+                if (err) return res.status(500).json({ error: 'Withdrawal failed' });
+
+                db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId], (err) => {
+                    if (err) return res.status(500).json({ error: 'Balance update failed' });
+                    res.json({ success: true, message: 'Withdrawal request submitted' });
+                });
+            }
+        );
+    });
+});
+
+// Transfer Funds
+app.post('/api/transfer', (req, res) => {
+    const { fromUserId, toEmail, amount, password } = req.body;
+    if (!fromUserId || !toEmail || !amount || !password) {
+        return res.status(400).json({ error: 'All fields required' });
+    }
+
+    db.get("SELECT * FROM users WHERE id = ?", [fromUserId], async (err, sender) => {
+        if (err || !sender) return res.status(400).json({ error: 'Sender not found' });
+
+        const valid = await bcrypt.compare(password, sender.password);
+        if (!valid) return res.status(403).json({ error: 'Invalid password' });
+
+        if (sender.balance < amount) return res.status(400).json({ error: 'Insufficient balance' });
+
+        db.get("SELECT * FROM users WHERE email = ?", [toEmail], (err, receiver) => {
+            if (err || !receiver) return res.status(400).json({ error: 'Recipient not found' });
+
+            const date = new Date().toISOString();
+
+            db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, fromUserId]);
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, receiver.id]);
+
+            db.run("INSERT INTO transfers (from_user, to_user, amount, date) VALUES (?, ?, ?, ?)", 
+                [fromUserId, receiver.id, amount, date], (err) => {
+                    if (err) return res.status(500).json({ error: 'Transfer failed' });
+                    res.json({ success: true, message: 'Transfer completed' });
+                }
+            );
+        });
+    });
+});
+
+// View Transactions
 app.get('/api/deposits', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
