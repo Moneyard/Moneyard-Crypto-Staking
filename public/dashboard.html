@@ -293,6 +293,29 @@
     </div>
   </div>
 </section>
+<!-- EARN/LOAN SECTION -->
+<section class="form">
+  <div class="dropdown">
+    <div class="dropdown-header" onclick="toggleDropdown('apy')">
+      Earn USDT + View APY ▼
+    </div>
+    <div id="dropdown-apy" class="dropdown-content" style="display: none;">
+      <p>Earn up to <strong>20% APY</strong> on stablecoins deposited through Moneyard. Interest is calculated daily and paid weekly.</p>
+    </div>
+  </div>
+
+  <div class="dropdown" style="margin-top: 20px;">
+    <div class="dropdown-header" onclick="toggleDropdown('loan')">
+      Get Loan with Collateral ▼
+    </div>
+    <div id="dropdown-loan" class="dropdown-content" style="display: none;">
+      <label for="loanSlider">Select Loan-to-Value (LTV):</label>
+      <input type="range" id="loanSlider" min="10" max="80" value="50" oninput="updateLTVValue(this.value)">
+      <p>Current LTV: <span id="ltvValue">50%</span></p>
+      <p>Borrow instantly by using your crypto as collateral.</p>
+    </div>
+  </div>
+</section>
 
   <!-- EARNINGS CALCULATOR -->
 <section class="form">
@@ -502,7 +525,15 @@
     const price = 65000; // BTC price placeholder
     const loan = btc * price * (ltv / 100);
 
-    document.getElementById("ltvValue").innerText = `${ltv}%`;
+   function toggleDropdown(section) {
+  const content = document.getElementById('dropdown-' + section);
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+ document.getElementById("ltvValue").innerText = `${ltv}%`;
     document.getElementById("loanResult").innerText = `$${loan.toFixed(2)}`;
   }
   </script>
