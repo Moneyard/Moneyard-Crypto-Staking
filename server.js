@@ -1,100 +1,235 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const speakeasy = require('speakeasy');
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
+const db = new sqlite3.Database('./moneyard.db');
 
-// Middleware
-app.use(cors());
 app.use(bodyParser.json());
+app.use(cors());
 
-// JWT secret key (use a stronger one in production)
-const JWT_SECRET = 'your_secret_key';
+// ======================= DB Initialization =======================
+db.serialize(() => {
+  // Create Users Table if it doesn't exist
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      fullName TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      balance REAL DEFAULT 0
+    )
+  `);
 
-// Connect SQLite DB
-const db = new sqlite3.Database('./moneyard.db', (err) => {
-    if (err) console.error("DB Error:", err);
-    else console.log("Connected to SQLite DB.");
+  // Create Deposit Table if it doesn't exist
+  db.run(`
+    CREATE TABLE IF NOT EXISTS deposits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER,
+      amount REAL,
+      network TEXT,
+      txId TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    )
+  `);
+
+  // Create Staking Table if it doesn't exist
+  db.run(`
+    CREATE TABLE IF NOT EXISTS stakes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER,
+      plan TEXT,
+      amount REAL,
+      status TEXT DEFAULT 'Active',
+      startDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    )
+  `);
 });
 
-// Create users table with fullName
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fullName TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    )
-`);
+// ======================= USER AUTHENTICATION =======================
+app.post('/signup', (req, res) => {
+  const { fullName, email, password } = req.body;
 
-// Signup
-app.post('/api/signup', async (req, res) => {
-    const { fullName, email, password } = req.body;
-    if (!fullName || !email || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
+  if (!fullName || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  db.run(
+    `INSERT INTO users (fullName, email, password) VALUES (?, ?, ?)`,
+    [fullName, email, hashedPassword],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Error during signup' });
+      }
+      res.status(201).json({ success: true });
+    }
+  );
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  db.get(`SELECT * FROM users WHERE email = ?`, [email], (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const passwordMatch = bcrypt.compareSync(password, user.password);
+    if (!passwordMatch) {
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ userId: user.id }, 'secretKey', { expiresIn: '1h' });
+
+    res.json({
+      success: true,
+      userId: user.id,
+      fullName: user.fullName,
+      token
+    });
+  });
+});
+
+// ======================= DEPOSIT FUNCTIONALITY =======================
+app.post('/api/deposit', (req, res) => {
+  const { userId, amount, network, txId } = req.body;
+
+  if (!userId || !amount || !network || !txId) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  db.run(
+    `INSERT INTO deposits (userId, amount, network, txId) VALUES (?, ?, ?, ?)`,
+    [userId, amount, network, txId],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Error during deposit' });
+      }
+
+      db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, row) => {
+        if (err) {
+          return res.status(500).json({ error: 'Error fetching balance' });
+        }
+
+        const updatedBalance = row.balance + amount;
+
+        db.run('UPDATE users SET balance = ? WHERE id = ?', [updatedBalance, userId], (err) => {
+          if (err) {
+            return res.status(500).json({ error: 'Error updating balance' });
+          }
+
+          res.json({ success: true, balance: updatedBalance });
+        });
+      });
+    }
+  );
+});
+
+// ======================= STAKING FUNCTIONALITY =======================
+app.post('/api/stake', (req, res) => {
+  const { userId, plan, amount } = req.body;
+
+  if (!userId || !plan || !amount) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, row) => {
+    if (err || row.balance < amount) {
+      return res.status(400).json({ error: 'Insufficient funds' });
+    }
 
     db.run(
-        "INSERT INTO users (fullName, email, password) VALUES (?, ?, ?)",
-        [fullName, email, hashedPassword],
-        function (err) {
-            if (err) {
-                console.error(err);
-                return res.status(400).json({ error: 'Email already exists' });
-            }
-
-            const userId = this.lastID;
-            const token = jwt.sign({ id: userId }, JWT_SECRET);
-            res.json({ success: true, token, fullName });
+      `INSERT INTO stakes (userId, plan, amount, status) VALUES (?, ?, ?, 'Active')`,
+      [userId, plan, amount],
+      function (err) {
+        if (err) {
+          return res.status(500).json({ error: 'Error during staking' });
         }
+
+        const updatedBalance = row.balance - amount;
+
+        db.run('UPDATE users SET balance = ? WHERE id = ?', [updatedBalance, userId], (err) => {
+          if (err) {
+            return res.status(500).json({ error: 'Error updating balance' });
+          }
+
+          res.json({ success: true, balance: updatedBalance });
+        });
+      }
     );
+  });
 });
 
-// Login
-app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
+// ======================= ACTIVE STAKES =======================
+app.get('/api/active-stakes', (req, res) => {
+  const userId = req.query.userId;
 
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-        if (err || !user) {
-            return res.status(400).json({ error: 'User not found' });
-        }
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            return res.status(401).json({ error: 'Incorrect password' });
-        }
+  db.all('SELECT * FROM stakes WHERE userId = ? AND status = "Active"', [userId], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error fetching stakes' });
+    }
 
-        const token = jwt.sign({ id: user.id }, JWT_SECRET);
-        res.json({ success: true, token, fullName: user.fullName });
-    });
+    res.json(rows);
+  });
 });
 
-// Middleware to protect routes
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) return res.status(401).json({ error: 'Token required' });
+// ======================= UNSTAKE FUNCTIONALITY =======================
+app.post('/api/unstake/:stakeId', (req, res) => {
+  const stakeId = req.params.stakeId;
 
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(403).json({ error: 'Invalid token' });
-        req.userId = decoded.id;
-        next();
-    });
-};
+  db.get('SELECT * FROM stakes WHERE id = ?', [stakeId], (err, stake) => {
+    if (err || !stake) {
+      return res.status(400).json({ error: 'Stake not found' });
+    }
 
-// Get current user's full name
-app.get('/api/user', verifyToken, (req, res) => {
-    db.get("SELECT fullName FROM users WHERE id = ?", [req.userId], (err, user) => {
-        if (err || !user) return res.status(404).json({ error: 'User not found' });
-        res.json({ fullName: user.fullName });
+    db.run('UPDATE stakes SET status = "Inactive" WHERE id = ?', [stakeId], (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error during unstaking' });
+      }
+
+      res.json({ success: true });
     });
+  });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+// ======================= USER SUMMARY =======================
+app.get('/api/user-summary', (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  db.get('SELECT fullName, balance FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+
+    res.json({
+      fullName: user.fullName,
+      balance: user.balance
+    });
+  });
+});
+
+// ======================= START SERVER =======================
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
