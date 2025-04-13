@@ -369,3 +369,20 @@ a:hover {
 .toggle-content.active {
   max-height: 600px;
 }
+.dropdown-header {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 12px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 8px;
+}
+
+.dropdown-content {
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
