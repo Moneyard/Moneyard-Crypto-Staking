@@ -23,7 +23,7 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
     if (data.success) {
       alert('Deposit successful and balance updated!');
       closeDepositModal();
-      loadUserBalance(); // reload balance after deposit
+      loadUserBalance();
     } else {
       alert(data.error || 'Deposit failed');
     }
@@ -32,28 +32,20 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
   }
 });
 
-// Function to open the Deposit modal when the Deposit button is clicked
 document.getElementById('depositButton')?.addEventListener('click', () => {
   const modal = document.getElementById('depositModal');
-  if (modal) {
-    modal.style.display = 'block';
-  }
+  if (modal) modal.style.display = 'block';
 });
 
-// Close the Deposit modal when the close button is clicked
 document.getElementById('closeDepositModal')?.addEventListener('click', () => {
   closeDepositModal();
 });
 
-// Function to close the Deposit Modal
 function closeDepositModal() {
   const modal = document.getElementById('depositModal');
-  if (modal) {
-    modal.style.display = 'none';
-  }
+  if (modal) modal.style.display = 'none';
 }
 
-// Function to close the modal if the user clicks outside it
 window.addEventListener('click', (event) => {
   const modal = document.getElementById('depositModal');
   if (event.target === modal) {
@@ -61,7 +53,7 @@ window.addEventListener('click', (event) => {
   }
 });
 
-// ========== DOMContentLoaded LOGIC ==========
+// ========== DOMContentLoaded ==========
 document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('.animated-section');
   const sectionObserver = new IntersectionObserver(entries => {
@@ -84,26 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Signup
   const signupForm = document.getElementById("signupForm");
-  signupForm?.addEventListener("submit", async (e) => {
+  signupForm?.addEventListener("submit", (e) => {
     e.preventDefault();
-    const fullName = document.getElementById("signupFullName").value;
-    const email = document.getElementById("signupEmail").value;
-    const password = document.getElementById("signupPassword").value;
-
-    const res = await fetch("/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, email, password }),
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      alert("Signup successful! Please login.");
-      signupForm.reset();
-      toggleForms('login');
-    } else {
-      alert(data.error || "Signup failed.");
-    }
+    handleSignup();
   });
 
   // Login
@@ -129,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Stake plans
+  // Stake Plans
   const stakePlansContainer = document.getElementById("stake-plans");
   if (stakePlansContainer) {
     fetch("/api/stake-plans")
@@ -182,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadActiveStakes();
   }
 
-  // Display Full Name on Dashboard
+  // Display User Name
   const fullName = localStorage.getItem("fullName");
   const nameDisplay = document.getElementById("userFullName");
   if (nameDisplay && fullName) {
@@ -190,7 +165,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ========== OTHER FEATURES ==========
+// ========== STANDALONE SIGNUP FUNCTION ==========
+async function handleSignup() {
+  const fullNameInput = document.getElementById("signupFullName");
+  const emailInput = document.getElementById("signupEmail");
+  const passwordInput = document.getElementById("signupPassword");
+
+  const fullName = fullNameInput?.value.trim();
+  const email = emailInput?.value.trim();
+  const password = passwordInput?.value;
+
+  if (!fullName || !email || !password) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, email, password }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Signup successful! Please login.");
+      document.getElementById("signupForm")?.reset();
+      toggleForms('login');
+    } else {
+      alert(data.error || "Signup failed.");
+    }
+  } catch (error) {
+    alert("Signup error: " + error.message);
+  }
+}
+
+// ========== OTHER UTILITIES ==========
 function selectStakePlan(name, apy, duration) {
   document.getElementById("selectedPlanName").value = name;
   document.getElementById("selectedPlanInfo").innerText =
