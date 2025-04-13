@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard - Assets</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Moneyard Assets</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
       margin: 0;
-      padding-bottom: 150px;
-      background: #f5f7fa;
+      padding-bottom: 80px;
     }
 
     header {
-      padding: 20px;
-      background: #fff;
-      border-bottom: 1px solid #ccc;
+      padding: 1rem;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .section-buttons {
       display: flex;
       justify-content: space-between;
-      padding: 10px 20px;
-      background: #fff;
+      padding: 1rem;
     }
 
     .section-buttons button {
@@ -32,157 +32,240 @@
       border: none;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 16px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .btn-green { background: #28a745; color: white; }
-    .btn-grey { background: #d3d3d3; color: #333; }
-    .btn-dark-green { background: #14532d; color: white; }
-
-    .btn-green:hover,
-    .btn-dark-green:hover,
-    .btn-grey:hover {
-      opacity: 0.85;
-      transform: scale(1.02);
+    .left-btn {
+      background: #0f9d58;
+      color: white;
     }
 
-    .summary-box {
-      margin: 15px 20px;
-      padding: 15px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.05);
-      overflow: hidden;
-      transition: max-height 0.3s ease, opacity 0.3s ease;
+    .center-btn {
+      background: #ccc;
     }
 
-    .collapsed {
-      max-height: 0;
-      opacity: 0;
-      padding: 0 15px;
+    .right-btn {
+      background: #0b6d3c;
+      color: white;
     }
 
-    .expanded {
-      max-height: 500px;
-      opacity: 1;
+    .summary {
+      padding: 1.5rem;
     }
 
-    .footer-buttons {
+    .summary h2 {
+      margin-bottom: 1rem;
+    }
+
+    .summary p {
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+
+    /* Footer Buttons */
+    .footer {
       position: fixed;
       bottom: 0;
       width: 100%;
+      background: #f0f0f0;
       display: flex;
-      justify-content: space-between;
-      padding: 12px;
-      background: #fff;
-      border-top: 1px solid #ccc;
+      justify-content: space-around;
+      padding: 0.8rem 0;
+      border-top: 1px solid #ddd;
       z-index: 1000;
     }
 
-    .footer-btn {
+    .footer button {
       flex: 1;
-      margin: 0 5px;
-      padding: 15px;
-      font-weight: bold;
+      padding: 12px 0;
       font-size: 16px;
+      font-weight: bold;
       border: none;
-      border-radius: 12px;
-      transition: background 0.3s ease, transform 0.2s ease;
+      background: none;
+      cursor: pointer;
       display: flex;
       justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer .deposit-btn { color: green; }
+    .footer .withdraw-btn { color: #0b6d3c; }
+    .footer .transfer-btn { color: #777; }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 12% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      animation: slideUp 0.4s ease;
+      position: relative;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .footer-btn:hover {
-      transform: scale(1.05);
+    .modal-content input,
+    .modal-content select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
 
-    .deposit-btn { background: #ff7f50; color: #fff; } /* Warm orange */
-    .withdraw-btn { background: #28a745; color: #fff; } /* Green */
-    .transfer-btn { background: #b0b0b0; color: #000; } /* Grey */
+    .action-btn {
+      width: 100%;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .deposit-btn { background: #0f9d58; color: white; }
+    .withdraw-btn { background: #0b6d3c; color: white; }
+    .transfer-btn { background: #777; color: white; }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h2>Est. Total Value: <span id="totalValue">$0.00</span></h2>
+    <h1>My Assets</h1>
+    <span>Moneyard</span>
   </header>
 
   <div class="section-buttons">
-    <button class="btn-green" onclick="toggleSection('crypto')">
-      <i class="fas fa-coins"></i> Crypto Assets
-    </button>
-    <button class="btn-grey" onclick="toggleSection('savings')">
-      <i class="fas fa-piggy-bank"></i> High-Yield Savings
-    </button>
-    <button class="btn-dark-green" onclick="toggleSection('micro')">
-      <i class="fas fa-chart-line"></i> Micro-Investing
-    </button>
+    <button class="left-btn"><i class="fas fa-coins"></i> Crypto Assets</button>
+    <button class="center-btn">High-Yield Savings</button>
+    <button class="right-btn"><i class="fas fa-chart-line"></i> Micro-Investing</button>
   </div>
 
-  <div class="summary-box expanded" id="cryptoSection">
-    <h4>Crypto Assets</h4>
-    <p id="cryptoAssetsValue">$0.00</p>
+  <div class="summary">
+    <h2>Overview</h2>
+    <p><strong>Total Deposits:</strong> $0.00</p>
+    <p><strong>Earnings:</strong> $0.00</p>
+    <p><strong>Pending Withdrawals:</strong> $0.00</p>
   </div>
 
-  <div class="summary-box collapsed" id="savingsSection">
-    <h4>High-Yield Savings</h4>
-    <p id="savingsValue">$0.00</p>
-  </div>
-
-  <div class="summary-box collapsed" id="microSection">
-    <h4>Micro-Investing</h4>
-    <p id="microInvestingValue">$0.00</p>
-  </div>
-
-  <div class="footer-buttons">
-    <button class="footer-btn deposit-btn" onclick="openDeposit()">
+  <!-- FOOTER -->
+  <div class="footer">
+    <button onclick="openDeposit()" class="deposit-btn">
       <i class="fas fa-arrow-down"></i> Deposit
     </button>
-    <button class="footer-btn withdraw-btn" onclick="openWithdraw()">
+    <button onclick="openWithdraw()" class="withdraw-btn">
       <i class="fas fa-arrow-up"></i> Withdraw
     </button>
-    <button class="footer-btn transfer-btn" onclick="openTransfer()">
+    <button onclick="openTransfer()" class="transfer-btn">
       <i class="fas fa-exchange-alt"></i> Transfer
     </button>
   </div>
 
-  <script>
-    function toggleSection(section) {
-      const sections = ['cryptoSection', 'savingsSection', 'microSection'];
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (id === section + 'Section') {
-          el.classList.remove('collapsed');
-          el.classList.add('expanded');
-        } else {
-          el.classList.add('collapsed');
-          el.classList.remove('expanded');
-        }
-      });
-    }
+  <!-- MODALS -->
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('depositModal')">&times;</span>
+      <h3><i class="fas fa-arrow-down"></i> Deposit Funds</h3>
+      <label>Amount:</label>
+      <input type="number" placeholder="Enter amount" />
+      <label>Network:</label>
+      <select>
+        <option>TRC20</option>
+        <option>BEP20</option>
+        <option>ZM (Mobile/Bank)</option>
+      </select>
+      <button class="action-btn deposit-btn">Submit Deposit</button>
+    </div>
+  </div>
 
+  <div id="withdrawModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
+      <h3><i class="fas fa-arrow-up"></i> Withdraw Funds</h3>
+      <label>Amount:</label>
+      <input type="number" placeholder="Enter amount" />
+      <label>Password:</label>
+      <input type="password" placeholder="Confirm password" />
+      <button class="action-btn withdraw-btn">Submit Withdrawal</button>
+    </div>
+  </div>
+
+  <div id="transferModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('transferModal')">&times;</span>
+      <h3><i class="fas fa-exchange-alt"></i> Transfer Funds</h3>
+      <label>Recipient Email:</label>
+      <input type="email" placeholder="Enter user email" />
+      <label>Amount:</label>
+      <input type="number" placeholder="Enter amount" />
+      <button class="action-btn transfer-btn">Submit Transfer</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
     function openDeposit() {
-      alert("Open Deposit Modal");
-      // Your modal logic here
+      document.getElementById('depositModal').style.display = 'block';
     }
 
     function openWithdraw() {
-      alert("Open Withdraw Modal");
-      // Your modal logic here
+      document.getElementById('withdrawModal').style.display = 'block';
     }
 
     function openTransfer() {
-      alert("Open Transfer Modal");
-      // Your modal logic here
+      document.getElementById('transferModal').style.display = 'block';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      ['depositModal', 'withdrawModal', 'transferModal'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (event.target === modal) modal.style.display = "none";
+      });
     }
   </script>
-
 </body>
 </html>
