@@ -86,13 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.getElementById("signupForm");
   signupForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const fullName = document.getElementById("signupFullName").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
 
     const res = await fetch("/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ fullName, email, password }),
     });
 
     const data = await res.json();
@@ -121,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = await res.json();
     if (data.success) {
       localStorage.setItem("userId", data.userId);
-      localStorage.setItem("email", email);
+      localStorage.setItem("fullName", data.fullName);
       window.location.href = "/dashboard";
     } else {
       alert(data.error || "Login failed.");
@@ -179,6 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.getElementById("active-stakes")) {
     loadActiveStakes();
+  }
+
+  // Display Full Name on Dashboard
+  const fullName = localStorage.getItem("fullName");
+  const nameDisplay = document.getElementById("userFullName");
+  if (nameDisplay && fullName) {
+    nameDisplay.textContent = `Welcome, ${fullName}`;
   }
 });
 
