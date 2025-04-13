@@ -441,7 +441,7 @@ button:hover {
 
 .faq-item {
   border-bottom: 1px solid #ccc;
-  padding: 10px 0;
+  padding: 20px 0; /* Increase space between each FAQ item */
 }
 
 .faq-question {
@@ -452,6 +452,8 @@ button:hover {
   font-weight: bold;
   color: #0a4e3a;
   font-size: 1.1em;
+  padding: 10px 0; /* Add padding for spacing inside the question area */
+  margin-bottom: 10px; /* Adds space below each question */
 }
 
 .toggle-plus {
