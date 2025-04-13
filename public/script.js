@@ -238,3 +238,43 @@ async function unstake(stakeId) {
     alert(data.message || "Unstake failed.");
   }
 }
+// Function to toggle visibility for collapsible sections
+function toggleSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  section.style.display = section.style.display === "block" ? "none" : "block";
+}
+
+// Function to calculate estimated earnings
+function calculateEarnings() {
+  const depositAmount = parseFloat(document.getElementById("depositAmount").value);
+  const apy = parseFloat(document.getElementById("apySelect").value) / 100;
+  const duration = parseInt(document.getElementById("durationSelect").value);
+
+  if (isNaN(depositAmount) || depositAmount <= 0) {
+    alert("Please enter a valid deposit amount.");
+    return;
+  }
+
+  const interest = depositAmount * apy * (duration / 365);
+  document.getElementById("interestResult").innerText = `Estimated Earnings: ${interest.toFixed(2)} USDT`;
+}
+
+// Function to update Loan-to-Value (LTV) value
+function updateLTV() {
+  const ltvValue = document.getElementById("ltvSlider").value;
+  document.getElementById("ltvValue").textContent = `${ltvValue}%`;
+
+  const collateralAmount = parseFloat(document.getElementById("btcAmount").value);
+  if (isNaN(collateralAmount) || collateralAmount <= 0) {
+    document.getElementById("loanResult").innerText = "Enter a valid collateral amount.";
+    return;
+  }
+
+  const loanAmount = collateralAmount * (ltvValue / 100) * 20000; // Assuming 1 BTC = 20,000 USDT
+  document.getElementById("loanResult").textContent = `${loanAmount.toFixed(2)} USDT`;
+}
+
+// Event Listener for the toggle button (Earnings Section)
+document.getElementById("earningsButton").addEventListener("click", function() {
+  toggleSection('earningsSection');
+});
