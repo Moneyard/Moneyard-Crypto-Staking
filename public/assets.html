@@ -69,9 +69,9 @@
       border-radius: 12px;
     }
 
-    .deposit-btn { background: #ff8c00; color: #fff; }
+    .deposit-btn { background: #ff7f50; color: #fff; }
     .withdraw-btn { background: #28a745; color: #fff; }
-    .transfer-btn { background: #d3d3d3; color: #000; }
+    .transfer-btn { background: #ccc; color: #000; }
 
     .modal {
       display: none;
@@ -124,7 +124,7 @@
     <button class="btn-dark-green" onclick="toggleSection('micro')">Micro-Investing</button>
   </div>
 
-  <div class="summary-box" id="cryptoSection">
+  <div class="summary-box" id="cryptoSection" style="display: none;">
     <h4>Crypto Assets</h4>
     <p id="cryptoAssetsValue">$0.00</p>
   </div>
@@ -215,13 +215,26 @@
 
 <!-- SCRIPT -->
 <script>
+  // Toggle Section Visibility
+  function toggleSection(section) {
+    const sections = ['crypto', 'savings', 'micro'];
+    sections.forEach(sec => {
+      const sectionElement = document.getElementById(`${sec}Section`);
+      if (sec === section) {
+        sectionElement.style.display = sectionElement.style.display === 'none' ? 'block' : 'none';
+      } else {
+        sectionElement.style.display = 'none';
+      }
+    });
+  }
+
   // Open/Close Functions
   function openDeposit() {
     document.getElementById("deposit-modal").style.display = "flex";
   }
   function closeDeposit() {
     document.getElementById("deposit-modal").style.display = "none";
-    document.getElementById("deposit-response").textContent = "";
+    document.getElementById("deposit-response").innerText = "";
   }
 
   function openWithdraw() {
@@ -229,7 +242,7 @@
   }
   function closeWithdraw() {
     document.getElementById("withdraw-modal").style.display = "none";
-    document.getElementById("withdraw-response").textContent = "";
+    document.getElementById("withdraw-response").innerText = "";
   }
 
   function openTransfer() {
@@ -237,26 +250,24 @@
   }
   function closeTransfer() {
     document.getElementById("transfer-modal").style.display = "none";
-    document.getElementById("transfer-response").textContent = "";
+    document.getElementById("transfer-response").innerText = "";
   }
 
-  function toggleSection(sectionId) {
-    var sections = ['crypto', 'savings', 'micro'];
-    sections.forEach(function(section) {
-      document.getElementById(section + 'Section').style.display = (section === sectionId) ? 'block' : 'none';
-    });
+  // Submit Functions
+  function submitDeposit() {
+    const amount = document.getElementById("deposit-amount").value;
+    const method = document.getElementById("deposit-method").value;
+    document.getElementById("deposit-response").innerText = `Deposit successful with ${amount} via ${method}`;
   }
-
-  // Example for updating deposit address based on selected method
-  function updateAddressAndQR() {
-    var method = document.getElementById("deposit-method").value;
-    if (method === "TRC20") {
-      document.getElementById("wallet-address").textContent = "TRC20 Address: TThdQhf5...";
-      document.getElementById("qr-image").src = "qr-code-trc20.png";
-    } else if (method === "BEP20") {
-      document.getElementById("wallet-address").textContent = "BEP20 Address: 0x98E7B...";
-      document.getElementById("qr-image").src = "qr-code-bep20.png";
-    }
+  function submitWithdraw() {
+    const amount = document.getElementById("withdraw-amount").value;
+    const address = document.getElementById("withdraw-address").value;
+    document.getElementById("withdraw-response").innerText = `Withdrawal of ${amount} to ${address} has been processed`;
+  }
+  function submitTransfer() {
+    const email = document.getElementById("transfer-email").value;
+    const amount = document.getElementById("transfer-amount").value;
+    document.getElementById("transfer-response").innerText = `Transfer of ${amount} to ${email} has been processed`;
   }
 </script>
 
