@@ -81,6 +81,58 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserSummary();
     loadUserBalance();
   }
+document.addEventListener("DOMContentLoaded", function () {
+  // Earnings Calculator
+  const calcEarningsBtn = document.getElementById("calculateEarningsBtn");
+  if (calcEarningsBtn) {
+    calcEarningsBtn.addEventListener("click", function () {
+      const depositAmount = parseFloat(document.getElementById("depositAmount").value);
+      const apy = parseFloat(document.getElementById("apySelect").value) / 100;
+      const duration = parseInt(document.getElementById("durationSelect").value);
+
+      if (isNaN(depositAmount) || depositAmount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      const earnings = depositAmount * apy * (duration / 365);
+      const total = depositAmount + earnings;
+
+      document.getElementById("earningsResult").innerHTML = `
+        <p>Estimated Earnings: <strong>${earnings.toFixed(2)} USDT</strong></p>
+        <p>Total After Interest: <strong>${total.toFixed(2)} USDT</strong></p>
+      `;
+    });
+  }
+
+  // Loan Calculator
+  const ltvSlider = document.getElementById("ltvSlider");
+  const ltvValue = document.getElementById("ltvValue");
+  if (ltvSlider && ltvValue) {
+    ltvSlider.addEventListener("input", function () {
+      ltvValue.textContent = `${ltvSlider.value}%`;
+    });
+  }
+
+  const calcLoanBtn = document.getElementById("calculateLoanBtn");
+  if (calcLoanBtn) {
+    calcLoanBtn.addEventListener("click", function () {
+      const btcAmount = parseFloat(document.getElementById("btcAmount").value);
+      const ltv = parseInt(ltvSlider.value);
+      const btcPrice = 20000; // Example BTC price
+
+      if (isNaN(btcAmount) || btcAmount <= 0) {
+        alert("Please enter valid BTC amount.");
+        return;
+      }
+
+      const loanAmount = btcAmount * btcPrice * (ltv / 100);
+      document.getElementById("loanResult").innerHTML = `
+        <p>Loan Amount Available: <strong>${loanAmount.toFixed(2)} USDT</strong></p>
+      `;
+    });
+  }
+});
 
   // Signup
   const signupForm = document.getElementById("signupForm");
