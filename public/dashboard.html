@@ -469,17 +469,6 @@
         });
     }
 
-  // Earnings Calculator
-  function calculateEarnings() {
-    const deposit = parseFloat(document.getElementById("depositAmount").value);
-    const apy = parseFloat(document.getElementById("apySelect").value);
-    const duration = parseInt(document.getElementById("durationSelect").value);
-
-    if (!deposit || !apy || !duration) {
-      document.getElementById("interestResult").innerText = "Please fill all fields.";
-      return;
-    }
-
     <script>
 document.addEventListener("DOMContentLoaded", function () {
   const depositAmountInput = document.getElementById("depositAmount");
