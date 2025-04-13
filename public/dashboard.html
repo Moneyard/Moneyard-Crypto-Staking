@@ -421,6 +421,9 @@
           document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
         });
     }
+
+    // Add the fullName script here
+    document.getElementById('userFullName').textContent = localStorage.getItem('fullName') || 'User';
   </script>
 </body>
 </html>
