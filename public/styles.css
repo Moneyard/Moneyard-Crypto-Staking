@@ -552,3 +552,58 @@ button:hover {
 .about-content ul li {
   margin-bottom: 8px;
 }
+.yield-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 15px;
+  background-color: #ffffff;
+}
+
+.yield-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.yield-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+}
+
+.yield-title {
+  flex: 1;
+  font-weight: bold;
+  color: #0a4e3a;
+  font-size: 1.05em;
+}
+
+.yield-toggle {
+  font-size: 1.5em;
+  user-select: none;
+}
+
+.yield-content {
+  margin-top: 10px;
+  display: none;
+  color: #444;
+}
+.yield-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #0a4e3a; /* Optional: green border for style */
+  margin-right: 12px;
+  background-color: #fff;
+  padding: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.yield-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
