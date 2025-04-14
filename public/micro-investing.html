@@ -5,6 +5,49 @@
   <title>Micro-Investing</title>
 </head>
 <body>
+<header class="module-header">
+  <h1 class="module-title">Moneyard Learning Modules</h1>
+  <nav class="module-nav">
+    <a href="cryptocurrency.html" class="nav-link">Cryptocurrency</a>
+    <a href="high-yield-savings.html" class="nav-link">High-Yield Savings</a>
+    <a href="micro-investing.html" class="nav-link">Micro-Investing</a>
+    <a href="budgeting.html" class="nav-link">Budgeting Basics</a>
+  </nav>
+</header>
+
+<style>
+.module-header {
+  background: #e0f2f1;
+  padding: 20px 0;
+  text-align: center;
+  border-bottom: 2px solid #00796b;
+}
+.module-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #00796b;
+}
+.module-nav {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+.nav-link {
+  font-size: 18px;
+  color: #00796b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: #004d40;
+  border-bottom: 2px solid #004d40;
+}
+</style>
+
   <!-- Progress Tracker -->
   <div style="margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
@@ -12,31 +55,6 @@
       <span>High-Yield Savings</span>
       <span>Micro-Investing</span>
     </div>
-<nav class="module-nav">
-  <a href="cryptocurrency.html" class="nav-link">Cryptocurrency</a>
-  <a href="high-yield-savings.html" class="nav-link">High-Yield Savings</a>
-  <a href="micro-investing.html" class="nav-link">Micro-Investing</a>
-  <a href="budgeting.html" class="nav-link">Budgeting Basics</a> <!-- Fourth module -->
-</nav>
-
-<style>
-.module-nav {
-  display: flex;
-  justify-content: center;
-  background: #f0f0f0;
-  padding: 10px;
-  gap: 15px;
-}
-.nav-link {
-  text-decoration: none;
-  color: #1a73e8;
-  font-weight: bold;
-}
-.nav-link:hover {
-  text-decoration: underline;
-}
-</style>
-
     <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
       <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
       <div id="progress-hysa" style="flex: 1; background: #2b7a78;"></div>
