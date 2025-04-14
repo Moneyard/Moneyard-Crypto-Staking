@@ -156,7 +156,6 @@
       border-radius: 10px;
     }
 
-    /* Green Learn more button */
     .learn-more-link {
       display: inline-block;
       margin-top: 15px;
@@ -266,7 +265,7 @@
     ];
 
     let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
-    let utterance;
+    let audio = new Audio('path_to_your_audio_file.mp3'); // Replace with your audio file path
 
     function loadModules() {
       const container = document.getElementById('modulesContainer');
@@ -280,7 +279,7 @@
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
+          <button onclick="startModule('${mod.id}')">${isComplete ? 'Review' : 'Start'}</button>
         `;
         container.appendChild(card);
       });
@@ -317,11 +316,21 @@
 
     function closeLesson() {
       document.getElementById('lessonModal').style.display = 'none';
+      stopAudio();
     }
 
     function updateProgress() {
       const progress = (completedModules.length / modules.length) * 100;
       document.getElementById('progressFill').style.width = `${progress}%`;
+    }
+
+    function playAudio() {
+      audio.play();
+    }
+
+    function stopAudio() {
+      audio.pause();
+      audio.currentTime = 0;
     }
 
     loadModules();
