@@ -547,6 +547,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-<script src="script.js"></script>
+
+  function toggleAbout() {
+    const content = document.getElementById('about-content');
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function toggleYield(element) {
+    const content = element.nextElementSibling;
+    const toggle = element.querySelector('.yield-toggle');
+    if (content.style.display === "none" || content.style.display === "") {
+      content.style.display = "block";
+      toggle.textContent = "−";
+    } else {
+      content.style.display = "none";
+      toggle.textContent = "+";
+    }
+  }
+</script>
 </body>
 </html>
