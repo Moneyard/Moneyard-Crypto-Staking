@@ -297,7 +297,7 @@
       document.getElementById('lessonContent').innerHTML = mod.content;
       document.getElementById('lessonModal').style.display = 'block';
       document.getElementById('learnMoreLink').href = mod.link;
-      speakLearnMore(); // Speak Learn More when opening the module
+      speakContent(); // Speak the lesson content when opening the module
     }
 
     function closeLesson() {
@@ -321,13 +321,15 @@
     function updateProgress() {
       const fill = document.getElementById('progressFill');
       const percent = (completedModules.length / modules.length) * 100;
-      fill.style.width = percent + '%';
+      fill.style.width = `${percent}%`;
     }
 
-    function speakLearnMore() {
-      const learnMoreText = 'Learn more about this module';
-      let learnMoreUtterance = new SpeechSynthesisUtterance(learnMoreText);
-      speechSynthesis.speak(learnMoreUtterance);  // This will say "Learn More"
+    function speakContent() {
+      utterance.onend = function () {
+        // After the speech ends, say "Learn more"
+        const learnMoreUtterance = new SpeechSynthesisUtterance('Learn more');
+        speechSynthesis.speak(learnMoreUtterance);
+      };
     }
 
     loadModules();
