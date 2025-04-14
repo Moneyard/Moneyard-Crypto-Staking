@@ -323,6 +323,14 @@
       fill.style.width = percent + '%';
     }
 
+    function speakLearnMore() {
+      const learnMoreText = 'Click to learn more about this module.';
+      let learnMoreUtterance = new SpeechSynthesisUtterance(learnMoreText);
+      speechSynthesis.speak(learnMoreUtterance);
+    }
+
+    document.getElementById('learnMoreLink').addEventListener('click', speakLearnMore);
+
     window.onload = loadModules;
   </script>
 </body>
