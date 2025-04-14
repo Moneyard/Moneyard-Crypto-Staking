@@ -297,6 +297,7 @@
       document.getElementById('lessonContent').innerHTML = mod.content;
       document.getElementById('lessonModal').style.display = 'block';
       document.getElementById('learnMoreLink').href = mod.link;
+      speakLearnMore(); // Speak Learn More when opening the module
     }
 
     function closeLesson() {
@@ -324,14 +325,12 @@
     }
 
     function speakLearnMore() {
-      const learnMoreText = 'Click to learn more about this module.';
+      const learnMoreText = 'Learn more about this module';
       let learnMoreUtterance = new SpeechSynthesisUtterance(learnMoreText);
-      speechSynthesis.speak(learnMoreUtterance);
+      speechSynthesis.speak(learnMoreUtterance);  // This will say "Learn More"
     }
 
-    document.getElementById('learnMoreLink').addEventListener('click', speakLearnMore);
-
-    window.onload = loadModules;
+    loadModules();
   </script>
 </body>
 </html>
