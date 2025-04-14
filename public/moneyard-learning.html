@@ -229,11 +229,12 @@
         content: `
           <h2>High-Yield Savings</h2>
           <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
-          <iframe src="https://www.youtube.com/embed/H6du_qVj7PQ" allowfullscreen></iframe>
           <ul>
             <li>Daily vs monthly compounding</li>
             <li>Choosing the best HYSA</li>
             <li>Comparing traditional banks vs fintech</li>
+            <li>What's a good reason to use HYSA? - High interest, low risk</li>
+            <li>To borrow loans</li>
           </ul>
           <div class='quiz-section'>
             <div class='quiz-question'>What's a good reason to use HYSA?</div>
@@ -241,28 +242,6 @@
             <button onclick="alert('Nope!')">To borrow loans</button>
           </div>
           <div class='badge'>Smart Saver</div>
-        `
-      },
-      {
-        id: 'investing',
-        title: 'Micro-Investing',
-        desc: 'Start investing with as little as $1.',
-        link: 'micro-investing.html',
-        content: `
-          <h2>Micro-Investing</h2>
-          <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
-          <iframe src="https://www.youtube.com/embed/6uOkrJpbEB0" allowfullscreen></iframe>
-          <ul>
-            <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
-          </div>
-          <div class='badge'>Micro-Investor</div>
         `
       }
     ];
@@ -296,20 +275,20 @@
       document.getElementById('lessonModal').style.display = 'block';
       
       // Start speech
-      speakContent(currentModule.title, currentModule.desc);
+      speakContent(currentModule.title, currentModule.desc, currentModule.content);
     }
 
     function closeLesson() {
       document.getElementById('lessonModal').style.display = 'none';
     }
 
-    function speakContent(moduleTitle, moduleDesc) {
+    function speakContent(moduleTitle, moduleDesc, moduleContent) {
       const welcomeText = `Welcome to the ${moduleTitle} lesson. Let's dive into this exciting topic.`;
       utterance = new SpeechSynthesisUtterance(welcomeText);
       speechSynthesis.speak(utterance);
 
       // Speaking the contents of the module
-      const contentText = `${moduleDesc}`;
+      const contentText = `${moduleDesc} ${moduleContent}`;
       utterance.onend = function () {
         const learnMoreUtterance = new SpeechSynthesisUtterance('Learn more');
         speechSynthesis.speak(learnMoreUtterance);
