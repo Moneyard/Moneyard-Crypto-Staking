@@ -313,10 +313,11 @@
       const currentModule = modules.find(mod => mod.id === 'crypto' && document.querySelector('.learn-card button').innerText === 'Start');
       // Link to the pages for each specific topic
       if (currentModule) {
-        window.location.href = 'https://www.your-website.com/cryptocurrency'; // Replace with your cryptocurrency page URL
-      } else {
-        // Link to other pages
-        window.location.href = 'https://www.your-website.com/high-yield-savings'; // Replace with your high-yield savings page URL
+        window.location.href = 'cryptocurrency.html'; // Replace with your cryptocurrency page URL
+      } else if (modules[1]) {
+        window.location.href = 'yield-savings.html'; // Replace with your high-yield savings page URL
+      } else if (modules[2]) {
+        window.location.href = 'micro-investing.html'; // Replace with your micro-investing page URL
       }
     }
 
