@@ -1,111 +1,94 @@
+// Importing required dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const path = require('path');
+const nodemailer = require('nodemailer');
+
+// Initialize the Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
+// Body-parser middleware to handle POST request data
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('Public'));
 
-const db = new sqlite3.Database('./moneyard.db');
+// SQLite database initialization
+let db = new sqlite3.Database('./moneyard.db', (err) => {
+  if (err) {
+    console.error('Error opening database:', err.message);
+  } else {
+    console.log('Connected to the SQLite database.');
+  }
+});
 
+// Create necessary tables (if not already created)
 db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT UNIQUE,
-      password TEXT,
-      reference TEXT
-    )
-  `);
-  db.run(`
-    CREATE TABLE IF NOT EXISTS deposits (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER,
-      amount REAL,
-      method TEXT,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-  db.run(`
-    CREATE TABLE IF NOT EXISTS withdrawals (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER,
-      amount REAL,
-      status TEXT DEFAULT 'pending',
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+  db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, created_at TEXT)');
+  db.run('CREATE TABLE IF NOT EXISTS deposits (id INTEGER PRIMARY KEY, user_id INTEGER, amount REAL, timestamp TEXT)');
 });
 
-app.post('/api/signup', async (req, res) => {
-  const { email, password, reference } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
-  db.run(
-    `INSERT INTO users (email, password, reference) VALUES (?, ?, ?)`,
-    [email, hashed, reference || null],
-    function (err) {
-      if (err) return res.status(400).json({ error: 'User exists or error occurred' });
-      res.json({ message: 'Signup successful' });
-    }
-  );
-});
-
-app.post('/api/login', (req, res) => {
+// Sample route for user registration
+app.post('/register', (req, res) => {
   const { email, password } = req.body;
-  db.get(`SELECT * FROM users WHERE email = ?`, [email], async (err, user) => {
-    if (err || !user) return res.status(400).json({ error: 'Invalid credentials' });
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ error: 'Invalid credentials' });
-    const token = jwt.sign({ id: user.id }, 'secret');
-    res.json({ token });
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  
+  const stmt = db.prepare('INSERT INTO users (email, password, created_at) VALUES (?, ?, ?)');
+  stmt.run(email, hashedPassword, new Date().toISOString(), function (err) {
+    if (err) {
+      return res.status(500).send({ message: 'Error registering user.' });
+    }
+    res.status(201).send({ message: 'User registered successfully.' });
+  });
+  stmt.finalize();
+});
+
+// Sample route for user login
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  
+  db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+    if (err || !row) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    const passwordMatch = bcrypt.compareSync(password, row.password);
+    if (!passwordMatch) {
+      return res.status(401).send({ message: 'Invalid password.' });
+    }
+    
+    res.status(200).send({ message: 'Login successful.' });
   });
 });
 
-app.post('/api/deposit', (req, res) => {
-  const { token, amount, method } = req.body;
-  if (!token) return res.status(401).json({ error: 'No token' });
-
-  let userId;
-  try {
-    userId = jwt.verify(token, 'secret').id;
-  } catch (e) {
-    return res.status(403).json({ error: 'Invalid token' });
-  }
-
-  db.run(
-    `INSERT INTO deposits (user_id, amount, method) VALUES (?, ?, ?)`,
-    [userId, amount, method],
-    function (err) {
-      if (err) return res.status(400).json({ error: 'Deposit error' });
-      res.json({ message: 'Deposit successful' });
+// Sample route for sending a confirmation email
+app.post('/send-confirmation', (req, res) => {
+  const { email } = req.body;
+  
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'your-email@gmail.com', // Use your email here
+      pass: 'your-email-password'    // Use your email password or OAuth credentials here
     }
-  );
+  });
+  
+  let mailOptions = {
+    from: 'your-email@gmail.com',
+    to: email,
+    subject: 'Account Confirmation',
+    text: 'Please confirm your email address to complete the registration process.'
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send({ message: 'Error sending confirmation email.' });
+    }
+    res.status(200).send({ message: 'Confirmation email sent.' });
+  });
 });
 
-app.post('/api/withdraw', (req, res) => {
-  const { token, amount } = req.body;
-  if (!token) return res.status(401).json({ error: 'No token' });
-
-  let userId;
-  try {
-    userId = jwt.verify(token, 'secret').id;
-  } catch (e) {
-    return res.status(403).json({ error: 'Invalid token' });
-  }
-
-  db.run(
-    `INSERT INTO withdrawals (user_id, amount) VALUES (?, ?)`,
-    [userId, amount],
-    function (err) {
-      if (err) return res.status(400).json({ error: 'Withdraw error' });
-      res.json({ message: 'Withdrawal request submitted' });
-    }
-  );
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
