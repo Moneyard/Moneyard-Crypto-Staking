@@ -67,9 +67,8 @@ db.run(`CREATE TABLE IF NOT EXISTS stakes (
     amount REAL,
     apy REAL,
     lock_period INTEGER,
-    start_date TIMESTAMP,
-    status TEXT DEFAULT 'active',
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    start_date TEXT,
+    status TEXT DEFAULT 'active'
 )`);
 
 // Signup
@@ -82,7 +81,7 @@ app.post('/api/signup', async (req, res) => {
 
     if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
     if (!passwordRegex.test(password)) return res.status(400).json({ 
-        error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters' 
+        error: 'Password must contain lowercase, uppercase, number, and be 5+ characters' 
     });
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
@@ -90,11 +89,10 @@ app.post('/api/signup', async (req, res) => {
         if (user) return res.status(400).json({ error: 'Email already in use' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
             [email, hashedPassword], 
             function(err) {
-                if (err) return res.status(500).json({ error: 'Failed to register user' });
+                if (err) return res.status(500).json({ error: 'Failed to register' });
                 res.json({ success: true, userId: this.lastID });
             }
         );
@@ -104,22 +102,17 @@ app.post('/api/signup', async (req, res) => {
 // Login
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
         if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
 
-        res.json({ 
-            success: true, 
-            userId: user.id,
-            username: user.email
-        });
+        res.json({ success: true, userId: user.id, username: user.email });
     });
 });
 
-// Deposit Funds
+// Deposit
 app.post('/api/deposit', (req, res) => {
     const { userId, amount, network, txId } = req.body;
     if (!userId || !amount || !network || !txId) {
@@ -127,7 +120,6 @@ app.post('/api/deposit', (req, res) => {
     }
 
     const now = new Date().toISOString();
-
     db.run(`
         INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
         VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
@@ -136,14 +128,14 @@ app.post('/api/deposit', (req, res) => {
             if (err) return res.status(500).json({ error: 'Deposit failed' });
 
             db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
-                if (err) return res.status(500).json({ error: 'Failed to update balance' });
-                res.json({ success: true, message: 'Deposit confirmed and balance updated' });
+                if (err) return res.status(500).json({ error: 'Balance update failed' });
+                res.json({ success: true, message: 'Deposit confirmed' });
             });
         }
     );
 });
 
-// Withdraw Funds
+// Withdraw
 app.post('/api/withdraw', (req, res) => {
     const { userId, amount, walletAddress, password } = req.body;
     if (!userId || !amount || !walletAddress || !password) {
@@ -156,12 +148,9 @@ app.post('/api/withdraw', (req, res) => {
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return res.status(403).json({ error: 'Invalid password' });
 
-        if (user.balance < amount) {
-            return res.status(400).json({ error: 'Insufficient balance' });
-        }
+        if (user.balance < amount) return res.status(400).json({ error: 'Insufficient balance' });
 
         const date = new Date().toISOString();
-
         db.run("INSERT INTO withdrawals (user_id, amount, wallet_address, password, date) VALUES (?, ?, ?, ?, ?)", 
             [userId, amount, walletAddress, password, date], (err) => {
                 if (err) return res.status(500).json({ error: 'Withdrawal failed' });
@@ -175,7 +164,7 @@ app.post('/api/withdraw', (req, res) => {
     });
 });
 
-// Transfer Funds
+// Transfer
 app.post('/api/transfer', (req, res) => {
     const { fromUserId, toEmail, amount, password } = req.body;
     if (!fromUserId || !toEmail || !amount || !password) {
@@ -208,65 +197,70 @@ app.post('/api/transfer', (req, res) => {
     });
 });
 
-// Stake Coins
+// Stake
 app.post('/api/stake', (req, res) => {
     const { userId, plan, amount } = req.body;
     if (!userId || !plan || !amount) {
-        return res.status(400).json({ error: 'All fields are required' });
+        return res.status(400).json({ error: 'All fields required' });
     }
 
-    // Define mock APY based on plan
-    const apy = {
-        'Stable Growth': 8,
-        'Yield Farming': 15,
-        'Liquidity Mining': 22
-    }[plan];
+    const plans = {
+        "Stable Growth": 8,
+        "Yield Farming": 15,
+        "Liquidity Mining": 22
+    };
 
-    if (!apy) {
-        return res.status(400).json({ error: 'Invalid plan' });
-    }
+    const apy = plans[plan];
+    if (!apy) return res.status(400).json({ error: 'Invalid plan' });
 
-    const lockPeriod = 30; // Example lock period in days
-    const startDate = new Date().toISOString();
+    db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
+        if (err || !row) return res.status(400).json({ error: 'User not found' });
+        if (row.balance < amount) return res.status(400).json({ error: 'Insufficient balance' });
 
-    db.run("INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date) VALUES (?, ?, ?, ?, ?, ?)", 
-        [userId, plan, amount, apy, lockPeriod, startDate], function(err) {
-            if (err) return res.status(500).json({ error: 'Staking failed' });
+        const lockPeriod = 30;
+        const startDate = new Date().toISOString();
 
-            res.json({ success: true, message: 'Staking successful' });
-        }
-    );
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId]);
+        db.run("INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date) VALUES (?, ?, ?, ?, ?, ?)", 
+            [userId, plan, amount, apy, lockPeriod, startDate], function(err) {
+                if (err) return res.status(500).json({ error: 'Staking failed' });
+                res.json({ success: true, message: 'Staking successful' });
+            }
+        );
+    });
 });
 
-// View Active Stakes
+// View Stakes
 app.get('/api/active-stakes', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
     db.all("SELECT * FROM stakes WHERE user_id = ? AND status = 'active'", [userId], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Failed to load active stakes' });
+        if (err) return res.status(500).json({ error: 'Failed to load stakes' });
         res.json(rows);
     });
 });
 
-// Unstake Coins
+// Unstake
 app.post('/api/unstake', (req, res) => {
     const { userId, stakeId } = req.body;
-    if (!userId || !stakeId) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
+    if (!userId || !stakeId) return res.status(400).json({ error: 'Missing fields' });
 
-    db.run("UPDATE stakes SET status = 'inactive' WHERE id = ? AND user_id = ?", [stakeId, userId], (err) => {
-        if (err) return res.status(500).json({ error: 'Unstaking failed' });
-        res.json({ success: true, message: 'Unstaking successful' });
+    db.get("SELECT * FROM stakes WHERE id = ? AND user_id = ? AND status = 'active'", [stakeId, userId], (err, stake) => {
+        if (err || !stake) return res.status(400).json({ error: 'Stake not found or already unstaked' });
+
+        db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [stake.amount, userId]);
+        db.run("UPDATE stakes SET status = 'inactive' WHERE id = ?", [stakeId], (err) => {
+            if (err) return res.status(500).json({ error: 'Unstake failed' });
+            res.json({ success: true, message: 'Unstaked successfully' });
+        });
     });
 });
 
-// Serve frontend
+// Serve pages
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 
-// Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
