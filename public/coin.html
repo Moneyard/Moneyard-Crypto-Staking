@@ -6,7 +6,93 @@
   <title>Coin Details</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Existing styles... */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #00695c;
+    }
+    .coin-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .coin-info img {
+      width: 32px;
+      height: 32px;
+    }
+    .details {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    canvas {
+      max-width: 100%;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .back-link a {
+      text-decoration: none;
+      color: #00695c;
+      font-weight: bold;
+      background: #e0f2f1;
+      padding: 10px 16px;
+      border-radius: 12px;
+    }
+    .timeframe-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .timeframe-buttons button {
+      padding: 8px 14px;
+      background-color: #e0f2f1;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #004d40;
+    }
+    .timeframe-buttons button.active {
+      background-color: #004d40;
+      color: #fff;
+    }
+    .stake-form {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .stake-form input {
+      padding: 10px;
+      width: 200px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .stake-form button {
+      padding: 10px 20px;
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -26,18 +112,11 @@
 
   <canvas id="priceChart" height="100"></canvas>
 
-  <!-- APY display -->
-  <div id="apyDisplay" class="apy-section"></div>
-
-  <!-- Staking Form -->
   <div class="stake-form">
     <h3>Stake ${coinId}</h3>
     <input type="number" id="stakeAmount" placeholder="Enter amount to stake" />
     <button onclick="stakeNow()">Stake</button>
   </div>
-
-  <!-- Active Stakes -->
-  <div class="active-stakes" id="activeStakes"></div>
 
   <div class="back-link">
     <a href="market.html">&larr; Back to Market</a>
@@ -61,16 +140,6 @@
       <p><strong>Current Price:</strong> $${data.market_data.current_price.usd.toLocaleString()}</p>
       <p><strong>Market Cap:</strong> $${data.market_data.market_cap.usd.toLocaleString()}</p>
       <p><strong>24h Change:</strong> ${data.market_data.price_change_percentage_24h.toFixed(2)}%</p>
-    `;
-    loadAPY();
-  }
-
-  async function loadAPY() {
-    const res = await fetch(`/apy`);
-    const data = await res.json();
-    const apy = data[coinId.toLowerCase()] || 'N/A';
-    document.getElementById('apyDisplay').innerHTML = `
-      <p><strong>Annual Percentage Yield (APY):</strong> ${apy}%</p>
     `;
   }
 
@@ -110,52 +179,17 @@
     });
   }
 
-  async function stakeNow() {
+  function stakeNow() {
     const amount = document.getElementById('stakeAmount').value;
-    if (!amount || amount <= 0) return alert('Please enter a valid amount to stake.');
-
-    const userId = 1; // Replace with actual user ID
-    const res = await fetch('/stake', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, coinId, amount })
-    });
-    const data = await res.json();
-    alert(data.message);
-    loadActiveStakes();
-  }
-
-  async function loadActiveStakes() {
-    const userId = 1; // Replace with actual user ID
-    const res = await fetch(`/active-stakes?userId=${userId}`);
-    const stakes = await res.json();
-
-    const stakesList = stakes.map(stake => `
-      <div class="stake-item">
-        <p>${stake.coin_id.toUpperCase()}: ${stake.amount}</p>
-        <button onclick="unstake(${stake.id})">Unstake</button>
-      </div>
-    `).join('');
-    document.getElementById('activeStakes').innerHTML = stakesList;
-  }
-
-  async function unstake(stakeId) {
-    const userId = 1; // Replace with actual user ID
-    const amount = prompt("Enter the amount to unstake:");
-    if (!amount) return;
-
-    const res = await fetch('/unstake', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, coinId, amount })
-    });
-    const data = await res.json();
-    alert(data.message);
-    loadActiveStakes();
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid amount to stake.");
+      return;
+    }
+    alert(`Staked ${amount} ${coinId.toUpperCase()} successfully! (Backend logic can be added here.)`);
   }
 
   loadCoinDetails();
-  loadCoinChart();
+  loadCoinChart('1');
 </script>
 
 </body>
