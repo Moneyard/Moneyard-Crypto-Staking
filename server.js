@@ -175,6 +175,67 @@ app.get('/api/stake-plans', (req, res) => {
     res.json(plans);
 });
 
+// Stake coins
+app.post('/api/stake', (req, res) => {
+    const { userId, amount, plan, lockPeriod } = req.body;
+    if (!userId || !amount || !plan || !lockPeriod) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Calculate APY based on selected plan
+    const plans = {
+        'Stable Growth': 8,
+        'Yield Farming': 15,
+        'Liquidity Mining': 22
+    };
+
+    const apy = plans[plan];
+    if (!apy) return res.status(400).json({ error: 'Invalid staking plan' });
+
+    const now = new Date().toISOString();
+
+    db.run(`
+        INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [userId, plan, amount, apy, lockPeriod, now],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Staking failed' });
+
+            // Deduct staked amount from user balance
+            db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId], (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update balance' });
+                res.json({ success: true, message: 'Stake successful' });
+            });
+        }
+    );
+});
+
+// Get active stakes
+app.get('/api/stakes', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+    db.all(`SELECT * FROM stakes WHERE user_id = ? AND status = 'active' ORDER BY start_date DESC`, 
+        [userId], 
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: 'Failed to load active stakes' });
+            res.json(rows);
+        }
+    );
+});
+
+// Unstake coins
+app.post('/api/unstake', (req, res) => {
+    const { stakeId } = req.body;
+    if (!stakeId) return res.status(400).json({ error: 'Missing stakeId' });
+
+    // Update stake status to "completed"
+    db.run("UPDATE stakes SET status = 'completed' WHERE id = ?", [stakeId], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to unstake' });
+        res.json({ success: true, message: 'Stake successfully unstaked' });
+    });
+});
+
 // Serve frontend
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
