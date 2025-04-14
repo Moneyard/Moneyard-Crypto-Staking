@@ -305,36 +305,27 @@
     }
 
     function updateProgress() {
-      const percent = Math.floor((completedModules.length / modules.length) * 100);
-      document.getElementById('progressFill').style.width = percent + '%';
+      const progress = (completedModules.length / modules.length) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    function openLearnMore() {
+      window.open('https://www.your-website.com/learn-more', '_blank');
     }
 
     function playAudio() {
-      const text = document.getElementById("lessonContent").innerText + " Learn more";
-      if (!text.trim()) {
-        alert("No lesson content to read.");
-        return;
+      if (!utterance) {
+        utterance = new SpeechSynthesisUtterance("You have started learning this module.");
       }
-      window.speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
-      if (preferredVoice) utterance.voice = preferredVoice;
       window.speechSynthesis.speak(utterance);
     }
 
     function stopAudio() {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
+      if (utterance) {
+        window.speechSynthesis.cancel(utterance);
       }
     }
 
-    function openLearnMore() {
-      window.open('https://www.example.com/learn-more', '_blank');
-    }
-
-    window.speechSynthesis.onvoiceschanged = () => {};
     loadModules();
   </script>
 </body>
