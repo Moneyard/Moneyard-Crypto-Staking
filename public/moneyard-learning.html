@@ -8,36 +8,32 @@
     body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: #ffe5b4; /* warm orange background */
+  background-color: #FFA94D !important; /* warm orange */
   color: #333;
 }
+
 header {
-  background-color: #28a745; /* green header */
+  background-color: #007a5a; /* deep green header */
   color: white;
   padding: 20px;
   text-align: center;
 }
-    .learn-container {
-      padding: 30px;
-    }
-    .learn-modules {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .learn-card {
-      flex: 1;
-      min-width: 250px;
-      background: #e9f7f0;
-      border-left: 5px solid #2ecc71; /* Green border */
-      padding: 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .learn-card:hover {
-      transform: scale(1.02);
-      background: #d2f2e5;
+
+.learn-card {
+  flex: 1;
+  min-width: 250px;
+  background: white; /* module card color */
+  border-left: 5px solid #007a5a;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.learn-card:hover {
+  transform: scale(1.02);
+  background: #f0f0f0;
+}
     }
     #lessonModal {
       display: none;
