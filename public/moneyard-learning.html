@@ -162,6 +162,22 @@
       border: none;
       border-radius: 10px;
     }
+    
+    .learn-more-button {
+      display: inline-block;
+      background-color: #007a5a;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    .learn-more-button:hover {
+      background-color: #005f42;
+    }
   </style>
 </head>
 <body>
@@ -206,6 +222,10 @@
             <button onclick="alert('Nope!')">Sending crypto fast</button>
           </div>
           <div class='badge'>Crypto Explorer</div>
+          <!-- Learn More Button -->
+          <div class="learn-more-section">
+            <a href="crypto-basics.html" class="learn-more-button">Learn More</a>
+          </div>
         `
       },
       {
@@ -227,6 +247,10 @@
             <button onclick="alert('Nope!')">To borrow loans</button>
           </div>
           <div class='badge'>Smart Saver</div>
+          <!-- Learn More Button -->
+          <div class="learn-more-section">
+            <a href="high-yield-savings.html" class="learn-more-button">Learn More</a>
+          </div>
         `
       },
       {
@@ -239,51 +263,42 @@
           <iframe src="https://www.youtube.com/embed/6uOkrJpbEB0" allowfullscreen></iframe>
           <ul>
             <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
+            <li>Risks and rewards of micro-investing</li>
+            <li>Tools and platforms available</li>
           </ul>
           <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
+            <div class='quiz-question'>What is micro-investing?</div>
+            <button onclick="alert('Correct!')">Investing small amounts regularly</button>
+            <button onclick="alert('Nope!')">Investing in real estate</button>
           </div>
-          <div class='badge'>Micro-Investor</div>
+          <div class='badge'>Investment Beginner</div>
+          <!-- Learn More Button -->
+          <div class="learn-more-section">
+            <a href="micro-investing.html" class="learn-more-button">Learn More</a>
+          </div>
         `
       }
     ];
 
-    let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
-    let utterance;
+    // Populating the modules
+    const modulesContainer = document.getElementById('modulesContainer');
+    modules.forEach(module => {
+      const card = document.createElement('div');
+      card.classList.add('learn-card');
+      card.innerHTML = `
+        <h3>${module.title}</h3>
+        <p>${module.desc}</p>
+        <button onclick="openLesson('${module.id}')">Start Lesson</button>
+      `;
+      modulesContainer.appendChild(card);
+    });
 
-    function loadModules() {
-      const container = document.getElementById('modulesContainer');
-      container.innerHTML = '';
-
-      modules.forEach((mod, index) => {
-        const unlocked = index === 0 || completedModules.includes(modules[index - 1].id);
-        const isComplete = completedModules.includes(mod.id);
-        const card = document.createElement('div');
-        card.className = 'learn-card' + (unlocked ? '' : ' locked');
-        card.innerHTML = `
-          <h3>${mod.title}</h3>
-          <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
-        `;
-        container.appendChild(card);
-      });
-
-      updateProgress();
-    }
-
-    function startModule(id) {
-      const mod = modules.find(m => m.id === id);
-      document.getElementById('lessonContent').innerHTML = mod.content;
-      document.getElementById('lessonModal').style.display = 'block';
-      if (!completedModules.includes(id)) {
-        completedModules.push(id);
-        localStorage.setItem('completedModules', JSON.stringify(completedModules));
-        loadModules();
-      }
+    function openLesson(moduleId) {
+      const module = modules.find(m => m.id === moduleId);
+      const modal = document.getElementById('lessonModal');
+      const lessonContent = document.getElementById('lessonContent');
+      lessonContent.innerHTML = module.content;
+      modal.style.display = 'block';
     }
 
     function closeLesson() {
@@ -291,34 +306,16 @@
       stopAudio();
     }
 
-    function updateProgress() {
-      const percent = Math.floor((completedModules.length / modules.length) * 100);
-      document.getElementById('progressFill').style.width = percent + '%';
-    }
-
     function playAudio() {
-      const text = document.getElementById("lessonContent").innerText;
-      if (!text.trim()) {
-        alert("No lesson content to read.");
-        return;
-      }
-      window.speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
-      if (preferredVoice) utterance.voice = preferredVoice;
-      window.speechSynthesis.speak(utterance);
+      const audio = new Audio('lesson-audio.mp3');
+      audio.play();
     }
 
     function stopAudio() {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-      }
+      const audio = new Audio('lesson-audio.mp3');
+      audio.pause();
+      audio.currentTime = 0;
     }
-
-    window.speechSynthesis.onvoiceschanged = () => {};
-    loadModules();
-</script>
+  </script>
 </body>
 </html>
