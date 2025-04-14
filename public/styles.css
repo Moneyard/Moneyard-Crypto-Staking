@@ -609,3 +609,26 @@ button:hover {
   color: #0a4e3a;
   margin-left: 12px;
 }
+<style>
+  .crypto-market-section {
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    margin-top: 40px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  }
+  #cryptoMarketTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  #cryptoMarketTable th, #cryptoMarketTable td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+  #cryptoMarketTable th {
+    background: #f8f9fa;
+    font-weight: bold;
+  }
+</style>
