@@ -1,15 +1,10 @@
-**cryptocurrency.html**
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cryptocurrency</title>
+  <title>Cryptocurrency Module</title>
 </head>
 <body>
-
   <!-- Progress Tracker -->
   <div style="margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
@@ -24,8 +19,23 @@
     </div>
   </div>
 
-  <h1>Cryptocurrency</h1>
-  <p>Learn how digital currencies work, how to buy/sell safely, and what role they can play in your financial plan.</p>
+  <!-- Welcome & Module Content -->
+  <h2>Cryptocurrency</h2>
+  <p id="crypto-content">
+    Cryptocurrency is a digital currency secured by cryptography and operates independently of a central bank. It's used for online purchases, investments, and peer-to-peer transactions.
+    <br><br>
+    Topics include:
+    <ul>
+      <li>What is cryptocurrency?</li>
+      <li>Blockchain technology</li>
+      <li>Bitcoin vs altcoins</li>
+      <li>Storing crypto securely</li>
+      <li>Risks and regulations</li>
+    </ul>
+  </p>
+
+  <!-- Video -->
+  <iframe width="100%" height="250" src="https://www.youtube.com/embed/SSo_EIwHSd4" frameborder="0" allowfullscreen></iframe>
 
   <!-- Navigation -->
   <div style="display: flex; justify-content: space-between; margin-top: 40px;">
@@ -33,95 +43,14 @@
     <button onclick="window.location.href='high-yield-savings.html'">Next</button>
   </div>
 
-</body>
-</html>
-```
+  <!-- Speech -->
+  <script>
+    const text = `Welcome to this module on Cryptocurrency. Cryptocurrency is a digital currency that operates without centralized control. 
+    In this module, you'll explore blockchain technology, how cryptocurrencies work, storing crypto securely, and the risks involved. 
+    Learn more.`;
 
----
-
-**high-yield-savings.html**
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>High-Yield Savings</title>
-</head>
-<body>
-
-  <!-- Progress Tracker -->
-  <div style="margin-bottom: 20px;">
-    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-      <span>Cryptocurrency</span>
-      <span>High-Yield Savings</span>
-      <span>Micro-Investing</span>
-    </div>
-    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
-      <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
-      <div id="progress-hysa" style="flex: 1; background: #00b894;"></div>
-      <div id="progress-micro" style="flex: 1; background: #e0e0e0;"></div>
-    </div>
-  </div>
-
-  <h1>High-Yield Savings</h1>
-  <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
-  <ul>
-    <li>Daily vs monthly compounding</li>
-    <li>Choosing the best HYSA</li>
-    <li>Comparing traditional banks vs fintech</li>
-    <li>What's a good reason to use HYSA?</li>
-    <li>High interest, low risk To borrow loans</li>
-    <li>Smart Saver</li>
-  </ul>
-
-  <!-- Navigation -->
-  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
-    <button onclick="window.location.href='cryptocurrency.html'">Previous</button>
-    <button onclick="window.location.href='micro-investing.html'">Next</button>
-  </div>
-
-</body>
-</html>
-```
-
----
-
-**micro-investing.html**
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Micro-Investing</title>
-</head>
-<body>
-
-  <!-- Progress Tracker -->
-  <div style="margin-bottom: 20px;">
-    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-      <span>Cryptocurrency</span>
-      <span>High-Yield Savings</span>
-      <span>Micro-Investing</span>
-    </div>
-    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
-      <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
-      <div id="progress-hysa" style="flex: 1; background: #2b7a78;"></div>
-      <div id="progress-micro" style="flex: 1; background: #00b894;"></div>
-    </div>
-  </div>
-
-  <h1>Micro-Investing</h1>
-  <p>Discover how investing small amounts frequently can build long-term wealth. Use spare change apps or low-fee investment platforms to get started today.</p>
-
-  <!-- Navigation -->
-  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
-    <button onclick="window.location.href='high-yield-savings.html'">Previous</button>
-    <button style="visibility: hidden;">Next</button>
-  </div>
-
+    const utter = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utter);
+  </script>
 </body>
 </html>
