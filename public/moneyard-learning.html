@@ -206,7 +206,7 @@
         link: 'cryptocurrency.html',
         content: `
           <h2>Cryptocurrency Basics</h2>
-          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
+          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security. It is decentralized and operates on blockchain technology. Learn how to store and transfer it securely.</p>
           <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
           <ul>
             <li>What is blockchain technology?</li>
@@ -283,49 +283,41 @@
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')">${isComplete ? 'Review' : 'Start'}</button>
+          <button onclick="openLesson('${mod.id}')">${unlocked ? 'Start Lesson' : 'Locked'}</button>
         `;
         container.appendChild(card);
       });
-
-      updateProgress();
     }
 
-    function startModule(id) {
-      const mod = modules.find(m => m.id === id);
-      currentModule = mod;
-      document.getElementById('lessonContent').innerHTML = mod.content;
+    function openLesson(moduleId) {
+      currentModule = modules.find(mod => mod.id === moduleId);
+      document.getElementById('lessonContent').innerHTML = currentModule.content;
+      document.getElementById('learnMoreLink').href = currentModule.link;
       document.getElementById('lessonModal').style.display = 'block';
-      document.getElementById('learnMoreLink').href = mod.link;
-      speakContent(mod.title); // Speak the lesson with welcome message
+      
+      // Start speech
+      speakContent(currentModule.title, currentModule.desc);
     }
 
     function closeLesson() {
       document.getElementById('lessonModal').style.display = 'none';
-      stopAudio();
     }
 
-    function playAudio() {
-      if (utterance) {
-        speechSynthesis.speak(utterance);
-      }
-    }
-
-    function stopAudio() {
-      if (speechSynthesis.speaking) {
-        speechSynthesis.cancel();
-      }
-    }
-
-    function speakContent(moduleTitle) {
-      const welcomeText = `Welcome to the ${moduleTitle} lesson. Let’s dive into this exciting topic.`;
+    function speakContent(moduleTitle, moduleDesc) {
+      const welcomeText = `Welcome to the ${moduleTitle} lesson. Let's dive into this exciting topic.`;
       utterance = new SpeechSynthesisUtterance(welcomeText);
       speechSynthesis.speak(utterance);
-      
+
+      // Speaking the contents of the module
+      const contentText = `${moduleDesc}`;
       utterance.onend = function () {
         const learnMoreUtterance = new SpeechSynthesisUtterance('Learn more');
         speechSynthesis.speak(learnMoreUtterance);
       };
+
+      // Speak module content
+      const contentUtterance = new SpeechSynthesisUtterance(contentText);
+      speechSynthesis.speak(contentUtterance);
     }
 
     function updateProgress() {
