@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal Popup</title>
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      max-width: 600px;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Modal Popup Example</h2>
+
+<button class="open-modal" onclick="openModal('crypto')">Module 1: Cryptocurrency Basics</button>
+<button class="open-modal" onclick="openModal('savings')">Module 2: High-Yield Savings</button>
+<button class="open-modal" onclick="openModal('investing')">Module 3: Micro-Investing</button>
+
+<div id="lessonModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">X</span>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+  function openModal(moduleId) {
+    const content = {
+      crypto: "Welcome to the Cryptocurrency Basics module. Learn about blockchain, wallets, and how cryptocurrency works.",
+      savings: "This module covers high-yield savings strategies, including how to maximize returns through smart crypto investments.",
+      investing: "Learn how to start small-scale investing, with a focus on micro-investment opportunities in the crypto world."
+    };
+
+    document.getElementById('modalContent').innerHTML = content[moduleId];
+    document.getElementById('lessonModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('lessonModal').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
