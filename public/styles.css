@@ -638,3 +638,21 @@ button:hover {
   color: #004d40;
   font-weight: 600;
 }
+.market-link-btn {
+  display: inline-block;
+  background: linear-gradient(to right, #fbc02d, #f57f17);
+  color: #fff;
+  padding: 12px 20px;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.market-link-btn:hover {
+  transform: translateX(5px);
+  box-shadow: 0 6px 16px rgba(255, 152, 0, 0.5);
+}
