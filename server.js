@@ -1,94 +1,185 @@
-// Importing required dependencies
 const express = require('express');
-const bodyParser = require('body-parser');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
+const fs = require('fs');
 
-// Initialize the Express app
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// Body-parser middleware to handle POST request data
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// SQLite database initialization
-let db = new sqlite3.Database('./moneyard.db', (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to the SQLite database.');
-  }
+const dbPath = './moneyard.db';
+if (!fs.existsSync(dbPath)) {
+    fs.closeSync(fs.openSync(dbPath, 'w'));
+}
+
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) return console.error('DB Error:', err);
+    console.log('Connected to SQLite:', dbPath);
 });
 
-// Create necessary tables (if not already created)
-db.serialize(() => {
-  db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, created_at TEXT)');
-  db.run('CREATE TABLE IF NOT EXISTS deposits (id INTEGER PRIMARY KEY, user_id INTEGER, amount REAL, timestamp TEXT)');
+// Tables
+db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE,
+    password TEXT,
+    balance REAL DEFAULT 0,
+    reset_token TEXT,
+    reset_token_expiry INTEGER
+)`);
+
+db.run(`CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    type TEXT,
+    amount REAL,
+    network TEXT,
+    tx_id TEXT,
+    status TEXT,
+    date TEXT
+)`);
+
+db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    amount REAL,
+    wallet_address TEXT,
+    password TEXT,
+    status TEXT DEFAULT 'pending',
+    date TEXT
+)`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS stakes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    plan TEXT,
+    amount REAL,
+    apy REAL,
+    lock_period INTEGER,
+    start_date TIMESTAMP,
+    status TEXT DEFAULT 'active',
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
+
+// Signup
+app.post('/api/signup', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
+
+    if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
+    if (!passwordRegex.test(password)) return res.status(400).json({ 
+        error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters' 
+    });
+
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (user) return res.status(400).json({ error: 'Email already in use' });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
+            [email, hashedPassword], 
+            function(err) {
+                if (err) return res.status(500).json({ error: 'Failed to register user' });
+                res.json({ success: true, userId: this.lastID });
+            }
+        );
+    });
 });
 
-// Sample route for user registration
-app.post('/register', (req, res) => {
-  const { email, password } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  
-  const stmt = db.prepare('INSERT INTO users (email, password, created_at) VALUES (?, ?, ?)');
-  stmt.run(email, hashedPassword, new Date().toISOString(), function (err) {
-    if (err) {
-      return res.status(500).send({ message: 'Error registering user.' });
-    }
-    res.status(201).send({ message: 'User registered successfully.' });
-  });
-  stmt.finalize();
+// Login
+app.post('/api/login', (req, res) => {
+    const { email, password } = req.body;
+
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+        if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
+
+        res.json({ 
+            success: true, 
+            userId: user.id,
+            username: user.email
+        });
+    });
 });
 
-// Sample route for user login
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  
-  db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
-    if (err || !row) {
-      return res.status(404).send({ message: 'User not found.' });
+// Deposit Funds
+app.post('/api/deposit', (req, res) => {
+    const { userId, amount, network, txId } = req.body;
+    if (!userId || !amount || !network || !txId) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const passwordMatch = bcrypt.compareSync(password, row.password);
-    if (!passwordMatch) {
-      return res.status(401).send({ message: 'Invalid password.' });
-    }
-    
-    res.status(200).send({ message: 'Login successful.' });
-  });
+    const now = new Date().toISOString();
+
+    db.run(`
+        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
+        [userId, amount, network, txId, now],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Deposit failed' });
+
+            // Auto-update user balance
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update balance' });
+                res.json({ success: true, message: 'Deposit confirmed and balance updated' });
+            });
+        }
+    );
 });
 
-// Sample route for sending a confirmation email
-app.post('/send-confirmation', (req, res) => {
-  const { email } = req.body;
-  
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'your-email@gmail.com', // Use your email here
-      pass: 'your-email-password'    // Use your email password or OAuth credentials here
-    }
-  });
-  
-  let mailOptions = {
-    from: 'your-email@gmail.com',
-    to: email,
-    subject: 'Account Confirmation',
-    text: 'Please confirm your email address to complete the registration process.'
-  };
+// View deposit history
+app.get('/api/deposits', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).send({ message: 'Error sending confirmation email.' });
-    }
-    res.status(200).send({ message: 'Confirmation email sent.' });
-  });
+    db.all(`SELECT * FROM transactions WHERE user_id = ? AND type = 'deposit' ORDER BY date DESC`, 
+        [userId], 
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: 'Failed to load deposits' });
+            res.json(rows);
+        }
+    );
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Get user balance
+app.get('/api/balance', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+    db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, row) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (!row) return res.status(404).json({ error: 'User not found' });
+
+        res.json({ balance: row.balance });
+    });
+});
+
+// Get stake plans
+app.get('/api/stake-plans', (req, res) => {
+    const plans = [
+        { strategy: 'Stable Growth', apy: 8 },
+        { strategy: 'Yield Farming', apy: 15 },
+        { strategy: 'Liquidity Mining', apy: 22 }
+    ];
+    res.json(plans);
+});
+
+// Serve frontend
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
