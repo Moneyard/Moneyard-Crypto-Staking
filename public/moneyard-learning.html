@@ -310,23 +310,31 @@
     }
 
     function openLearnMore() {
-      window.open('https://www.your-website.com/learn-more', '_blank');
+      const currentModule = modules.find(mod => mod.id === 'crypto' && document.querySelector('.learn-card button').innerText === 'Start');
+      // Link to the pages for each specific topic
+      if (currentModule) {
+        window.location.href = 'https://www.your-website.com/cryptocurrency'; // Replace with your cryptocurrency page URL
+      } else {
+        // Link to other pages
+        window.location.href = 'https://www.your-website.com/high-yield-savings'; // Replace with your high-yield savings page URL
+      }
     }
 
     function playAudio() {
       if (!utterance) {
-        utterance = new SpeechSynthesisUtterance("You have started learning this module.");
+        utterance = new SpeechSynthesisUtterance('Welcome to this lesson!');
+        window.speechSynthesis.speak(utterance);
       }
-      window.speechSynthesis.speak(utterance);
     }
 
     function stopAudio() {
       if (utterance) {
         window.speechSynthesis.cancel(utterance);
+        utterance = null;
       }
     }
 
-    loadModules();
+    window.onload = loadModules;
   </script>
 </body>
 </html>
