@@ -300,6 +300,76 @@ Let your assets work passively or use active strategies for high-yield returns.
       <li>Friendly UI and Growth Tracker</li>
     </ul>
   </div>
+<!-- Vision Metrics Dashboard -->
+<section id="vision-metrics" style="padding: 20px; background-color: #f9f9f9;">
+  <h2>Vision Metrics</h2>
+<!-- Vision Charts -->
+<canvas id="visionChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+
+<!-- Commitment Charts -->
+<canvas id="commitmentChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+  <!-- a. Customer Impact -->
+  <div class="metric-section">
+    <h3>a. Customer Impact</h3>
+    <table class="metric-table">
+      <tr><th>Metric</th><th>Value</th><th>Target</th><th>Status</th></tr>
+      <tr><td>Customer Satisfaction (CSAT)</td><td id="csat">--</td><td>≥ 85%</td><td id="csat-status">--</td></tr>
+      <tr><td>Net Promoter Score (NPS)</td><td id="nps">--</td><td>≥ +50</td><td id="nps-status">--</td></tr>
+      <tr><td>Customer Retention Rate</td><td id="retention">--</td><td>≥ 80%</td><td id="retention-status">--</td></tr>
+    </table>
+  </div>
+<!-- Vision Charts -->
+<canvas id="visionChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+
+<!-- Commitment Charts -->
+<canvas id="commitmentChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+  <!-- b. Market Position -->
+  <div class="metric-section">
+    <h3>b. Market Position</h3>
+    <table class="metric-table">
+      <tr><th>Metric</th><th>Value</th><th>Target</th><th>Status</th></tr>
+      <tr><td>Market Share Growth</td><td id="market-share">--</td><td>+5%</td><td id="market-status">--</td></tr>
+      <tr><td>Brand Awareness Index</td><td id="brand-awareness">--</td><td>75/100</td><td id="brand-status">--</td></tr>
+      <tr><td>New Customer Acquisition Rate</td><td id="acquisition-rate">--</td><td>1,500/month</td><td id="acquisition-status">--</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- Commitment Metrics Dashboard -->
+<section id="commitment-metrics" style="padding: 20px; background-color: #ffffff;">
+  <h2>Commitment Metrics</h2>
+<!-- Vision Charts -->
+<canvas id="visionChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+
+<!-- Commitment Charts -->
+<canvas id="commitmentChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+  <!-- b. Execution & Accountability -->
+  <div class="metric-section">
+    <h3>b. Execution & Accountability</h3>
+    <table class="metric-table">
+      <tr><th>Metric</th><th>Value</th><th>Target</th><th>Status</th></tr>
+      <tr><td>Initiative Completion Rate</td><td id="initiative-complete">--</td><td>≥ 80%</td><td id="initiative-status">--</td></tr>
+      <tr><td>Milestone Timeliness</td><td id="milestone-timely">--</td><td>≥ 85%</td><td id="milestone-status">--</td></tr>
+      <tr><td>Collaboration Score</td><td id="collab-score">--</td><td>≥ 8.5</td><td id="collab-status">--</td></tr>
+    </table>
+  </div>
+<!-- Vision Charts -->
+<canvas id="visionChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+
+<!-- Commitment Charts -->
+<canvas id="commitmentChart" width="400" height="200" style="margin-top: 30px;"></canvas>
+  <!-- c. Financial & Operational -->
+  <div class="metric-section">
+    <h3>c. Financial & Operational</h3>
+    <table class="metric-table">
+      <tr><th>Metric</th><th>Value</th><th>Target</th><th>Status</th></tr>
+      <tr><td>Revenue Growth</td><td id="revenue-growth">--</td><td>+15%</td><td id="revenue-status">--</td></tr>
+      <tr><td>Cost-to-Serve per Customer</td><td id="cost-serve">--</td><td>≤ $40</td><td id="cost-status">--</td></tr>
+      <tr><td>Profit Margin %</td><td id="profit-margin">--</td><td>≥ 20%</td><td id="profit-status">--</td></tr>
+    </table>
+  </div>
+</section>
+
 <!-- High Yields Section -->
 <div class="yield-section">
   <h3 class="yield-main-title">High annual yields for your digital assets</h3>
@@ -580,6 +650,17 @@ function toggleAbout() {
   const content = document.getElementById("about-content");
   content.style.display = content.style.display === "block" ? "none" : "block";
 }
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('/api/metrics');
+    const data = await res.json();
+    // Set metrics
+    // (existing set() calls)
+    renderCharts(data); // <-- ADD THIS
+  } catch (err) {
+    console.error('Metrics load error:', err);
+  }
+});
 document.querySelectorAll('.yield-toggle').forEach(toggle => {
   toggle.addEventListener('click', () => {
     const content = toggle.closest('.yield-item').querySelector('.yield-content');
