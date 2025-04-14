@@ -305,16 +305,12 @@
     }
 
     function playAudio() {
-  if (currentModule) {
-    const lesson = lessons[currentModule];
-    // Only use the lesson content text, no buttons or links
-    const textToRead = lesson.title + ". " + lesson.content;
-
-    utterance = new SpeechSynthesisUtterance(textToRead);
-    speechSynthesis.speak(utterance);
-  }
-}
-
+      if (currentModule) {
+        const textToRead = currentModule.content.split("<a").join(""); // Remove 'Learn More' link.
+        utterance = new SpeechSynthesisUtterance(textToRead);
+        speechSynthesis.speak(utterance);
+      }
+    }
 
     function stopAudio() {
       if (utterance) {
@@ -328,7 +324,7 @@
       fill.style.width = percent + '%';
     }
 
-    window.onload = loadModules;
+    loadModules();
   </script>
 </body>
 </html>
