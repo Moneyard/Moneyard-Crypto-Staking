@@ -330,3 +330,61 @@ function updateLTV() {
 document.getElementById("earningsButton").addEventListener("click", function() {
   toggleSection('earningsSection');
 });
+// SIGNUP HANDLER
+document.getElementById("signupBtn").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+  const referral = document.getElementById("referralCode").value;
+
+  try {
+    const res = await fetch("/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password, referral }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert("Signup successful! You can now log in.");
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+    } else {
+      alert(data.message || "Signup failed");
+    }
+  } catch (err) {
+    alert("Error signing up");
+    console.error(err);
+  }
+});
+
+// LOGIN HANDLER
+document.getElementById("loginBtn").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userEmail", email);
+      window.location.href = "/dashboard.html";
+    } else {
+      alert(data.message || "Login failed");
+    }
+  } catch (err) {
+    alert("Error logging in");
+    console.error(err);
+  }
+});
