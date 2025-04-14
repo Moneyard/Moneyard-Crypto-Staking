@@ -156,6 +156,7 @@
       border-radius: 10px;
     }
 
+    /* Green Learn more button */
     .learn-more-link {
       display: inline-block;
       margin-top: 15px;
@@ -190,7 +191,7 @@
   <div id="lessonModal">
     <span onclick="closeLesson()">X</span>
     <div id="lessonContent"></div>
-    <a class="learn-more-link" id="learnMoreButton" href="#">Learn More</a>
+    <div class="learn-more-link" onclick="openLearnMore()">Learn More</div>
     <div id="audioControls">
       <button onclick="playAudio()">Play Audio</button>
       <button onclick="stopAudio()">Stop Audio</button>
@@ -265,7 +266,7 @@
     ];
 
     let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
-    let audio = new Audio('path_to_your_audio_file.mp3'); // Replace with your audio file path
+    let utterance;
 
     function loadModules() {
       const container = document.getElementById('modulesContainer');
@@ -279,7 +280,7 @@
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')">${isComplete ? 'Review' : 'Start'}</button>
+          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
         `;
         container.appendChild(card);
       });
@@ -288,30 +289,14 @@
     }
 
     function startModule(id) {
-      const module = modules.find(mod => mod.id === id);
-      const modal = document.getElementById('lessonModal');
-      const content = document.getElementById('lessonContent');
-      const learnMoreButton = document.getElementById('learnMoreButton');
-      
-      content.innerHTML = module.content;
-      modal.style.display = 'block';
-      
-      learnMoreButton.onclick = function() {
-        if (id === 'crypto') {
-          window.location.href = 'cryptocurrency.html';
-        } else if (id === 'savings') {
-          window.location.href = 'yield-savings.html';
-        } else if (id === 'investing') {
-          window.location.href = 'micro-investing.html';
-        }
-      };
-      
+      const mod = modules.find(m => m.id === id);
+      document.getElementById('lessonContent').innerHTML = mod.content;
+      document.getElementById('lessonModal').style.display = 'block';
       if (!completedModules.includes(id)) {
         completedModules.push(id);
         localStorage.setItem('completedModules', JSON.stringify(completedModules));
+        loadModules();
       }
-      
-      updateProgress();
     }
 
     function closeLesson() {
@@ -321,19 +306,35 @@
 
     function updateProgress() {
       const progress = (completedModules.length / modules.length) * 100;
-      document.getElementById('progressFill').style.width = `${progress}%`;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    function openLearnMore() {
+      const currentModule = modules.find(mod => mod.id === 'crypto' && document.querySelector('.learn-card button').innerText === 'Start');
+      // Link to the pages for each specific topic
+      if (currentModule) {
+        window.location.href = 'https://www.your-website.com/cryptocurrency'; // Replace with your cryptocurrency page URL
+      } else {
+        // Link to other pages
+        window.location.href = 'https://www.your-website.com/high-yield-savings'; // Replace with your high-yield savings page URL
+      }
     }
 
     function playAudio() {
-      audio.play();
+      if (!utterance) {
+        utterance = new SpeechSynthesisUtterance('Welcome to this lesson!');
+        window.speechSynthesis.speak(utterance);
+      }
     }
 
     function stopAudio() {
-      audio.pause();
-      audio.currentTime = 0;
+      if (utterance) {
+        window.speechSynthesis.cancel(utterance);
+        utterance = null;
+      }
     }
 
-    loadModules();
+    window.onload = loadModules;
   </script>
 </body>
 </html>
