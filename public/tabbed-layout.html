@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabbed Layout</title>
+  <style>
+    .tab-links {
+      display: flex;
+    }
+
+    .tab-link {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+    }
+
+    .tab-content {
+      margin-top: 20px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Tabbed Layout Example</h2>
+
+<div class="tabs">
+  <div class="tab-links">
+    <button class="tab-link" onclick="openTab('crypto')">Cryptocurrency Basics</button>
+    <button class="tab-link" onclick="openTab('savings')">High-Yield Savings</button>
+    <button class="tab-link" onclick="openTab('investing')">Micro-Investing</button>
+  </div>
+
+  <div class="tab-content">
+    <div id="crypto" class="tab-pane">
+      <h2>Cryptocurrency Basics</h2>
+      <p>Welcome to the Cryptocurrency Basics module. Learn about blockchain, wallets, and how cryptocurrency works.</p>
+    </div>
+
+    <div id="savings" class="tab-pane">
+      <h2>High-Yield Savings</h2>
+      <p>This module covers high-yield savings strategies, including how to maximize returns through smart crypto investments.</p>
+    </div>
+
+    <div id="investing" class="tab-pane">
+      <h2>Micro-Investing</h2>
+      <p>Learn how to start small-scale investing, with a focus on micro-investment opportunities in the crypto world.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openTab(moduleId) {
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+    document.querySelector(`#${moduleId}`).style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
