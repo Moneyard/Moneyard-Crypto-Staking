@@ -112,6 +112,7 @@
 
   <canvas id="priceChart" height="100"></canvas>
 
+  <!-- Staking Section -->
   <div class="stake-form">
     <h3>Stake ${coinId}</h3>
     <input type="number" id="stakeAmount" placeholder="Enter amount to stake" />
@@ -128,6 +129,7 @@
   const coinId = params.get('id');
   let chartInstance;
 
+  // Fetch coin details from CoinGecko API
   async function loadCoinDetails() {
     const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
     const data = await res.json();
@@ -143,6 +145,7 @@
     `;
   }
 
+  // Load chart for price history
   async function loadCoinChart(days = '1') {
     document.querySelectorAll('.timeframe-buttons button').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`.timeframe-buttons button[onclick="loadCoinChart('${days}')"]`).classList.add('active');
@@ -179,6 +182,7 @@
     });
   }
 
+  // Handle staking action
   function stakeNow() {
     const amount = document.getElementById('stakeAmount').value;
     if (!amount || amount <= 0) {
@@ -188,6 +192,7 @@
     alert(`Staked ${amount} ${coinId.toUpperCase()} successfully! (Backend logic can be added here.)`);
   }
 
+  // Initial loading
   loadCoinDetails();
   loadCoinChart('1');
 </script>
