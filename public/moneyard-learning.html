@@ -105,31 +105,6 @@
       border: none;
       border-radius: 8px;
     }
-
-    .interactive-lesson {
-      margin-top: 20px;
-      background-color: #f4f4f4;
-      padding: 15px;
-      border-radius: 8px;
-    }
-
-    .interactive-lesson h4 {
-      margin-bottom: 10px;
-    }
-
-    .interactive-lesson button {
-      padding: 10px;
-      background-color: #007a5a;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .interactive-lesson button:hover {
-      background-color: #005c42;
-    }
   </style>
 </head>
 <body>
@@ -141,29 +116,35 @@
   <div class="learn-container">
     <h2>Choose a Module</h2>
     <div class="learn-modules">
-      <div class="learn-card" onclick="openLesson('crypto')">
+      <div class="learn-card">
         <h3>Cryptocurrency Basics</h3>
         <p>Learn how crypto works and how to earn securely.</p>
+        <button id="startButtonCrypto" onclick="startModule('crypto')">Start</button>
       </div>
-      <div class="learn-card" onclick="openLesson('savings')">
+      <div class="learn-card">
         <h3>High-Yield Savings</h3>
         <p>Grow your savings smartly and steadily.</p>
+        <button id="startButtonSavings" onclick="startModule('savings')">Start</button>
       </div>
-      <div class="learn-card" onclick="openLesson('investing')">
+      <div class="learn-card">
         <h3>Micro-Investing</h3>
         <p>Start investing with as little as $1.</p>
+        <button id="startButtonInvesting" onclick="startModule('investing')">Start</button>
       </div>
-      <div class="learn-card" onclick="openLesson('security')">
+      <div class="learn-card">
         <h3>Financial Security</h3>
         <p>Protect your money and data from threats.</p>
+        <button id="startButtonSecurity" onclick="startModule('security')">Start</button>
       </div>
-      <div class="learn-card" onclick="openLesson('budgeting')">
+      <div class="learn-card">
         <h3>Budgeting</h3>
         <p>Learn to manage your money and spending habits.</p>
+        <button id="startButtonBudgeting" onclick="startModule('budgeting')">Start</button>
       </div>
-      <div class="learn-card" onclick="openLesson('credit')">
+      <div class="learn-card">
         <h3>Credit Score</h3>
         <p>Understand, build and improve your credit score.</p>
+        <button id="startButtonCredit" onclick="startModule('credit')">Start</button>
       </div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -176,6 +157,14 @@
 
   <script>
     let completedModules = [];
+
+    function startModule(module) {
+      // Show a simple notification that the module has started
+      alert('Module has started! Redirecting to lesson...');
+
+      // Open the lesson directly in the modal
+      openLesson(module);
+    }
 
     function openLesson(module) {
       if (!completedModules.includes(module)) {
@@ -201,11 +190,6 @@
             <button onclick="alert('Correct!')">Stores your private keys</button>
             <button onclick="alert('Nope!')">A bank account</button>
           </div>
-          <div class='interactive-lesson'>
-            <h4>Interactive Exercise: Wallet Setup</h4>
-            <p>Follow these steps to create your first wallet and secure it with a backup phrase:</p>
-            <button onclick="alert('Next Step: Choose a wallet provider')">Start</button>
-          </div>
           <div class='badge'>Crypto Explorer</div>
         `,
         savings: `
@@ -221,11 +205,6 @@
             <div class='quiz-question'>What's a good reason to use HYSA?</div>
             <button onclick="alert('Correct!')">High interest, low risk</button>
             <button onclick="alert('Nope!')">To borrow loans</button>
-          </div>
-          <div class='interactive-lesson'>
-            <h4>Interactive Exercise: HYSA Calculator</h4>
-            <p>Calculate your potential earnings with various interest rates:</p>
-            <button onclick="alert('Next Step: Enter your savings amount')">Start</button>
           </div>
           <div class='badge'>Smart Saver</div>
         `,
@@ -243,14 +222,56 @@
             <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
             <button onclick="alert('Nope!')">Daily Crypto Account</button>
           </div>
-          <div class='interactive-lesson'>
-            <h4>Interactive Exercise: Portfolio Builder</h4>
-            <p>Use our interactive tool to create a diversified portfolio:</p>
-            <button onclick="alert('Next Step: Select asset types')">Start</button>
-          </div>
           <div class='badge'>Micro-Investor</div>
         `,
-        // Additional content for other lessons goes here...
+        security: `
+          <h2>Financial Security</h2>
+          <p>Stay safe from phishing, fraud and fake links.</p>
+          <iframe src="https://www.youtube.com/embed/l5S6N4Kc3l4" allowfullscreen></iframe>
+          <ul>
+            <li>How 2FA and biometrics protect you</li>
+            <li>Recognizing suspicious activity</li>
+            <li>Best password managers to use</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'>Which is safer?</div>
+            <button onclick="alert('Correct!')">Use 2FA and password manager</button>
+            <button onclick="alert('Nope!')">Write passwords on paper</button>
+          </div>
+          <div class='badge'>Security Pro</div>
+        `,
+        budgeting: `
+          <h2>Budgeting</h2>
+          <p>Take control of your spending and build a plan.</p>
+          <iframe src="https://www.youtube.com/embed/kL6UDFP9YH4" allowfullscreen></iframe>
+          <ul>
+            <li>50/30/20 Rule for budgeting</li>
+            <li>Tracking your expenses</li>
+            <li>Cutting unnecessary costs</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'>What is the 50/30/20 rule?</div>
+            <button onclick="alert('Correct!')">50% Needs, 30% Wants, 20% Savings</button>
+            <button onclick="alert('Nope!')">50% Savings, 30% Needs, 20% Wants</button>
+          </div>
+          <div class='badge'>Budgeter</div>
+        `,
+        credit: `
+          <h2>Credit Score</h2>
+          <p>Understand and improve your credit score.</p>
+          <iframe src="https://www.youtube.com/embed/zkN1z2aI4Bo" allowfullscreen></iframe>
+          <ul>
+            <li>What affects your credit score?</li>
+            <li>How to improve credit utilization</li>
+            <li>Impact of late payments</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'>What is the most important factor for a good score?</div>
+            <button onclick="alert('Correct!')">Payment history</button>
+            <button onclick="alert('Nope!')">Length of credit history</button>
+          </div>
+          <div class='badge'>Credit Guru</div>
+        `
       };
 
       document.getElementById("lessonContent").innerHTML = content[module];
@@ -262,8 +283,8 @@
     }
 
     function updateProgress() {
-      const percent = (completedModules.length / 6) * 100;
-      document.getElementById("progressFill").style.width = percent + "%";
+      const progress = (completedModules.length / 6) * 100;
+      document.getElementById("progressFill").style.width = `${progress}%`;
     }
   </script>
 </body>
