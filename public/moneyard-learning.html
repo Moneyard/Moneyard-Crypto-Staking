@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Learning</title>
   <style>
+    /* Base Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -17,37 +18,6 @@
       color: white;
       padding: 20px;
       text-align: center;
-    }
-
-    /* Navigation Bar Style */
-    nav {
-      margin-top: 10px;
-    }
-
-    nav ul {
-      list-style-type: none;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    nav ul li {
-      display: inline;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      padding: 10px 15px;
-      background-color: #007a5a;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    nav ul li a:hover {
-      background-color: #005f45;
     }
 
     .learn-container {
@@ -99,6 +69,7 @@
       100% { transform: scale(1); }
     }
 
+    /* Modal Styles */
     #lessonModal {
       display: none;
       position: fixed;
@@ -112,6 +83,7 @@
       overflow-y: auto;
       z-index: 999;
       border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     #lessonModal span {
@@ -121,6 +93,7 @@
       font-size: 20px;
     }
 
+    /* Progress Bar Styles */
     .progress-bar {
       background: #eee;
       border-radius: 5px;
@@ -137,6 +110,7 @@
       transition: width 0.5s ease;
     }
 
+    /* Quiz Section Styles */
     .quiz-section {
       margin-top: 30px;
     }
@@ -160,6 +134,7 @@
       to { opacity: 1; transform: scale(1); }
     }
 
+    /* Audio Controls Styles */
     #audioControls {
       margin-top: 20px;
     }
@@ -179,6 +154,7 @@
       background-color: #16a085;
     }
 
+    /* Video Styles */
     iframe {
       width: 100%;
       height: 315px;
@@ -192,14 +168,6 @@
   <header>
     <h1>Moneyard Learning</h1>
     <p>Smart Finance for the Future</p>
-    <!-- Navigation Links -->
-    <nav>
-      <ul>
-        <li><a href="#crypto">Crypto Basics</a></li>
-        <li><a href="#savings">High-Yield Savings</a></li>
-        <li><a href="#investing">Micro-Investing</a></li>
-      </ul>
-    </nav>
   </header>
 
   <div class="learn-container">
@@ -246,7 +214,7 @@
         desc: 'Grow your savings smartly and steadily.',
         content: `
           <h2>High-Yield Savings</h2>
-          <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
+          <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals.</p>
           <iframe src="https://www.youtube.com/embed/H6du_qVj7PQ" allowfullscreen></iframe>
           <ul>
             <li>Daily vs monthly compounding</li>
