@@ -157,17 +157,22 @@
 </div>
 
   <!-- Top-Right Menu Bar -->
-  <div class="top-menu">
-    <button id="menuToggle" class="menu-button">☰</button>
-    <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-section left">
-        <h3 id="learning-header"><i class="fas fa-graduation-cap"></i> Moneyard Learning</h3>
-        <ul id="learning-content" style="display: none;">
-          <li>Learn about Crypto Staking</li>
-          <li>High-Yield Savings Tools</li>
-          <li>Micro-Investing Data</li>
-        </ul>
-      </div>
+<div class="top-menu">
+  <button id="menuToggle" class="menu-button">☰</button>
+  <div id="menuDropdown" class="menu-dropdown">
+    <div class="menu-section left">
+      <h3 id="learning-header">
+        <i class="fas fa-graduation-cap"></i> 
+        <a href="moneyard-learning.html" target="_blank" style="text-decoration: none; color: inherit;">
+          Moneyard Learning
+        </a>
+      </h3>
+      <ul id="learning-content" style="display: none;">
+        <li>Learn about Crypto Staking</li>
+        <li>High-Yield Savings Tools</li>
+        <li>Micro-Investing Data</li>
+      </ul>
+    </div>
 
       <div class="menu-section right">
         <h3 id="account-header"><i class="fas fa-user"></i> My Account</h3>
@@ -220,6 +225,30 @@
     <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
   </section>
 
+  <section id="grow-savings" style="padding: 40px 20px; background-color: #eef7f2;">
+  <div class="expand-section">
+    <div class="expand-header">
+      <h2>Grow Your Savings</h2>
+      <span class="expand-toggle">+</span>
+    </div>
+Let your assets work passively or use active strategies for high-yield returns.
+    <!-- Image is visible by default -->
+<img src="111-nm-person-looking-at-graphs-on-computer-tease-170601.jpeg" alt="Grow Savings" class="expand-image">
+
+    <!-- Content is hidden until click -->
+    <div class="expand-content">
+      <p><strong>Moneyard High-Yield Savings:</strong> Grow your crypto wealth passively by enabling our flexible or locked savings options. Earn daily interest based on your balance.</p>
+      <p><strong>Flexible Staking:</strong> Withdraw anytime while still earning competitive APY.</p>
+      <p><strong>Locked Staking:</strong> Lock assets for higher returns over fixed periods like 7, 30, or 90 days.</p>
+      <p><strong>Minimum Balance:</strong> Keep at least $15 or equivalent to start earning interest.</p>
+      <p><strong>Platform Options:</strong> You can fund your wallet via P2P, Binance, Coinbase, or any crypto exchange, and then opt-in to earn automatically.</p>
+      <p><strong>Track Your Growth:</strong> Use your dashboard to monitor daily returns, total earnings, and staking history in real-time.</p>
+      <p><strong>Withdraw Anytime:</strong> Use our withdrawal panel to cash out your earnings or reinvest.</p>
+      <p><strong>Security:</strong> All staking operations are protected with two-factor authentication and smart contract security audits.</p>
+    </div>
+  </div>
+</section>
+
 <!-- Simplicity Section -->
   <section class="section animated-section">
     <h2>Simplicity First</h2>
@@ -258,57 +287,159 @@
     <h2>Earn More with Referrals</h2>
     <p>Invite your friends and get <strong>5% bonus</strong> whenever they stake with Moneyard.</p>
   </section>
+<section id="about-moneyard-section" style="padding: 40px 20px;">
+  <button class="about-btn" onclick="toggleAbout()">About Moneyard &nbsp; &gt;</button>
 
-  <!-- Live Growth Tracker Section -->
-<section class="section animated-section" id="growth-tracker">
-  <h2>Watch Your Crypto Grow</h2>
-  <p>Real-time growth with staking, savings, and multiply features.</p>
+  <div id="about-content" class="about-content">
+    <h3>Who We Are</h3>
+    <p>Moneyard is a crypto-based financial platform offering secure, user-friendly staking and savings options for digital asset holders. Our mission is to help users grow wealth through passive income, powered by blockchain technology.</p>
 
-  <div class="growth-boxes">
-    <div class="growth-card">
-      <h3>Staking APY</h3>
-      <div class="counter" data-target="15">27</div>
-      <span>% Annual Yield</span>
+    <h3>What We Do</h3>
+    <p>We provide flexible and locked staking plans, high-yield savings accounts, and a real-time dashboard to track your earnings and transactions. Whether you're a beginner or expert, Moneyard empowers you to earn interest on your crypto, withdraw anytime, and reinvest with ease.</p>
+
+    <h3>Why Choose Moneyard?</h3>
+    <ul>
+      <li>Secure Wallets with 2FA and Smart Contract Protection</li>
+      <li>Daily Interest Payouts</li>
+      <li>Seamless Deposits & Withdrawals via P2P and Major Exchanges</li>
+      <li>Friendly UI and Growth Tracker</li>
+    </ul>
+  </div>
+
+<!-- High Yields Section -->
+<div class="yield-section">
+  <h3 class="yield-main-title">High annual yields for your digital assets</h3>
+
+  <!-- Bitcoin -->
+  <div class="yield-item">
+    <div class="yield-header" onclick="toggleYield(this)">
+      <div style="display: flex; align-items: center;">
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" class="yield-icon">
+        <span class="yield-title">Up to 12% on BTC</span>
+      </div>
+      <span class="yield-toggle">+</span>
     </div>
-    <div class="growth-card">
-      <h3>High-Yield Savings</h3>
-      <div class="counter" data-target="9">12</div>
-      <span>% Per Annum</span>
+    <div class="yield-content" style="display: none;">
+      <p>Earn up to 12% APY on your Bitcoin holdings by staking or saving through our platform. Withdraw anytime or choose locked terms for boosted yields.</p>
     </div>
-    <div class="growth-card">
-      <h3>Multiply Growth</h3>
-      <div class="counter" data-target="35">55</div>
-      <span>% Bonus Returns</span>
+  </div>
+
+  <!-- Tether -->
+  <div class="yield-item">
+    <div class="yield-header" onclick="toggleYield(this)">
+      <div style="display: flex; align-items: center;">
+        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" class="yield-icon">
+        <span class="yield-title">Up to 21% on USDT</span>
+      </div>
+      <span class="yield-toggle">+</span>
+    </div>
+    <div class="yield-content" style="display: none;">
+      <p>Enjoy daily passive income by saving Tether (USDT) on Moneyard. Flexible and locked staking options give you control while maximizing returns.</p>
+    </div>
+  </div>
+
+  <!-- Ethereum -->
+  <div class="yield-item">
+    <div class="yield-header" onclick="toggleYield(this)">
+      <div style="display: flex; align-items: center;">
+        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="yield-icon">
+        <span class="yield-title">Up to 15% on ETH</span>
+      </div>
+      <span class="yield-toggle">+</span>
+    </div>
+    <div class="yield-content" style="display: none;">
+      <p>Stake your Ethereum to earn up to 15% annually. Perfect for ETH holders who want consistent, passive growth without actively trading.</p>
+    </div>
+  </div>
+</div>
+
+   <!-- Live Growth Tracker Section -->
+  <section class="section animated-section" id="growth-tracker">
+    <h2>Watch Your Crypto Grow</h2>
+    <p>Real-time growth with staking, savings, and multiply features.</p>
+
+    <div class="growth-boxes">
+      <div class="growth-card" data-tooltip="Earn 27% annually by staking your crypto safely.">
+        <h3>Staking APY</h3>
+        <div class="counter" data-target="20">27</div>
+        <span>% Annual Yield</span>
+        <div class="sparkline"></div>
+      </div>
+
+      <div class="growth-card" data-tooltip="Save and earn up to 9% interest per year, just like a bank—but smarter.">
+        <h3>High-Yield Savings</h3>
+        <div class="counter" data-target="9">12</div>
+        <span>% Per Annum</span>
+        <div class="sparkline"></div>
+      </div>
+
+      <div class="growth-card pulse" data-tooltip="Multiply your deposits and earn bonus rewards up to 45%!">
+        <h3>Multiply Growth</h3>
+        <div class="counter" data-target="45">55</div>
+        <span>% Bonus Returns</span>
+        <div class="sparkline"></div>
+      </div>
+    </div>
+  </section>
+
+<section id="faq" style="padding: 40px 20px; background-color: #f9f9f9;">
+  <h2 style="text-align: center; font-size: 2em; margin-bottom: 30px; color: #0a4e3a;">Frequently Asked Questions</h2>
+  <div class="faq-container">
+    <div class="faq-item">
+      <div class="faq-question">
+        <span>What is Moneyard and how does it work?</span>
+        <span class="toggle-plus">+</span>
+      </div>
+      <div class="faq-answer">Moneyard is a beginner-friendly micro-investing, financial literacy and CeFi crypto platform, with a focus on stable USDT earnings, loans, and user-friendly financial literacy features. it's designed to focus on daily yield, lending/borrowing, and user-friendly dashboards and with jurisdictions to operate in EU and Africa. It is a crypto staking and investing platform where you can deposit, earn daily returns, and track your growth securely.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">
+        <span>Is my money safe on Moneyard?</span>
+        <span class="toggle-plus">+</span>
+      </div>
+      <div class="faq-answer">Yes. We implement top-level encryption and manual admin approvals to ensure all transactions are verified and protected.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">
+        <span>How do I deposit funds?</span>
+        <span class="toggle-plus">+</span>
+      </div>
+      <div class="faq-answer">You can deposit via TRC20, BEP20, or local payment methods like mobile money and cards through your dashboard.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">
+        <span>Can I withdraw my earnings anytime?</span>
+        <span class="toggle-plus">+</span>
+      </div>
+      <div class="faq-answer">Withdrawals are available 24/7 but may require OTP or email confirmation for security reasons.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">
+        <span>How long does it take to receive a withdrawal?</span>
+        <span class="toggle-plus">+</span>
+      </div>
+      <div class="faq-answer">Withdrawals are processed within 1–6 hours, depending on admin approval and network traffic.</div>
+    </div>
+    <!-- Existing questions here -->
+    
+    <div class="faq-item">
+      <div class="faq-question">
+        <span>How do I start earning interest?</span>
+        <span class="toggle-plus">+</span>
+      </div>
+      <div class="faq-answer">
+        After you create your account, you need to buy deposit or transfer crypto, opt in for interest earning via Moneyard P2P or other cryptocurrency exchange platforms like Binance, Coinbase, etc. You should maintain an account balance above $15 or 15 USDT worth of digital assets. Once that's done, you'll be earning daily interest on your digital assets with our Staking and Flexible Savings offering.
+
+        To start earning interest, clients in certain jurisdictions must proactively opt-in for the service in their Moneyard High-Yield Savings account.
+      </div>
     </div>
   </div>
 </section>
-  <div class="growth-boxes">
-  <div class="growth-card" data-tooltip="Earn 27% annually by staking your crypto safely.">
-    <h3>Staking APY</h3>
-    <div class="counter" data-target="20">27</div>
-    <span>% Annual Yield</span>
-    <div class="sparkline"></div>
-  </div>
 
-  <div class="growth-card" data-tooltip="Save and earn up to 9% interest per year, just like a bank—but smarter.">
-    <h3>High-Yield Savings</h3>
-    <div class="counter" data-target="9">12</div>
-    <span>% Per Annum</span>
-    <div class="sparkline"></div>
   </div>
+</section>
 
-  <div class="growth-card pulse" data-tooltip="Multiply your deposits and earn bonus rewards up to 45%!">
-    <h3>Multiply Growth</h3>
-    <div class="counter" data-target="45">55</div>
-    <span>% Bonus Returns</span>
-    <div class="sparkline"></div>
-  </div>
-</div>
-</div>
-</div>
-
- 
- <footer>
+  <footer>
     <p>© 2025 Moneyard. Your crypto journey starts here.</p>
   </footer>
 
@@ -425,7 +556,44 @@
         alert(`Signup failed! Error: ${err.message}`);
       });
     }
-  </script>
+document.querySelectorAll('.toggle-plus').forEach(plus => {
+  plus.addEventListener('click', (e) => {
+    const faqItem = e.target.closest('.faq-item');
+    const answer = faqItem.querySelector('.faq-answer');
+    const isOpen = answer.style.display === 'block';
 
+    // Close all
+    document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+    document.querySelectorAll('.toggle-plus').forEach(p => p.textContent = '+');
+
+    if (!isOpen) {
+      answer.style.display = 'block';
+      plus.textContent = '−'; // Change plus to minus
+    }
+  });
+});
+
+document.querySelectorAll('.expand-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const content = toggle.closest('.expand-section').querySelector('.expand-content');
+    const isOpen = content.classList.contains('active');
+    
+    content.classList.toggle('active');
+    toggle.textContent = isOpen ? '+' : '−';
+  });
+});
+function toggleAbout() {
+  const content = document.getElementById("about-content");
+  content.style.display = content.style.display === "block" ? "none" : "block";
+}
+document.querySelectorAll('.yield-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const content = toggle.closest('.yield-item').querySelector('.yield-content');
+    const isOpen = content.style.display === 'block';
+    content.style.display = isOpen ? 'none' : 'block';
+    toggle.textContent = isOpen ? '+' : '−';
+  });
+});
+</script>
 </body>
 </html>
