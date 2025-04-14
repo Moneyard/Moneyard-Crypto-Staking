@@ -208,41 +208,58 @@ app.post('/api/transfer', (req, res) => {
     });
 });
 
-// View Transactions
-app.get('/api/deposits', (req, res) => {
-    const userId = req.query.userId;
-    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+// Stake Coins
+app.post('/api/stake', (req, res) => {
+    const { userId, plan, amount } = req.body;
+    if (!userId || !plan || !amount) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
 
-    db.all(`SELECT * FROM transactions WHERE user_id = ? AND type = 'deposit' ORDER BY date DESC`, 
-        [userId], 
-        (err, rows) => {
-            if (err) return res.status(500).json({ error: 'Failed to load deposits' });
-            res.json(rows);
+    // Define mock APY based on plan
+    const apy = {
+        'Stable Growth': 8,
+        'Yield Farming': 15,
+        'Liquidity Mining': 22
+    }[plan];
+
+    if (!apy) {
+        return res.status(400).json({ error: 'Invalid plan' });
+    }
+
+    const lockPeriod = 30; // Example lock period in days
+    const startDate = new Date().toISOString();
+
+    db.run("INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date) VALUES (?, ?, ?, ?, ?, ?)", 
+        [userId, plan, amount, apy, lockPeriod, startDate], function(err) {
+            if (err) return res.status(500).json({ error: 'Staking failed' });
+
+            res.json({ success: true, message: 'Staking successful' });
         }
     );
 });
 
-// Get user balance
-app.get('/api/balance', (req, res) => {
+// View Active Stakes
+app.get('/api/active-stakes', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
-    db.get('SELECT balance FROM users WHERE id = ?', [userId], (err, row) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (!row) return res.status(404).json({ error: 'User not found' });
-
-        res.json({ balance: row.balance });
+    db.all("SELECT * FROM stakes WHERE user_id = ? AND status = 'active'", [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Failed to load active stakes' });
+        res.json(rows);
     });
 });
 
-// Get stake plans
-app.get('/api/stake-plans', (req, res) => {
-    const plans = [
-        { strategy: 'Stable Growth', apy: 8 },
-        { strategy: 'Yield Farming', apy: 15 },
-        { strategy: 'Liquidity Mining', apy: 22 }
-    ];
-    res.json(plans);
+// Unstake Coins
+app.post('/api/unstake', (req, res) => {
+    const { userId, stakeId } = req.body;
+    if (!userId || !stakeId) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    db.run("UPDATE stakes SET status = 'inactive' WHERE id = ? AND user_id = ?", [stakeId, userId], (err) => {
+        if (err) return res.status(500).json({ error: 'Unstaking failed' });
+        res.json({ success: true, message: 'Unstaking successful' });
+    });
 });
 
 // Serve frontend
@@ -251,5 +268,5 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
