@@ -1,168 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard - Stake</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Top 50 Cryptocurrencies</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
-      background: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      color: #333;
-    }
-
-    .header {
-      padding: 1rem;
-      text-align: center;
-      background-color: #0f766e;
-      color: #fff;
-      font-size: 1.5rem;
-    }
-
-    .stake-section {
-      padding: 1.5rem;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    .stake-plan-card {
-      background: #f0fdf4;
-      border: 2px solid #4ade80;
-      padding: 1rem;
-      border-radius: 1rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .stake-plan-card h3 {
-      color: #047857;
-    }
-
-    .stake-plan-card button {
-      background-color: #047857;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
-
-    .stake-form {
-      background: #f9fafb;
-      border: 2px dashed #22d3ee;
-      padding: 1rem;
-      border-radius: 1rem;
-      margin-top: 2rem;
-    }
-
-    .stake-form input, .stake-form select, .stake-form button {
-      display: block;
-      width: 100%;
-      padding: 0.5rem;
-      margin: 0.5rem 0;
-      font-size: 1rem;
-    }
-
-    #active-stakes {
-      margin-top: 2rem;
-    }
-
-    .stake-item {
-      background: #e0f2fe;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .stake-item button {
-      background: #dc2626;
-      color: white;
-      padding: 0.4rem 0.8rem;
-      border: none;
-      border-radius: 0.3rem;
-    }
+    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+    .crypto-market-section { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+    th { background: #f1f1f1; }
   </style>
 </head>
 <body>
-  <div class="header">Moneyard Staking</div>
 
-  <!-- STAKE PAGE SECTION -->
-<section id="stake-section" style="background-color: #ffffff; padding: 2rem; font-family: Arial, sans-serif;">
-  <h2 style="text-align: center; color: #0d9488; font-size: 2rem;">Crypto Staking</h2>
-
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
-    <!-- USDT Stablecoin Staking Card -->
-    <div style="border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-      <h3 style="color: #059669;">USDT Stable Staking</h3>
-      <p>Earn steady returns by staking USDT on trusted platforms.</p>
-      <ul>
-        <li>APY: <strong>6–12%</strong></li>
-        <li>Compounds: Daily</li>
-        <li>Lock-in: 7 days minimum</li>
-      </ul>
-      <button onclick="openStakeModal('USDT')" style="background-color: #059669; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; margin-top: 1rem;">Stake USDT</button>
-    </div>
-
-    <!-- DeFi Yield Pool Card -->
-    <div style="border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-      <h3 style="color: #2563eb;">DeFi Yield Pool</h3>
-      <p>Join decentralized yield farming for high APYs. Risk varies by pool.</p>
-      <ul>
-        <li>APY: <strong>10–25%</strong></li>
-        <li>Flexible withdrawal</li>
-        <li>Smart contract risk applies</li>
-      </ul>
-      <button onclick="openStakeModal('DeFi')" style="background-color: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; margin-top: 1rem;">Join DeFi Pool</button>
-    </div>
-  </div>
-</section>
-
-<!-- STAKE MODAL -->
-<div id="stakeModal" style="display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 999; justify-content: center; align-items: center;">
-  <div style="background-color: white; border-radius: 1rem; padding: 2rem; max-width: 400px; width: 90%;">
-    <h3 id="stakeTitle" style="margin-bottom: 1rem;"></h3>
-    <form id="stakeForm">
-      <label for="stakeAmount">Amount to Stake (USDT):</label>
-      <input type="number" id="stakeAmount" name="amount" required min="10" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
-
-      <label for="password">Your Password:</label>
-      <input type="password" id="password" name="password" required style="width: 100%; padding: 0.5rem; margin: 0.5rem 0;">
-
-      <input type="hidden" id="stakeType" name="type">
-      <button type="submit" style="background-color: #0d9488; color: white; width: 100%; padding: 0.5rem; border: none; border-radius: 0.5rem;">Confirm Stake</button>
-    </form>
-    <button onclick="closeStakeModal()" style="margin-top: 1rem; color: #ef4444; background: none; border: none;">Cancel</button>
-  </div>
+<div class="crypto-market-section">
+  <h2>Top 50 Cryptocurrencies - Live Market</h2>
+  <table id="cryptoMarketTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Symbol</th>
+        <th>Price (USD)</th>
+        <th>24h Change</th>
+        <th>Market Cap</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <script>
-  function openStakeModal(type) {
-    document.getElementById('stakeModal').style.display = 'flex';
-    document.getElementById('stakeType').value = type;
-    document.getElementById('stakeTitle').textContent = type === 'USDT' ? 'Stake USDT Stablecoin' : 'Join DeFi Yield Pool';
+  async function loadCryptoMarket() {
+    try {
+      const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false");
+      const coins = await res.json();
+      const tbody = document.querySelector("#cryptoMarketTable tbody");
+      tbody.innerHTML = "";
+
+      coins.forEach((coin, index) => {
+        const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td><img src="${coin.image}" width="20" style="vertical-align:middle;margin-right:6px;">${coin.name}</td>
+            <td>${coin.symbol.toUpperCase()}</td>
+            <td>$${coin.current_price.toLocaleString()}</td>
+            <td style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">
+              ${coin.price_change_percentage_24h.toFixed(2)}%
+            </td>
+            <td>$${coin.market_cap.toLocaleString()}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    } catch (err) {
+      console.error("Crypto fetch failed:", err);
+    }
   }
 
-  function closeStakeModal() {
-    document.getElementById('stakeModal').style.display = 'none';
-  }
-
-  document.getElementById('stakeForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const amount = document.getElementById('stakeAmount').value;
-    const password = document.getElementById('password').value;
-    const type = document.getElementById('stakeType').value;
-
-    const res = await fetch('/api/stake', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount, password, type })
-    });
-
-    const data = await res.json();
-    alert(data.message);
-    if (data.success) closeStakeModal();
-  });
+  // Initial load
+  loadCryptoMarket();
+  // Auto-refresh every 1 min
+  setInterval(loadCryptoMarket, 60000);
 </script>
 
 </body>
