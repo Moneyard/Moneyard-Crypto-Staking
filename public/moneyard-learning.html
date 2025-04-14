@@ -184,6 +184,51 @@
       const percent = (completedModules.length / 3) * 100;
       document.getElementById("progressFill").style.width = percent + "%";
     }
+// moneyard-learning.js (Node + SQLite backend logic for Moneyard Learning)
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const app = express();
+const db = new sqlite3.Database('./moneyard.db');
+
+app.use(express.json());
+
+// Create table to store learning progress
+db.run(`CREATE TABLE IF NOT EXISTS learning_progress (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT,
+  module TEXT,
+  completed_at TEXT
+)`);
+
+// API to save completed module
+app.post('/api/learning/complete', (req, res) => {
+  const { email, module } = req.body;
+  db.run(
+    'INSERT INTO learning_progress (email, module, completed_at) VALUES (?, ?, datetime("now"))',
+    [email, module],
+    function (err) {
+      if (err) return res.status(500).json({ error: 'Failed to save progress' });
+      res.json({ success: true });
+    }
+  );
+});
+
+// API to get all completed modules
+app.get('/api/learning/progress/:email', (req, res) => {
+  const email = req.params.email;
+  db.all('SELECT module FROM learning_progress WHERE email = ?', [email], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to retrieve progress' });
+    const completedModules = rows.map((r) => r.module);
+    res.json({ completed: completedModules });
+  });
+});
+
+module.exports = app;
+
+// In your main server.js, mount this:
+// const learningRoutes = require('./moneyard-learning');
+// app.use(learningRoutes);
+
   </script>
 </body>
 </html>
