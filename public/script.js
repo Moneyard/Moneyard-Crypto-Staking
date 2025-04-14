@@ -82,56 +82,56 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserBalance();
   }
 document.addEventListener("DOMContentLoaded", function () {
-  // Earnings Calculator
-  const calcEarningsBtn = document.getElementById("calculateEarningsBtn");
-  if (calcEarningsBtn) {
-    calcEarningsBtn.addEventListener("click", function () {
-      const depositAmount = parseFloat(document.getElementById("depositAmount").value);
-      const apy = parseFloat(document.getElementById("apySelect").value) / 100;
-      const duration = parseInt(document.getElementById("durationSelect").value);
+  // Earnings Calculator
+  const calcEarningsBtn = document.getElementById("calculateEarningsBtn");
+  if (calcEarningsBtn) {
+    calcEarningsBtn.addEventListener("click", function () {
+      const depositAmount = parseFloat(document.getElementById("depositAmount").value);
+      const apy = parseFloat(document.getElementById("apySelect").value) / 100;
+      const duration = parseInt(document.getElementById("durationSelect").value);
 
-      if (isNaN(depositAmount) || depositAmount <= 0) {
-        alert("Please enter a valid amount.");
-        return;
-      }
+      if (isNaN(depositAmount) || depositAmount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
 
-      const earnings = depositAmount * apy * (duration / 365);
-      const total = depositAmount + earnings;
+      const earnings = depositAmount * apy * (duration / 365);
+      const total = depositAmount + earnings;
 
-      document.getElementById("earningsResult").innerHTML = `
-        <p>Estimated Earnings: <strong>${earnings.toFixed(2)} USDT</strong></p>
-        <p>Total After Interest: <strong>${total.toFixed(2)} USDT</strong></p>
-      `;
-    });
-  }
+      document.getElementById("earningsResult").innerHTML = `
+        <p>Estimated Earnings: <strong>${earnings.toFixed(2)} USDT</strong></p>
+        <p>Total After Interest: <strong>${total.toFixed(2)} USDT</strong></p>
+      `;
+    });
+  }
 
-  // Loan Calculator
-  const ltvSlider = document.getElementById("ltvSlider");
-  const ltvValue = document.getElementById("ltvValue");
-  if (ltvSlider && ltvValue) {
-    ltvSlider.addEventListener("input", function () {
-      ltvValue.textContent = `${ltvSlider.value}%`;
-    });
-  }
+  // Loan Calculator
+  const ltvSlider = document.getElementById("ltvSlider");
+  const ltvValue = document.getElementById("ltvValue");
+  if (ltvSlider && ltvValue) {
+    ltvSlider.addEventListener("input", function () {
+      ltvValue.textContent = `${ltvSlider.value}%`;
+    });
+  }
 
-  const calcLoanBtn = document.getElementById("calculateLoanBtn");
-  if (calcLoanBtn) {
-    calcLoanBtn.addEventListener("click", function () {
-      const btcAmount = parseFloat(document.getElementById("btcAmount").value);
-      const ltv = parseInt(ltvSlider.value);
-      const btcPrice = 20000; // Example BTC price
+  const calcLoanBtn = document.getElementById("calculateLoanBtn");
+  if (calcLoanBtn) {
+    calcLoanBtn.addEventListener("click", function () {
+      const btcAmount = parseFloat(document.getElementById("btcAmount").value);
+      const ltv = parseInt(ltvSlider.value);
+      const btcPrice = 20000; // Example BTC price
 
-      if (isNaN(btcAmount) || btcAmount <= 0) {
-        alert("Please enter valid BTC amount.");
-        return;
-      }
+      if (isNaN(btcAmount) || btcAmount <= 0) {
+        alert("Please enter valid BTC amount.");
+        return;
+      }
 
-      const loanAmount = btcAmount * btcPrice * (ltv / 100);
-      document.getElementById("loanResult").innerHTML = `
-        <p>Loan Amount Available: <strong>${loanAmount.toFixed(2)} USDT</strong></p>
-      `;
-    });
-  }
+      const loanAmount = btcAmount * btcPrice * (ltv / 100);
+      document.getElementById("loanResult").innerHTML = `
+        <p>Loan Amount Available: <strong>${loanAmount.toFixed(2)} USDT</strong></p>
+      `;
+    });
+  }
 });
 
   // Signup
@@ -292,99 +292,41 @@ async function unstake(stakeId) {
 }
 // Function to toggle visibility for collapsible sections
 function toggleSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  section.style.display = section.style.display === "block" ? "none" : "block";
+  const section = document.getElementById(sectionId);
+  section.style.display = section.style.display === "block" ? "none" : "block";
 }
 
 // Function to calculate estimated earnings
 function calculateEarnings() {
-  const depositAmount = parseFloat(document.getElementById("depositAmount").value);
-  const apy = parseFloat(document.getElementById("apySelect").value) / 100;
-  const duration = parseInt(document.getElementById("durationSelect").value);
+  const depositAmount = parseFloat(document.getElementById("depositAmount").value);
+  const apy = parseFloat(document.getElementById("apySelect").value) / 100;
+  const duration = parseInt(document.getElementById("durationSelect").value);
 
-  if (isNaN(depositAmount) || depositAmount <= 0) {
-    alert("Please enter a valid deposit amount.");
-    return;
-  }
+  if (isNaN(depositAmount) || depositAmount <= 0) {
+    alert("Please enter a valid deposit amount.");
+    return;
+  }
 
-  const interest = depositAmount * apy * (duration / 365);
-  document.getElementById("interestResult").innerText = `Estimated Earnings: ${interest.toFixed(2)} USDT`;
+  const interest = depositAmount * apy * (duration / 365);
+  document.getElementById("interestResult").innerText = `Estimated Earnings: ${interest.toFixed(2)} USDT`;
 }
 
 // Function to update Loan-to-Value (LTV) value
 function updateLTV() {
-  const ltvValue = document.getElementById("ltvSlider").value;
-  document.getElementById("ltvValue").textContent = `${ltvValue}%`;
+  const ltvValue = document.getElementById("ltvSlider").value;
+  document.getElementById("ltvValue").textContent = `${ltvValue}%`;
 
-  const collateralAmount = parseFloat(document.getElementById("btcAmount").value);
-  if (isNaN(collateralAmount) || collateralAmount <= 0) {
-    document.getElementById("loanResult").innerText = "Enter a valid collateral amount.";
-    return;
-  }
+  const collateralAmount = parseFloat(document.getElementById("btcAmount").value);
+  if (isNaN(collateralAmount) || collateralAmount <= 0) {
+    document.getElementById("loanResult").innerText = "Enter a valid collateral amount.";
+    return;
+  }
 
-  const loanAmount = collateralAmount * (ltvValue / 100) * 20000; // Assuming 1 BTC = 20,000 USDT
-  document.getElementById("loanResult").textContent = `${loanAmount.toFixed(2)} USDT`;
+  const loanAmount = collateralAmount * (ltvValue / 100) * 20000; // Assuming 1 BTC = 20,000 USDT
+  document.getElementById("loanResult").textContent = `${loanAmount.toFixed(2)} USDT`;
 }
 
 // Event Listener for the toggle button (Earnings Section)
 document.getElementById("earningsButton").addEventListener("click", function() {
-  toggleSection('earningsSection');
-});
-// SIGNUP HANDLER
-document.getElementById("signupBtn").addEventListener("click", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
-  const referral = document.getElementById("referralCode").value;
-
-  try {
-    const res = await fetch("/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password, referral }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      alert("Signup successful! You can now log in.");
-      document.getElementById("signupForm").style.display = "none";
-      document.getElementById("loginForm").style.display = "block";
-    } else {
-      alert(data.message || "Signup failed");
-    }
-  } catch (err) {
-    alert("Error signing up");
-    console.error(err);
-  }
-});
-
-// LOGIN HANDLER
-document.getElementById("loginBtn").addEventListener("click", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-
-  try {
-    const res = await fetch("/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userEmail", email);
-      window.location.href = "/dashboard.html";
-    } else {
-      alert(data.message || "Login failed");
-    }
-  } catch (err) {
-    alert("Error logging in");
-    console.error(err);
-  }
+  toggleSection('earningsSection');
 });
