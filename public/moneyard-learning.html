@@ -78,6 +78,25 @@
     .quiz-question {
       margin-bottom: 10px;
     }
+
+    /* Hide video sections initially */
+    .video-section {
+      display: none;
+    }
+
+    /* Collapsible functionality */
+    .module-header {
+      cursor: pointer;
+      background-color: #007a5a;
+      color: white;
+      padding: 10px;
+      text-align: left;
+      border-radius: 5px;
+    }
+
+    .module-header:hover {
+      background-color: #005c45;
+    }
   </style>
 </head>
 <body>
@@ -88,62 +107,70 @@
 
   <div class="module-container">
     <div class="module">
-      <h2>Module: Cryptocurrency Basics</h2>
-      <!-- Video -->
-      <video id="cryptoVideo" controls>
-        <source src="https://www.example.com/crypto-video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-
-      <!-- Audio Player (Podcast) -->
-      <audio id="cryptoAudio" controls>
-        <source src="https://www.example.com/crypto-audio.mp3" type="audio/mp3">
-        Your browser does not support the audio tag.
-      </audio>
-
-      <!-- Play/Pause button for audio -->
-      <button class="play-pause-btn" onclick="toggleAudio('crypto')">Play/Pause Podcast</button>
-
-      <!-- Progress Bar -->
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
+      <div class="module-header" onclick="toggleModule('crypto')">
+        <h2>Module: Cryptocurrency Basics</h2>
       </div>
+      <div class="video-section" id="cryptoSection">
+        <!-- Video -->
+        <video id="cryptoVideo" controls>
+          <source src="https://www.example.com/crypto-video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
 
-      <!-- Interactive Quiz Section -->
-      <div class="quiz-section">
-        <div class="quiz-question"><strong>1:</strong> What is the main benefit of staking crypto?</div>
-        <button onclick="alert('Correct!')">Earn passive rewards</button>
-        <button onclick="alert('Nope!')">Buy more crypto</button>
+        <!-- Audio Player (Podcast) -->
+        <audio id="cryptoAudio" controls>
+          <source src="https://www.example.com/crypto-audio.mp3" type="audio/mp3">
+          Your browser does not support the audio tag.
+        </audio>
+
+        <!-- Play/Pause button for audio -->
+        <button class="play-pause-btn" onclick="toggleAudio('crypto')">Play/Pause Podcast</button>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-section">
+          <div class="quiz-question"><strong>1:</strong> What is the main benefit of staking crypto?</div>
+          <button onclick="alert('Correct!')">Earn passive rewards</button>
+          <button onclick="alert('Nope!')">Buy more crypto</button>
+        </div>
       </div>
     </div>
 
     <div class="module">
-      <h2>Module: High-Yield Savings</h2>
-      <!-- Video -->
-      <video id="savingsVideo" controls>
-        <source src="https://www.example.com/savings-video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-
-      <!-- Audio Player (Podcast) -->
-      <audio id="savingsAudio" controls>
-        <source src="https://www.example.com/savings-audio.mp3" type="audio/mp3">
-        Your browser does not support the audio tag.
-      </audio>
-
-      <!-- Play/Pause button for audio -->
-      <button class="play-pause-btn" onclick="toggleAudio('savings')">Play/Pause Podcast</button>
-
-      <!-- Progress Bar -->
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
+      <div class="module-header" onclick="toggleModule('savings')">
+        <h2>Module: High-Yield Savings</h2>
       </div>
+      <div class="video-section" id="savingsSection">
+        <!-- Video -->
+        <video id="savingsVideo" controls>
+          <source src="https://www.example.com/savings-video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
 
-      <!-- Interactive Quiz Section -->
-      <div class="quiz-section">
-        <div class="quiz-question"><strong>1:</strong> What's the primary benefit of a high-yield savings account?</div>
-        <button onclick="alert('Correct!')">Earn higher interest than normal savings</button>
-        <button onclick="alert('Nope!')">Keep money in a checking account</button>
+        <!-- Audio Player (Podcast) -->
+        <audio id="savingsAudio" controls>
+          <source src="https://www.example.com/savings-audio.mp3" type="audio/mp3">
+          Your browser does not support the audio tag.
+        </audio>
+
+        <!-- Play/Pause button for audio -->
+        <button class="play-pause-btn" onclick="toggleAudio('savings')">Play/Pause Podcast</button>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-section">
+          <div class="quiz-question"><strong>1:</strong> What's the primary benefit of a high-yield savings account?</div>
+          <button onclick="alert('Correct!')">Earn higher interest than normal savings</button>
+          <button onclick="alert('Nope!')">Keep money in a checking account</button>
+        </div>
       </div>
     </div>
   </div>
@@ -153,9 +180,9 @@
     let savingsAudio = document.getElementById('savingsAudio');
     let progressFill = document.getElementById('progressFill');
     
+    // Toggle audio play/pause
     function toggleAudio(module) {
       if (module === 'crypto') {
-        // Toggle play/pause for crypto audio and video
         if (cryptoAudio.paused) {
           cryptoAudio.play();
           savingsAudio.pause(); // Pause savings audio if playing
@@ -163,7 +190,6 @@
           cryptoAudio.pause();
         }
       } else if (module === 'savings') {
-        // Toggle play/pause for savings audio and video
         if (savingsAudio.paused) {
           savingsAudio.play();
           cryptoAudio.pause(); // Pause crypto audio if playing
@@ -187,6 +213,16 @@
         progressFill.style.width = progress + '%';
       }
     }, 1000);
+
+    // Toggle the visibility of the modules
+    function toggleModule(module) {
+      let section = document.getElementById(module + 'Section');
+      if (section.style.display === 'block') {
+        section.style.display = 'none';
+      } else {
+        section.style.display = 'block';
+      }
+    }
   </script>
 </body>
 </html>
