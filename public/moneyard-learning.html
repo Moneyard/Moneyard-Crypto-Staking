@@ -2,37 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moneyard Learning</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #FFA94D !important;
+      background-color: #FFA94D !important; /* warm orange */
       color: #333;
     }
 
     header {
-      background-color: #007a5a;
+      background-color: #007a5a; /* deep green header */
       color: white;
       padding: 20px;
       text-align: center;
     }
 
-    .learn-container {
-      padding: 20px;
-    }
-
-    .learn-modules {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
     .learn-card {
       flex: 1;
       min-width: 250px;
-      background: white;
+      background: white; /* module card color */
       border-left: 5px solid #007a5a;
       padding: 20px;
       border-radius: 10px;
@@ -76,7 +66,7 @@
     .progress-fill {
       height: 100%;
       width: 0;
-      background: #2ecc71;
+      background: #2ecc71; /* Green progress fill */
       border-radius: 5px;
       transition: width 0.5s ease;
     }
@@ -86,24 +76,22 @@
     }
 
     .quiz-question {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .badge {
       display: inline-block;
-      background: #2ecc71;
+      background: #2ecc71; /* Green badge */
       color: white;
       padding: 5px 10px;
       margin-top: 15px;
       border-radius: 5px;
     }
 
-    iframe {
+    /* Lottie animation styling */
+    lottie-player {
       width: 100%;
-      height: 250px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 8px;
+      height: 300px;
     }
   </style>
 </head>
@@ -118,27 +106,19 @@
     <div class="learn-modules">
       <div class="learn-card" onclick="openLesson('crypto')">
         <h3>Cryptocurrency Basics</h3>
-        <p>Learn how crypto works and how to earn securely.</p>
+        <p>Learn how crypto works, how to stake, and avoid scams.</p>
       </div>
       <div class="learn-card" onclick="openLesson('savings')">
         <h3>High-Yield Savings</h3>
-        <p>Grow your savings smartly and steadily.</p>
+        <p>Grow your savings with smarter, safer tools.</p>
       </div>
       <div class="learn-card" onclick="openLesson('investing')">
         <h3>Micro-Investing</h3>
-        <p>Start investing with as little as $1.</p>
-      </div>
-      <div class="learn-card" onclick="openLesson('security')">
-        <h3>Financial Security</h3>
-        <p>Protect your money and data from threats.</p>
-      </div>
-      <div class="learn-card" onclick="openLesson('budgeting')">
-        <h3>Budgeting</h3>
-        <p>Learn to manage your money and spending habits.</p>
+        <p>Start investing with as little as $1. Learn the basics here.</p>
       </div>
       <div class="learn-card" onclick="openLesson('credit')">
-        <h3>Credit Score</h3>
-        <p>Understand, build and improve your credit score.</p>
+        <h3>Credit Score Basics</h3>
+        <p>Understand how credit scores work and how to improve them.</p>
       </div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -149,6 +129,7 @@
     <div id="lessonContent"></div>
   </div>
 
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script>
     let completedModules = [];
 
@@ -161,102 +142,78 @@
       const content = {
         crypto: `
           <h2>Cryptocurrency Basics</h2>
-          <p>Learn about decentralized money, wallets, and staking rewards.</p>
-          <iframe src="https://www.youtube.com/embed/2tYhkkmMQhA" allowfullscreen></iframe>
+          <p><strong>What is Crypto?</strong> Digital money powered by blockchain.</p>
+          <p><strong>How It Works:</strong> Decentralized, secure, and fast transfers.</p>
           <ul>
-            <li>What is blockchain technology?</li>
-            <li>How do wallets and exchanges work?</li>
-            <li>How to stake and earn rewards safely</li>
+            <li>How to buy and send crypto safely</li>
+            <li>What is staking and how to earn passive income</li>
+            <li>Spotting and avoiding crypto scams</li>
           </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
-            <button onclick="alert('Correct!')">Earning by holding crypto</button>
-            <button onclick="alert('Nope!')">Sending crypto fast</button>
-            <div class='quiz-question'><strong>2:</strong> What is a crypto wallet?</div>
-            <button onclick="alert('Correct!')">Stores your private keys</button>
-            <button onclick="alert('Nope!')">A bank account</button>
+          <iframe width="100%" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" 
+            title="Cryptocurrency Basics" frameborder="0" allowfullscreen></iframe>
+          <div class="quiz-section">
+            <div class="quiz-question"><strong>Quiz:</strong> What is staking?</div>
+            <button onclick="alert('Correct! You earn by holding crypto.')">A way to earn with crypto</button>
+            <button onclick="alert('Try again!')">Buying high</button>
           </div>
-          <div class='badge'>Crypto Explorer</div>
+          <div class='badge'>Crypto Explorer Badge</div>
+          <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_xxxx.json" background="transparent" 
+            speed="1" loop autoplay></lottie-player>
         `,
         savings: `
-          <h2>High-Yield Savings</h2>
-          <p>See how to get higher interest on your money.</p>
-          <iframe src="https://www.youtube.com/embed/KDZzlxBHo4E" allowfullscreen></iframe>
-          <ul>
-            <li>Daily vs monthly compounding</li>
-            <li>Choosing the best HYSA</li>
-            <li>Comparing traditional banks vs fintech</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What's a good reason to use HYSA?</div>
-            <button onclick="alert('Correct!')">High interest, low risk</button>
-            <button onclick="alert('Nope!')">To borrow loans</button>
+          <h2>High-Yield Savings Accounts</h2>
+          <p><strong>What is HYSA?</strong> A savings account with higher interest than traditional banks.</p>
+          <p><strong>How It Helps:</strong> Your money grows faster with daily or monthly compounding.</p>
+          <p><strong>Interactive Tools:</strong> Use our APY calculator and see how your savings grow.</p>
+          <iframe width="100%" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_2" 
+            title="High-Yield Savings" frameborder="0" allowfullscreen></iframe>
+          <div class="quiz-section">
+            <div class="quiz-question"><strong>Quiz:</strong> What makes HYSA better?</div>
+            <button onclick="alert('Correct! Higher interest rates.')">High interest</button>
+            <button onclick="alert('Try again!')">Hidden fees</button>
           </div>
-          <div class='badge'>Smart Saver</div>
+          <div class='badge'>Smart Saver Badge</div>
+          <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_xxxx.json" background="transparent" 
+            speed="1" loop autoplay></lottie-player>
         `,
         investing: `
           <h2>Micro-Investing</h2>
-          <p>Grow your wealth with small investments over time.</p>
-          <iframe src="https://www.youtube.com/embed/JgqyVZ4r54M" allowfullscreen></iframe>
+          <p><strong>Start Small, Think Big:</strong> Invest with as little as $1.</p>
           <ul>
-            <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
+            <li>Difference between stocks, ETFs, and mutual funds</li>
+            <li>How round-up investing works</li>
+            <li>Build your first sample portfolio</li>
           </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
+          <iframe width="100%" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_3" 
+            title="Micro-Investing" frameborder="0" allowfullscreen></iframe>
+          <div class="quiz-section">
+            <div class="quiz-question"><strong>Quiz:</strong> What is micro-investing?</div>
+            <button onclick="alert('Correct! Small amounts regularly.')">Investing small amounts</button>
+            <button onclick="alert('Try again!')">Buying property</button>
           </div>
-          <div class='badge'>Micro-Investor</div>
-        `,
-        security: `
-          <h2>Financial Security</h2>
-          <p>Stay safe from phishing, fraud and fake links.</p>
-          <iframe src="https://www.youtube.com/embed/l5S6N4Kc3l4" allowfullscreen></iframe>
-          <ul>
-            <li>How 2FA and biometrics protect you</li>
-            <li>Recognizing suspicious activity</li>
-            <li>Best password managers to use</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>Which is safer?</div>
-            <button onclick="alert('Correct!')">Use 2FA and password manager</button>
-            <button onclick="alert('Nope!')">Write passwords on paper</button>
-          </div>
-          <div class='badge'>Security Pro</div>
-        `,
-        budgeting: `
-          <h2>Budgeting</h2>
-          <p>Take control of your spending and build a plan.</p>
-          <iframe src="https://www.youtube.com/embed/kL6UDFP9Y7E" allowfullscreen></iframe>
-          <ul>
-            <li>50/30/20 Rule explained</li>
-            <li>Track spending with apps</li>
-            <li>Creating emergency funds</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What does 50% in budgeting represent?</div>
-            <button onclick="alert('Correct!')">Needs (rent, food, transport)</button>
-            <button onclick="alert('Nope!')">Fun & hobbies</button>
-          </div>
-          <div class='badge'>Budget Master</div>
+          <div class='badge'>Micro-Investor Badge</div>
+          <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_xxxx.json" background="transparent" 
+            speed="1" loop autoplay></lottie-player>
         `,
         credit: `
-          <h2>Credit Score 101</h2>
-          <p>Understand how credit works and why it matters.</p>
-          <iframe src="https://www.youtube.com/embed/M9Wcj6h-Z7s" allowfullscreen></iframe>
+          <h2>Credit Score Basics</h2>
+          <p><strong>What is Credit?</strong> A measure of how trustworthy you are to lenders.</p>
+          <p><strong>Why It Matters:</strong> Affects your ability to borrow money at favorable rates.</p>
           <ul>
-            <li>What affects your credit score?</li>
-            <li>How to improve credit health</li>
-            <li>Free credit check tools</li>
+            <li>How to improve your credit score</li>
+            <li>Understanding credit reports</li>
+            <li>Best practices for managing debt</li>
           </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What can hurt your credit score?</div>
-            <button onclick="alert('Correct!')">Late payments</button>
-            <button onclick="alert('Nope!')">Using a debit card</button>
+          <iframe width="100%" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_4" 
+            title="Credit Score Basics" frameborder="0" allowfullscreen></iframe>
+          <div class="quiz-section">
+            <div class="quiz-question"><strong>Quiz:</strong> What is the best way to improve your credit score?</div>
+            <button onclick="alert('Correct! Pay bills on time.')">Pay bills on time</button>
+            <button onclick="alert('Try again!')">Get more credit cards</button>
           </div>
-          <div class='badge'>Credit Builder</div>
+          <div class='badge'>Credit Score Master Badge</div>
+          <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_xxxx.json" background="transparent" 
+            speed="1" loop autoplay></lottie-player>
         `
       };
 
@@ -269,7 +226,7 @@
     }
 
     function updateProgress() {
-      const percent = (completedModules.length / 6) * 100;
+      const percent = (completedModules.length / 4) * 100;  // Updated for 4 modules
       document.getElementById("progressFill").style.width = percent + "%";
     }
   </script>
