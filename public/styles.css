@@ -609,26 +609,32 @@ button:hover {
   color: #0a4e3a;
   margin-left: 12px;
 }
-<style>
-  .crypto-market-section {
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    margin-top: 40px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.1);
-  }
-  #cryptoMarketTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  #cryptoMarketTable th, #cryptoMarketTable td {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    text-align: center;
-  }
-  #cryptoMarketTable th {
-    background: #f8f9fa;
-    font-weight: bold;
-  }
-</style>
+.crypto-market-section {
+  margin-top: 30px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 128, 0, 0.1);
+  border: 1px solid #e0f2f1;
+}
+.crypto-market-section h2 {
+  color: #00695c;
+  font-size: 20px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+#cryptoMarketTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+#cryptoMarketTable th, #cryptoMarketTable td {
+  padding: 10px;
+  border-bottom: 1px solid #eaeaea;
+  text-align: center;
+  font-size: 14px;
+}
+#cryptoMarketTable th {
+  background-color: #e0f7fa;
+  color: #004d40;
+  font-weight: 600;
+}
