@@ -665,3 +665,22 @@ button:hover {
 .footer-btn:nth-child(3):hover {
   background-color: #ff9800;
 }
+.change-positive {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.change-negative {
+  display: inline-block;
+  background-color: #f44336;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 13px;
+}
