@@ -306,8 +306,7 @@
 
     function playAudio() {
       if (currentModule) {
-        const textToRead = currentModule.content.split("<a").join(""); // Remove 'Learn More' link.
-        utterance = new SpeechSynthesisUtterance(textToRead);
+        utterance = new SpeechSynthesisUtterance(document.getElementById('lessonContent').innerText);
         speechSynthesis.speak(utterance);
       }
     }
@@ -324,7 +323,7 @@
       fill.style.width = percent + '%';
     }
 
-    loadModules();
+    window.onload = loadModules;
   </script>
 </body>
 </html>
