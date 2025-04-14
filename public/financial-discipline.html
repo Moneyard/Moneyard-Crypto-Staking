@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Financial Discipline</title>
+</head>
+<body>
+  <!-- Progress Tracker -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
+      <span>Cryptocurrency</span>
+      <span>High-Yield Savings</span>
+      <span>Micro-Investing</span>
+      <span>Financial Discipline</span>
+    </div>
+    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+      <div style="flex: 1; background: #2b7a78;"></div>
+      <div style="flex: 1; background: #2b7a78;"></div>
+      <div style="flex: 1; background: #2b7a78;"></div>
+      <div style="flex: 1; background: #00b894;"></div>
+    </div>
+  </div>
+
+  <!-- Welcome & Module Content -->
+  <h2>Financial Discipline</h2>
+  <p id="discipline-content">
+    Financial discipline is the foundation of wealth building. It involves making consistent decisions about spending, saving, and investing.
+    Staying within your budget and delaying gratification can result in long-term financial freedom.
+    <br><br>
+    Topics include:
+    <ul>
+      <li>Budgeting and expense tracking</li>
+      <li>Setting SMART financial goals</li>
+      <li>Delayed gratification</li>
+      <li>Needs vs Wants</li>
+      <li>Building financial habits</li>
+    </ul>
+  </p>
+
+  <!-- Video -->
+  <iframe width="100%" height="250" src="https://www.youtube.com/embed/vtQkJZlY1nc" frameborder="0" allowfullscreen></iframe>
+
+  <!-- Navigation -->
+  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+    <button onclick="window.location.href='micro-investing.html'">Previous</button>
+    <button style="visibility: hidden;">Next</button>
+  </div>
+
+  <!-- Speech -->
+  <script>
+    const text = `Welcome to this session on Financial Discipline. In this module, you'll learn how to manage your budget, 
+    distinguish between needs and wants, build smart financial habits, and stay on track to achieve your goals. Learn more.`;
+
+    const utter = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utter);
+  </script>
+</body>
+</html>
