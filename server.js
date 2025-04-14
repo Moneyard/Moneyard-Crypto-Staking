@@ -80,8 +80,8 @@ app.post('/api/signup', async (req, res) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
 
     if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
-    if (!passwordRegex.test(password)) return res.status(400).json({
-        error: 'Password must contain lowercase, uppercase, number, and be 5+ characters'
+    if (!passwordRegex.test(password)) return res.status(400).json({ 
+        error: 'Password must contain lowercase, uppercase, number, and be 5+ characters' 
     });
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
@@ -89,9 +89,9 @@ app.post('/api/signup', async (req, res) => {
         if (user) return res.status(400).json({ error: 'Email already in use' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        db.run("INSERT INTO users (email, password) VALUES (?, ?)",
-            [email, hashedPassword],
-            function (err) {
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
+            [email, hashedPassword], 
+            function(err) {
                 if (err) return res.status(500).json({ error: 'Failed to register' });
                 res.json({ success: true, userId: this.lastID });
             }
@@ -151,7 +151,7 @@ app.post('/api/withdraw', (req, res) => {
         if (user.balance < amount) return res.status(400).json({ error: 'Insufficient balance' });
 
         const date = new Date().toISOString();
-        db.run("INSERT INTO withdrawals (user_id, amount, wallet_address, password, date) VALUES (?, ?, ?, ?, ?)",
+        db.run("INSERT INTO withdrawals (user_id, amount, wallet_address, password, date) VALUES (?, ?, ?, ?, ?)", 
             [userId, amount, walletAddress, password, date], (err) => {
                 if (err) return res.status(500).json({ error: 'Withdrawal failed' });
 
@@ -187,7 +187,7 @@ app.post('/api/transfer', (req, res) => {
             db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, fromUserId]);
             db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, receiver.id]);
 
-            db.run("INSERT INTO transfers (from_user, to_user, amount, date) VALUES (?, ?, ?, ?)",
+            db.run("INSERT INTO transfers (from_user, to_user, amount, date) VALUES (?, ?, ?, ?)", 
                 [fromUserId, receiver.id, amount, date], (err) => {
                     if (err) return res.status(500).json({ error: 'Transfer failed' });
                     res.json({ success: true, message: 'Transfer completed' });
@@ -221,8 +221,8 @@ app.post('/api/stake', (req, res) => {
         const startDate = new Date().toISOString();
 
         db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId]);
-        db.run("INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date) VALUES (?, ?, ?, ?, ?, ?)",
-            [userId, plan, amount, apy, lockPeriod, startDate], function (err) {
+        db.run("INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date) VALUES (?, ?, ?, ?, ?, ?)", 
+            [userId, plan, amount, apy, lockPeriod, startDate], function(err) {
                 if (err) return res.status(500).json({ error: 'Staking failed' });
                 res.json({ success: true, message: 'Staking successful' });
             }
@@ -230,7 +230,7 @@ app.post('/api/stake', (req, res) => {
     });
 });
 
-// View Active Stakes
+// View Stakes
 app.get('/api/active-stakes', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -241,7 +241,26 @@ app.get('/api/active-stakes', (req, res) => {
     });
 });
 
-// Server listener
+// Unstake
+app.post('/api/unstake', (req, res) => {
+    const { userId, stakeId } = req.body;
+    if (!userId || !stakeId) return res.status(400).json({ error: 'Missing fields' });
+
+    db.get("SELECT * FROM stakes WHERE id = ? AND user_id = ? AND status = 'active'", [stakeId, userId], (err, stake) => {
+        if (err || !stake) return res.status(400).json({ error: 'Stake not found or already unstaked' });
+
+        db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [stake.amount, userId]);
+        db.run("UPDATE stakes SET status = 'inactive' WHERE id = ?", [stakeId], (err) => {
+            if (err) return res.status(500).json({ error: 'Unstake failed' });
+            res.json({ success: true, message: 'Unstaked successfully' });
+        });
+    });
+});
+
+// Serve pages
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
