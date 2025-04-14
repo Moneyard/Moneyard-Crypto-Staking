@@ -3,111 +3,171 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Learning Center</title>
+  <title>Moneyard Learning</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f4f4f4;
+      background-color: #FFA94D !important;
+      color: #333;
     }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
+    header {
+      background-color: #007a5a;
+      color: white;
       padding: 20px;
-      background: #fff;
-    }
-
-    h1 {
       text-align: center;
-      color: #2d7a54;
     }
 
-    .module-list {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-
-    .module-card {
-      background: #e9f5ee;
-      border-radius: 12px;
-      padding: 15px;
-      width: 250px;
-      margin: 10px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-
-    .module-card:hover {
-      transform: scale(1.03);
-    }
-
-    .module-card h3 {
-      color: #2d7a54;
-    }
-
-    .module-content {
+    .learn-container {
       padding: 20px;
-      border-top: 1px solid #ccc;
-      display: none;
     }
 
-    iframe {
-      width: 100%;
-      height: 200px;
-      margin: 15px 0;
+    .learn-modules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .learn-card {
+      flex: 1;
+      min-width: 250px;
+      background: white;
+      border-left: 5px solid #007a5a;
+      padding: 20px;
+      border-radius: 10px;
+      position: relative;
+      opacity: 1;
+      transition: transform 0.2s, opacity 0.4s ease;
+    }
+
+    .learn-card.locked {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .learn-card:hover {
+      transform: scale(1.02);
+      background: #f0f0f0;
+    }
+
+    .learn-card button {
+      background-color: #007a5a;
+      color: white;
       border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      animation: pulse 2s infinite;
     }
 
-    ul {
-      margin: 15px 0;
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    #lessonModal {
+      display: none;
+      position: fixed;
+      top: 5%;
+      left: 5%;
+      width: 90%;
+      height: 90%;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 999;
+      border-radius: 8px;
+    }
+
+    #lessonModal span {
+      float: right;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .progress-bar {
+      background: #eee;
+      border-radius: 5px;
+      margin: 20px 0;
+      height: 20px;
+      width: 100%;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: #2ecc71;
+      border-radius: 5px;
+      transition: width 0.5s ease;
     }
 
     .quiz-section {
-      margin: 15px 0;
-      background: #f1f1f1;
-      padding: 10px;
-      border-radius: 10px;
+      margin-top: 30px;
     }
 
     .quiz-question {
       margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    .quiz-section button {
-      margin-right: 10px;
-      padding: 5px 10px;
-      border: none;
-      background: #2d7a54;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
     }
 
     .badge {
       display: inline-block;
-      margin-top: 10px;
-      background: #2d7a54;
-      color: #fff;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-weight: bold;
+      background: #2ecc71;
+      color: white;
+      padding: 5px 10px;
+      margin-top: 15px;
+      border-radius: 5px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    #audioControls {
+      margin-top: 20px;
+    }
+
+    #audioControls button {
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      margin-right: 10px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #audioControls button:hover {
+      background-color: #16a085;
+    }
+
+    iframe {
+      width: 100%;
+      height: 315px;
+      margin: 20px 0;
+      border: none;
+      border-radius: 10px;
     }
 
     .learn-more-link {
       display: inline-block;
       margin-top: 15px;
-      padding: 8px 16px;
+      margin-bottom: 10px;
+      font-weight: bold;
       background-color: #28a745;
       color: white;
-      border-radius: 8px;
+      padding: 10px 20px;
+      border-radius: 5px;
       text-decoration: none;
-      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
     }
 
     .learn-more-link:hover {
@@ -116,10 +176,25 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Moneyard Learning Center</h1>
-    <div class="module-list" id="moduleList"></div>
-    <div class="module-content" id="moduleContent"></div>
+  <header>
+    <h1>Moneyard Learning</h1>
+    <p>Smart Finance for the Future</p>
+  </header>
+
+  <div class="learn-container">
+    <h2>Choose a Module</h2>
+    <div class="learn-modules" id="modulesContainer"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div id="lessonModal">
+    <span onclick="closeLesson()">X</span>
+    <div id="lessonContent"></div>
+    <a id="learnMoreLink" class="learn-more-link" target="_blank">Learn More</a>
+    <div id="audioControls">
+      <button onclick="playAudio()">Play Audio</button>
+      <button onclick="stopAudio()">Stop Audio</button>
+    </div>
   </div>
 
   <script>
@@ -128,6 +203,7 @@
         id: 'crypto',
         title: 'Cryptocurrency Basics',
         desc: 'Learn how crypto works and how to earn securely.',
+        link: 'cryptocurrency.html',
         content: `
           <h2>Cryptocurrency Basics</h2>
           <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
@@ -143,13 +219,13 @@
             <button onclick="alert('Nope!')">Sending crypto fast</button>
           </div>
           <div class='badge'>Crypto Explorer</div>
-          <a class="learn-more-link" href="cryptocurrency.html">Learn More</a>
         `
       },
       {
         id: 'savings',
         title: 'High-Yield Savings',
         desc: 'Grow your savings smartly and steadily.',
+        link: 'yield-savings.html',
         content: `
           <h2>High-Yield Savings</h2>
           <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
@@ -165,13 +241,13 @@
             <button onclick="alert('Nope!')">To borrow loans</button>
           </div>
           <div class='badge'>Smart Saver</div>
-          <a class="learn-more-link" href="yield-savings.html">Learn More</a>
         `
       },
       {
         id: 'investing',
         title: 'Micro-Investing',
         desc: 'Start investing with as little as $1.',
+        link: 'micro-investing.html',
         content: `
           <h2>Micro-Investing</h2>
           <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
@@ -187,25 +263,67 @@
             <button onclick="alert('Nope!')">Daily Crypto Account</button>
           </div>
           <div class='badge'>Micro-Investor</div>
-          <a class="learn-more-link" href="micro-investing.html">Learn More</a>
         `
       }
     ];
 
-    const moduleList = document.getElementById('moduleList');
-    const moduleContent = document.getElementById('moduleContent');
+    let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
+    let utterance;
+    let currentModule = null;
 
-    modules.forEach((mod) => {
-      const div = document.createElement('div');
-      div.className = 'module-card';
-      div.innerHTML = `<h3>${mod.title}</h3><p>${mod.desc}</p>`;
-      div.onclick = () => {
-        moduleContent.innerHTML = mod.content;
-        moduleContent.style.display = 'block';
-        moduleContent.scrollIntoView({ behavior: 'smooth' });
-      };
-      moduleList.appendChild(div);
-    });
+    function loadModules() {
+      const container = document.getElementById('modulesContainer');
+      container.innerHTML = '';
+
+      modules.forEach((mod, index) => {
+        const unlocked = index === 0 || completedModules.includes(modules[index - 1].id);
+        const isComplete = completedModules.includes(mod.id);
+        const card = document.createElement('div');
+        card.className = 'learn-card' + (unlocked ? '' : ' locked');
+        card.innerHTML = `
+          <h3>${mod.title}</h3>
+          <p>${mod.desc}</p>
+          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
+        `;
+        container.appendChild(card);
+      });
+
+      updateProgress();
+    }
+
+    function startModule(id) {
+      const mod = modules.find(m => m.id === id);
+      currentModule = mod;
+      document.getElementById('lessonContent').innerHTML = mod.content;
+      document.getElementById('lessonModal').style.display = 'block';
+      document.getElementById('learnMoreLink').href = mod.link;
+    }
+
+    function closeLesson() {
+      document.getElementById('lessonModal').style.display = 'none';
+      stopAudio();
+    }
+
+    function playAudio() {
+      if (currentModule) {
+        utterance = new SpeechSynthesisUtterance(document.getElementById('lessonContent').innerText);
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    function stopAudio() {
+      if (utterance) {
+        speechSynthesis.cancel();
+      }
+    }
+
+    function updateProgress() {
+      const fill = document.getElementById('progressFill');
+      const percent = (completedModules.length / modules.length) * 100;
+      fill.style.width = percent + '%';
+    }
+
+    window.onload = loadModules;
   </script>
 </body>
 </html>
