@@ -609,23 +609,3 @@ button:hover {
   color: #0a4e3a;
   margin-left: 12px;
 }
-.metric-section {
-  margin-top: 20px;
-  margin-bottom: 30px;
-}
-
-.metric-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.metric-table th, .metric-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
-
-.metric-table th {
-  background-color: #e6f2ff;
-}
