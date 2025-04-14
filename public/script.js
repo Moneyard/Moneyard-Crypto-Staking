@@ -330,3 +330,42 @@ function updateLTV() {
 document.getElementById("earningsButton").addEventListener("click", function() {
   toggleSection('earningsSection');
 });
+{
+  "csat": 82, "nps": 42, "retention": 78,
+  "market_share": 3.4, "brand_awareness": 68, "acquisition_rate": 1250,
+  "initiative_complete": 60, "milestone_timely": 76, "collab_score": 7.1,
+  "revenue_growth": 12, "cost_serve": 42, "profit_margin": 18
+}
+async function loadMetrics() {
+  try {
+    const res = await fetch('/api/metrics');
+    const data = await res.json();
+
+    const set = (id, value, status) => {
+      document.getElementById(id).textContent = value + (typeof value === 'number' ? '%' : '');
+      document.getElementById(id + '-status').textContent = status;
+    };
+
+    set('csat', data.csat, data.csat >= 85 ? 'On Track' : 'Needs Focus');
+    set('nps', data.nps, data.nps >= 50 ? 'Excellent' : 'Improving');
+    set('retention', data.retention, data.retention >= 80 ? 'Healthy' : 'Low');
+
+    set('market-share', data.market_share, data.market_share >= 5 ? 'Strong' : 'Moderate');
+    set('brand-awareness', data.brand_awareness, data.brand_awareness >= 75 ? 'Good' : 'Building');
+    set('acquisition-rate', data.acquisition_rate, data.acquisition_rate >= 1500 ? 'On Target' : 'Growing');
+
+    set('initiative-complete', data.initiative_complete, data.initiative_complete >= 80 ? 'On Track' : 'Behind');
+    set('milestone-timely', data.milestone_timely, data.milestone_timely >= 85 ? 'On Time' : 'Delayed');
+    set('collab-score', data.collab_score, data.collab_score >= 8.5 ? 'Strong' : 'Needs Work');
+
+    set('revenue-growth', data.revenue_growth, data.revenue_growth >= 15 ? 'Excellent' : 'Almost There');
+    set('cost-serve', data.cost_serve, data.cost_serve <= 40 ? 'Efficient' : 'High');
+    set('profit-margin', data.profit_margin, data.profit_margin >= 20 ? 'Healthy' : 'Improving');
+
+  } catch (err) {
+    console.error('Metrics load error:', err);
+  }
+}
+
+// Call on page load
+window.addEventListener('DOMContentLoaded', loadMetrics);
