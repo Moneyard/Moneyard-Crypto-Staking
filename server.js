@@ -244,3 +244,5 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+const learningRoutes = require('./moneyard-learning');
+app.use(learningRoutes);
