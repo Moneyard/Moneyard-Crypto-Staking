@@ -156,14 +156,23 @@
       border-radius: 10px;
     }
 
+    /* Green Learn more button */
     .learn-more-link {
       display: inline-block;
       margin-top: 15px;
       margin-bottom: 10px;
       font-weight: bold;
-      color: #007a5a;
-      text-decoration: underline;
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
       cursor: pointer;
+      text-align: center;
+    }
+
+    .learn-more-link:hover {
+      background-color: #218838;
     }
   </style>
 </head>
@@ -182,7 +191,7 @@
   <div id="lessonModal">
     <span onclick="closeLesson()">X</span>
     <div id="lessonContent"></div>
-    <div class="learn-more-link"><a href="#" target="_blank">[ Learn more ]</a></div>
+    <div class="learn-more-link" onclick="openLearnMore()">Learn More</div>
     <div id="audioControls">
       <button onclick="playAudio()">Play Audio</button>
       <button onclick="stopAudio()">Stop Audio</button>
@@ -319,6 +328,10 @@
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
       }
+    }
+
+    function openLearnMore() {
+      window.open('https://www.example.com/learn-more', '_blank');
     }
 
     window.speechSynthesis.onvoiceschanged = () => {};
