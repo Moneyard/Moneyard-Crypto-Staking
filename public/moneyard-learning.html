@@ -1,328 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Learning</title>
+  <meta charset="UTF-8">
+  <title>Learn & Earn</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #FFA94D !important;
-      color: #333;
-    }
-
-    header {
-      background-color: #007a5a;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .learn-container {
-      padding: 20px;
-    }
-
-    .learn-modules {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .learn-card {
-      flex: 1;
-      min-width: 250px;
-      background: white;
-      border-left: 5px solid #007a5a;
-      padding: 20px;
-      border-radius: 10px;
-      position: relative;
-      opacity: 1;
-      transition: transform 0.2s, opacity 0.4s ease;
-    }
-
-    .learn-card.locked {
-      pointer-events: none;
-      opacity: 0.5;
-    }
-
-    .learn-card:hover {
-      transform: scale(1.02);
-      background: #f0f0f0;
-    }
-
-    .learn-card button {
-      background-color: #007a5a;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
-    }
-
     #lessonModal {
       display: none;
       position: fixed;
-      top: 5%;
-      left: 5%;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
       width: 90%;
-      height: 90%;
+      max-width: 400px;
       background: white;
-      border: 1px solid #ccc;
+      border: 2px solid #007bff;
       padding: 20px;
-      overflow-y: auto;
-      z-index: 999;
-      border-radius: 8px;
-    }
-
-    #lessonModal span {
-      float: right;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .progress-bar {
-      background: #eee;
-      border-radius: 5px;
-      margin: 20px 0;
-      height: 20px;
-      width: 100%;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0;
-      background: #2ecc71;
-      border-radius: 5px;
-      transition: width 0.5s ease;
-    }
-
-    .quiz-section {
-      margin-top: 30px;
-    }
-
-    .quiz-question {
-      margin-bottom: 10px;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #2ecc71;
-      color: white;
-      padding: 5px 10px;
-      margin-top: 15px;
-      border-radius: 5px;
-      animation: fadeIn 1s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    #audioControls {
-      margin-top: 20px;
-    }
-
-    #audioControls button {
-      background-color: #1abc9c;
-      color: white;
-      border: none;
-      margin-right: 10px;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    #audioControls button:hover {
-      background-color: #16a085;
-    }
-
-    iframe {
-      width: 100%;
-      height: 315px;
-      margin: 20px 0;
-      border: none;
+      z-index: 9999;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       border-radius: 10px;
     }
-
-    .learn-more-link {
-      display: inline-block;
-      margin-top: 15px;
-      margin-bottom: 10px;
+    .modal-header {
       font-weight: bold;
-      color: #007a5a;
-      text-decoration: underline;
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+    .modal-body {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .modal-footer {
+      text-align: right;
+    }
+    .audio-controls button {
+      margin-right: 5px;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+    #learnBtn {
+      padding: 10px 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Moneyard Learning</h1>
-    <p>Smart Finance for the Future</p>
-  </header>
 
-  <div class="learn-container">
-    <h2>Choose a Module</h2>
-    <div class="learn-modules" id="modulesContainer"></div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<!-- Button to trigger modal -->
+<button id="learnBtn">Learn & Earn</button>
+
+<!-- Modal -->
+<div id="lessonModal">
+  <div class="modal-header">What is Cryptocurrency?</div>
+  <div class="modal-body" id="lessonContent">
+    Cryptocurrency is a digital form of money that operates on a decentralized network called blockchain.
+    It allows for peer-to-peer transactions without the need for banks. Popular cryptocurrencies include Bitcoin, Ethereum, and USDT. [ Learn more ]
   </div>
-
-  <div id="lessonModal">
-    <span onclick="closeLesson()">X</span>
-    <div id="lessonContent"></div>
-    <div class="learn-more-link"><a href="#" target="_blank">[ Learn more ]</a></div>
-    <div id="audioControls">
-      <button onclick="playAudio()">Play Audio</button>
-      <button onclick="stopAudio()">Stop Audio</button>
-    </div>
+  <div class="audio-controls">
+    <button onclick="playAudio()">▶️ Listen</button>
+    <button onclick="pauseAudio()">⏸️ Pause</button>
+    <button onclick="resumeAudio()">▶️ Resume</button>
+    <button onclick="stopAudio()">⏹️ Stop</button>
   </div>
+  <div class="modal-footer">
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
 
-  <script>
-    const modules = [
-      {
-        id: 'crypto',
-        title: 'Cryptocurrency Basics',
-        desc: 'Learn how crypto works and how to earn securely.',
-        content: `
-          <h2>Cryptocurrency Basics</h2>
-          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
-          <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
-          <ul>
-            <li>What is blockchain technology?</li>
-            <li>How do wallets and exchanges work?</li>
-            <li>How to stake and earn rewards safely</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
-            <button onclick="alert('Correct!')">Earning by holding crypto</button>
-            <button onclick="alert('Nope!')">Sending crypto fast</button>
-          </div>
-          <div class='badge'>Crypto Explorer</div>
-        `
-      },
-      {
-        id: 'savings',
-        title: 'High-Yield Savings',
-        desc: 'Grow your savings smartly and steadily.',
-        content: `
-          <h2>High-Yield Savings</h2>
-          <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
-          <iframe src="https://www.youtube.com/embed/H6du_qVj7PQ" allowfullscreen></iframe>
-          <ul>
-            <li>Daily vs monthly compounding</li>
-            <li>Choosing the best HYSA</li>
-            <li>Comparing traditional banks vs fintech</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What's a good reason to use HYSA?</div>
-            <button onclick="alert('Correct!')">High interest, low risk</button>
-            <button onclick="alert('Nope!')">To borrow loans</button>
-          </div>
-          <div class='badge'>Smart Saver</div>
-        `
-      },
-      {
-        id: 'investing',
-        title: 'Micro-Investing',
-        desc: 'Start investing with as little as $1.',
-        content: `
-          <h2>Micro-Investing</h2>
-          <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
-          <iframe src="https://www.youtube.com/embed/6uOkrJpbEB0" allowfullscreen></iframe>
-          <ul>
-            <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
-          </div>
-          <div class='badge'>Micro-Investor</div>
-        `
-      }
-    ];
+<script>
+  let utterance;
 
-    let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
-    let utterance;
+  document.getElementById("learnBtn").addEventListener("click", function() {
+    document.getElementById("lessonModal").style.display = "block";
+  });
 
-    function loadModules() {
-      const container = document.getElementById('modulesContainer');
-      container.innerHTML = '';
+  function closeModal() {
+    stopAudio();
+    document.getElementById("lessonModal").style.display = "none";
+  }
 
-      modules.forEach((mod, index) => {
-        const unlocked = index === 0 || completedModules.includes(modules[index - 1].id);
-        const isComplete = completedModules.includes(mod.id);
-        const card = document.createElement('div');
-        card.className = 'learn-card' + (unlocked ? '' : ' locked');
-        card.innerHTML = `
-          <h3>${mod.title}</h3>
-          <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
-        `;
-        container.appendChild(card);
-      });
+  function playAudio() {
+    const lessonText = document.getElementById("lessonContent").innerText;
 
-      updateProgress();
+    const cutoffText = lessonText.split('[ Learn more ]')[0].trim();
+
+    if (!cutoffText) {
+      alert("No lesson content to read.");
+      return;
     }
 
-    function startModule(id) {
-      const mod = modules.find(m => m.id === id);
-      document.getElementById('lessonContent').innerHTML = mod.content;
-      document.getElementById('lessonModal').style.display = 'block';
-      if (!completedModules.includes(id)) {
-        completedModules.push(id);
-        localStorage.setItem('completedModules', JSON.stringify(completedModules));
-        loadModules();
-      }
-    }
+    window.speechSynthesis.cancel();
 
-    function closeLesson() {
-      document.getElementById('lessonModal').style.display = 'none';
-      stopAudio();
-    }
+    utterance = new SpeechSynthesisUtterance(cutoffText);
+    utterance.lang = 'en-US';
 
-    function updateProgress() {
-      const percent = Math.floor((completedModules.length / modules.length) * 100);
-      document.getElementById('progressFill').style.width = percent + '%';
-    }
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
+    if (preferredVoice) utterance.voice = preferredVoice;
 
-    function playAudio() {
-      const text = document.getElementById("lessonContent").innerText;
-      if (!text.trim()) {
-        alert("No lesson content to read.");
-        return;
-      }
-      window.speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
-      if (preferredVoice) utterance.voice = preferredVoice;
-      window.speechSynthesis.speak(utterance);
-    }
+    window.speechSynthesis.speak(utterance);
+  }
 
-    function stopAudio() {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-      }
+  function pauseAudio() {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
     }
+  }
 
-    window.speechSynthesis.onvoiceschanged = () => {};
-    loadModules();
-  </script>
+  function resumeAudio() {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+  }
+
+  function stopAudio() {
+    window.speechSynthesis.cancel();
+  }
+</script>
+
 </body>
 </html>
