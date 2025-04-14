@@ -3,47 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cryptocurrency - Moneyard Learning</title>
+  <title>Cryptocurrency</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #FFA94D !important;
-      color: #333;
+      background: #f4f9f6;
+      padding: 20px;
     }
-    header {
-      background-color: #007a5a;
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2b7a78;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #2b7a78;
       color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .content {
-      padding: 20px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 15px;
+      cursor: pointer;
     }
     iframe {
       width: 100%;
-      height: 315px;
-      margin: 20px 0;
+      height: 250px;
       border: none;
-      border-radius: 10px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Cryptocurrency Basics</h1>
-    <p>Learn how crypto works and how to earn securely.</p>
-  </header>
 
-  <div class="content">
-    <h2>What is Cryptocurrency?</h2>
-    <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
-    <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
-    <ul>
-      <li>What is blockchain technology?</li>
-      <li>How do wallets and exchanges work?</li>
-      <li>How to stake and earn rewards safely</li>
-    </ul>
-  </div>
+<div class="container">
+  <h1>Cryptocurrency</h1>
+  <p><strong>Topic:</strong> Introduction to Cryptocurrency</p>
+  <p>
+    Cryptocurrency is a digital or virtual currency that uses cryptography for security. It operates independently of a central bank and is built on blockchain technology.
+  </p>
+  <ul>
+    <li>What is Bitcoin and Ethereum?</li>
+    <li>How blockchain works</li>
+    <li>Types of wallets: hot vs cold</li>
+    <li>How to buy and store crypto safely</li>
+    <li>Risks and benefits</li>
+    <li>Real-world use cases</li>
+  </ul>
+
+  <iframe src="https://www.youtube.com/embed/SFoxQxkgJeI" allowfullscreen></iframe>
+
+  <button onclick="window.open('https://www.investopedia.com/terms/c/cryptocurrency.asp', '_blank')">Learn More</button>
+
+  <button onclick="speakLesson()">▶ Play Audio</button>
+</div>
+
+<script>
+  function speakLesson() {
+    const msg = new SpeechSynthesisUtterance();
+    msg.text =
+      "Welcome to this session on Cryptocurrency. " +
+      "Cryptocurrency is a digital or virtual currency that uses cryptography for security and is powered by blockchain technology. " +
+      "In this lesson, you will learn about Bitcoin and Ethereum, how blockchain works, and the different types of wallets, such as hot and cold wallets. " +
+      "We'll also cover how to buy and store crypto safely, the risks involved, and real-world use cases of crypto. " +
+      "Ready to explore more? Learn More.";
+    msg.rate = 0.97;
+    window.speechSynthesis.speak(msg);
+  }
+</script>
+
 </body>
 </html>
