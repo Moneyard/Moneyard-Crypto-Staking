@@ -305,37 +305,37 @@
     }
 
     function updateProgress() {
-      const progress = (completedModules.length / modules.length) * 100;
-      document.getElementById('progressFill').style.width = progress + '%';
-    }
-
-    function openLearnMore() {
-      const currentModule = modules.find(mod => mod.id === 'crypto' && document.querySelector('.learn-card button').innerText === 'Start');
-      // Link to the pages for each specific topic
-      if (currentModule) {
-        window.location.href = 'cryptocurrency.html'; // Replace with your cryptocurrency page URL
-      } else if (modules[1]) {
-        window.location.href = 'yield-savings.html'; // Replace with your high-yield savings page URL
-      } else if (modules[2]) {
-        window.location.href = 'micro-investing.html'; // Replace with your micro-investing page URL
-      }
+      const percent = Math.floor((completedModules.length / modules.length) * 100);
+      document.getElementById('progressFill').style.width = percent + '%';
     }
 
     function playAudio() {
-      if (!utterance) {
-        utterance = new SpeechSynthesisUtterance('Welcome to this lesson!');
-        window.speechSynthesis.speak(utterance);
+      const text = document.getElementById("lessonContent").innerText + " Learn more";
+      if (!text.trim()) {
+        alert("No lesson content to read.");
+        return;
       }
+      window.speechSynthesis.cancel();
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
+      if (preferredVoice) utterance.voice = preferredVoice;
+      window.speechSynthesis.speak(utterance);
     }
 
     function stopAudio() {
-      if (utterance) {
-        window.speechSynthesis.cancel(utterance);
-        utterance = null;
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
       }
     }
 
-    window.onload = loadModules;
+    function openLearnMore() {
+      window.open('https://www.example.com/learn-more', '_blank');
+    }
+
+    window.speechSynthesis.onvoiceschanged = () => {};
+    loadModules();
   </script>
 </body>
 </html>
