@@ -244,21 +244,3 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-const textToSpeech = require('@google-cloud/text-to-speech');
-const fs = require('fs');
-const util = require('util');
-const client = new textToSpeech.TextToSpeechClient();
-
-async function generateAudioLesson(textContent) {
-  const request = {
-    input: { text: textContent },
-    voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
-    audioConfig: { audioEncoding: 'MP3' },
-  };
-
-  const [response] = await client.synthesizeSpeech(request);
-  const writeFile = util.promisify(fs.writeFile);
-  await writeFile('lessonAudio.mp3', response.audioContent, 'binary');
-  
-  return 'lessonAudio.mp3'; // Path to the generated audio file
-}
