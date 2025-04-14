@@ -1,123 +1,127 @@
+**cryptocurrency.html**
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cryptocurrency</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f9f6;
-      padding: 20px;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #2b7a78;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #2b7a78;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      margin-top: 15px;
-      cursor: pointer;
-    }
-    iframe {
-      width: 100%;
-      height: 250px;
-      border: none;
-      margin-top: 20px;
-    }
-  </style>
 </head>
 <body>
 
-<div class="container">
+  <!-- Progress Tracker -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
+      <span>Cryptocurrency</span>
+      <span>High-Yield Savings</span>
+      <span>Micro-Investing</span>
+    </div>
+    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+      <div id="progress-crypto" style="flex: 1; background: #00b894;"></div>
+      <div id="progress-hysa" style="flex: 1; background: #e0e0e0;"></div>
+      <div id="progress-micro" style="flex: 1; background: #e0e0e0;"></div>
+    </div>
+  </div>
+
   <h1>Cryptocurrency</h1>
-  <p><strong>Topic:</strong> Introduction to Cryptocurrency</p>
-  <p>
-    Cryptocurrency is a digital or virtual currency that uses cryptography for security. It operates independently of a central bank and is built on blockchain technology.
-  </p>
+  <p>Learn how digital currencies work, how to buy/sell safely, and what role they can play in your financial plan.</p>
+
+  <!-- Navigation -->
+  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+    <button style="visibility: hidden;">Previous</button>
+    <button onclick="window.location.href='high-yield-savings.html'">Next</button>
+  </div>
+
+</body>
+</html>
+```
+
+---
+
+**high-yield-savings.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High-Yield Savings</title>
+</head>
+<body>
+
+  <!-- Progress Tracker -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
+      <span>Cryptocurrency</span>
+      <span>High-Yield Savings</span>
+      <span>Micro-Investing</span>
+    </div>
+    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+      <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
+      <div id="progress-hysa" style="flex: 1; background: #00b894;"></div>
+      <div id="progress-micro" style="flex: 1; background: #e0e0e0;"></div>
+    </div>
+  </div>
+
+  <h1>High-Yield Savings</h1>
+  <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
   <ul>
-    <li>What is Bitcoin and Ethereum?</li>
-    <li>How blockchain works</li>
-    <li>Types of wallets: hot vs cold</li>
-    <li>How to buy and store crypto safely</li>
-    <li>Risks and benefits</li>
-    <li>Real-world use cases</li>
+    <li>Daily vs monthly compounding</li>
+    <li>Choosing the best HYSA</li>
+    <li>Comparing traditional banks vs fintech</li>
+    <li>What's a good reason to use HYSA?</li>
+    <li>High interest, low risk To borrow loans</li>
+    <li>Smart Saver</li>
   </ul>
 
-  <iframe src="https://www.youtube.com/embed/SFoxQxkgJeI" allowfullscreen></iframe>
-
-  <button onclick="window.open('https://www.investopedia.com/terms/c/cryptocurrency.asp', '_blank')">Learn More</button>
-
-  <button onclick="speakLesson()">▶ Play Audio</button>
-</div>
-
-<script>
-  function speakLesson() {
-    const msg = new SpeechSynthesisUtterance();
-    msg.text =
-      "Welcome to this session on Cryptocurrency. " +
-      "Cryptocurrency is a digital or virtual currency that uses cryptography for security and is powered by blockchain technology. " +
-      "In this lesson, you will learn about Bitcoin and Ethereum, how blockchain works, and the different types of wallets, such as hot and cold wallets. " +
-      "We'll also cover how to buy and store crypto safely, the risks involved, and real-world use cases of crypto. " +
-      "Ready to explore more? Learn More.";
-    msg.rate = 0.97;
-    window.speechSynthesis.speak(msg);
-  }
-
-<div style="margin-bottom: 20px;">
-  <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-    <span>Cryptocurrency</span>
-    <span>High-Yield Savings</span>
-    <span>Micro-Investing</span>
+  <!-- Navigation -->
+  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+    <button onclick="window.location.href='cryptocurrency.html'">Previous</button>
+    <button onclick="window.location.href='micro-investing.html'">Next</button>
   </div>
-  <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
-    <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
-    <div id="progress-hysa" style="flex: 1; background: #2b7a78;"></div>
-    <div id="progress-micro" style="flex: 1; background: #2b7a78;"></div>
+
+</body>
+</html>
+```
+
+---
+
+**micro-investing.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Micro-Investing</title>
+</head>
+<body>
+
+  <!-- Progress Tracker -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
+      <span>Cryptocurrency</span>
+      <span>High-Yield Savings</span>
+      <span>Micro-Investing</span>
+    </div>
+    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+      <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
+      <div id="progress-hysa" style="flex: 1; background: #2b7a78;"></div>
+      <div id="progress-micro" style="flex: 1; background: #00b894;"></div>
+    </div>
   </div>
-</div>
-<div style="display: flex; justify-content: space-between; margin-top: 40px;">
-  <button onclick="window.location.href='cryptocurrency.html'" style="visibility: hidden;">Previous</button>
-  <button onclick="window.location.href='high-yield-savings.html'">Next</button>
-</div>
-<!-- Progress (Top) -->
-[Insert top progress bar block above here]
 
-<!-- Page content -->
+  <h1>Micro-Investing</h1>
+  <p>Discover how investing small amounts frequently can build long-term wealth. Use spare change apps or low-fee investment platforms to get started today.</p>
 
-<!-- Navigation (Bottom) -->
-<div style="display: flex; justify-content: space-between; margin-top: 40px;">
-  <button style="visibility: hidden;">Previous</button>
-  <button onclick="window.location.href='high-yield-savings.html'">Next</button>
-</div>
+  <!-- Navigation -->
+  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+    <button onclick="window.location.href='high-yield-savings.html'">Previous</button>
+    <button style="visibility: hidden;">Next</button>
+  </div>
 
-<script>
-  const path = window.location.pathname;
-
-  if (path.includes('cryptocurrency')) {
-    document.getElementById('progress-crypto').style.background = '#00b894';
-    document.getElementById('progress-hysa').style.background = '#e0e0e0';
-    document.getElementById('progress-micro').style.background = '#e0e0e0';
-  } else if (path.includes('high-yield-savings')) {
-    document.getElementById('progress-crypto').style.background = '#2b7a78';
-    document.getElementById('progress-hysa').style.background = '#00b894';
-    document.getElementById('progress-micro').style.background = '#e0e0e0';
-  } else if (path.includes('micro-investing')) {
-    document.getElementById('progress-crypto').style.background = '#2b7a78';
-    document.getElementById('progress-hysa').style.background = '#2b7a78';
-    document.getElementById('progress-micro').style.background = '#00b894';
-  }
-</script>
 </body>
 </html>
