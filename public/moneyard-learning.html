@@ -8,23 +8,27 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #FFA94D;
+      background-color: #FFA94D !important;
       color: #333;
     }
+
     header {
       background-color: #007a5a;
       color: white;
       padding: 20px;
       text-align: center;
     }
+
     .learn-container {
       padding: 20px;
     }
+
     .learn-modules {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
+
     .learn-card {
       flex: 1;
       min-width: 250px;
@@ -33,37 +37,37 @@
       padding: 20px;
       border-radius: 10px;
       position: relative;
-      transition: transform 0.2s;
+      opacity: 1;
+      transition: transform 0.2s, opacity 0.4s ease;
     }
+
+    .learn-card.locked {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
     .learn-card:hover {
       transform: scale(1.02);
       background: #f0f0f0;
     }
+
     .learn-card button {
-      margin-top: 10px;
-      margin-right: 5px;
       background-color: #007a5a;
       color: white;
       border: none;
-      padding: 8px 12px;
+      padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
+      animation: pulse 2s infinite;
     }
-    .progress-bar {
-      background: #eee;
-      border-radius: 5px;
-      margin: 20px 0;
-      height: 20px;
-      width: 100%;
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
     }
-    .progress-fill {
-      height: 100%;
-      width: 0;
-      background: #2ecc71;
-      border-radius: 5px;
-      transition: width 0.5s ease;
-    }
+
     #lessonModal {
       display: none;
       position: fixed;
@@ -72,38 +76,93 @@
       width: 90%;
       height: 90%;
       background: white;
+      border: 1px solid #ccc;
       padding: 20px;
       overflow-y: auto;
       z-index: 999;
       border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
+
     #lessonModal span {
       float: right;
       cursor: pointer;
       font-weight: bold;
       font-size: 20px;
     }
-    .form-section {
-      margin-top: 30px;
-      padding: 20px;
-      background: #fff3e0;
-      border-radius: 10px;
-    }
-    .form-section input, .form-section textarea {
+
+    .progress-bar {
+      background: #eee;
+      border-radius: 5px;
+      margin: 20px 0;
+      height: 20px;
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
     }
-    .form-section button {
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: #2ecc71;
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    .quiz-section {
+      margin-top: 30px;
+    }
+
+    .quiz-question {
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #2ecc71;
+      color: white;
+      padding: 5px 10px;
+      margin-top: 15px;
+      border-radius: 5px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    #audioControls {
+      margin-top: 20px;
+    }
+
+    #audioControls button {
       background-color: #1abc9c;
       color: white;
-      padding: 10px 15px;
       border: none;
+      margin-right: 10px;
+      padding: 10px 20px;
       border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #audioControls button:hover {
+      background-color: #16a085;
+    }
+
+    iframe {
+      width: 100%;
+      height: 315px;
+      margin: 20px 0;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .learn-more-link {
+      display: inline-block;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #007a5a;
+      text-decoration: underline;
       cursor: pointer;
     }
   </style>
@@ -118,110 +177,152 @@
     <h2>Choose a Module</h2>
     <div class="learn-modules" id="modulesContainer"></div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-
-    <!-- Add New Module Form -->
-    <div class="form-section">
-      <h3>Add New Module</h3>
-      <input type="text" id="newId" placeholder="Module ID">
-      <input type="text" id="newTitle" placeholder="Module Title">
-      <input type="text" id="newDesc" placeholder="Short Description">
-      <textarea id="newContent" placeholder="Lesson HTML Content" rows="5"></textarea>
-      <button onclick="addModule()">Add Module</button>
-    </div>
   </div>
 
   <div id="lessonModal">
     <span onclick="closeLesson()">X</span>
     <div id="lessonContent"></div>
+    <div class="learn-more-link"><a href="#" target="_blank">[ Learn more ]</a></div>
+    <div id="audioControls">
+      <button onclick="playAudio()">Play Audio</button>
+      <button onclick="stopAudio()">Stop Audio</button>
+    </div>
   </div>
 
   <script>
-    let modules = [
+    const modules = [
       {
         id: 'crypto',
         title: 'Cryptocurrency Basics',
         desc: 'Learn how crypto works and how to earn securely.',
-        content: `<h2>Cryptocurrency Basics</h2><p>Cryptocurrency is a digital...</p>`
+        content: `
+          <h2>Cryptocurrency Basics</h2>
+          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
+          <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
+          <ul>
+            <li>What is blockchain technology?</li>
+            <li>How do wallets and exchanges work?</li>
+            <li>How to stake and earn rewards safely</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
+            <button onclick="alert('Correct!')">Earning by holding crypto</button>
+            <button onclick="alert('Nope!')">Sending crypto fast</button>
+          </div>
+          <div class='badge'>Crypto Explorer</div>
+        `
       },
       {
         id: 'savings',
         title: 'High-Yield Savings',
         desc: 'Grow your savings smartly and steadily.',
-        content: `<h2>High-Yield Savings</h2><p>Savings is the act...</p>`
+        content: `
+          <h2>High-Yield Savings</h2>
+          <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
+          <iframe src="https://www.youtube.com/embed/H6du_qVj7PQ" allowfullscreen></iframe>
+          <ul>
+            <li>Daily vs monthly compounding</li>
+            <li>Choosing the best HYSA</li>
+            <li>Comparing traditional banks vs fintech</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'>What's a good reason to use HYSA?</div>
+            <button onclick="alert('Correct!')">High interest, low risk</button>
+            <button onclick="alert('Nope!')">To borrow loans</button>
+          </div>
+          <div class='badge'>Smart Saver</div>
+        `
+      },
+      {
+        id: 'investing',
+        title: 'Micro-Investing',
+        desc: 'Start investing with as little as $1.',
+        content: `
+          <h2>Micro-Investing</h2>
+          <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
+          <iframe src="https://www.youtube.com/embed/6uOkrJpbEB0" allowfullscreen></iframe>
+          <ul>
+            <li>Invest in ETFs, stocks, round-ups</li>
+            <li>Dollar-cost averaging</li>
+            <li>How to diversify a small portfolio</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'>What does DCA stand for?</div>
+            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
+            <button onclick="alert('Nope!')">Daily Crypto Account</button>
+          </div>
+          <div class='badge'>Micro-Investor</div>
+        `
       }
     ];
 
-    const modulesContainer = document.getElementById('modulesContainer');
+    let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
+    let utterance;
 
-    function renderModules() {
-      modulesContainer.innerHTML = '';
-      modules.forEach(module => {
+    function loadModules() {
+      const container = document.getElementById('modulesContainer');
+      container.innerHTML = '';
+
+      modules.forEach((mod, index) => {
+        const unlocked = index === 0 || completedModules.includes(modules[index - 1].id);
+        const isComplete = completedModules.includes(mod.id);
         const card = document.createElement('div');
-        card.className = 'learn-card';
+        card.className = 'learn-card' + (unlocked ? '' : ' locked');
         card.innerHTML = `
-          <h3>${module.title}</h3>
-          <p>${module.desc}</p>
-          <button onclick="openLesson('${module.id}')">Start Lesson</button>
-          <button onclick="editModule('${module.id}')">Edit</button>
+          <h3>${mod.title}</h3>
+          <p>${mod.desc}</p>
+          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
         `;
-        modulesContainer.appendChild(card);
+        container.appendChild(card);
       });
+
+      updateProgress();
     }
 
-    function openLesson(id) {
-      const m = modules.find(x => x.id === id);
-      document.getElementById('lessonContent').innerHTML = m.content;
+    function startModule(id) {
+      const mod = modules.find(m => m.id === id);
+      document.getElementById('lessonContent').innerHTML = mod.content;
       document.getElementById('lessonModal').style.display = 'block';
+      if (!completedModules.includes(id)) {
+        completedModules.push(id);
+        localStorage.setItem('completedModules', JSON.stringify(completedModules));
+        loadModules();
+      }
     }
 
     function closeLesson() {
       document.getElementById('lessonModal').style.display = 'none';
+      stopAudio();
     }
 
-    function addModule() {
-      const id = document.getElementById('newId').value.trim();
-      const title = document.getElementById('newTitle').value.trim();
-      const desc = document.getElementById('newDesc').value.trim();
-      const content = document.getElementById('newContent').value.trim();
-
-      if (!id || !title || !desc || !content) return alert('Fill all fields!');
-      if (modules.some(m => m.id === id)) return alert('Module ID must be unique.');
-
-      modules.push({ id, title, desc, content });
-      renderModules();
-
-      // Clear inputs
-      document.getElementById('newId').value = '';
-      document.getElementById('newTitle').value = '';
-      document.getElementById('newDesc').value = '';
-      document.getElementById('newContent').value = '';
+    function updateProgress() {
+      const percent = Math.floor((completedModules.length / modules.length) * 100);
+      document.getElementById('progressFill').style.width = percent + '%';
     }
 
-    function editModule(id) {
-      const module = modules.find(m => m.id === id);
-      const formHTML = `
-        <h3>Edit Module: ${module.title}</h3>
-        <input id="editTitle" value="${module.title}" />
-        <input id="editDesc" value="${module.desc}" />
-        <textarea id="editContent" rows="6">${module.content}</textarea>
-        <br/>
-        <button onclick="saveModule('${id}')">Save</button>
-      `;
-      document.getElementById('lessonContent').innerHTML = formHTML;
-      document.getElementById('lessonModal').style.display = 'block';
+    function playAudio() {
+      const text = document.getElementById("lessonContent").innerText;
+      if (!text.trim()) {
+        alert("No lesson content to read.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
+      if (preferredVoice) utterance.voice = preferredVoice;
+      window.speechSynthesis.speak(utterance);
     }
 
-    function saveModule(id) {
-      const module = modules.find(m => m.id === id);
-      module.title = document.getElementById('editTitle').value;
-      module.desc = document.getElementById('editDesc').value;
-      module.content = document.getElementById('editContent').value;
-
-      closeLesson();
-      renderModules();
+    function stopAudio() {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
     }
 
-    renderModules();
+    window.speechSynthesis.onvoiceschanged = () => {};
+    loadModules();
   </script>
 </body>
 </html>
