@@ -552,63 +552,60 @@ button:hover {
 .about-content ul li {
   margin-bottom: 8px;
 }
-.yield-section {
-  padding: 30px 20px;
-  background: #f8f8f8;
-  border-radius: 16px;
-  margin-top: 40px;
+.about-btn {
+  background-color: #ffa500;
+  color: #0a4e3a;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
 }
 
-.yield-main-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 25px;
-  color: #0a4e3a;
-  text-align: center;
+.about-content {
+  margin-top: 20px;
+}
+
+.yield-section {
+  margin-top: 20px;
+  background: #f8f8f8;
+  border-radius: 16px;
+  padding: 20px;
 }
 
 .yield-item {
-  background: #ffffff;
+  background: #fff;
   border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  padding: 16px;
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 .yield-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   cursor: pointer;
-  position: relative;
 }
 
 .yield-icon {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  object-fit: cover;
   margin-right: 12px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+  border: 1px solid #ccc;
+  background: #fff;
 }
 
 .yield-title {
-  font-weight: bold;
+  font-size: 0.9em;
   color: #0a4e3a;
-  font-size: 0.95em;
+  font-weight: 600;
 }
 
 .yield-toggle {
-  font-size: 1.8em;
-  user-select: none;
+  font-size: 1.5em;
   color: #0a4e3a;
+  margin-left: 12px;
 }
-
-.yield-content {
-  margin-top: 12px;
-  color: #444;
-  font-size: 0.93em;
-  line-height: 1.5em;
-}
-
