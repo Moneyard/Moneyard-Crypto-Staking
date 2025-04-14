@@ -264,3 +264,65 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+// === Create Deposits Table if Not Exists ===
+db.run(`
+  CREATE TABLE IF NOT EXISTS deposits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId TEXT NOT NULL,
+    amount REAL NOT NULL,
+    network TEXT NOT NULL,
+    txId TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+// === Ensure balance column exists in users table ===
+db.run(`
+  CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    balance REAL DEFAULT 0
+  )
+`);
+
+// === Deposit Route ===
+app.post('/api/deposit', (req, res) => {
+  const { userId, amount, network, txId } = req.body;
+
+  if (!userId || !amount || !network || !txId) {
+    return res.json({ success: false, error: 'All fields are required.' });
+  }
+
+  const depositStmt = `INSERT INTO deposits (userId, amount, network, txId) VALUES (?, ?, ?, ?)`;
+  const updateBalanceStmt = `UPDATE users SET balance = balance + ? WHERE id = ?`;
+
+  db.run(depositStmt, [userId, amount, network, txId], function (err) {
+    if (err) {
+      console.error(err);
+      return res.json({ success: false, error: 'Failed to add deposit.' });
+    }
+
+    db.run(updateBalanceStmt, [amount, userId], function (err2) {
+      if (err2) {
+        console.error(err2);
+        return res.json({ success: false, error: 'Deposit added but balance update failed.' });
+      }
+
+      res.json({ success: true });
+    });
+  });
+});
+
+// === Get User Balance ===
+app.get('/api/user-balance', (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) return res.json({ success: false, error: 'Missing user ID.' });
+
+  db.get(`SELECT balance FROM users WHERE id = ?`, [userId], (err, row) => {
+    if (err || !row) {
+      return res.json({ success: false, error: 'User not found.' });
+    }
+    res.json({ success: true, balance: row.balance });
+  });
+});
