@@ -388,3 +388,16 @@ document.getElementById("loginBtn").addEventListener("click", async (e) => {
     console.error(err);
   }
 });
+document.querySelectorAll('.module-toggle').forEach(button => {
+  button.addEventListener('click', () => {
+    const content = button.nextElementSibling;
+
+    // Close all other modules
+    document.querySelectorAll('.module-content').forEach(mod => {
+      if (mod !== content) mod.style.display = 'none';
+    });
+
+    // Toggle the clicked one
+    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+  });
+});
