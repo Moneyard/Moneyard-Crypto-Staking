@@ -656,3 +656,12 @@ button:hover {
   transform: translateX(5px);
   box-shadow: 0 6px 16px rgba(255, 152, 0, 0.5);
 }
+.footer-btn:nth-child(3) {
+  background-color: #ffc107;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+}
+.footer-btn:nth-child(3):hover {
+  background-color: #ff9800;
+}
