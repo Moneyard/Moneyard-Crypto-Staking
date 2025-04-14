@@ -243,6 +243,28 @@
           </div>
           <div class='badge'>Smart Saver</div>
         `
+      },
+      {
+        id: 'investing',
+        title: 'Micro-Investing',
+        desc: 'Learn the fundamentals of micro-investing for smart wealth growth.',
+        link: 'micro-investing.html',
+        content: `
+          <h2>Micro-Investing</h2>
+          <p>Micro-investing allows individuals to invest small amounts of money regularly. It makes investing accessible, even for those with limited funds. Start with spare change or small amounts to build wealth gradually over time.</p>
+          <iframe src="https://www.youtube.com/embed/CrtP91S0TAI" allowfullscreen></iframe>
+          <ul>
+            <li>How does micro-investing work?</li>
+            <li>Benefits of micro-investing</li>
+            <li>Choosing the right platforms for micro-investing</li>
+          </ul>
+          <div class='quiz-section'>
+            <div class='quiz-question'>What is the main benefit of micro-investing?</div>
+            <button onclick="alert('Correct!')">Investing small amounts regularly</button>
+            <button onclick="alert('Nope!')">Large, one-time investments</button>
+          </div>
+          <div class='badge'>Wealth Builder</div>
+        `
       }
     ];
 
@@ -255,25 +277,27 @@
       container.innerHTML = '';
 
       modules.forEach((mod, index) => {
-        const unlocked = index === 0 || completedModules.includes(modules[index - 1].id);
-        const isComplete = completedModules.includes(mod.id);
+        const unlocked = index === 0 || completedModules.includes(mod.id);
         const card = document.createElement('div');
-        card.className = 'learn-card' + (unlocked ? '' : ' locked');
+        card.classList.add('learn-card');
+        if (!unlocked) card.classList.add('locked');
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="openLesson('${mod.id}')">${unlocked ? 'Start Lesson' : 'Locked'}</button>
+          <button onclick="startLesson('${mod.id}')">${unlocked ? 'Start Lesson' : 'Unlock Lesson'}</button>
         `;
         container.appendChild(card);
       });
+
+      updateProgress();
     }
 
-    function openLesson(moduleId) {
+    function startLesson(moduleId) {
       currentModule = modules.find(mod => mod.id === moduleId);
       document.getElementById('lessonContent').innerHTML = currentModule.content;
       document.getElementById('learnMoreLink').href = currentModule.link;
       document.getElementById('lessonModal').style.display = 'block';
-      
+
       // Start speech
       speakContent(currentModule.title, currentModule.desc, currentModule.content);
     }
