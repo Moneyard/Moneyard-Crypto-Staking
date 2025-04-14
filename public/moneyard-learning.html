@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Learning</title>
+  <title>Moneyard Learning - Podcasts & Videos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #FFA94D !important;
+      background-color: #FFA94D;
       color: #333;
     }
 
@@ -19,66 +19,56 @@
       text-align: center;
     }
 
-    .learn-container {
+    .module-container {
       padding: 20px;
     }
 
-    .learn-modules {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+    .module {
+      margin-bottom: 30px;
     }
 
-    .learn-card {
-      flex: 1;
-      min-width: 250px;
-      background: white;
-      border-left: 5px solid #007a5a;
-      padding: 20px;
+    /* Styling the video player */
+    video {
+      width: 100%;
+      height: auto;
       border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    /* Play/pause button for audio */
+    .play-pause-btn {
+      background-color: #2ecc71;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: background-color 0.3s;
     }
 
-    .learn-card:hover {
-      transform: scale(1.02);
-      background: #f0f0f0;
-    }
-
-    #lessonModal {
-      display: none;
-      position: fixed;
-      top: 10%;
-      left: 10%;
-      width: 80%;
-      height: 80%;
-      background: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      overflow-y: auto;
-      z-index: 999;
-    }
-
-    #lessonModal span {
-      float: right;
-      cursor: pointer;
-      font-weight: bold;
+    .play-pause-btn:hover {
+      background-color: #27ae60;
     }
 
     .progress-bar {
-      background: #eee;
+      background-color: #ddd;
       border-radius: 5px;
-      margin: 20px 0;
-      height: 20px;
+      height: 10px;
+      margin-top: 10px;
       width: 100%;
     }
 
     .progress-fill {
+      background-color: #2ecc71;
       height: 100%;
       width: 0;
-      background: #2ecc71;
       border-radius: 5px;
-      transition: width 0.5s ease;
+      transition: width 0.3s ease;
     }
 
     .quiz-section {
@@ -88,204 +78,115 @@
     .quiz-question {
       margin-bottom: 10px;
     }
-
-    .badge {
-      display: inline-block;
-      background: #2ecc71;
-      color: white;
-      padding: 5px 10px;
-      margin-top: 15px;
-      border-radius: 5px;
-    }
-
-    iframe {
-      width: 100%;
-      height: 250px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 8px;
-    }
   </style>
 </head>
 <body>
   <header>
     <h1>Moneyard Learning</h1>
-    <p>Smart Finance for the Future</p>
+    <p>Smart Finance Podcast - Learn and Earn</p>
   </header>
 
-  <div class="learn-container">
-    <h2>Choose a Module</h2>
-    <div class="learn-modules">
-      <div class="learn-card">
-        <h3>Cryptocurrency Basics</h3>
-        <p>Learn how crypto works and how to earn securely.</p>
-        <button id="startButtonCrypto" onclick="startModule('crypto')">Start</button>
+  <div class="module-container">
+    <div class="module">
+      <h2>Module: Cryptocurrency Basics</h2>
+      <!-- Video -->
+      <video id="cryptoVideo" controls>
+        <source src="https://www.example.com/crypto-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Audio Player (Podcast) -->
+      <audio id="cryptoAudio" controls>
+        <source src="https://www.example.com/crypto-audio.mp3" type="audio/mp3">
+        Your browser does not support the audio tag.
+      </audio>
+
+      <!-- Play/Pause button for audio -->
+      <button class="play-pause-btn" onclick="toggleAudio('crypto')">Play/Pause Podcast</button>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
       </div>
-      <div class="learn-card">
-        <h3>High-Yield Savings</h3>
-        <p>Grow your savings smartly and steadily.</p>
-        <button id="startButtonSavings" onclick="startModule('savings')">Start</button>
-      </div>
-      <div class="learn-card">
-        <h3>Micro-Investing</h3>
-        <p>Start investing with as little as $1.</p>
-        <button id="startButtonInvesting" onclick="startModule('investing')">Start</button>
-      </div>
-      <div class="learn-card">
-        <h3>Financial Security</h3>
-        <p>Protect your money and data from threats.</p>
-        <button id="startButtonSecurity" onclick="startModule('security')">Start</button>
-      </div>
-      <div class="learn-card">
-        <h3>Budgeting</h3>
-        <p>Learn to manage your money and spending habits.</p>
-        <button id="startButtonBudgeting" onclick="startModule('budgeting')">Start</button>
-      </div>
-      <div class="learn-card">
-        <h3>Credit Score</h3>
-        <p>Understand, build and improve your credit score.</p>
-        <button id="startButtonCredit" onclick="startModule('credit')">Start</button>
+
+      <!-- Interactive Quiz Section -->
+      <div class="quiz-section">
+        <div class="quiz-question"><strong>1:</strong> What is the main benefit of staking crypto?</div>
+        <button onclick="alert('Correct!')">Earn passive rewards</button>
+        <button onclick="alert('Nope!')">Buy more crypto</button>
       </div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  </div>
 
-  <div id="lessonModal">
-    <span onclick="closeLesson()">X</span>
-    <div id="lessonContent"></div>
+    <div class="module">
+      <h2>Module: High-Yield Savings</h2>
+      <!-- Video -->
+      <video id="savingsVideo" controls>
+        <source src="https://www.example.com/savings-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Audio Player (Podcast) -->
+      <audio id="savingsAudio" controls>
+        <source src="https://www.example.com/savings-audio.mp3" type="audio/mp3">
+        Your browser does not support the audio tag.
+      </audio>
+
+      <!-- Play/Pause button for audio -->
+      <button class="play-pause-btn" onclick="toggleAudio('savings')">Play/Pause Podcast</button>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <!-- Interactive Quiz Section -->
+      <div class="quiz-section">
+        <div class="quiz-question"><strong>1:</strong> What's the primary benefit of a high-yield savings account?</div>
+        <button onclick="alert('Correct!')">Earn higher interest than normal savings</button>
+        <button onclick="alert('Nope!')">Keep money in a checking account</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    let completedModules = [];
-
-    function startModule(module) {
-      // Show a simple notification that the module has started
-      alert('Module has started! Redirecting to lesson...');
-
-      // Open the lesson directly in the modal
-      openLesson(module);
-    }
-
-    function openLesson(module) {
-      if (!completedModules.includes(module)) {
-        completedModules.push(module);
-        updateProgress();
+    let cryptoAudio = document.getElementById('cryptoAudio');
+    let savingsAudio = document.getElementById('savingsAudio');
+    let progressFill = document.getElementById('progressFill');
+    
+    function toggleAudio(module) {
+      if (module === 'crypto') {
+        // Toggle play/pause for crypto audio and video
+        if (cryptoAudio.paused) {
+          cryptoAudio.play();
+          savingsAudio.pause(); // Pause savings audio if playing
+        } else {
+          cryptoAudio.pause();
+        }
+      } else if (module === 'savings') {
+        // Toggle play/pause for savings audio and video
+        if (savingsAudio.paused) {
+          savingsAudio.play();
+          cryptoAudio.pause(); // Pause crypto audio if playing
+        } else {
+          savingsAudio.pause();
+        }
       }
-
-      const content = {
-        crypto: `
-          <h2>Cryptocurrency Basics</h2>
-          <p>Learn about decentralized money, wallets, and staking rewards.</p>
-          <iframe src="https://www.youtube.com/embed/2tYhkkmMQhA" allowfullscreen></iframe>
-          <ul>
-            <li>What is blockchain technology?</li>
-            <li>How do wallets and exchanges work?</li>
-            <li>How to stake and earn rewards safely</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
-            <button onclick="alert('Correct!')">Earning by holding crypto</button>
-            <button onclick="alert('Nope!')">Sending crypto fast</button>
-            <div class='quiz-question'><strong>2:</strong> What is a crypto wallet?</div>
-            <button onclick="alert('Correct!')">Stores your private keys</button>
-            <button onclick="alert('Nope!')">A bank account</button>
-          </div>
-          <div class='badge'>Crypto Explorer</div>
-        `,
-        savings: `
-          <h2>High-Yield Savings</h2>
-          <p>See how to get higher interest on your money.</p>
-          <iframe src="https://www.youtube.com/embed/KDZzlxBHo4E" allowfullscreen></iframe>
-          <ul>
-            <li>Daily vs monthly compounding</li>
-            <li>Choosing the best HYSA</li>
-            <li>Comparing traditional banks vs fintech</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What's a good reason to use HYSA?</div>
-            <button onclick="alert('Correct!')">High interest, low risk</button>
-            <button onclick="alert('Nope!')">To borrow loans</button>
-          </div>
-          <div class='badge'>Smart Saver</div>
-        `,
-        investing: `
-          <h2>Micro-Investing</h2>
-          <p>Grow your wealth with small investments over time.</p>
-          <iframe src="https://www.youtube.com/embed/JgqyVZ4r54M" allowfullscreen></iframe>
-          <ul>
-            <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
-          </div>
-          <div class='badge'>Micro-Investor</div>
-        `,
-        security: `
-          <h2>Financial Security</h2>
-          <p>Stay safe from phishing, fraud and fake links.</p>
-          <iframe src="https://www.youtube.com/embed/l5S6N4Kc3l4" allowfullscreen></iframe>
-          <ul>
-            <li>How 2FA and biometrics protect you</li>
-            <li>Recognizing suspicious activity</li>
-            <li>Best password managers to use</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>Which is safer?</div>
-            <button onclick="alert('Correct!')">Use 2FA and password manager</button>
-            <button onclick="alert('Nope!')">Write passwords on paper</button>
-          </div>
-          <div class='badge'>Security Pro</div>
-        `,
-        budgeting: `
-          <h2>Budgeting</h2>
-          <p>Take control of your spending and build a plan.</p>
-          <iframe src="https://www.youtube.com/embed/kL6UDFP9YH4" allowfullscreen></iframe>
-          <ul>
-            <li>50/30/20 Rule for budgeting</li>
-            <li>Tracking your expenses</li>
-            <li>Cutting unnecessary costs</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What is the 50/30/20 rule?</div>
-            <button onclick="alert('Correct!')">50% Needs, 30% Wants, 20% Savings</button>
-            <button onclick="alert('Nope!')">50% Savings, 30% Needs, 20% Wants</button>
-          </div>
-          <div class='badge'>Budgeter</div>
-        `,
-        credit: `
-          <h2>Credit Score</h2>
-          <p>Understand and improve your credit score.</p>
-          <iframe src="https://www.youtube.com/embed/zkN1z2aI4Bo" allowfullscreen></iframe>
-          <ul>
-            <li>What affects your credit score?</li>
-            <li>How to improve credit utilization</li>
-            <li>Impact of late payments</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What is the most important factor for a good score?</div>
-            <button onclick="alert('Correct!')">Payment history</button>
-            <button onclick="alert('Nope!')">Length of credit history</button>
-          </div>
-          <div class='badge'>Credit Guru</div>
-        `
-      };
-
-      document.getElementById("lessonContent").innerHTML = content[module];
-      document.getElementById("lessonModal").style.display = "block";
     }
 
-    function closeLesson() {
-      document.getElementById("lessonModal").style.display = "none";
-    }
+    // Update the progress bar based on the audio time
+    setInterval(() => {
+      if (!cryptoAudio.paused) {
+        let progress = (cryptoAudio.currentTime / cryptoAudio.duration) * 100;
+        progressFill.style.width = progress + '%';
+      }
+    }, 1000);
 
-    function updateProgress() {
-      const progress = (completedModules.length / 6) * 100;
-      document.getElementById("progressFill").style.width = `${progress}%`;
-    }
+    setInterval(() => {
+      if (!savingsAudio.paused) {
+        let progress = (savingsAudio.currentTime / savingsAudio.duration) * 100;
+        progressFill.style.width = progress + '%';
+      }
+    }, 1000);
   </script>
 </body>
 </html>
