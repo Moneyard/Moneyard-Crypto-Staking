@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto Coin Details</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .coin-container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #00695c;
+    }
+    #chart {
+      margin-top: 30px;
+    }
+    .stats {
+      margin-top: 20px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<div class="coin-container">
+  <h2 id="coinTitle">Loading...</h2>
+  <canvas id="chart" height="100"></canvas>
+  <div class="stats" id="coinStats"></div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const coinId = urlParams.get('id');
+
+  async function loadCoinData() {
+    const coinRes = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
+    const coin = await coinRes.json();
+
+    const chartRes = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7`);
+    const chartData = await chartRes.json();
+
+    // Set title
+    document.getElementById("coinTitle").innerText = `${coin.name} (${coin.symbol.toUpperCase()})`;
+
+    // Stats
+    document.getElementById("coinStats").innerHTML = `
+      <strong>Current Price:</strong> $${coin.market_data.current_price.usd.toLocaleString()}<br>
+      <strong>Market Cap:</strong> $${coin.market_data.market_cap.usd.toLocaleString()}<br>
+      <strong>24h Change:</strong> ${coin.market_data.price_change_percentage_24h.toFixed(2)}%
+    `;
+
+    // Chart
+    const labels = chartData.prices.map(p => new Date(p[0]).toLocaleDateString());
+    const prices = chartData.prices.map(p => p[1]);
+
+    new Chart(document.getElementById("chart"), {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `${coin.name} Price (7d)`,
+          data: prices,
+          borderColor: "#4caf50",
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { display: true },
+          y: { beginAtZero: false }
+        }
+      }
+    });
+  }
+
+  loadCoinData();
+</script>
+
+</body>
+</html>
