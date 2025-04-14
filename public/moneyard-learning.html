@@ -155,6 +155,38 @@
       border: none;
       border-radius: 10px;
     }
+
+    .payment-section {
+      margin-top: 50px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .payment-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .payment-button {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .payment-button a {
+      text-decoration: none;
+      background-color: #007a5a;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 5px;
+      margin: 5px;
+      font-size: 16px;
+    }
+
+    .payment-button a:hover {
+      background-color: #005d47;
+    }
   </style>
 </head>
 <body>
@@ -175,6 +207,15 @@
     <div id="audioControls">
       <button onclick="playAudio()">Play Audio</button>
       <button onclick="stopAudio()">Stop Audio</button>
+    </div>
+  </div>
+
+  <div class="payment-section">
+    <h2>Make a Payment</h2>
+    <p>Choose your preferred payment network:</p>
+    <div class="payment-button">
+      <a href="https://www.tronscan.org/#/address/TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f" target="_blank">Tron (TRC20)</a>
+      <a href="https://bscscan.com/address/0x2837db956aba84eb2670d00aeea5c0d8a9e20a01" target="_blank">BNB Smart Chain (BEP20)</a>
     </div>
   </div>
 
@@ -281,36 +322,24 @@
 
     function closeLesson() {
       document.getElementById('lessonModal').style.display = 'none';
-      stopAudio();
     }
 
     function updateProgress() {
-      const percent = Math.floor((completedModules.length / modules.length) * 100);
-      document.getElementById('progressFill').style.width = percent + '%';
+      const progress = (completedModules.length / modules.length) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
     }
 
     function playAudio() {
-      const text = document.getElementById("lessonContent").innerText;
-      if (!text.trim()) {
-        alert("No lesson content to read.");
-        return;
+      if (!utterance) {
+        utterance = new SpeechSynthesisUtterance("Welcome to the Moneyard learning section");
       }
-      window.speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
-      if (preferredVoice) utterance.voice = preferredVoice;
-      window.speechSynthesis.speak(utterance);
+      speechSynthesis.speak(utterance);
     }
 
     function stopAudio() {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-      }
+      speechSynthesis.cancel();
     }
 
-    window.speechSynthesis.onvoiceschanged = () => {};
     loadModules();
   </script>
 </body>
