@@ -127,14 +127,23 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    iframe, audio {
-      width: 100%;
-      margin-top: 15px;
-      border-radius: 8px;
+    #audioControls {
+      margin-top: 20px;
     }
 
-    audio {
-      background: #eee;
+    #audioControls button {
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      margin-right: 10px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #audioControls button:hover {
+      background-color: #16a085;
     }
   </style>
 </head>
@@ -153,6 +162,10 @@
   <div id="lessonModal">
     <span onclick="closeLesson()">X</span>
     <div id="lessonContent"></div>
+    <div id="audioControls">
+      <button onclick="playAudio()">Play Audio</button>
+      <button onclick="stopAudio()">Stop Audio</button>
+    </div>
   </div>
 
   <script>
@@ -161,9 +174,9 @@
         id: 'crypto',
         title: 'Cryptocurrency Basics',
         desc: 'Learn how crypto works and how to earn securely.',
-        video: 'https://www.youtube.com/embed/2tYhkkmMQhA',
-        podcast: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
         content: `
+          <h2>Cryptocurrency Basics</h2>
+          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
           <ul>
             <li>What is blockchain technology?</li>
             <li>How do wallets and exchanges work?</li>
@@ -181,9 +194,9 @@
         id: 'savings',
         title: 'High-Yield Savings',
         desc: 'Grow your savings smartly and steadily.',
-        video: 'https://www.youtube.com/embed/KDZzlxBHo4E',
-        podcast: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
         content: `
+          <h2>High-Yield Savings</h2>
+          <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
           <ul>
             <li>Daily vs monthly compounding</li>
             <li>Choosing the best HYSA</li>
@@ -201,9 +214,9 @@
         id: 'investing',
         title: 'Micro-Investing',
         desc: 'Start investing with as little as $1.',
-        video: 'https://www.youtube.com/embed/JgqyVZ4r54M',
-        podcast: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
         content: `
+          <h2>Micro-Investing</h2>
+          <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
           <ul>
             <li>Invest in ETFs, stocks, round-ups</li>
             <li>Dollar-cost averaging</li>
@@ -220,6 +233,7 @@
     ];
 
     let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
+    let utterance;
 
     function loadModules() {
       const container = document.getElementById('modulesContainer');
@@ -242,38 +256,53 @@
     }
 
     function startModule(id) {
-      const module = modules.find(m => m.id === id);
-      alert('Module started: ' + module.title);
-
+      const mod = modules.find(m => m.id === id);
+      document.getElementById('lessonContent').innerHTML = mod.content;
+      document.getElementById('lessonModal').style.display = 'block';
       if (!completedModules.includes(id)) {
         completedModules.push(id);
         localStorage.setItem('completedModules', JSON.stringify(completedModules));
+        loadModules();
       }
-
-      const lessonHTML = `
-        <h2>${module.title}</h2>
-        <p>${module.desc}</p>
-        <iframe src="${module.video}" allowfullscreen></iframe>
-        <audio controls src="${module.podcast}"></audio>
-        ${module.content}
-      `;
-
-      document.getElementById("lessonContent").innerHTML = lessonHTML;
-      document.getElementById("lessonModal").style.display = "block";
-
-      loadModules();
     }
 
     function closeLesson() {
-      document.getElementById("lessonModal").style.display = "none";
+      document.getElementById('lessonModal').style.display = 'none';
+      stopAudio();
     }
 
     function updateProgress() {
-      const progress = (completedModules.length / modules.length) * 100;
-      document.getElementById("progressFill").style.width = `${progress}%`;
+      const percent = Math.floor((completedModules.length / modules.length) * 100);
+      document.getElementById('progressFill').style.width = percent + '%';
     }
 
-    window.onload = loadModules;
+    function playAudio() {
+      const text = document.getElementById("lessonContent").innerText;
+
+      if (!text.trim()) {
+        alert("No lesson content to read.");
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => v.name.includes("Google")) || voices[0];
+      if (preferredVoice) utterance.voice = preferredVoice;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function stopAudio() {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    window.speechSynthesis.onvoiceschanged = () => {};
+    loadModules();
   </script>
 </body>
 </html>
