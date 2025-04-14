@@ -80,6 +80,35 @@
     msg.rate = 0.97;
     window.speechSynthesis.speak(msg);
   }
+<div style="margin-bottom: 20px;">
+  <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
+    <span>Cryptocurrency</span>
+    <span>High-Yield Savings</span>
+    <span>Micro-Investing</span>
+  </div>
+  <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+    <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
+    <div id="progress-hysa" style="flex: 1; background: #2b7a78;"></div>
+    <div id="progress-micro" style="flex: 1; background: #2b7a78;"></div>
+  </div>
+</div>
+
+<script>
+  const path = window.location.pathname;
+
+  if (path.includes('cryptocurrency')) {
+    document.getElementById('progress-crypto').style.background = '#00b894';
+    document.getElementById('progress-hysa').style.background = '#e0e0e0';
+    document.getElementById('progress-micro').style.background = '#e0e0e0';
+  } else if (path.includes('high-yield-savings')) {
+    document.getElementById('progress-crypto').style.background = '#2b7a78';
+    document.getElementById('progress-hysa').style.background = '#00b894';
+    document.getElementById('progress-micro').style.background = '#e0e0e0';
+  } else if (path.includes('micro-investing')) {
+    document.getElementById('progress-crypto').style.background = '#2b7a78';
+    document.getElementById('progress-hysa').style.background = '#2b7a78';
+    document.getElementById('progress-micro').style.background = '#00b894';
+  }
 </script>
 
 </body>
