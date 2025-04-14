@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Learning - Podcasts & Videos</title>
   <style>
@@ -24,30 +24,23 @@
     }
 
     .module {
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
-    /* Styling the video player */
-    video {
+    video, audio {
       width: 100%;
-      height: auto;
       border-radius: 10px;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
 
-    audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    /* Play/pause button for audio */
     .play-pause-btn {
       background-color: #2ecc71;
       color: white;
-      padding: 10px;
+      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-bottom: 10px;
       transition: background-color 0.3s;
     }
 
@@ -59,8 +52,9 @@
       background-color: #ddd;
       border-radius: 5px;
       height: 10px;
-      margin-top: 10px;
       width: 100%;
+      margin: 10px 0;
+      overflow: hidden;
     }
 
     .progress-fill {
@@ -72,30 +66,30 @@
     }
 
     .quiz-section {
-      margin-top: 30px;
+      margin-top: 20px;
+      background: #fff3e0;
+      padding: 10px;
+      border-radius: 8px;
     }
 
     .quiz-question {
       margin-bottom: 10px;
+      font-weight: bold;
     }
 
-    /* Hide video sections initially */
-    .video-section {
-      display: none;
-    }
-
-    /* Collapsible functionality */
-    .module-header {
-      cursor: pointer;
+    .quiz-section button {
       background-color: #007a5a;
       color: white;
-      padding: 10px;
-      text-align: left;
+      border: none;
+      padding: 8px 15px;
+      margin-right: 10px;
       border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
 
-    .module-header:hover {
-      background-color: #005c45;
+    .quiz-section button:hover {
+      background-color: #005a43;
     }
   </style>
 </head>
@@ -107,122 +101,91 @@
 
   <div class="module-container">
     <div class="module">
-      <div class="module-header" onclick="toggleModule('crypto')">
-        <h2>Module: Cryptocurrency Basics</h2>
+      <h2>Module: Cryptocurrency Basics</h2>
+
+      <video id="cryptoVideo" controls>
+        <source src="https://www.example.com/crypto-video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <audio id="cryptoAudio" controls>
+        <source src="https://www.example.com/crypto-audio.mp3" type="audio/mp3" />
+        Your browser does not support the audio tag.
+      </audio>
+
+      <button class="play-pause-btn" onclick="toggleAudio('crypto')">Play/Pause Podcast</button>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="cryptoProgress"></div>
       </div>
-      <div class="video-section" id="cryptoSection">
-        <!-- Video -->
-        <video id="cryptoVideo" controls>
-          <source src="https://www.example.com/crypto-video.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
 
-        <!-- Audio Player (Podcast) -->
-        <audio id="cryptoAudio" controls>
-          <source src="https://www.example.com/crypto-audio.mp3" type="audio/mp3">
-          Your browser does not support the audio tag.
-        </audio>
-
-        <!-- Play/Pause button for audio -->
-        <button class="play-pause-btn" onclick="toggleAudio('crypto')">Play/Pause Podcast</button>
-
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <!-- Interactive Quiz Section -->
-        <div class="quiz-section">
-          <div class="quiz-question"><strong>1:</strong> What is the main benefit of staking crypto?</div>
-          <button onclick="alert('Correct!')">Earn passive rewards</button>
-          <button onclick="alert('Nope!')">Buy more crypto</button>
-        </div>
+      <div class="quiz-section">
+        <div class="quiz-question">1: What is the main benefit of staking crypto?</div>
+        <button onclick="alert('Correct!')">Earn passive rewards</button>
+        <button onclick="alert('Nope!')">Buy more crypto</button>
       </div>
     </div>
 
     <div class="module">
-      <div class="module-header" onclick="toggleModule('savings')">
-        <h2>Module: High-Yield Savings</h2>
+      <h2>Module: High-Yield Savings</h2>
+
+      <video id="savingsVideo" controls>
+        <source src="https://www.example.com/savings-video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <audio id="savingsAudio" controls>
+        <source src="https://www.example.com/savings-audio.mp3" type="audio/mp3" />
+        Your browser does not support the audio tag.
+      </audio>
+
+      <button class="play-pause-btn" onclick="toggleAudio('savings')">Play/Pause Podcast</button>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="savingsProgress"></div>
       </div>
-      <div class="video-section" id="savingsSection">
-        <!-- Video -->
-        <video id="savingsVideo" controls>
-          <source src="https://www.example.com/savings-video.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
 
-        <!-- Audio Player (Podcast) -->
-        <audio id="savingsAudio" controls>
-          <source src="https://www.example.com/savings-audio.mp3" type="audio/mp3">
-          Your browser does not support the audio tag.
-        </audio>
-
-        <!-- Play/Pause button for audio -->
-        <button class="play-pause-btn" onclick="toggleAudio('savings')">Play/Pause Podcast</button>
-
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <!-- Interactive Quiz Section -->
-        <div class="quiz-section">
-          <div class="quiz-question"><strong>1:</strong> What's the primary benefit of a high-yield savings account?</div>
-          <button onclick="alert('Correct!')">Earn higher interest than normal savings</button>
-          <button onclick="alert('Nope!')">Keep money in a checking account</button>
-        </div>
+      <div class="quiz-section">
+        <div class="quiz-question">1: What's the primary benefit of a high-yield savings account?</div>
+        <button onclick="alert('Correct!')">Earn higher interest than normal savings</button>
+        <button onclick="alert('Nope!')">Keep money in a checking account</button>
       </div>
     </div>
   </div>
 
   <script>
-    let cryptoAudio = document.getElementById('cryptoAudio');
-    let savingsAudio = document.getElementById('savingsAudio');
-    let progressFill = document.getElementById('progressFill');
-    
-    // Toggle audio play/pause
+    const cryptoAudio = document.getElementById('cryptoAudio');
+    const savingsAudio = document.getElementById('savingsAudio');
+    const cryptoProgress = document.getElementById('cryptoProgress');
+    const savingsProgress = document.getElementById('savingsProgress');
+
     function toggleAudio(module) {
       if (module === 'crypto') {
         if (cryptoAudio.paused) {
           cryptoAudio.play();
-          savingsAudio.pause(); // Pause savings audio if playing
+          savingsAudio.pause();
         } else {
           cryptoAudio.pause();
         }
       } else if (module === 'savings') {
         if (savingsAudio.paused) {
           savingsAudio.play();
-          cryptoAudio.pause(); // Pause crypto audio if playing
+          cryptoAudio.pause();
         } else {
           savingsAudio.pause();
         }
       }
     }
 
-    // Update the progress bar based on the audio time
-    setInterval(() => {
-      if (!cryptoAudio.paused) {
-        let progress = (cryptoAudio.currentTime / cryptoAudio.duration) * 100;
-        progressFill.style.width = progress + '%';
-      }
-    }, 1000);
-
-    setInterval(() => {
-      if (!savingsAudio.paused) {
-        let progress = (savingsAudio.currentTime / savingsAudio.duration) * 100;
-        progressFill.style.width = progress + '%';
-      }
-    }, 1000);
-
-    // Toggle the visibility of the modules
-    function toggleModule(module) {
-      let section = document.getElementById(module + 'Section');
-      if (section.style.display === 'block') {
-        section.style.display = 'none';
-      } else {
-        section.style.display = 'block';
+    function updateProgress(audio, progressBar) {
+      if (audio.duration > 0) {
+        let percent = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = percent + '%';
       }
     }
+
+    setInterval(() => updateProgress(cryptoAudio, cryptoProgress), 500);
+    setInterval(() => updateProgress(savingsAudio, savingsProgress), 500);
   </script>
 </body>
 </html>
