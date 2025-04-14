@@ -45,23 +45,23 @@
       vertical-align: middle;
       margin-right: 6px;
     }
-    .change-positive {
-      background-color: #4caf50;
-      color: white;
+    .change-box {
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: 12px;
+      color: #fff;
       font-weight: bold;
-      font-size: 13px;
       display: inline-block;
     }
-    .change-negative {
+    .positive {
+      background-color: #4caf50;
+    }
+    .negative {
       background-color: #f44336;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 6px;
+    }
+    a {
+      text-decoration: none;
+      color: #00695c;
       font-weight: bold;
-      font-size: 13px;
-      display: inline-block;
     }
   </style>
 </head>
@@ -93,17 +93,18 @@
       tbody.innerHTML = "";
 
       coins.forEach((coin, index) => {
-        const change = coin.price_change_percentage_24h?.toFixed(2);
-        const changeClass = change >= 0 ? 'change-positive' : 'change-negative';
-        const changeHTML = `<span class="${changeClass}">${change}%</span>`;
-
+        const isPositive = coin.price_change_percentage_24h >= 0;
+        const changeClass = isPositive ? 'positive' : 'negative';
         const row = `
           <tr>
             <td>${index + 1}</td>
-            <td><img src="${coin.image}" width="18">${coin.name}</td>
+            <td>
+              <img src="${coin.image}" width="18">
+              <a href="coin.html?id=${coin.id}">${coin.name}</a>
+            </td>
             <td>${coin.symbol.toUpperCase()}</td>
             <td>$${coin.current_price.toLocaleString()}</td>
-            <td>${changeHTML}</td>
+            <td><span class="change-box ${changeClass}">${coin.price_change_percentage_24h.toFixed(2)}%</span></td>
             <td>$${coin.market_cap.toLocaleString()}</td>
           </tr>`;
         tbody.innerHTML += row;
