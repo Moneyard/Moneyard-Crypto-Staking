@@ -297,7 +297,7 @@
       document.getElementById('lessonContent').innerHTML = mod.content;
       document.getElementById('lessonModal').style.display = 'block';
       document.getElementById('learnMoreLink').href = mod.link;
-      speakContent(); // Speak the lesson content when opening the module
+      speakContent(mod.title); // Speak the lesson with welcome message
     }
 
     function closeLesson() {
@@ -306,16 +306,26 @@
     }
 
     function playAudio() {
-      if (currentModule) {
-        utterance = new SpeechSynthesisUtterance(document.getElementById('lessonContent').innerText);
+      if (utterance) {
         speechSynthesis.speak(utterance);
       }
     }
 
     function stopAudio() {
-      if (utterance) {
+      if (speechSynthesis.speaking) {
         speechSynthesis.cancel();
       }
+    }
+
+    function speakContent(moduleTitle) {
+      const welcomeText = `Welcome to the ${moduleTitle} lesson. Let’s dive into this exciting topic.`;
+      utterance = new SpeechSynthesisUtterance(welcomeText);
+      speechSynthesis.speak(utterance);
+      
+      utterance.onend = function () {
+        const learnMoreUtterance = new SpeechSynthesisUtterance('Learn more');
+        speechSynthesis.speak(learnMoreUtterance);
+      };
     }
 
     function updateProgress() {
@@ -323,14 +333,6 @@
       const completed = completedModules.length;
       const percent = (completed / totalModules) * 100;
       document.getElementById('progressFill').style.width = `${percent}%`;
-    }
-
-    function speakContent() {
-      utterance.onend = function () {
-        // After the speech ends, say "Learn more"
-        const learnMoreUtterance = new SpeechSynthesisUtterance('Learn more');
-        speechSynthesis.speak(learnMoreUtterance);
-      };
     }
 
     loadModules();
