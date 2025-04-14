@@ -1,329 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Moneyard Learning</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f4f4f4;
       margin: 0;
-      background-color: #FFA94D !important;
-      color: #333;
+      padding: 0;
     }
-
-    header {
-      background-color: #007a5a;
-      color: white;
+    .container {
+      max-width: 800px;
+      margin: auto;
       padding: 20px;
-      text-align: center;
-    }
-
-    .learn-container {
-      padding: 20px;
-    }
-
-    .learn-modules {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .learn-card {
-      flex: 1;
-      min-width: 250px;
-      background: white;
-      border-left: 5px solid #007a5a;
-      padding: 20px;
+      background: #fff;
+      margin-top: 40px;
       border-radius: 10px;
-      position: relative;
-      opacity: 1;
-      transition: transform 0.2s, opacity 0.4s ease;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    .learn-card.locked {
-      pointer-events: none;
-      opacity: 0.5;
+    h2, h3 {
+      color: #1a8f5c;
     }
-
-    .learn-card:hover {
-      transform: scale(1.02);
-      background: #f0f0f0;
-    }
-
-    .learn-card button {
-      background-color: #007a5a;
-      color: white;
-      border: none;
+    button {
+      background: #1a8f5c;
+      color: #fff;
       padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
-    }
-
-    #lessonModal {
-      display: none;
-      position: fixed;
-      top: 5%;
-      left: 5%;
-      width: 90%;
-      height: 90%;
-      background: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      overflow-y: auto;
-      z-index: 999;
-      border-radius: 8px;
-    }
-
-    #lessonModal span {
-      float: right;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .progress-bar {
-      background: #eee;
-      border-radius: 5px;
-      margin: 20px 0;
-      height: 20px;
-      width: 100%;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0;
-      background: #2ecc71;
-      border-radius: 5px;
-      transition: width 0.5s ease;
-    }
-
-    .quiz-section {
-      margin-top: 30px;
-    }
-
-    .quiz-question {
-      margin-bottom: 10px;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #2ecc71;
-      color: white;
-      padding: 5px 10px;
-      margin-top: 15px;
-      border-radius: 5px;
-      animation: fadeIn 1s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    #audioControls {
-      margin-top: 20px;
-    }
-
-    #audioControls button {
-      background-color: #1abc9c;
-      color: white;
       border: none;
-      margin-right: 10px;
-      padding: 10px 20px;
       border-radius: 6px;
       cursor: pointer;
-      transition: 0.3s;
+      margin-top: 10px;
     }
-
-    #audioControls button:hover {
-      background-color: #16a085;
+    button:hover {
+      background: #147a4c;
     }
-
-    iframe {
-      width: 100%;
-      height: 315px;
-      margin: 20px 0;
-      border: none;
-      border-radius: 10px;
+    .quiz-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eaf9f1;
+      border-radius: 8px;
     }
-
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #d4edda;
+      color: #155724;
+      border-radius: 5px;
+    }
     .learn-more-link {
       display: inline-block;
-      margin-top: 15px;
-      margin-bottom: 10px;
-      font-weight: bold;
-      background-color: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
+      margin-top: 12px;
+      color: #007bff;
       text-decoration: none;
-      cursor: pointer;
-      text-align: center;
     }
-
     .learn-more-link:hover {
-      background-color: #218838;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Moneyard Learning</h1>
-    <p>Smart Finance for the Future</p>
-  </header>
+  <div class="container">
+    <h2>Welcome to Moneyard Learning</h2>
+    <p>Select a module to begin your crypto journey.</p>
+    <select id="moduleSelector" onchange="loadModule()">
+      <option value="">-- Choose a Module --</option>
+      <option value="basics">1. Crypto Basics</option>
+      <option value="wallets">2. Wallets & Keys</option>
+      <option value="security">3. Security Tips</option>
+    </select>
 
-  <div class="learn-container">
-    <h2>Choose a Module</h2>
-    <div class="learn-modules" id="modulesContainer"></div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  </div>
+    <div id="lessonContent" style="margin-top: 20px;"></div>
 
-  <div id="lessonModal">
-    <span onclick="closeLesson()">X</span>
-    <div id="lessonContent"></div>
-    <a id="learnMoreLink" class="learn-more-link" target="_blank">Learn More</a>
-    <div id="audioControls">
+    <div style="margin-top: 20px;">
       <button onclick="playAudio()">Play Audio</button>
-      <button onclick="stopAudio()">Stop Audio</button>
+      <button onclick="pauseAudio()">Pause</button>
+      <button onclick="resumeAudio()">Resume</button>
+      <button onclick="stopAudio()">Stop</button>
     </div>
   </div>
 
   <script>
-    const modules = [
-      {
-        id: 'crypto',
-        title: 'Cryptocurrency Basics',
-        desc: 'Learn how crypto works and how to earn securely.',
-        link: 'cryptocurrency.html',
-        content: `
-          <h2>Cryptocurrency Basics</h2>
-          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
-          <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
-          <ul>
-            <li>What is blockchain technology?</li>
-            <li>How do wallets and exchanges work?</li>
-            <li>How to stake and earn rewards safely</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
-            <button onclick="alert('Correct!')">Earning by holding crypto</button>
-            <button onclick="alert('Nope!')">Sending crypto fast</button>
-          </div>
-          <div class='badge'>Crypto Explorer</div>
-        `
-      },
-      {
-        id: 'savings',
-        title: 'High-Yield Savings',
-        desc: 'Grow your savings smartly and steadily.',
-        link: 'yield-savings.html',
-        content: `
-          <h2>High-Yield Savings</h2>
-          <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
-          <iframe src="https://www.youtube.com/embed/H6du_qVj7PQ" allowfullscreen></iframe>
-          <ul>
-            <li>Daily vs monthly compounding</li>
-            <li>Choosing the best HYSA</li>
-            <li>Comparing traditional banks vs fintech</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What's a good reason to use HYSA?</div>
-            <button onclick="alert('Correct!')">High interest, low risk</button>
-            <button onclick="alert('Nope!')">To borrow loans</button>
-          </div>
-          <div class='badge'>Smart Saver</div>
-        `
-      },
-      {
-        id: 'investing',
-        title: 'Micro-Investing',
-        desc: 'Start investing with as little as $1.',
-        link: 'micro-investing.html',
-        content: `
-          <h2>Micro-Investing</h2>
-          <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
-          <iframe src="https://www.youtube.com/embed/6uOkrJpbEB0" allowfullscreen></iframe>
-          <ul>
-            <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
-          </ul>
-          <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
-          </div>
-          <div class='badge'>Micro-Investor</div>
-        `
-      }
-    ];
-
-    let completedModules = JSON.parse(localStorage.getItem('completedModules')) || [];
+    let currentModule = "";
     let utterance;
-    let currentModule = null;
 
-    function loadModules() {
-      const container = document.getElementById('modulesContainer');
-      container.innerHTML = '';
+    const lessons = {
+      basics: {
+        title: "1. Crypto Basics",
+        content: `Cryptocurrency is a digital or virtual currency that uses cryptography for security. It is decentralized and typically built on blockchain technology.`,
+        quiz: {
+          question: "What technology is cryptocurrency usually built on?",
+          answer: "Blockchain"
+        },
+        video: "https://www.youtube.com/embed/SSo_EIwHSd4",
+        learnMore: "https://www.investopedia.com/terms/c/cryptocurrency.asp"
+      },
+      wallets: {
+        title: "2. Wallets & Keys",
+        content: `A crypto wallet stores your private and public keys and interacts with various blockchains. It allows users to send and receive digital currency.`,
+        quiz: {
+          question: "What does a crypto wallet store?",
+          answer: "Private and public keys"
+        },
+        video: "https://www.youtube.com/embed/7S_QK7h2t60",
+        learnMore: "https://www.coinbase.com/learn/crypto-basics/what-is-a-crypto-wallet"
+      },
+      security: {
+        title: "3. Security Tips",
+        content: `Use strong passwords, enable 2FA, and never share your private key. Store crypto in reputable wallets and avoid phishing scams.`,
+        quiz: {
+          question: "What's one way to secure your crypto?",
+          answer: "Enable 2FA"
+        },
+        video: "https://www.youtube.com/embed/V5w1D6eKz_Y",
+        learnMore: "https://www.kraken.com/learn/cryptocurrency-security-guide"
+      }
+    };
 
-      modules.forEach((mod, index) => {
-        const unlocked = index === 0 || completedModules.includes(modules[index - 1].id);
-        const isComplete = completedModules.includes(mod.id);
-        const card = document.createElement('div');
-        card.className = 'learn-card' + (unlocked ? '' : ' locked');
-        card.innerHTML = `
-          <h3>${mod.title}</h3>
-          <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
+    function loadModule() {
+      const selected = document.getElementById("moduleSelector").value;
+      if (lessons[selected]) {
+        currentModule = selected;
+        const lesson = lessons[selected];
+        document.getElementById("lessonContent").innerHTML = `
+          <h3>${lesson.title}</h3>
+          <p>${lesson.content}</p>
+          <iframe width="100%" height="315" src="${lesson.video}" frameborder="0" allowfullscreen></iframe>
+          <div class="quiz-section">
+            <strong>Quiz:</strong>
+            <p>${lesson.quiz.question}</p>
+            <button onclick="alert('Answer: ${lesson.quiz.answer}')">Show Answer</button>
+          </div>
+          <div class="badge">Module Completed</div>
+          <a href="${lesson.learnMore}" target="_blank" class="learn-more-link">Learn More</a>
         `;
-        container.appendChild(card);
-      });
-
-      updateProgress();
-    }
-
-    function startModule(id) {
-      const mod = modules.find(m => m.id === id);
-      currentModule = mod;
-      document.getElementById('lessonContent').innerHTML = mod.content;
-      document.getElementById('lessonModal').style.display = 'block';
-      document.getElementById('learnMoreLink').href = mod.link;
-    }
-
-    function closeLesson() {
-      document.getElementById('lessonModal').style.display = 'none';
-      stopAudio();
+      }
     }
 
     function playAudio() {
       if (currentModule) {
-        utterance = new SpeechSynthesisUtterance(document.getElementById('lessonContent').innerText);
+        const lessonContent = document.getElementById('lessonContent').cloneNode(true);
+        lessonContent.querySelectorAll('iframe, .quiz-section, .badge, .learn-more-link, button').forEach(el => el.remove());
+        const textToRead = lessonContent.innerText.trim();
+
+        utterance = new SpeechSynthesisUtterance(textToRead);
         speechSynthesis.speak(utterance);
       }
     }
 
+    function pauseAudio() {
+      speechSynthesis.pause();
+    }
+
+    function resumeAudio() {
+      speechSynthesis.resume();
+    }
+
     function stopAudio() {
-      if (utterance) {
-        speechSynthesis.cancel();
-      }
+      speechSynthesis.cancel();
     }
-
-    function updateProgress() {
-      const fill = document.getElementById('progressFill');
-      const percent = (completedModules.length / modules.length) * 100;
-      fill.style.width = percent + '%';
-    }
-
-    window.onload = loadModules;
   </script>
 </body>
 </html>
