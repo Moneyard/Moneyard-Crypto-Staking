@@ -211,7 +211,62 @@ fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h')
         candlestickChart.update();
     })
     .catch(error => console.error('Error fetching data:', error));
+// Assuming you have the user's coin data (or fetch it via an API)
+const coinData = [
+    { t: '2025-04-10T00:00:00Z', o: 1.2, h: 1.5, l: 1.1, c: 1.4 },
+    { t: '2025-04-10T01:00:00Z', o: 1.4, h: 1.6, l: 1.3, c: 1.5 },
+    { t: '2025-04-10T02:00:00Z', o: 1.5, h: 1.7, l: 1.4, c: 1.6 },
+    { t: '2025-04-10T03:00:00Z', o: 1.6, h: 1.8, l: 1.5, c: 1.7 },
+    // Add more data points as needed
+];
 
+// Convert the data into a format that Chart.js understands
+const formattedData = coinData.map(item => ({
+    t: new Date(item.t).getTime(), // Time in milliseconds
+    o: item.o, // Open
+    h: item.h, // High
+    l: item.l, // Low
+    c: item.c  // Close
+}));
+
+// Initialize the chart
+const ctx = document.getElementById('candlestickChart').getContext('2d');
+const candlestickChart = new Chart(ctx, {
+    type: 'candlestick', // The chart type
+    data: {
+        datasets: [{
+            label: 'Price Data',
+            data: formattedData,
+            borderColor: '#ff0000',
+            borderWidth: 1,
+            upColor: '#00ff00',
+            downColor: '#ff0000',
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'hour',
+                    tooltipFormat: 'll HH:mm'
+                },
+                title: {
+                    display: true,
+                    text: 'Time'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Price'
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
 </script>
 </body>
 </html>
