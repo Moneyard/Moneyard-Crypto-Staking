@@ -206,7 +206,7 @@
         link: 'cryptocurrency.html',
         content: `
           <h2>Cryptocurrency Basics</h2>
-          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security.</p>
+          <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security. It is decentralized and operates on blockchain technology. Learn how to store and transfer it securely.</p>
           <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
           <ul>
             <li>What is blockchain technology?</li>
@@ -229,11 +229,12 @@
         content: `
           <h2>High-Yield Savings</h2>
           <p>Savings is the act of setting aside a portion of your income for future use. It's important to build a savings habit to prepare for emergencies, opportunities, and long-term goals. Even small amounts saved regularly can grow over time.</p>
-          <iframe src="https://www.youtube.com/embed/H6du_qVj7PQ" allowfullscreen></iframe>
           <ul>
             <li>Daily vs monthly compounding</li>
             <li>Choosing the best HYSA</li>
             <li>Comparing traditional banks vs fintech</li>
+            <li>What's a good reason to use HYSA? - High interest, low risk</li>
+            <li>To borrow loans</li>
           </ul>
           <div class='quiz-section'>
             <div class='quiz-question'>What's a good reason to use HYSA?</div>
@@ -246,23 +247,23 @@
       {
         id: 'investing',
         title: 'Micro-Investing',
-        desc: 'Start investing with as little as $1.',
+        desc: 'Learn the fundamentals of micro-investing for smart wealth growth.',
         link: 'micro-investing.html',
         content: `
           <h2>Micro-Investing</h2>
-          <p>Micro-investing allows you to invest small amounts of money regularly, often via apps.</p>
-          <iframe src="https://www.youtube.com/embed/6uOkrJpbEB0" allowfullscreen></iframe>
+          <p>Micro-investing allows individuals to invest small amounts of money regularly. It makes investing accessible, even for those with limited funds. Start with spare change or small amounts to build wealth gradually over time.</p>
+          <iframe src="https://www.youtube.com/embed/CrtP91S0TAI" allowfullscreen></iframe>
           <ul>
-            <li>Invest in ETFs, stocks, round-ups</li>
-            <li>Dollar-cost averaging</li>
-            <li>How to diversify a small portfolio</li>
+            <li>How does micro-investing work?</li>
+            <li>Benefits of micro-investing</li>
+            <li>Choosing the right platforms for micro-investing</li>
           </ul>
           <div class='quiz-section'>
-            <div class='quiz-question'>What does DCA stand for?</div>
-            <button onclick="alert('Correct!')">Dollar Cost Averaging</button>
-            <button onclick="alert('Nope!')">Daily Crypto Account</button>
+            <div class='quiz-question'>What is the main benefit of micro-investing?</div>
+            <button onclick="alert('Correct!')">Investing small amounts regularly</button>
+            <button onclick="alert('Nope!')">Large, one-time investments</button>
           </div>
-          <div class='badge'>Micro-Investor</div>
+          <div class='badge'>Wealth Builder</div>
         `
       }
     ];
@@ -276,53 +277,57 @@
       container.innerHTML = '';
 
       modules.forEach((mod, index) => {
+        const unlocked = index === 0 || completedModules.includes(mod.id);
         const card = document.createElement('div');
-        card.className = `learn-card ${completedModules.includes(mod.id) ? 'locked' : ''}`;
+        card.classList.add('learn-card');
+        if (!unlocked) card.classList.add('locked');
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="openModule(${index})">Start</button>
+          <button onclick="startLesson('${mod.id}')">${unlocked ? 'Start Lesson' : 'Unlock Lesson'}</button>
         `;
         container.appendChild(card);
       });
+
+      updateProgress();
     }
 
-    function openModule(index) {
-      const mod = modules[index];
-      currentModule = mod;
+    function startLesson(moduleId) {
+      currentModule = modules.find(mod => mod.id === moduleId);
+      document.getElementById('lessonContent').innerHTML = currentModule.content;
+      document.getElementById('learnMoreLink').href = currentModule.link;
+      document.getElementById('lessonModal').style.display = 'block';
 
-      const modal = document.getElementById('lessonModal');
-      const lessonContent = document.getElementById('lessonContent');
-      const learnMoreLink = document.getElementById('learnMoreLink');
-      lessonContent.innerHTML = mod.content;
-      modal.style.display = 'block';
-
-      learnMoreLink.onclick = function () {
-        window.open(mod.link, '_blank');
-      };
-
-      if (window.speechSynthesis) {
-        utterance = new SpeechSynthesisUtterance(`
-          Welcome to the ${mod.title} lesson.
-          ${mod.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()}
-          Learn more.
-        `);
-        window.speechSynthesis.speak(utterance);
-      }
+      // Start speech
+      speakContent(currentModule.title, currentModule.desc, currentModule.content);
     }
 
     function closeLesson() {
       document.getElementById('lessonModal').style.display = 'none';
     }
 
-    function playAudio() {
-      if (utterance) {
-        window.speechSynthesis.speak(utterance);
-      }
+    function speakContent(moduleTitle, moduleDesc, moduleContent) {
+      const welcomeText = `Welcome to the ${moduleTitle} lesson. Let's dive into this exciting topic.`;
+      utterance = new SpeechSynthesisUtterance(welcomeText);
+      speechSynthesis.speak(utterance);
+
+      // Speaking the contents of the module
+      const contentText = `${moduleDesc} ${moduleContent}`;
+      utterance.onend = function () {
+        const learnMoreUtterance = new SpeechSynthesisUtterance('Learn more');
+        speechSynthesis.speak(learnMoreUtterance);
+      };
+
+      // Speak module content
+      const contentUtterance = new SpeechSynthesisUtterance(contentText);
+      speechSynthesis.speak(contentUtterance);
     }
 
-    function stopAudio() {
-      window.speechSynthesis.cancel();
+    function updateProgress() {
+      const totalModules = modules.length;
+      const completed = completedModules.length;
+      const percent = (completed / totalModules) * 100;
+      document.getElementById('progressFill').style.width = `${percent}%`;
     }
 
     loadModules();
