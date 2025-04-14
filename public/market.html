@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Crypto Market</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    .crypto-market-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0, 128, 0, 0.1);
+      border: 1px solid #e0f2f1;
+      max-width: 1000px;
+      margin: auto;
+    }
+    h2 {
+      color: #00695c;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eaeaea;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background-color: #e0f7fa;
+      color: #004d40;
+      font-weight: 600;
+    }
+    img {
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<section class="crypto-market-section">
+  <h2>Top 50 Cryptocurrencies - Live Market</h2>
+  <table id="cryptoMarketTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Symbol</th>
+        <th>Price (USD)</th>
+        <th>24h Change</th>
+        <th>Market Cap</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script>
+  async function loadCryptoMarket() {
+    try {
+      const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false");
+      const coins = await res.json();
+      const tbody = document.querySelector("#cryptoMarketTable tbody");
+      tbody.innerHTML = "";
+
+      coins.forEach((coin, index) => {
+        const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td><img src="${coin.image}" width="18">${coin.name}</td>
+            <td>${coin.symbol.toUpperCase()}</td>
+            <td>$${coin.current_price.toLocaleString()}</td>
+            <td style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">
+              ${coin.price_change_percentage_24h.toFixed(2)}%
+            </td>
+            <td>$${coin.market_cap.toLocaleString()}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    } catch (err) {
+      console.error("Crypto fetch failed:", err);
+    }
+  }
+
+  loadCryptoMarket();
+  setInterval(loadCryptoMarket, 60000); // Refresh every 60 seconds
+</script>
+
+</body>
+</html>
