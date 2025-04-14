@@ -283,7 +283,7 @@
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="startModule('${mod.id}')" ${unlocked ? '' : 'disabled'}>${isComplete ? 'Review' : 'Start'}</button>
+          <button onclick="startModule('${mod.id}')">${isComplete ? 'Review' : 'Start'}</button>
         `;
         container.appendChild(card);
       });
@@ -319,9 +319,10 @@
     }
 
     function updateProgress() {
-      const fill = document.getElementById('progressFill');
-      const percent = (completedModules.length / modules.length) * 100;
-      fill.style.width = `${percent}%`;
+      const totalModules = modules.length;
+      const completed = completedModules.length;
+      const percent = (completed / totalModules) * 100;
+      document.getElementById('progressFill').style.width = `${percent}%`;
     }
 
     function speakContent() {
