@@ -54,6 +54,45 @@
       padding: 10px 16px;
       border-radius: 12px;
     }
+    .timeframe-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .timeframe-buttons button {
+      padding: 8px 14px;
+      background-color: #e0f2f1;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #004d40;
+    }
+    .timeframe-buttons button.active {
+      background-color: #004d40;
+      color: #fff;
+    }
+    .stake-form {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .stake-form input {
+      padding: 10px;
+      width: 200px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .stake-form button {
+      padding: 10px 20px;
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -61,7 +100,24 @@
 <div class="container">
   <div class="coin-info" id="coinInfo"></div>
   <div class="details" id="coinDetails"></div>
+
+  <div class="timeframe-buttons">
+    <button onclick="loadCoinChart('1')" class="active">1D</button>
+    <button onclick="loadCoinChart('7')">7D</button>
+    <button onclick="loadCoinChart('30')">30D</button>
+    <button onclick="loadCoinChart('90')">90D</button>
+    <button onclick="loadCoinChart('180')">180D</button>
+    <button onclick="loadCoinChart('365')">1Y</button>
+  </div>
+
   <canvas id="priceChart" height="100"></canvas>
+
+  <div class="stake-form">
+    <h3>Stake ${coinId}</h3>
+    <input type="number" id="stakeAmount" placeholder="Enter amount to stake" />
+    <button onclick="stakeNow()">Stake</button>
+  </div>
+
   <div class="back-link">
     <a href="market.html">&larr; Back to Market</a>
   </div>
@@ -70,75 +126,70 @@
 <script>
   const params = new URLSearchParams(window.location.search);
   const coinId = params.get('id');
+  let chartInstance;
 
   async function loadCoinDetails() {
-    try {
-      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
-      const data = await res.json();
+    const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
+    const data = await res.json();
 
-      document.getElementById('coinInfo').innerHTML = `
-        <img src="${data.image.small}" alt="${data.name}" />
-        <h2>${data.name} (${data.symbol.toUpperCase()})</h2>
-      `;
-
-      document.getElementById('coinDetails').innerHTML = `
-        <p><strong>Current Price:</strong> $${data.market_data.current_price.usd.toLocaleString()}</p>
-        <p><strong>Market Cap:</strong> $${data.market_data.market_cap.usd.toLocaleString()}</p>
-        <p><strong>24h Change:</strong> ${data.market_data.price_change_percentage_24h.toFixed(2)}%</p>
-        <p><strong>Total Volume:</strong> $${data.market_data.total_volume.usd.toLocaleString()}</p>
-      `;
-
-    } catch (error) {
-      console.error("Failed to load coin details:", error);
-    }
+    document.getElementById('coinInfo').innerHTML = `
+      <img src="${data.image.small}" alt="${data.name}" />
+      <h2>${data.name} (${data.symbol.toUpperCase()})</h2>
+    `;
+    document.getElementById('coinDetails').innerHTML = `
+      <p><strong>Current Price:</strong> $${data.market_data.current_price.usd.toLocaleString()}</p>
+      <p><strong>Market Cap:</strong> $${data.market_data.market_cap.usd.toLocaleString()}</p>
+      <p><strong>24h Change:</strong> ${data.market_data.price_change_percentage_24h.toFixed(2)}%</p>
+    `;
   }
 
-  async function loadCoinChart() {
-    try {
-      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7`);
-      const data = await res.json();
+  async function loadCoinChart(days = '1') {
+    document.querySelectorAll('.timeframe-buttons button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.timeframe-buttons button[onclick="loadCoinChart('${days}')"]`).classList.add('active');
 
-      const labels = data.prices.map(p => {
-        const d = new Date(p[0]);
-        return `${d.getMonth()+1}/${d.getDate()}`;
-      });
+    const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`);
+    const data = await res.json();
 
-      const prices = data.prices.map(p => p[1]);
+    const labels = data.prices.map(p => {
+      const d = new Date(p[0]);
+      return days <= 1 ? `${d.getHours()}:${d.getMinutes()}` : `${d.getMonth()+1}/${d.getDate()}`;
+    });
+    const prices = data.prices.map(p => p[1]);
 
-      new Chart(document.getElementById('priceChart'), {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Price (USD)',
-            data: prices,
-            borderColor: '#0288d1',
-            backgroundColor: 'rgba(2,136,209,0.2)',
-            fill: true,
-            tension: 0.4,
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: false
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: false
-            }
-          }
-        }
-      });
-    } catch (error) {
-      console.error("Failed to load chart:", error);
+    if (chartInstance) chartInstance.destroy();
+
+    chartInstance = new Chart(document.getElementById('priceChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Price (USD)',
+          data: prices,
+          borderColor: '#0288d1',
+          backgroundColor: 'rgba(2,136,209,0.1)',
+          fill: true,
+          tension: 0.4,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }},
+        scales: { y: { beginAtZero: false } }
+      }
+    });
+  }
+
+  function stakeNow() {
+    const amount = document.getElementById('stakeAmount').value;
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid amount to stake.");
+      return;
     }
+    alert(`Staked ${amount} ${coinId.toUpperCase()} successfully! (Backend logic can be added here.)`);
   }
 
   loadCoinDetails();
-  loadCoinChart();
+  loadCoinChart('1');
 </script>
 
 </body>
