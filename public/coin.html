@@ -3,92 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crypto Coin Details</title>
+  <title>Coin Details</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      background: #f1f1f1;
+      margin: 0;
       padding: 20px;
     }
-    .coin-container {
+    .container {
       background: #fff;
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      max-width: 800px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      max-width: 900px;
       margin: auto;
     }
     h2 {
       text-align: center;
       color: #00695c;
     }
-    #chart {
+    .coin-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .coin-info img {
+      width: 32px;
+      height: 32px;
+    }
+    .details {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    canvas {
+      max-width: 100%;
+    }
+    .back-link {
+      text-align: center;
       margin-top: 30px;
     }
-    .stats {
-      margin-top: 20px;
-      font-size: 16px;
-      line-height: 1.6;
+    .back-link a {
+      text-decoration: none;
+      color: #00695c;
+      font-weight: bold;
+      background: #e0f2f1;
+      padding: 10px 16px;
+      border-radius: 12px;
     }
   </style>
 </head>
 <body>
 
-<div class="coin-container">
-  <h2 id="coinTitle">Loading...</h2>
-  <canvas id="chart" height="100"></canvas>
-  <div class="stats" id="coinStats"></div>
+<div class="container">
+  <div class="coin-info" id="coinInfo"></div>
+  <div class="details" id="coinDetails"></div>
+  <canvas id="priceChart" height="100"></canvas>
+  <div class="back-link">
+    <a href="market.html">&larr; Back to Market</a>
+  </div>
 </div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const coinId = urlParams.get('id');
+  const params = new URLSearchParams(window.location.search);
+  const coinId = params.get('id');
 
-  async function loadCoinData() {
-    const coinRes = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
-    const coin = await coinRes.json();
+  async function loadCoinDetails() {
+    try {
+      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
+      const data = await res.json();
 
-    const chartRes = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7`);
-    const chartData = await chartRes.json();
+      document.getElementById('coinInfo').innerHTML = `
+        <img src="${data.image.small}" alt="${data.name}" />
+        <h2>${data.name} (${data.symbol.toUpperCase()})</h2>
+      `;
 
-    // Set title
-    document.getElementById("coinTitle").innerText = `${coin.name} (${coin.symbol.toUpperCase()})`;
+      document.getElementById('coinDetails').innerHTML = `
+        <p><strong>Current Price:</strong> $${data.market_data.current_price.usd.toLocaleString()}</p>
+        <p><strong>Market Cap:</strong> $${data.market_data.market_cap.usd.toLocaleString()}</p>
+        <p><strong>24h Change:</strong> ${data.market_data.price_change_percentage_24h.toFixed(2)}%</p>
+        <p><strong>Total Volume:</strong> $${data.market_data.total_volume.usd.toLocaleString()}</p>
+      `;
 
-    // Stats
-    document.getElementById("coinStats").innerHTML = `
-      <strong>Current Price:</strong> $${coin.market_data.current_price.usd.toLocaleString()}<br>
-      <strong>Market Cap:</strong> $${coin.market_data.market_cap.usd.toLocaleString()}<br>
-      <strong>24h Change:</strong> ${coin.market_data.price_change_percentage_24h.toFixed(2)}%
-    `;
-
-    // Chart
-    const labels = chartData.prices.map(p => new Date(p[0]).toLocaleDateString());
-    const prices = chartData.prices.map(p => p[1]);
-
-    new Chart(document.getElementById("chart"), {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: `${coin.name} Price (7d)`,
-          data: prices,
-          borderColor: "#4caf50",
-          fill: false,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: { display: true },
-          y: { beginAtZero: false }
-        }
-      }
-    });
+    } catch (error) {
+      console.error("Failed to load coin details:", error);
+    }
   }
 
-  loadCoinData();
+  async function loadCoinChart() {
+    try {
+      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7`);
+      const data = await res.json();
+
+      const labels = data.prices.map(p => {
+        const d = new Date(p[0]);
+        return `${d.getMonth()+1}/${d.getDate()}`;
+      });
+
+      const prices = data.prices.map(p => p[1]);
+
+      new Chart(document.getElementById('priceChart'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Price (USD)',
+            data: prices,
+            borderColor: '#0288d1',
+            backgroundColor: 'rgba(2,136,209,0.2)',
+            fill: true,
+            tension: 0.4,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false
+            }
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Failed to load chart:", error);
+    }
+  }
+
+  loadCoinDetails();
+  loadCoinChart();
 </script>
 
 </body>
