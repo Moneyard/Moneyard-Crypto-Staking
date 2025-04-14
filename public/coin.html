@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coin Details</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -111,10 +110,6 @@
     <button onclick="loadCoinChart('365')">1Y</button>
   </div>
 
-  <!-- Candlestick Chart -->
-  <canvas id="candlestickChart" height="400"></canvas>
-
-  <!-- Line Price Chart -->
   <canvas id="priceChart" height="100"></canvas>
 
   <!-- Staking Section -->
@@ -132,7 +127,7 @@
 <script>
   const params = new URLSearchParams(window.location.search);
   const coinId = params.get('id');
-  let priceChartInstance, candlestickChartInstance;
+  let chartInstance;
 
   // Fetch coin details from CoinGecko API
   async function loadCoinDetails() {
@@ -150,7 +145,7 @@
     `;
   }
 
-  // Load both price chart and candlestick chart for price history
+  // Load chart for price history
   async function loadCoinChart(days = '1') {
     document.querySelectorAll('.timeframe-buttons button').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`.timeframe-buttons button[onclick="loadCoinChart('${days}')"]`).classList.add('active');
@@ -164,8 +159,9 @@
     });
     const prices = data.prices.map(p => p[1]);
 
-    if (priceChartInstance) priceChartInstance.destroy();
-    priceChartInstance = new Chart(document.getElementById('priceChart'), {
+    if (chartInstance) chartInstance.destroy();
+
+    chartInstance = new Chart(document.getElementById('priceChart'), {
       type: 'line',
       data: {
         labels: labels,
@@ -184,43 +180,6 @@
         scales: { y: { beginAtZero: false } }
       }
     });
-
-    // Candlestick Chart (using OHLC data)
-    const ohlcData = data.market_caps.map((cap, index) => ({
-      t: data.prices[index][0],  // timestamp
-      o: data.prices[index][1],  // open
-      h: data.market_caps[index][1],  // high
-      l: data.total_volumes[index][1],  // low
-      c: cap[1],  // close
-    }));
-
-    if (candlestickChartInstance) candlestickChartInstance.destroy();
-    candlestickChartInstance = new Chart(document.getElementById('candlestickChart'), {
-      type: 'candlestick',
-      data: {
-        datasets: [{
-          label: 'Price Data',
-          data: ohlcData,
-          borderColor: '#ff0000',
-          borderWidth: 1,
-          upColor: '#00ff00',
-          downColor: '#ff0000',
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            type: 'time',
-            time: { unit: 'minute', tooltipFormat: 'll HH:mm' },
-            title: { display: true, text: 'Time' }
-          },
-          y: {
-            title: { display: true, text: 'Price' }
-          }
-        }
-      }
-    });
   }
 
   // Handle staking action
@@ -236,7 +195,23 @@
   // Initial loading
   loadCoinDetails();
   loadCoinChart('1');
-</script>
+fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h')
+    .then(response => response.json())
+    .then(data => {
+        const formattedData = data.map(item => ({
+            t: new Date(item[0]),  // Timestamp
+            o: parseFloat(item[1]), // Open
+            h: parseFloat(item[2]), // High
+            l: parseFloat(item[3]), // Low
+            c: parseFloat(item[4])  // Close
+        }));
+        
+        // Update the chart data
+        candlestickChart.data.datasets[0].data = formattedData;
+        candlestickChart.update();
+    })
+    .catch(error => console.error('Error fetching data:', error));
 
+</script>
 </body>
 </html>
