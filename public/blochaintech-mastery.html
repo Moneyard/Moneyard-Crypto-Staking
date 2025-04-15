@@ -153,13 +153,13 @@
         <label for="email">Your Email</label>
         <input type="email" id="email" required placeholder="Enter your email" />
 
-        <label for="txid">Transaction ID (TxID)</label>
-        <input type="text" id="txid" required placeholder="Paste your TxID here" />
+        <label for="txid">Transaction ID (TxID) <small>(optional)</small></label>
+        <input type="text" id="txid" placeholder="Paste your TxID here (if available)" />
 
         <button type="submit">Submit Payment</button>
       </form>
 
-      <p class="footer-note">Your enrollment will be confirmed within 1–12 hours after verification. Please ensure the email and TxID are correct.</p>
+      <p class="footer-note">Your enrollment will be confirmed within 1–12 hours after verification.</p>
     </div>
   </div>
 
@@ -174,15 +174,14 @@
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
-      const txid = document.getElementById('txid').value.trim();
 
-      if (!email || !txid) {
-        alert('Please fill in all fields.');
+      if (!email) {
+        alert('Please enter your email.');
         return;
       }
 
-      alert("Payment submitted! We'll verify and confirm your enrollment shortly.");
-      // You can add fetch() here to send the data to your backend
+      // Redirect to success page
+      window.location.href = 'payment-success.html';
     });
   </script>
 
