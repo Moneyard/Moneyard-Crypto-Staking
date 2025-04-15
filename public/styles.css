@@ -964,6 +964,7 @@ audio {
 .moneyard-learning-btn:hover {
   background-color: #2e958d; /* Darker green on hover */
 }
+
 .dropdown-btn {
   background-color: #3aafa9;
   color: white;
@@ -977,6 +978,9 @@ audio {
   display: none;
   background-color: white;
   box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  position: absolute;
+  z-index: 1;
+  width: 200px;
 }
 
 .dropdown-content a {
@@ -989,4 +993,3 @@ audio {
 .dropdown-content a:hover {
   background-color: #f0f0f0;
 }
-
