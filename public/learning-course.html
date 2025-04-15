@@ -2,253 +2,231 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moneyard Learning</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Courses</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fff;
+      font-family: Arial, sans-serif;
+      background-color: #eaffea;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 24px;
-      background-color: #f8f8f8;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      flex-wrap: wrap;
+      background-color: white;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .logo {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      color: #2b7a78;
-    }
-
-    .search-bar-container {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      justify-content: center;
-    }
-
-    .search-bar-container input {
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      width: 100%;
-      max-width: 250px;
-      outline: none;
-    }
-
-    .search-bar-container .fa-user {
-      margin-left: 20px;
-      font-size: 18px;
-      color: #2f2f2f;
-      cursor: pointer;
+      color: #2c7873;
     }
 
     .menu-bar {
       font-size: 18px;
       color: #17252a;
       cursor: pointer;
+      margin-left: 25px;
       position: relative;
     }
 
-    .dropdown-menu {
-      position: absolute;
-      top: 50px;
-      right: 24px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    .dropdown {
       display: none;
-      flex-direction: column;
-      min-width: 160px;
-      z-index: 99;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      padding: 10px;
+      border-radius: 5px;
     }
 
-    .dropdown-menu a {
-      padding: 10px 15px;
-      text-decoration: none;
+    .dropdown a {
+      display: block;
+      padding: 8px 10px;
       color: #333;
-      font-size: 14px;
-      transition: background 0.2s;
+      text-decoration: none;
     }
 
-    .dropdown-menu a:hover {
-      background-color: #f5f5f5;
+    .dropdown a:hover {
+      background-color: #f1f1f1;
     }
 
-    .all-courses-dropdown {
+    .course-section {
+      padding: 40px 20px;
       text-align: center;
-      margin: 20px 0;
     }
 
-    .all-courses-dropdown select {
-      font-size: 16px;
-      padding: 6px 12px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      cursor: pointer;
+    .course-levels {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
     }
 
-    .level-content {
-      display: none;
-      padding: 10px 20px;
-    }
-
-    .course-advert {
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      margin: 15px auto;
-      padding: 20px;
-      max-width: 700px;
-      background: #e6f9ec; /* Light green background */
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .course-advert h3 {
-      margin-top: 0;
-      color: #17252a;
-    }
-
-    .trademark {
-      font-size: 12px;
-      font-weight: bold;
-      color: #2b7a78;
-    }
-
-    .paid-label {
-      position: absolute;
-      top: -12px;
-      left: 10px;
-      background-color: #ff8c42; /* Warm orange */
-      color: white;
-      padding: 4px 10px;
-      font-size: 12px;
-      border-radius: 4px;
-      z-index: 2;
-    }
-
-    .enroll-btn {
-      background-color: #ff8c42;
-      color: white;
-      padding: 8px 16px;
+    .course-levels button {
+      background-color: #ffa64d;
       border: none;
-      border-radius: 5px;
-      font-size: 14px;
+      padding: 10px 20px;
+      color: white;
+      font-weight: bold;
+      border-radius: 20px;
       cursor: pointer;
-      margin-top: 10px;
     }
 
-    .overview-arrow {
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
+    .course-container {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .course-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 260px;
+    }
+
+    .course-title {
       font-size: 18px;
-      color: #2b7a78;
-      cursor: pointer;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
     }
 
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    .course-info {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
 
-      .search-bar-container {
-        justify-content: flex-start;
-        margin-top: 10px;
-      }
+    .enroll-button {
+      background-color: #ff8c1a;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .cert-text {
+      font-size: 13px;
+      color: #444;
+      margin-top: 8px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div class="logo">Moneyard Learning</div>
-
-    <div class="search-bar-container">
-      <input type="text" placeholder="Search courses..." />
-      <i class="fas fa-user"></i>
-    </div>
-
+    <div class="logo">Moneyard Academy</div>
     <div class="menu-bar" onclick="toggleMainDropdown()">
-      <i class="fas fa-bars"></i>
-      <div class="dropdown-menu" id="mainDropdown">
-        <a href="#">Home</a>
-        <a href="#">My Courses</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </div>
+      <i class="fa-solid fa-user" style="margin-right: 5px;"></i>
+    </div>
+    <div id="mainDropdown" class="dropdown">
+      <a href="#">Dashboard</a>
+      <a href="#">My Courses</a>
+      <a href="#">Profile</a>
+      <a href="#">Logout</a>
     </div>
   </header>
 
-  <div class="all-courses-dropdown">
-    <label for="courseLevel">All Courses</label>
-    <select id="courseLevel" onchange="toggleCoursesDropdown(this.value)">
-      <option value="">Select Level</option>
-      <option value="beginnerCourses">Beginner Courses</option>
-      <option value="intermediateCourses">Intermediate Courses</option>
-      <option value="advancedCourses">Advanced Courses</option>
-    </select>
-  </div>
+  <section class="course-section">
+    <h2>Explore Our Learning Paths</h2>
+    <div class="course-levels">
+      <button onclick="toggleCoursesDropdown('beginnerCourses')">Beginner</button>
+      <button onclick="toggleCoursesDropdown('intermediateCourses')">Intermediate</button>
+      <button onclick="toggleCoursesDropdown('advancedCourses')">Advanced</button>
+    </div>
 
-  <div class="level-content" id="beginnerCourses">
-    <div class="course-advert">
-      <h3>Intro to Micro-Investing</h3>
-      <p class="trademark">Duration: 2 weeks | Price: Free</p>
-      <button class="enroll-btn">Enroll Now</button>
+    <div id="beginnerCourses" class="course-container" style="display: flex;">
+      <div class="course-card">
+        <div class="course-title">Crypto Basics</div>
+        <div class="course-info">Duration: 2 Weeks</div>
+        <div class="course-info">Price: $15</div>
+        <button class="enroll-button">Enroll Now</button>
+        <div class="cert-text">Accredited certificate received upon completion</div>
+      </div>
+      <div class="course-card">
+        <div class="course-title">Introduction to Web3</div>
+        <div class="course-info">Duration: 3 Weeks</div>
+        <div class="course-info">Price: $25</div>
+        <button class="enroll-button">Enroll Now</button>
+        <div class="cert-text">Accredited certificate received upon completion</div>
+      </div>
     </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>Micro-Investing Bootcamp</h3>
-      <p class="trademark">Duration: 3 weeks | Price: $25</p>
-      <button class="enroll-btn">Enroll for $25</button>
-    </div>
-  </div>
 
-  <div class="level-content" id="intermediateCourses">
-    <div class="course-advert">
-      <h3>Smart Savings Tools</h3>
-      <p class="trademark">Duration: 2 weeks | Price: $40</p>
-      <button class="enroll-btn">Enroll for $40</button>
+    <div id="intermediateCourses" class="course-container">
+      <div class="course-card">
+        <div class="course-title">DeFi Essentials</div>
+        <div class="course-info">Duration: 4 Weeks</div>
+        <div class="course-info">Price: $40</div>
+        <button class="enroll-button">Enroll Now</button>
+        <div class="cert-text">Accredited certificate received upon completion</div>
+      </div>
+      <div class="course-card">
+        <div class="course-title">Smart Contracts 101</div>
+        <div class="course-info">Duration: 5 Weeks</div>
+        <div class="course-info">Price: $60</div>
+        <button class="enroll-button">Enroll Now</button>
+        <div class="cert-text">Accredited certificate received upon completion</div>
+      </div>
     </div>
-  </div>
 
-  <div class="level-content" id="advancedCourses">
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>High-Yield Accounts Masterclass</h3>
-      <p class="trademark">Duration: 4 weeks | Price: $100</p>
-      <button class="enroll-btn">Enroll for $100</button>
+    <div id="advancedCourses" class="course-container">
+      <div class="course-card">
+        <div class="course-title">Blockchain Development</div>
+        <div class="course-info">Duration: 6 Weeks</div>
+        <div class="course-info">Price: $80</div>
+        <button class="enroll-button">Enroll Now</button>
+        <div class="cert-text">Accredited certificate received upon completion</div>
+      </div>
+      <div class="course-card">
+        <div class="course-title">Advanced Crypto Trading</div>
+        <div class="course-info">Duration: 8 Weeks</div>
+        <div class="course-info">Price: $100</div>
+        <button class="enroll-button">Enroll Now</button>
+        <div class="cert-text">Accredited certificate received upon completion</div>
+      </div>
     </div>
-  </div>
+  </section>
 
   <script>
     function toggleMainDropdown() {
       const dropdown = document.getElementById("mainDropdown");
       dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+      dropdown.style.flexDirection = "column";
     }
 
     document.addEventListener("click", function (e) {
       const dropdown = document.getElementById("mainDropdown");
       const menu = document.querySelector(".menu-bar");
-      if (!menu.contains(e.target)) dropdown.style.display = "none";
+      if (!menu.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
     });
 
     function toggleCoursesDropdown(levelId) {
       const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
       levels.forEach((id) => {
         const section = document.getElementById(id);
-        section.style.display = (id === levelId) ? "block" : "none";
+        section.style.display = (id === levelId) ? "flex" : "none";
       });
     }
   </script>
+
 </body>
 </html>
