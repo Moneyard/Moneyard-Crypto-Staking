@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Learning - Information</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #17252a;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2b7a78;
+    }
+
+    .info-title {
+      text-align: center;
+      padding: 30px 10px 10px;
+      font-size: 26px;
+      color: #2f3e46;
+    }
+
+    .articles-container {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .article-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 16px;
+      background-color: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .article-title {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #17252a;
+    }
+
+    .article-meta {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .article-snippet {
+      font-size: 14px;
+      color: #555;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .info-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Moneyard Learning</div>
+    <div>
+      <a href="index.html" style="text-decoration:none; color:#3aafa9;">Back to Home</a>
+    </div>
+  </header>
+
+  <h1 class="info-title"><i class="fas fa-newspaper"></i> Insights & Articles</h1>
+
+  <section class="articles-container">
+    <div class="article-card">
+      <h3 class="article-title">5 Reasons to Start Crypto Education Early</h3>
+      <div class="article-meta">April 2025 · By Moneyard Team</div>
+      <p class="article-snippet">Understanding the crypto world early opens opportunities for smarter financial decisions. Here's why every beginner should get started...</p>
+    </div>
+    <div class="article-card">
+      <h3 class="article-title">Inside Our Staking Bootcamp</h3>
+      <div class="article-meta">March 2025 · Learning Spotlight</div>
+      <p class="article-snippet">Moneyard's bootcamp has empowered over 1,000 learners to earn passively while gaining real blockchain knowledge. Here’s what happened...</p>
+    </div>
+    <div class="article-card">
+      <h3 class="article-title">Crypto Safety: Best Practices</h3>
+      <div class="article-meta">February 2025 · Security Tips</div>
+      <p class="article-snippet">Wallet security, phishing awareness, and cold storage: learn how to protect your assets in our updated crypto safety guide.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Moneyard Learning · All rights reserved.
+  </footer>
+</body>
+</html>
