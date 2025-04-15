@@ -55,11 +55,81 @@
       font-size: 18px;
       color: #17252a;
       cursor: pointer;
+      position: relative;
     }
 
-    .menu-bar:hover,
-    .search-bar-container .fa-user:hover {
-      color: #3aafa9;
+    .dropdown {
+      position: absolute;
+      top: 50px;
+      right: 24px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      min-width: 160px;
+      z-index: 99;
+    }
+
+    .dropdown a {
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .dropdown a:hover {
+      background-color: #f5f5f5;
+    }
+
+    .course-section {
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s;
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .course-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #17252a;
+    }
+
+    .course-card p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      .search-bar-container {
+        position: static;
+        transform: none;
+        margin: 10px 0;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .menu-bar {
+        align-self: flex-end;
+      }
     }
   </style>
 </head>
@@ -75,15 +145,47 @@
     </div>
 
     <!-- Menu bar top right -->
-    <div class="menu-bar">
+    <div class="menu-bar" onclick="toggleDropdown()">
       <i class="fas fa-bars"></i>
+      <div class="dropdown" id="dropdownMenu">
+        <a href="#">Home</a>
+        <a href="#">My Courses</a>
+        <a href="#">Settings</a>
+        <a href="#">Logout</a>
+      </div>
     </div>
   </header>
 
-  <!-- Page content placeholder -->
-  <main style="padding: 40px; text-align: center;">
-    <h2>Welcome to Moneyard Learning</h2>
-    <p>Explore courses, expand your knowledge, and grow your money-smart mindset.</p>
-  </main>
+  <!-- Course Cards Section -->
+  <section class="course-section">
+    <div class="course-card">
+      <h3>Crypto Basics</h3>
+      <p>Understand blockchain, wallets, and how to get started in crypto.</p>
+    </div>
+    <div class="course-card">
+      <h3>Staking 101</h3>
+      <p>Learn how staking works, rewards structure, and secure participation.</p>
+    </div>
+    <div class="course-card">
+      <h3>Smart Investing</h3>
+      <p>Grow your portfolio with smart, long-term strategies and risk control.</p>
+    </div>
+  </section>
+
+  <script>
+    function toggleDropdown() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+
+    // Optional: Close dropdown if clicking outside
+    document.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('dropdownMenu');
+      const menuBar = document.querySelector('.menu-bar');
+      if (!menuBar.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
