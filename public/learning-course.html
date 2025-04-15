@@ -206,6 +206,39 @@
       font-size: 18px;
       cursor: pointer;
     }
+
+    /* Payment Modal */
+    #paymentModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    #paymentModal .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+
+    #paymentModal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -263,169 +296,69 @@
       <button class="enroll-button">Enroll Now</button>
       <span class="overview-arrow" onclick="showOverview('Smart Contracts in Practice')">&#10148;</span>
     </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>Micro-Investing Essentials</h3>
-      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes practical investing simulations</p>
-      <span class="overview-arrow" onclick="showOverview('Micro-Investing Essentials')">&#10148;</span>
-    </div>
   </div>
 
   <div class="level-content" id="advancedCourses">
     <div class="course-advert">
-      <h3>Advanced Blockchain Security</h3>
-      <p class="duration-price">Duration: 8 weeks | Price: Free</p>
+      <h3>Advanced Blockchain Development</h3>
+      <p class="duration-price">Duration: 2 weeks | Price: $30</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <span class="overview-arrow" onclick="showOverview('Advanced Blockchain Security')">&#10148;</span>
-    </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>High-Yield Savings Tools</h3>
-      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes savings strategy planner</p>
-      <span class="overview-arrow" onclick="showOverview('High-Yield Savings Tools')">&#10148;</span>
+      <p class="cert-note">Accredited certificate received upon completion</p>
+      <span class="overview-arrow" onclick="showOverview('Advanced Blockchain Development')">&#10148;</span>
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Overview Modal -->
   <div id="overviewModal">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <span class="close-btn" onclick="closeModal()">×</span>
       <h3 id="modalTitle">Course Overview</h3>
-      <p>This course gives an in-depth understanding of <span id="modalCourseName"></span>.</p>
+      <h4 id="modalCourseName"></h4>
+      <button id="modalEnrollBtn" class="enroll-button" onclick="enrollFromModal()">Enroll</button>
     </div>
   </div>
-<!-- Payment Modal -->
-<div id="paymentModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closePaymentModal()">&times;</span>
-    <h3>Enroll in <span id="selectedCourseName"></span></h3>
-    <form id="paymentForm">
-      <label for="paymentName">Your Name:</label>
-      <input type="text" id="paymentName" required>
 
-      <label for="paymentEmail">Email Address:</label>
-      <input type="email" id="paymentEmail" required>
-
-      <label for="paymentMethod">Select Payment Method:</label>
-      <select id="paymentMethod" required>
-        <option value="">--Choose--</option>
-        <option value="TRC20">Crypto (USDT-TRC20)</option>
-        <option value="BEP20">Crypto (USDT-BEP20)</option>
-        <option value="Card">Card Payment</option>
-        <option value="Mobile">Mobile Money</option>
-      </select>
-
-      <div id="extraPaymentFields"></div>
-
-      <button type="submit" class="enroll-button">Confirm Enrollment</button>
-    </form>
-    <div id="paymentSuccess" style="display:none; margin-top:10px; color:green;">
-      Enrollment successful! We'll contact you shortly.
+  <!-- Payment Modal -->
+  <div id="paymentModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h3>Choose Payment Method</h3>
+      <button class="enroll-button">Pay with Credit Card</button>
+      <button class="enroll-button">Pay with Crypto</button>
     </div>
   </div>
-</div>
 
   <script>
     function toggleMainDropdown() {
-      const dropdown = document.getElementById("mainDropdown");
-      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+      const dropdown = document.getElementById('mainDropdown');
+      dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    document.addEventListener("click", function (e) {
-      const dropdown = document.getElementById("mainDropdown");
-      const menu = document.querySelector(".menu-bar");
-      if (!menu.contains(e.target)) dropdown.style.display = "none";
-    });
-
-    function toggleCoursesDropdown(levelId) {
-      const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
-      levels.forEach((id) => {
-        const section = document.getElementById(id);
-        section.style.display = (id === levelId) ? "block" : "none";
-      });
+    function toggleCoursesDropdown(level) {
+      const contentDivs = document.querySelectorAll('.level-content');
+      contentDivs.forEach(div => div.style.display = 'none');
+      document.getElementById(level).style.display = 'block';
     }
 
     function showOverview(courseName) {
+      document.getElementById('modalCourseName').innerText = courseName;
+      document.getElementById('modalTitle').innerText = `${courseName} - Overview`;
       document.getElementById('overviewModal').style.display = 'flex';
-      document.getElementById('modalCourseName').textContent = courseName;
-      document.getElementById('modalTitle').textContent = `Overview: ${courseName}`;
+      document.getElementById('modalEnrollBtn').setAttribute('data-course', courseName);
     }
 
     function closeModal() {
       document.getElementById('overviewModal').style.display = 'none';
+      document.getElementById('paymentModal').style.display = 'none';
     }
-<script>
-  function showOverview(courseName) {
-    document.getElementById('modalCourseName').innerText = courseName;
-    document.getElementById('modalTitle').innerText = `${courseName} - Overview`;
-    document.getElementById('overviewModal').style.display = 'flex';
-    document.getElementById('modalEnrollBtn').setAttribute('data-course', courseName);
-  }
 
-  function closeModal() {
-    document.getElementById('overviewModal').style.display = 'none';
-  }
-
-  function enrollFromModal() {
-    const course = document.getElementById('modalEnrollBtn').getAttribute('data-course');
-    closeModal();
-    document.getElementById('selectedCourseName').innerText = course;
-    document.getElementById('paymentModal').style.display = 'flex';
-  }
-
-  function closePaymentModal() {
-    document.getElementById('paymentModal').style.display = 'none';
-    document.getElementById('paymentForm').reset();
-    document.getElementById('paymentSuccess').style.display = 'none';
-    document.getElementById('extraPaymentFields').innerHTML = '';
-  }
-
-  document.getElementById('paymentMethod').addEventListener('change', function () {
-    const method = this.value;
-    const extra = document.getElementById('extraPaymentFields');
-    extra.innerHTML = '';
-
-    if (method === 'TRC20' || method === 'BEP20') {
-      extra.innerHTML = `
-        <label for="txid">Enter Transaction ID (TxID):</label>
-        <input type="text" id="txid" required>
-        <p>Send payment to: <strong>${method === 'TRC20' ? 'TXYZ123...' : '0xABC456...'}</strong></p>
-      `;
-    } else if (method === 'Card') {
-      extra.innerHTML = `
-        <label for="cardNumber">Card Number:</label>
-        <input type="text" id="cardNumber" required>
-        <label for="expiry">Expiry Date:</label>
-        <input type="text" id="expiry" placeholder="MM/YY" required>
-        <label for="cvv">CVV:</label>
-        <input type="text" id="cvv" required>
-      `;
-    } else if (method === 'Mobile') {
-      extra.innerHTML = `
-        <label for="mobileNumber">Mobile Number:</label>
-        <input type="text" id="mobileNumber" required>
-        <p>Use MoMo to pay to: <strong>+233 123 456 789</strong></p>
-      `;
+    function enrollFromModal() {
+      const course = document.getElementById('modalEnrollBtn').getAttribute('data-course');
+      closeModal();
+      console.log(`Enrolled in course: ${course}`);
+      // Add logic for payment, redirecting to payment page, etc.
     }
-  });
-
-  document.getElementById('paymentForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    // Optionally send data to backend here
-    document.getElementById('paymentSuccess').style.display = 'block';
-    this.reset();
-    document.getElementById('extraPaymentFields').innerHTML = '';
-    setTimeout(closePaymentModal, 3000); // Auto-close modal after 3 seconds
-  });
-</script>
-
-</script>
+  </script>
 </body>
 </html>
