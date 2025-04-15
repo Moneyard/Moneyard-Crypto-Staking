@@ -60,6 +60,8 @@
 
     .dropdown {
       position: absolute;
+      top: 50px;
+      right: 24px;
       background-color: #ffffff;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -82,61 +84,11 @@
       background-color: #f5f5f5;
     }
 
-    .courses-filter-section {
-      display: flex;
-      justify-content: center;
-      margin: 30px 0 10px 0;
-      position: relative;
-    }
-
-    .courses-sidebar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 18px;
-      font-weight: 500;
-    }
-
-    .dropdown-icon-btn {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .courses-collapsible {
-      padding: 0 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-
-    .course-level {
-      display: none;
-      margin-top: 10px;
-      padding: 20px;
-      background: #f9f9f9;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-    }
-
-    .course-level h4 {
-      margin-bottom: 10px;
-      font-size: 20px;
-      color: #2b7a78;
-    }
-
-    .course-level ul {
-      list-style-type: none;
-      padding-left: 0;
-    }
-
-    .course-level ul li {
-      padding: 5px 0;
-    }
-
-    .course-level ul li a {
-      text-decoration: none;
-      color: #333;
+    .course-section {
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
     }
 
     .course-card {
@@ -163,11 +115,73 @@
       color: #555;
     }
 
-    .course-section {
-      padding: 40px 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+    .course-header {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .courses-sidebar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+    }
+
+    #courseDropdown {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 999;
+      min-width: 160px;
+    }
+
+    #courseDropdown a {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+    }
+
+    #courseDropdown a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .course-level {
+      display: none;
+      padding: 10px 20px;
+    }
+
+    .course-level h4 {
+      font-size: 18px;
+      color: #2b7a78;
+      margin-bottom: 10px;
+    }
+
+    .course-level ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .course-level ul li {
+      margin-bottom: 6px;
+    }
+
+    .course-level ul li a {
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
     }
 
     @media (max-width: 600px) {
@@ -186,9 +200,8 @@
         align-self: flex-end;
       }
 
-      .courses-sidebar {
+      .course-header {
         flex-direction: column;
-        align-items: center;
       }
     }
   </style>
@@ -200,7 +213,7 @@
       <input type="text" placeholder="Search courses..."/>
       <i class="fas fa-user"></i>
     </div>
-    <div class="menu-bar" onclick="toggleUserDropdown()">
+    <div class="menu-bar" onclick="toggleDropdown()">
       <i class="fas fa-bars"></i>
       <div class="dropdown" id="dropdownMenu">
         <a href="#">Home</a>
@@ -211,40 +224,27 @@
     </div>
   </header>
 
-  <div class="courses-filter-section">
-    <div class="courses-sidebar">
+  <!-- All Courses Center Dropdown -->
+  <div class="course-header">
+    <div class="courses-sidebar" onclick="toggleCourseDropdown()">
       <span>All Courses</span>
-      <button class="dropdown-icon-btn" onclick="toggleCourseDropdown()">
-        <i class="fas fa-chevron-down"></i>
-      </button>
-      <div class="dropdown" id="courseDropdown">
+      <i class="fas fa-chevron-down"></i>
+      <div id="courseDropdown">
         <a href="#" onclick="toggleCourses('beginner')">Beginner Courses</a>
-        <a href="#" onclick="toggleCourses('intermediate')">Intermediate</a>
-        <a href="#" onclick="toggleCourses('advanced')">Advanced</a>
       </div>
     </div>
   </div>
 
-  <div class="courses-collapsible">
-    <div id="beginner" class="course-level">
-      <h4>Learning Courses</h4>
-      <ul>
-        <li><a href="#">Blockchain Technology Foundations</a></li>
-        <li><a href="#">Blockchain Technology Mastery</a></li>
-      </ul>
-    </div>
-
-    <div id="intermediate" class="course-level">
-      <h4>Intermediate Courses</h4>
-      <p>Coming soon...</p>
-    </div>
-
-    <div id="advanced" class="course-level">
-      <h4>Advanced Courses</h4>
-      <p>Coming soon...</p>
-    </div>
+  <!-- Collapsible Content -->
+  <div id="beginner" class="course-level">
+    <h4>Learning Courses</h4>
+    <ul>
+      <li><a href="#">Blockchain Technology Foundations</a></li>
+      <li><a href="#">Blockchain Technology Mastery</a></li>
+    </ul>
   </div>
 
+  <!-- Course Cards Section -->
   <section class="course-section">
     <div class="course-card">
       <h3>Crypto Basics</h3>
@@ -261,7 +261,7 @@
   </section>
 
   <script>
-    function toggleUserDropdown() {
+    function toggleDropdown() {
       const menu = document.getElementById("dropdownMenu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
@@ -272,7 +272,7 @@
     }
 
     function toggleCourses(level) {
-      const levels = ["beginner", "intermediate", "advanced"];
+      const levels = ["beginner"];
       levels.forEach(id => {
         const section = document.getElementById(id);
         section.style.display = (id === level) ? "block" : "none";
@@ -281,16 +281,16 @@
     }
 
     document.addEventListener('click', function(e) {
-      const userMenu = document.getElementById('dropdownMenu');
-      const courseMenu = document.getElementById('courseDropdown');
-      const menuBar = document.querySelector('.menu-bar');
-      const courseBtn = document.querySelector('.dropdown-icon-btn');
-
-      if (!menuBar.contains(e.target)) {
-        userMenu.style.display = 'none';
+      const courseDropdown = document.getElementById("courseDropdown");
+      const coursesSidebar = document.querySelector(".courses-sidebar");
+      if (!coursesSidebar.contains(e.target)) {
+        courseDropdown.style.display = "none";
       }
-      if (!courseBtn.contains(e.target) && !e.target.matches('#courseDropdown, #courseDropdown *')) {
-        courseMenu.style.display = 'none';
+
+      const dropdown = document.getElementById("dropdownMenu");
+      const menuBar = document.querySelector(".menu-bar");
+      if (!menuBar.contains(e.target)) {
+        dropdown.style.display = "none";
       }
     });
   </script>
