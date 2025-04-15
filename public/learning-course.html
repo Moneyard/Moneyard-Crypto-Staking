@@ -277,7 +277,7 @@
       <p class="duration-price">Duration: 2 weeks | Price: $25</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes practical investing simulations</p>
+      <p class="cert-note">Accredited certificate received upon completion</p>
       <span class="overview-arrow" onclick="openModal('Micro-Investing Essentials')">&#10148;</span>
     </div>
   </div>
@@ -285,7 +285,7 @@
   <div class="level-content" id="advancedCourses">
     <div class="course-advert">
       <h3>Advanced Blockchain Security</h3>
-      <p class="duration-price">Duration: 8 weeks | Price: Free</p>
+      <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note"></p>
@@ -294,10 +294,10 @@
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
       <h3>High-Yield Savings Tools</h3>
-      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
+      <p class="duration-price">Duration: 3 weeks | Price: $35</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes savings strategy planner</p>
+      <p class="cert-note">Accredited certificate received upon completion</p>
       <span class="overview-arrow" onclick="openModal('High-Yield Savings Tools')">&#10148;</span>
     </div>
   </div>
@@ -307,74 +307,38 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <h2>Course Overview</h2>
-      <p id="courseOverviewContent"></p>
+      <p id="courseOverviewContent">Course details will be shown here...</p>
     </div>
   </div>
-<div class="modal" id="modalBlockchainTechnologyMastery">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('Blockchain Technology Mastery')">&times;</span>
-    <h2>Blockchain Technology Mastery</h2>
-    <div class="modal-body">
-      <!-- INSERT HERE --><p><strong>Overview:</strong>  
-Are you ready to become a true blockchain professional?  
-<strong>Blockchain Technology Mastery</strong> is a power-packed, advanced-level course designed for serious learners who want to unlock the full potential of blockchain and Web3.  
-
-This course dives deep into the mechanics of decentralized networks, smart contracts, token economies, blockchain security, and real-world applications in finance, logistics, healthcare, and more.  
-
-You’ll master how to build and interact with blockchain systems, understand how cryptocurrencies work, explore NFTs, DeFi, and Web3 protocols — and even learn how to launch your own token or DApp.  
-
-By the end of this course, you’ll be equipped with practical skills to land jobs, launch blockchain projects, or confidently invest in digital assets.  
-</p>
-
-<p><strong>Why Pay and Enroll Now?</strong></p>
-<ul>
-  <li>Advance your career with in-demand blockchain skills</li>
-  <li>Get lifetime access to premium content and future updates</li>
-  <li>Receive an <strong>Accredited Certificate of Completion</strong></li>
-  <li>Real-world project examples, guides, and mentorship</li>
-  <li>Access to exclusive Moneyard Learning community & support</li>
-</ul>
-
-<p><strong>Duration:</strong> 1 week (intensive)</p>
-<p><strong>Price:</strong> $15 only</p>
-
-<h3>Payment Methods</h3>
-<ul>
-  <li>USDT (TRC20 / BEP20)</li>
-  <li>Mobile Money (Airtel / MTN)</li>
-  <li>Bank Transfer / Card (ZM Payment)</li>
-</ul>
-
-<button class="enroll-now-btn">Enroll & Deposit Now</button>
-    </div>
-  </div>
-</div>
-
 
   <script>
     function toggleMainDropdown() {
       const dropdown = document.getElementById("mainDropdown");
-      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     }
 
-    document.addEventListener("click", function (e) {
-      const dropdown = document.getElementById("mainDropdown");
-      const menu = document.querySelector(".menu-bar");
-      if (!menu.contains(e.target)) dropdown.style.display = "none";
-    });
-
-    function toggleCoursesDropdown(levelId) {
-      const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
-      levels.forEach((id) => {
-        const section = document.getElementById(id);
-        section.style.display = (id === levelId) ? "block" : "none";
+    function toggleCoursesDropdown(level) {
+      const levels = ['beginnerCourses', 'intermediateCourses', 'advancedCourses'];
+      levels.forEach((lvl) => {
+        const content = document.getElementById(lvl);
+        content.style.display = (lvl === level) ? "block" : "none";
       });
     }
 
     function openModal(courseName) {
+      const courseContent = {
+        "Blockchain Technology Foundations": "Are you ready to dive into blockchain technology? This free course covers the basics of blockchain technology, cryptocurrency, and decentralized applications.",
+        "Blockchain Technology Mastery": "Blockchain Technology Mastery is an advanced course designed for those looking to deepen their understanding of blockchain. Explore real-world applications, security, and smart contracts.",
+        "Smart Contracts in Practice": "Learn how to write and deploy smart contracts on the blockchain. This course will teach you the fundamentals of Ethereum, Solidity, and decentralized applications.",
+        "Micro-Investing Essentials": "Learn the basics of micro-investing, how to start investing with small amounts of money, and the key concepts behind it.",
+        "Advanced Blockchain Security": "This advanced course dives deep into blockchain security, focusing on preventing attacks, vulnerabilities, and securing decentralized applications.",
+        "High-Yield Savings Tools": "Explore high-yield savings accounts and tools to maximize your savings with practical strategies and real-world applications."
+      };
+
+      const modalContent = document.getElementById("courseOverviewContent");
       const modal = document.getElementById("courseModal");
-      const overviewContent = document.getElementById("courseOverviewContent");
-      overviewContent.textContent = `Overview of the course: ${courseName}`;
+
+      modalContent.textContent = courseContent[courseName];
       modal.style.display = "block";
     }
 
