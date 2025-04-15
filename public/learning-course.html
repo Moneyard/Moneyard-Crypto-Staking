@@ -112,7 +112,6 @@
       position: relative;
       background: #a8e6a3; /* Green advert */
       text-align: center;
-      cursor: pointer;
     }
 
     .course-advert h3 {
@@ -165,52 +164,6 @@
       margin-bottom: 8px;
     }
 
-    /* Modal styling */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      padding-top: 60px;
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 5% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 600px;
-      border-radius: 10px;
-    }
-
-    .modal-content h4 {
-      font-size: 20px;
-    }
-
-    .modal-content p {
-      font-size: 16px;
-    }
-
-    .close-modal {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .close-modal:hover,
-    .close-modal:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
     @media (max-width: 600px) {
       header {
         flex-direction: column;
@@ -252,50 +205,62 @@
   </div>
 
   <div class="level-content" id="beginnerCourses">
-    <div class="course-advert" onclick="openModal('course1')">
+    <div class="course-advert">
       <h3>Learning Courses: Blockchain Technology Foundations</h3>
       <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note"></p>
-      <span class="overview-arrow">&#10148;</span>
+      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
     </div>
-    <div class="course-advert" onclick="openModal('course2')">
+    <div class="course-advert">
       <span class="paid-label">Paid Course</span>
       <h3>Blockchain Technology Mastery</h3>
       <p class="duration-price">Duration: 1 week | Price: $15</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note">Accredited certificate received upon completion</p>
-      <span class="overview-arrow">&#10148;</span>
+      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
     </div>
   </div>
 
   <div class="level-content" id="intermediateCourses">
-    <!-- Add intermediate courses here -->
-  </div>
-
-  <div class="level-content" id="advancedCourses">
-    <!-- Add advanced courses here -->
-  </div>
-
-  <!-- Modal for Course 1 -->
-  <div id="course1Modal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeModal('course1')">&times;</span>
-      <h4>Blockchain Technology Foundations</h4>
-      <p>This course provides an introduction to blockchain technology, covering the basics and foundational knowledge required for more advanced studies. Perfect for beginners.</p>
+    <div class="course-advert">
+      <h3>Smart Contracts in Practice</h3>
+      <p class="duration-price">Duration: 1 week | Price: Free</p>
+      <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
+      <p class="cert-note"></p>
+      <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148;</span>
+    </div>
+    <div class="course-advert">
+      <span class="paid-label">Paid Course</span>
+      <h3>Micro-Investing Essentials</h3>
+      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
+      <p class="trademark">Moneyard Learning</p>
+      <button class="enroll-button">Enroll Now</button>
+      <p class="cert-note">Includes practical investing simulations</p>
+      <span class="overview-arrow" onclick="alert('Overview: Micro-Investing Essentials')">&#10148;</span>
     </div>
   </div>
 
-  <!-- Modal for Course 2 -->
-  <div id="course2Modal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeModal('course2')">&times;</span>
-      <h4>Blockchain Technology Mastery</h4>
-      <p>Learn advanced blockchain techniques and strategies. This paid course includes practical exercises and an accredited certificate upon completion.</p>
+  <div class="level-content" id="advancedCourses">
+    <div class="course-advert">
+      <h3>Advanced Blockchain Security</h3>
+      <p class="duration-price">Duration: 8 weeks | Price: Free</p>
+      <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
+      <p class="cert-note"></p>
+      <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148;</span>
+    </div>
+    <div class="course-advert">
+      <span class="paid-label">Paid Course</span>
+      <h3>High-Yield Savings Tools</h3>
+      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
+      <p class="trademark">Moneyard Learning</p>
+      <button class="enroll-button">Enroll Now</button>
+      <p class="cert-note">Includes savings strategy planner</p>
+      <span class="overview-arrow" onclick="alert('Overview: High-Yield Savings Tools')">&#10148;</span>
     </div>
   </div>
 
@@ -318,16 +283,101 @@
         section.style.display = (id === levelId) ? "block" : "none";
       });
     }
+  <script>
+  function toggleMainDropdown() {
+    const dropdown = document.getElementById("mainDropdown");
+    dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+  }
 
-    function openModal(courseId) {
-      const modal = document.getElementById(courseId + 'Modal');
-      modal.style.display = "block";
-    }
+  document.addEventListener("click", function (e) {
+    const dropdown = document.getElementById("mainDropdown");
+    const menu = document.querySelector(".menu-bar");
+    if (!menu.contains(e.target)) dropdown.style.display = "none";
+  });
 
-    function closeModal(courseId) {
-      const modal = document.getElementById(courseId + 'Modal');
-      modal.style.display = "none";
+  function toggleCoursesDropdown(levelId) {
+    const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
+    levels.forEach((id) => {
+      const section = document.getElementById(id);
+      section.style.display = (id === levelId) ? "block" : "none";
+    });
+  }
+
+  // Modal functions
+  function openModal() {
+    document.getElementById("enrollModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("enrollModal").style.display = "none";
+  }
+
+  // Attach modal to only PAID enroll buttons
+  document.querySelectorAll(".paid-label").forEach((label) => {
+    const advertBox = label.closest(".course-advert");
+    const enrollBtn = advertBox.querySelector(".enroll-button");
+    if (enrollBtn) {
+      enrollBtn.addEventListener("click", openModal);
     }
-  </script>
+  });
+<!-- Enrollment Modal -->
+<div id="enrollModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; border-radius:10px; padding:20px; max-width:400px; width:90%; position:relative;">
+    <span onclick="closeModal()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">&times;</span>
+    <h3 id="modalCourseTitle">Course Enrollment</h3>
+    <p id="modalCoursePrice">Price: $15 ~ 15 USDT</p>
+    <input type="text" id="enrollName" placeholder="Full Name" style="width:100%; padding:10px; margin:10px 0;"/>
+    <input type="email" id="enrollEmail" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;"/>
+    <label>Select Payment Method:</label>
+    <select id="paymentMethod" style="width:100%; padding:10px; margin:10px 0;">
+      <option value="usdt_trc20">USDT - TRC20</option>
+      <option value="usdt_bep20">USDT - BEP20</option>
+      <option value="card">Debit/Credit Card</option>
+      <option value="mobile">Mobile Money</option>
+    </select>
+    <button onclick="submitEnrollment()" style="background:#ff8c42; color:white; padding:10px 20px; border:none; border-radius:5px; width:100%; margin-top:10px;">Submit Enrollment</button>
+  </div>
+</div>
+// Open modal and populate course info
+document.querySelectorAll('.course-advert .enroll-button').forEach(button => {
+  button.addEventListener('click', function () {
+    const courseCard = this.closest('.course-advert');
+    const courseTitle = courseCard.querySelector('h3').innerText;
+    const coursePrice = courseCard.querySelector('.duration-price').innerText.match(/\$[\d]+/g);
+
+    document.getElementById('modalCourseTitle').innerText = courseTitle;
+    document.getElementById('modalCoursePrice').innerText = coursePrice ? `Price: ${coursePrice[0]} ~ ${parseInt(coursePrice[0].slice(1))} USDT` : 'Free Enrollment';
+
+    document.getElementById('enrollModal').style.display = 'flex';
+  });
+});
+
+function closeModal() {
+  document.getElementById('enrollModal').style.display = 'none';
+}
+
+function submitEnrollment() {
+  const name = document.getElementById('enrollName').value;
+  const email = document.getElementById('enrollEmail').value;
+  const method = document.getElementById('paymentMethod').value;
+  const course = document.getElementById('modalCourseTitle').innerText;
+
+  if (!name || !email) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  // Simulate enrollment logic here (this can be connected to your backend)
+  alert(`Thank you, ${name}! You've enrolled in "${course}" using ${method}.`);
+
+  // Reset and close modal
+  document.getElementById('enrollName').value = '';
+  document.getElementById('enrollEmail').value = '';
+  closeModal();
+}
+
+</script>
 </body>
 </html>
+
+
