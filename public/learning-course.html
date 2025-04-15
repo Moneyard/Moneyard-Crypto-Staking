@@ -3,174 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Crypto Academy</title>
+  <title>Moneyard Courses</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f9f8;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #333;
+      padding: 20px;
     }
-
-    header {
-      background-color: #004d3a;
-      color: white;
-      padding: 1rem 2rem;
-      text-align: center;
-    }
-
     h1 {
-      margin: 0;
-    }
-
-    .container {
-      padding: 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-
-    .level-buttons {
       text-align: center;
-      margin-bottom: 2rem;
+      color: #2d6a4f;
     }
-
-    .level-buttons button {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      border-radius: 20px;
-      background-color: #009e60;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    .level-buttons button:hover {
-      background-color: #007749;
-    }
-
     .course-section {
-      display: none;
+      margin: 30px auto;
+      max-width: 800px;
     }
-
-    .course-card {
-      background: white;
-      border-left: 5px solid #009e60;
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      position: relative;
+    .dropdown {
+      margin-bottom: 20px;
     }
-
-    .course-card h3 {
-      margin-top: 0;
+    select {
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border: 2px solid #2d6a4f;
+      border-radius: 5px;
     }
-
-    .paid-label {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background-color: #ff6600;
-      color: white;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
+    .course-list {
+      margin-top: 20px;
+      border-top: 2px solid #2d6a4f;
+      padding-top: 10px;
     }
-
-    .footer {
-      background-color: #004d3a;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
+    .course {
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-left: 5px solid #40916c;
+      background-color: #f8f9fa;
     }
+    .course-title {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .course-tag {
+      float: right;
+      font-size: 14px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: #ccc;
+      color: #000;
+    }
+    .free { background-color: #d8f3dc; }
+    .paid { background-color: #ffccd5; }
   </style>
 </head>
 <body>
+  <h1>Moneyard Learning Courses</h1>
 
-  <header>
-    <h1>Moneyard Crypto Academy</h1>
-    <p>Learn Crypto, Earn Crypto – One Course at a Time</p>
-  </header>
-
-  <div class="container">
-    <div class="level-buttons">
-      <button onclick="showCourses('beginner')">Beginner</button>
-      <button onclick="showCourses('intermediate')">Intermediate</button>
-      <button onclick="showCourses('advanced')">Advanced</button>
+  <div class="course-section">
+    <div class="dropdown">
+      <label for="level">Choose a learning level:</label>
+      <select id="level" onchange="filterCourses()">
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
     </div>
 
-    <!-- Beginner Courses -->
-    <div id="beginner" class="course-section">
-      <div class="course-card">
-        <span class="paid-label">Paid</span>
-        <h3>Micro-Investing Essentials</h3>
-        <p>Learn how to start investing with small amounts and build long-term wealth.</p>
-        <p><strong>Price:</strong> $49 | <strong>Duration:</strong> 2 weeks | <strong>Certification:</strong> Included</p>
-      </div>
-
-      <div class="course-card">
-        <h3>Crypto Basics 101</h3>
-        <p>Understand the fundamentals of cryptocurrency, wallets, and exchanges.</p>
-        <p><strong>Duration:</strong> 1 week | <strong>Free Course</strong></p>
-      </div>
-
-      <div class="course-card">
-        <h3>High-Yield Savings Tools</h3>
-        <p>Explore safe saving tools offering high interest rates for passive growth.</p>
-        <p><strong>Duration:</strong> 1 week | <strong>Free Course</strong></p>
-      </div>
-    </div>
-
-    <!-- Intermediate Courses -->
-    <div id="intermediate" class="course-section">
-      <div class="course-card">
-        <span class="paid-label">Paid</span>
-        <h3>Smart Contracts & Solidity</h3>
-        <p>Learn how to build decentralized apps on Ethereum using Solidity.</p>
-        <p><strong>Price:</strong> $129 | <strong>Duration:</strong> 4 weeks | <strong>Certification:</strong> Included</p>
-      </div>
-
-      <div class="course-card">
-        <h3>Crypto Trading Strategies</h3>
-        <p>Technical analysis, chart patterns, and risk management basics.</p>
-        <p><strong>Duration:</strong> 3 weeks | <strong>Free Course</strong></p>
-      </div>
-    </div>
-
-    <!-- Advanced Courses -->
-    <div id="advanced" class="course-section">
-      <div class="course-card">
-        <span class="paid-label">Paid</span>
-        <h3>Mastering DeFi Yield Farming</h3>
-        <p>Deep dive into liquidity mining, staking pools, and DeFi returns.</p>
-        <p><strong>Price:</strong> $179 | <strong>Duration:</strong> 5 weeks | <strong>Certification:</strong> Included</p>
-      </div>
-
-      <div class="course-card">
-        <span class="paid-label">Paid</span>
-        <h3>Advanced Blockchain Architecture</h3>
-        <p>Consensus mechanisms, sharding, and cross-chain protocols explained.</p>
-        <p><strong>Price:</strong> $199 | <strong>Duration:</strong> 6 weeks | <strong>Certification:</strong> Included</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    &copy; 2025 Moneyard Academy. All rights reserved.
+    <div id="course-list" class="course-list"></div>
   </div>
 
   <script>
-    function showCourses(level) {
-      const sections = document.querySelectorAll('.course-section');
-      sections.forEach(section => section.style.display = 'none');
-      document.getElementById(level).style.display = 'block';
+    const courses = {
+      beginner: [
+        { title: "Crypto Basics 101", type: "free" },
+        { title: "Blockchain Technology Mastery", type: "paid" },
+        { title: "How to Use Moneyard", type: "free" },
+        { title: "Micro-Investing Essentials", type: "paid" },
+      ],
+      intermediate: [
+        { title: "Staking Strategies and Risks", type: "free" },
+        { title: "High-Yield Savings Tools", type: "paid" },
+        { title: "Portfolio Diversification", type: "free" },
+        { title: "Fiat vs Crypto Investments", type: "paid" },
+      ],
+      advanced: [
+        { title: "Smart Contracts Deep Dive", type: "paid" },
+        { title: "Building a Passive Crypto Income", type: "paid" },
+        { title: "Advanced Technical Analysis", type: "free" },
+        { title: "DeFi Lending Protocols", type: "free" },
+      ]
+    };
+
+    function filterCourses() {
+      const level = document.getElementById("level").value;
+      const list = document.getElementById("course-list");
+      list.innerHTML = "";
+
+      courses[level].forEach(course => {
+        const div = document.createElement("div");
+        div.className = "course";
+
+        const title = document.createElement("div");
+        title.className = "course-title";
+        title.innerText = course.title;
+
+        const tag = document.createElement("span");
+        tag.className = `course-tag ${course.type}`;
+        tag.innerText = course.type.toUpperCase();
+
+        title.appendChild(tag);
+        div.appendChild(title);
+
+        list.appendChild(div);
+      });
     }
 
-    // Show beginner courses by default
-    showCourses('beginner');
+    window.onload = filterCourses;
   </script>
-
 </body>
 </html>
