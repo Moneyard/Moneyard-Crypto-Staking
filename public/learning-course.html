@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Learning</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background-color: #f0f0f0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2b7a78;
+    }
+
+    .search-bar-container {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+    }
+
+    .search-bar-container input {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      width: 250px;
+      outline: none;
+    }
+
+    .search-bar-container .fa-user {
+      margin-left: 12px;
+      font-size: 18px;
+      color: #2f2f2f;
+      cursor: pointer;
+    }
+
+    .menu-bar {
+      font-size: 18px;
+      color: #17252a;
+      cursor: pointer;
+    }
+
+    .menu-bar:hover,
+    .search-bar-container .fa-user:hover {
+      color: #3aafa9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Logo -->
+    <div class="logo">Moneyard Learning</div>
+
+    <!-- Search bar + Person icon in center -->
+    <div class="search-bar-container">
+      <input type="text" placeholder="Search courses..."/>
+      <i class="fas fa-user"></i>
+    </div>
+
+    <!-- Menu bar top right -->
+    <div class="menu-bar">
+      <i class="fas fa-bars"></i>
+    </div>
+  </header>
+
+  <!-- Page content placeholder -->
+  <main style="padding: 40px; text-align: center;">
+    <h2>Welcome to Moneyard Learning</h2>
+    <p>Explore courses, expand your knowledge, and grow your money-smart mindset.</p>
+  </main>
+</body>
+</html>
