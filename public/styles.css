@@ -1,3 +1,12 @@
+.enroll-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
 // Toggle between signup and login forms
 function toggleForms(type) {
   const signup = document.getElementById('signup-form');
