@@ -155,29 +155,16 @@
       </div>
     </div>
   </header>
-<!-- All Courses Dropdown Section -->
-<div class="courses-filter-section" style="display: flex; margin: 20px 0;">
-  <!-- Sidebar -->
-  <div class="courses-sidebar" style="width: 200px;">
-    <h3 style="margin-bottom: 10px;">All Courses</h3>
-    <div class="dropdown">
-      <button class="dropdown-btn" onclick="toggleDropdown()">Select Category</button>
-      <div class="dropdown-content" id="dropdownContent">
-        <a href="#" onclick="toggleCourses('beginner')">Beginner</a>
-        <a href="#" onclick="toggleCourses('intermediate')">Intermediate</a>
-        <a href="#" onclick="toggleCourses('advanced')">Advanced</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Collapsible Content Area -->
-  <div class="courses-collapsible" style="flex: 1; padding-left: 20px;">
+<!-- All Courses Dropdown Section (Right-Aligned) -->
+<div class="courses-filter-section" style="display: flex; justify-content: space-between; margin: 20px 0;">
+  <!-- Collapsible Content Area (Left Side) -->
+  <div class="courses-collapsible" style="flex: 1; padding-right: 20px;">
     <!-- Beginner Courses -->
     <div id="beginner" class="course-level" style="display: none;">
       <h4>Beginner Courses</h4>
       <ul>
-        <li><a href="learning-course/beginner/blockchain-technology-foundations.html">Blockchain Technology Foundations</a></li>
-        <li><a href="learning-course/beginner/blockchain-technology-mastery.html">Blockchain Technology Mastery</a></li>
+        <li><a href="#">Blockchain Technology Foundations</a></li>
+        <li><a href="#">Blockchain Technology Mastery</a></li>
       </ul>
     </div>
 
@@ -191,6 +178,19 @@
     <div id="advanced" class="course-level" style="display: none;">
       <h4>Advanced Courses</h4>
       <p>Coming soon...</p>
+    </div>
+  </div>
+
+  <!-- Sidebar (Right Side) -->
+  <div class="courses-sidebar" style="width: 200px; text-align: right;">
+    <h3 style="margin-bottom: 10px;">All Courses</h3>
+    <div class="dropdown">
+      <button class="dropdown-btn" onclick="toggleDropdown()">Select Category</button>
+      <div class="dropdown-content" id="dropdownContent" style="right: 0;">
+        <a href="#" onclick="toggleCourses('beginner')">Beginner</a>
+        <a href="#" onclick="toggleCourses('intermediate')">Intermediate</a>
+        <a href="#" onclick="toggleCourses('advanced')">Advanced</a>
+      </div>
     </div>
   </div>
 </div>
