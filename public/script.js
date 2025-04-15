@@ -419,3 +419,19 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
+function confirmEnrollment(userId, courseId, txId) {
+  fetch('/api/payment-confirm', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, courseId, txId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('You are now enrolled!');
+      window.location.href = '/course.html?courseId=' + courseId;
+    } else {
+      alert(data.message);
+    }
+  });
+}
