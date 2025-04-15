@@ -938,14 +938,25 @@ audio {
 .learning-course-btn:hover {
   background-color: #f0f0f0;
 }
-
-/* Green button */
-.moneyard-learning-btn {
-  background-color: #3aafa9;
-  color: white;
+/* Wrapper to center "Moneyard Learning" only in the header */
+.learning-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start; /* Align Learning Course button to left */
+  align-items: center;
 }
+
+.moneyard-learning-btn {
+  background-color: #3aafa9; /* Green background */
+  color: white;
+  border: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .moneyard-learning-btn:hover {
-  background-color: #2e958d;
+  background-color: #2e958d; /* Darker green on hover */
 }
 
 
