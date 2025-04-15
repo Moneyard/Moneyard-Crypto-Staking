@@ -1115,3 +1115,12 @@ audio {
   max-width: 600px;
   margin: auto;
 }
+#locked-message {
+  text-align: center;
+  padding: 20px;
+  background: #fff0f0;
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  color: #cc0000;
+}
