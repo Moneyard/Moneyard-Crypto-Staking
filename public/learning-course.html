@@ -1,261 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Academy</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #333;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Academy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #333;
+    }
 
-    header {
-      background-color: #0a5275;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+    header {
+      background-color: #0a5275;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
 
-    h1 {
-      margin: 0;
-      font-size: 28px;
-    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
-    .course-section {
-      padding: 30px 20px;
-      background: #f4f4f4;
-    }
+    .course-section {
+      padding: 30px 20px;
+      background: #f4f4f4;
+    }
 
-    .course-section h2 {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
+    .course-section h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-    .course-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
+    .course-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
 
-    .course-advert {
-      background-color: white;
-      border-radius: 12px;
-      padding: 20px;
-      width: 320px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-      position: relative;
-    }
+    .course-advert {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 320px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
 
-    .course-advert:hover {
-      transform: translateY(-5px);
-    }
+    .course-advert:hover {
+      transform: translateY(-5px);
+    }
 
-    .course-advert h3 {
-      font-size: 20px;
-      color: #0a5275;
-      margin-bottom: 10px;
-    }
+    .course-advert h3 {
+      font-size: 20px;
+      color: #0a5275;
+      margin-bottom: 10px;
+    }
 
-    .course-advert p {
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
+    .course-advert p {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
 
-    .duration-price {
-      font-weight: bold;
-      color: #ff8c42;
-      margin-top: 10px;
-    }
+    .duration-price {
+      font-weight: bold;
+      color: #ff8c42;
+      margin-top: 10px;
+    }
 
-    .enroll-button {
-      display: inline-block;
-      background: #0a5275;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 10px;
-    }
+    .enroll-button {
+      display: inline-block;
+      background: #0a5275;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
 
-    .enroll-button:hover {
-      background-color: #084766;
-    }
+    .enroll-button:hover {
+      background-color: #084766;
+    }
 
-    footer {
-      background-color: #0a5275;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      margin-top: 40px;
-    }
+    footer {
+      background-color: #0a5275;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+    }
 
-    /* Modal styling */
-    #enrollModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
+    /* Modal styling */
+    #enrollModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
 
-    #enrollModal .modal-content {
-      background: #fff;
-      border-radius: 12px;
-      padding: 25px;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
+    #enrollModal .modal-content {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
 
-    #enrollModal .modal-content h3 {
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
+    #enrollModal .modal-content h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
 
-    #enrollModal input,
-    #enrollModal select {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
+    #enrollModal input,
+    #enrollModal select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-    #enrollModal button {
-      background: #ff8c42;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 6px;
-      width: 100%;
-      font-size: 16px;
-      cursor: pointer;
-    }
+    #enrollModal button {
+      background: #ff8c42;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-    #enrollModal .close-btn {
-      position: absolute;
-      top: 12px;
-      right: 15px;
-      font-size: 22px;
-      color: #888;
-      cursor: pointer;
-    }
+    #enrollModal .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 15px;
+      font-size: 22px;
+      color: #888;
+      cursor: pointer;
+    }
 
-    @media (max-width: 600px) {
-      .course-advert {
-        width: 100%;
-      }
-    }
-  </style>
+    @media (max-width: 600px) {
+      .course-advert {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <header>
-    <h1>Moneyard Academy</h1>
-    <p>Learn. Earn. Grow. Build your wealth with knowledge.</p>
-  </header>
+  <header>
+    <h1>Moneyard Academy</h1>
+    <p>Learn. Earn. Grow. Build your wealth with knowledge.</p>
+  </header>
 
-  <section class="course-section">
-    <h2>Popular Courses</h2>
-    <div class="course-container">
+  <section class="course-section">
+    <h2>Popular Courses</h2>
+    <div class="course-container">
 
-      <div class="course-advert">
-        <h3>Beginner Crypto Investing</h3>
-        <p>Learn the basics of crypto, wallets, exchanges, and coins.</p>
-        <p class="duration-price">7 days | $15</p>
-        <button class="enroll-button">Enroll Now</button>
-      </div>
+      <div class="course-advert">
+        <h3>Beginner Crypto Investing</h3>
+        <p>Learn the basics of crypto, wallets, exchanges, and coins.</p>
+        <p class="duration-price">7 days | $15</p>
+        <button class="enroll-button">Enroll Now</button>
+      </div>
 
-      <div class="course-advert">
-        <h3>Advanced Crypto Trading</h3>
-        <p>Understand charts, signals, and how to trade profitably.</p>
-        <p class="duration-price">14 days | $30</p>
-        <button class="enroll-button">Enroll Now</button>
-      </div>
+      <div class="course-advert">
+        <h3>Advanced Crypto Trading</h3>
+        <p>Understand charts, signals, and how to trade profitably.</p>
+        <p class="duration-price">14 days | $30</p>
+        <button class="enroll-button">Enroll Now</button>
+      </div>
 
-      <div class="course-advert">
-        <h3>Earn Passively with DeFi</h3>
-        <p>Discover how to stake, farm, and earn rewards safely.</p>
-        <p class="duration-price">10 days | $25</p>
-        <button class="enroll-button">Enroll Now</button>
-      </div>
+      <div class="course-advert">
+        <h3>Earn Passively with DeFi</h3>
+        <p>Discover how to stake, farm, and earn rewards safely.</p>
+        <p class="duration-price">10 days | $25</p>
+        <button class="enroll-button">Enroll Now</button>
+      </div>
 
-    </div>
-  </section>
+    </div>
+  </section>
 
-  <!-- Enrollment Modal -->
-  <div id="enrollModal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h3 id="modalCourseTitle">Course Enrollment</h3>
-      <p id="modalCoursePrice">Price: $15 ~ 15 USDT</p>
-      <input type="text" id="enrollName" placeholder="Full Name" />
-      <input type="email" id="enrollEmail" placeholder="Email Address" />
-      <label for="paymentMethod"><strong>Payment Method:</strong></label>
-      <select id="paymentMethod">
-        <option value="usdt_trc20">USDT (TRC20)</option>
-        <option value="usdt_bep20">USDT (BEP20)</option>
-        <option value="card">Debit/Credit Card</option>
-        <option value="mobile">Mobile Money</option>
-      </select>
-      <button onclick="submitEnrollment()">Submit Enrollment</button>
-    </div>
-  </div>
+  <!-- Enrollment Modal -->
+  <div id="enrollModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h3 id="modalCourseTitle">Course Enrollment</h3>
+      <p id="modalCoursePrice">Price: $15 ~ 15 USDT</p>
+      <input type="text" id="enrollName" placeholder="Full Name" />
+      <input type="email" id="enrollEmail" placeholder="Email Address" />
+      <label for="paymentMethod"><strong>Payment Method:</strong></label>
+      <select id="paymentMethod">
+        <option value="usdt_trc20">USDT (TRC20)</option>
+        <option value="usdt_bep20">USDT (BEP20)</option>
+        <option value="card">Debit/Credit Card</option>
+        <option value="mobile">Mobile Money</option>
+      </select>
+      <button onclick="submitEnrollment()">Submit Enrollment</button>
+    </div>
+  </div>
 
-  <footer>
-    &copy; 2025 Moneyard Academy. All rights reserved.
-  </footer>
+  <footer>
+    &copy; 2025 Moneyard Academy. All rights reserved.
+  </footer>
 
-  <script>
-    // Handle enroll button click
-    document.querySelectorAll('.enroll-button').forEach(button => {
-      button.addEventListener('click', function () {
-        const courseCard = this.closest('.course-advert');
-        const courseTitle = courseCard.querySelector('h3')?.innerText || "Course Enrollment";
-        const priceMatch = courseCard.querySelector('.duration-price')?.innerText.match(/\$\d+/);
-        const priceText = priceMatch ? `Price: ${priceMatch[0]} ~ ${parseInt(priceMatch[0].slice(1))} USDT` : 'Free Enrollment';
+  <script>
+    // Handle enroll button click
+    document.querySelectorAll('.enroll-button').forEach(button => {
+      button.addEventListener('click', function () {
+        const courseCard = this.closest('.course-advert');
+        const courseTitle = courseCard.querySelector('h3')?.innerText || "Course Enrollment";
+        const priceMatch = courseCard.querySelector('.duration-price')?.innerText.match(/\$\d+/);
+        const priceText = priceMatch ? `Price: ${priceMatch[0]} ~ ${parseInt(priceMatch[0].slice(1))} USDT` : 'Free Enrollment';
 
-        document.getElementById('modalCourseTitle').innerText = courseTitle;
-        document.getElementById('modalCoursePrice').innerText = priceText;
+        document.getElementById('modalCourseTitle').innerText = courseTitle;
+        document.getElementById('modalCoursePrice').innerText = priceText;
 
-        document.getElementById('enrollModal').style.display = 'flex';
-      });
-    });
+        document.getElementById('enrollModal').style.display = 'flex';
+      });
+    });
 
-    function closeModal() {
-      document.getElementById('enrollModal').style.display = 'none';
-    }
+    function closeModal() {
+      document.getElementById('enrollModal').style.display = 'none';
+    }
 
-    function submitEnrollment() {
-      const name = document.getElementById('enrollName').value.trim();
-      const email = document.getElementById('enrollEmail').value.trim();
-      const method = document.getElementById('paymentMethod').value;
-      const course = document.getElementById('modalCourseTitle').innerText;
+    function submitEnrollment() {
+      const name = document.getElementById('enrollName').value.trim();
+      const email = document.getElementById('enrollEmail').value.trim();
+      const method = document.getElementById('paymentMethod').value;
+      const course = document.getElementById('modalCourseTitle').innerText;
 
-      if (!name || !email) {
-        alert("Please fill in your name and email.");
-        return;
-      }
+      if (!name || !email) {
+        alert("Please fill in your name and email.");
+        return;
+      }
 
-      alert(`Thank you, ${name}!\nYou've enrolled in "${course}" using ${method.toUpperCase()}.`);
+      alert(`Thank you, ${name}!\nYou've enrolled in "${course}" using ${method.toUpperCase()}.`);
 
-      // Reset form
-      document.getElementById('enrollName').value = '';
-      document.getElementById('enrollEmail').value = '';
-      closeModal();
-    }
-  </script>
+      // Reset form
+      document.getElementById('enrollName').value = '';
+      document.getElementById('enrollEmail').value = '';
+      closeModal();
+    }
+  </script>
 </body>
 </html>
