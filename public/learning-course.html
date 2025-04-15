@@ -165,34 +165,50 @@
       margin-bottom: 8px;
     }
 
-    .course-details {
+    /* Modal styling */
+    .modal {
       display: none;
-      padding: 20px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-      color: #333;
-    }
-
-    .course-details h4 {
-      margin-bottom: 15px;
-    }
-
-    .course-details .close-btn {
-      background-color: #ff8c42;
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 14px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      display: block;
-      margin-top: 20px;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
       width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+    }
+
+    .modal-content h4 {
+      font-size: 20px;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+    }
+
+    .close-modal {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     @media (max-width: 600px) {
@@ -236,7 +252,7 @@
   </div>
 
   <div class="level-content" id="beginnerCourses">
-    <div class="course-advert" onclick="showCourseDetails('course1')">
+    <div class="course-advert" onclick="openModal('course1')">
       <h3>Learning Courses: Blockchain Technology Foundations</h3>
       <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
@@ -244,7 +260,7 @@
       <p class="cert-note"></p>
       <span class="overview-arrow">&#10148;</span>
     </div>
-    <div class="course-advert" onclick="showCourseDetails('course2')">
+    <div class="course-advert" onclick="openModal('course2')">
       <span class="paid-label">Paid Course</span>
       <h3>Blockchain Technology Mastery</h3>
       <p class="duration-price">Duration: 1 week | Price: $15</p>
@@ -253,26 +269,34 @@
       <p class="cert-note">Accredited certificate received upon completion</p>
       <span class="overview-arrow">&#10148;</span>
     </div>
-
-    <div id="course1" class="course-details">
-      <h4>Blockchain Technology Foundations</h4>
-      <p>This course provides an introduction to blockchain technology, covering the basics and foundational knowledge required for more advanced studies. Perfect for beginners.</p>
-      <button class="close-btn" onclick="closeCourseDetails('course1')">Close Details</button>
-    </div>
-
-    <div id="course2" class="course-details">
-      <h4>Blockchain Technology Mastery</h4>
-      <p>Learn advanced blockchain techniques and strategies. This paid course includes practical exercises and an accredited certificate upon completion.</p>
-      <button class="close-btn" onclick="closeCourseDetails('course2')">Close Details</button>
-    </div>
   </div>
 
   <div class="level-content" id="intermediateCourses">
-    <!-- Add intermediate courses here similarly -->
+    <!-- Add intermediate courses here -->
   </div>
 
   <div class="level-content" id="advancedCourses">
-    <!-- Add advanced courses here similarly -->
+    <!-- Add advanced courses here -->
+  </div>
+
+  <!-- Modal for Course 1 -->
+  <div id="course1Modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('course1')">&times;</span>
+      <h4>Blockchain Technology Foundations</h4>
+      <p>This course provides an introduction to blockchain technology, covering the basics and foundational knowledge required for more advanced studies. Perfect for beginners.</p>
+      <button class="enroll-button">Enroll Now</button>
+    </div>
+  </div>
+
+  <!-- Modal for Course 2 -->
+  <div id="course2Modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('course2')">&times;</span>
+      <h4>Blockchain Technology Mastery</h4>
+      <p>Learn advanced blockchain techniques and strategies. This paid course includes practical exercises and an accredited certificate upon completion.</p>
+      <button class="enroll-button">Enroll Now</button>
+    </div>
   </div>
 
   <script>
@@ -295,12 +319,14 @@
       });
     }
 
-    function showCourseDetails(courseId) {
-      document.getElementById(courseId).style.display = "block";
+    function openModal(courseId) {
+      const modal = document.getElementById(courseId + 'Modal');
+      modal.style.display = "block";
     }
 
-    function closeCourseDetails(courseId) {
-      document.getElementById(courseId).style.display = "none";
+    function closeModal(courseId) {
+      const modal = document.getElementById(courseId + 'Modal');
+      modal.style.display = "none";
     }
   </script>
 </body>
