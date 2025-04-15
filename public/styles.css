@@ -935,9 +935,6 @@ audio {
   color: #3aafa9;
   border: 2px solid #3aafa9;
 }
-.learning-course-btn:hover {
-  background-color: #f0f0f0;
-}
 /* Wrapper to center "Moneyard Learning" only in the header */
 .learning-buttons {
   display: flex;
@@ -946,15 +943,23 @@ audio {
   align-items: center;
 }
 
+/* Style for the Moneyard Learning button */
 .moneyard-learning-btn {
   background-color: #3aafa9; /* Green background */
-  color: white;
-  border: none;
+  color: white; /* White text */
+  border: none; /* Remove border */
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
+/* Hover effect for Moneyard Learning button */
 .moneyard-learning-btn:hover {
   background-color: #2e958d; /* Darker green on hover */
 }
