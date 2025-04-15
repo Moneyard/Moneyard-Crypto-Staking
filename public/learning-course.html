@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moneyard Learning</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -45,7 +45,7 @@
     }
 
     .search-bar-container .fa-user {
-      margin-left: 12px;
+      margin-left: 20px;
       font-size: 18px;
       color: #2f2f2f;
       cursor: pointer;
@@ -106,29 +106,15 @@
       border: 1px solid #e0e0e0;
       border-radius: 10px;
       margin: 15px auto;
-      padding: 15px;
-      max-width: 720px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      max-width: 700px;
+      background: #e6f9ec; /* Light green background */
       position: relative;
-      background: #fff;
-      display: flex;
-      gap: 15px;
-      align-items: flex-start;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
-    .course-advert img {
-      width: 120px;
-      height: 80px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-
-    .course-details {
-      flex: 1;
-    }
-
-    .course-details h3 {
-      margin: 0;
+    .course-advert h3 {
+      margin-top: 0;
       color: #17252a;
     }
 
@@ -140,54 +126,45 @@
 
     .paid-label {
       position: absolute;
-      top: -10px;
+      top: -12px;
       left: 10px;
-      background-color: #f28500;
+      background-color: #ff8c42; /* Warm orange */
       color: white;
-      padding: 4px 8px;
+      padding: 4px 10px;
       font-size: 12px;
       border-radius: 4px;
       z-index: 2;
     }
 
+    .enroll-btn {
+      background-color: #ff8c42;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     .overview-arrow {
-      font-size: 16px;
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      font-size: 18px;
       color: #2b7a78;
       cursor: pointer;
-      margin-top: 5px;
-      display: inline-block;
-    }
-
-    .course-meta {
-      font-size: 13px;
-      color: #444;
-      margin: 5px 0;
-    }
-
-    .enroll-button {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 6px 12px;
-      background-color: #2b7a78;
-      color: white;
-      border-radius: 4px;
-      font-size: 14px;
-      text-decoration: none;
     }
 
     @media (max-width: 600px) {
-      .course-advert {
+      header {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
       }
 
-      .course-advert img {
-        width: 100%;
-        height: auto;
-      }
-
-      .course-details {
-        text-align: center;
+      .search-bar-container {
+        justify-content: flex-start;
+        margin-top: 10px;
       }
     }
   </style>
@@ -195,10 +172,12 @@
 <body>
   <header>
     <div class="logo">Moneyard Learning</div>
+
     <div class="search-bar-container">
       <input type="text" placeholder="Search courses..." />
       <i class="fas fa-user"></i>
     </div>
+
     <div class="menu-bar" onclick="toggleMainDropdown()">
       <i class="fas fa-bars"></i>
       <div class="dropdown-menu" id="mainDropdown">
@@ -222,87 +201,32 @@
 
   <div class="level-content" id="beginnerCourses">
     <div class="course-advert">
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>Blockchain Technology Foundations</h3>
-        <p class="course-meta">Duration: 5 hours | Price: Free</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
+      <h3>Intro to Micro-Investing</h3>
+      <p class="trademark">Duration: 2 weeks | Price: Free</p>
+      <button class="enroll-btn">Enroll Now</button>
     </div>
-
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>Blockchain Technology Mastery</h3>
-        <p class="course-meta">Duration: 8 hours | Price: $75</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
-    </div>
-
-    <div class="course-advert">
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>Micro-Investing Basics</h3>
-        <p class="course-meta">Duration: 4 hours | Price: Free</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: Micro-Investing Basics')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
+      <h3>Micro-Investing Bootcamp</h3>
+      <p class="trademark">Duration: 3 weeks | Price: $25</p>
+      <button class="enroll-btn">Enroll for $25</button>
     </div>
   </div>
 
   <div class="level-content" id="intermediateCourses">
     <div class="course-advert">
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>Smart Contracts in Practice</h3>
-        <p class="course-meta">Duration: 6 hours | Price: Free</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
-    </div>
-
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>High-Yield Savings Strategies</h3>
-        <p class="course-meta">Duration: 6 hours | Price: $60</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: High-Yield Savings Strategies')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
+      <h3>Smart Savings Tools</h3>
+      <p class="trademark">Duration: 2 weeks | Price: $40</p>
+      <button class="enroll-btn">Enroll for $40</button>
     </div>
   </div>
 
   <div class="level-content" id="advancedCourses">
     <div class="course-advert">
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>Advanced Blockchain Security</h3>
-        <p class="course-meta">Duration: 9 hours | Price: Free</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
-    </div>
-
-    <div class="course-advert">
       <span class="paid-label">Paid Course</span>
-      <img src="https://via.placeholder.com/120x80" alt="Course Image" />
-      <div class="course-details">
-        <h3>Advanced Micro-Investing Techniques</h3>
-        <p class="course-meta">Duration: 7 hours | Price: $100</p>
-        <p class="trademark">Moneyard Learning</p>
-        <span class="overview-arrow" onclick="alert('Overview: Advanced Micro-Investing Techniques')">&#10148; Overview</span>
-        <a class="enroll-button" href="#">Enroll Now</a>
-      </div>
+      <h3>High-Yield Accounts Masterclass</h3>
+      <p class="trademark">Duration: 4 weeks | Price: $100</p>
+      <button class="enroll-btn">Enroll for $100</button>
     </div>
   </div>
 
