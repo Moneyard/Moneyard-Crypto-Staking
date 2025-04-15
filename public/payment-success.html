@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Payment Successful - Moneyard Learning</title>
+  <title>Payment Success</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     body {
@@ -12,7 +12,6 @@
       text-align: center;
       padding: 40px 20px;
     }
-
     .success-box {
       background: white;
       border-radius: 15px;
@@ -21,28 +20,23 @@
       padding: 30px;
       max-width: 600px;
     }
-
     h2 {
       color: green;
       margin-bottom: 10px;
     }
-
     p {
       margin: 10px 0;
       font-size: 16px;
     }
-
     .certificate-preview {
       margin-top: 25px;
     }
-
     .certificate-preview img {
       max-width: 100%;
       border-radius: 10px;
       border: 1px solid #ccc;
       margin-bottom: 10px;
     }
-
     .download-btn {
       display: inline-block;
       background-color: #007bff;
@@ -51,7 +45,6 @@
       border-radius: 8px;
       text-decoration: none;
     }
-
     .back-link {
       display: block;
       margin-top: 25px;
@@ -62,17 +55,27 @@
 <body>
   <div class="success-box">
     <h2>Payment Successful!</h2>
-    <p>Thank you for enrolling in <strong>Blockchain Technology Mastery</strong>.</p>
-    <p>You will receive a confirmation email shortly.</p>
+    <p>Thank you for enrolling in <strong id="course-name">...</strong>.</p>
+    <p>You will receive a confirmation email shortly with your certificate.</p>
 
     <div class="certificate-preview">
       <h3>Preview of Your Certificate:</h3>
       <img src="certificate_sample.png" alt="Sample Certificate" />
       <br />
-      <a href="blockchain_certificate.pdf" class="download-btn" download>Download Certificate (PDF)</a>
+      <a id="certificate-link" href="#" class="download-btn" download>Download Certificate (PDF)</a>
     </div>
 
     <a href="dashboard.html" class="back-link">Go to Dashboard</a>
   </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const course = urlParams.get("course") || "Your Course";
+    document.getElementById("course-name").textContent = course;
+
+    // Generate a filename-safe version of course name for certificate
+    const fileName = course.toLowerCase().replace(/\s+/g, "_") + "_certificate.pdf";
+    document.getElementById("certificate-link").href = fileName;
+  </script>
 </body>
 </html>
