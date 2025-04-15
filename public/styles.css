@@ -890,4 +890,23 @@ audio {
   color: #3aafa9;
   transform: translateY(-2px);
 }
+.learning-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: #3aafa9;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.learning-btn:hover {
+  background-color: #2b7a78;
+}
 
