@@ -65,6 +65,18 @@ db.run(`
     FOREIGN KEY(user_id) REFERENCES users(id)
   )
 `);
+db.run(`CREATE TABLE IF NOT EXISTS courses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    description TEXT
+)`);
+
+db.run(`CREATE TABLE IF NOT EXISTS enrollments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    course_id INTEGER,
+    enrolled_on TEXT
+)`);
 
 // Signup
 app.post('/api/signup', async (req, res) => {
