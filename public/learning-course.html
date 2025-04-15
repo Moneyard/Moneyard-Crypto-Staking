@@ -115,73 +115,63 @@
       color: #555;
     }
 
-    .course-header {
+    .courses-filter-section {
       display: flex;
       justify-content: center;
-      margin: 20px 0;
-      position: relative;
+      margin-bottom: 20px;
     }
 
     .courses-sidebar {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 18px;
-      font-weight: 500;
-      cursor: pointer;
-      position: relative;
+      width: 200px;
+      margin: 0 10px;
     }
 
-    #courseDropdown {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: white;
+    .dropdown-btn {
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .dropdown-content {
+      display: none;
+      flex-direction: column;
+      background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 5px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: none;
-      z-index: 999;
-      min-width: 160px;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    #courseDropdown a {
-      display: block;
-      padding: 10px 15px;
+    .dropdown-content a {
+      padding: 10px;
       text-decoration: none;
       color: #333;
       font-size: 14px;
+      transition: background 0.2s;
     }
 
-    #courseDropdown a:hover {
-      background-color: #f0f0f0;
+    .dropdown-content a:hover {
+      background-color: #f5f5f5;
     }
 
     .course-level {
       display: none;
-      padding: 10px 20px;
-    }
-
-    .course-level h4 {
-      font-size: 18px;
-      color: #2b7a78;
-      margin-bottom: 10px;
+      padding: 10px;
+      margin-top: 10px;
     }
 
     .course-level ul {
-      list-style: none;
-      padding-left: 0;
+      padding-left: 20px;
     }
 
-    .course-level ul li {
-      margin-bottom: 6px;
-    }
-
-    .course-level ul li a {
-      text-decoration: none;
-      color: #333;
-      font-size: 14px;
+    .course-level li {
+      list-style-type: disc;
     }
 
     @media (max-width: 600px) {
@@ -199,20 +189,21 @@
       .menu-bar {
         align-self: flex-end;
       }
-
-      .course-header {
-        flex-direction: column;
-      }
     }
   </style>
 </head>
 <body>
   <header>
+    <!-- Logo -->
     <div class="logo">Moneyard Learning</div>
+
+    <!-- Search bar + Person icon in center -->
     <div class="search-bar-container">
       <input type="text" placeholder="Search courses..."/>
       <i class="fas fa-user"></i>
     </div>
+
+    <!-- Menu bar top right -->
     <div class="menu-bar" onclick="toggleDropdown()">
       <i class="fas fa-bars"></i>
       <div class="dropdown" id="dropdownMenu">
@@ -224,23 +215,40 @@
     </div>
   </header>
 
-  <!-- All Courses Center Dropdown -->
-  <div class="course-header">
-    <div class="courses-sidebar" onclick="toggleCourseDropdown()">
-      <span>All Courses</span>
-      <i class="fas fa-chevron-down"></i>
-      <div id="courseDropdown">
+  <!-- All Courses Dropdown Section (Center) -->
+  <div class="courses-filter-section">
+    <div class="courses-sidebar">
+      <button class="dropdown-btn" onclick="toggleDropdownContent()">All Courses <i class="fas fa-caret-down"></i></button>
+      <div class="dropdown-content" id="dropdownContent">
         <a href="#" onclick="toggleCourses('beginner')">Beginner Courses</a>
+        <a href="#" onclick="toggleCourses('intermediate')">Intermediate Courses</a>
+        <a href="#" onclick="toggleCourses('advanced')">Advanced Courses</a>
       </div>
     </div>
   </div>
 
-  <!-- Collapsible Content -->
+  <!-- Beginner, Intermediate, and Advanced Course Sections -->
   <div id="beginner" class="course-level">
-    <h4>Learning Courses</h4>
+    <h3>Learning Courses</h3>
     <ul>
       <li><a href="#">Blockchain Technology Foundations</a></li>
       <li><a href="#">Blockchain Technology Mastery</a></li>
+    </ul>
+  </div>
+
+  <div id="intermediate" class="course-level">
+    <h3>Learning Courses</h3>
+    <ul>
+      <li><a href="#">Ethereum Smart Contract Development</a></li>
+      <li><a href="#">Advanced Blockchain Architecture</a></li>
+    </ul>
+  </div>
+
+  <div id="advanced" class="course-level">
+    <h3>Learning Courses</h3>
+    <ul>
+      <li><a href="#">Blockchain Security and Auditing</a></li>
+      <li><a href="#">Decentralized Finance (DeFi) Mastery</a></li>
     </ul>
   </div>
 
@@ -266,33 +274,42 @@
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 
-    function toggleCourseDropdown() {
-      const dropdown = document.getElementById("courseDropdown");
+    // Optional: Close dropdown if clicking outside
+    document.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('dropdownMenu');
+      const menuBar = document.querySelector('.menu-bar');
+      if (!menuBar.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    function toggleDropdownContent() {
+      const dropdown = document.getElementById("dropdownContent");
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     }
 
     function toggleCourses(level) {
-      const levels = ["beginner"];
+      const levels = ["beginner", "intermediate", "advanced"];
       levels.forEach(id => {
         const section = document.getElementById(id);
-        section.style.display = (id === level) ? "block" : "none";
+        if (id === level) {
+          section.style.display = "block";
+          section.style.maxHeight = "0px";
+          setTimeout(() => {
+            section.style.transition = "max-height 0.5s ease";
+            section.style.maxHeight = "300px";
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 10);
+        } else {
+          section.style.transition = "max-height 0.3s ease";
+          section.style.maxHeight = "0px";
+          setTimeout(() => {
+            section.style.display = "none";
+          }, 300);
+        }
       });
-      document.getElementById("courseDropdown").style.display = "none";
+      document.getElementById("dropdownContent").style.display = "none";
     }
-
-    document.addEventListener('click', function(e) {
-      const courseDropdown = document.getElementById("courseDropdown");
-      const coursesSidebar = document.querySelector(".courses-sidebar");
-      if (!coursesSidebar.contains(e.target)) {
-        courseDropdown.style.display = "none";
-      }
-
-      const dropdown = document.getElementById("dropdownMenu");
-      const menuBar = document.querySelector(".menu-bar");
-      if (!menuBar.contains(e.target)) {
-        dropdown.style.display = "none";
-      }
-    });
   </script>
 </body>
 </html>
