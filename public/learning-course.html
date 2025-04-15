@@ -98,6 +98,10 @@
       color: #2b7a78;
     }
 
+    .all-courses-dropdown button i {
+      margin-left: 6px;
+    }
+
     .level-content {
       display: none;
       padding: 10px 20px;
@@ -127,13 +131,14 @@
 
     .paid-label {
       position: absolute;
-      top: 15px;
-      left: 15px;
+      top: 10px;
+      left: 10px;
       background-color: #ff5252;
       color: white;
       padding: 4px 8px;
       font-size: 12px;
       border-radius: 4px;
+      z-index: 1;
     }
 
     .overview-arrow {
@@ -191,7 +196,7 @@
       <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
     </div>
     <div class="course-advert">
-      <div class="paid-label">Paid Course</div>
+      <span class="paid-label">Paid Course</span>
       <h3>Learning Courses: Blockchain Technology Mastery</h3>
       <p class="trademark">Moneyard Learning</p>
       <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
