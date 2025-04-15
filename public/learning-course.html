@@ -89,17 +89,12 @@
       margin: 20px 0;
     }
 
-    .all-courses-dropdown button {
-      background: none;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
+    .all-courses-dropdown select {
+      font-size: 16px;
+      padding: 6px 12px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
       cursor: pointer;
-      color: #2b7a78;
-    }
-
-    .all-courses-dropdown button i {
-      margin-left: 6px;
     }
 
     .level-content {
@@ -131,7 +126,7 @@
 
     .paid-label {
       position: absolute;
-      top: -10px;
+      top: 10px;
       left: 10px;
       background-color: #ff5252;
       color: white;
@@ -184,9 +179,13 @@
   </header>
 
   <div class="all-courses-dropdown">
-    <button onclick="toggleCoursesDropdown()">
-      All Courses <i class="fas fa-caret-down"></i>
-    </button>
+    <label for="courseLevel">All Courses</label>
+    <select id="courseLevel" onchange="toggleCoursesDropdown(this.value)">
+      <option value="">Select Level</option>
+      <option value="beginnerCourses">Beginner Courses</option>
+      <option value="intermediateCourses">Intermediate Courses</option>
+      <option value="advancedCourses">Advanced Courses</option>
+    </select>
   </div>
 
   <div class="level-content" id="beginnerCourses">
@@ -231,11 +230,11 @@
       if (!menu.contains(e.target)) dropdown.style.display = "none";
     });
 
-    function toggleCoursesDropdown() {
+    function toggleCoursesDropdown(levelId) {
       const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
       levels.forEach((id) => {
         const section = document.getElementById(id);
-        section.style.display = section.style.display === "block" ? "none" : "block";
+        section.style.display = (id === levelId) ? "block" : "none";
       });
     }
   </script>
