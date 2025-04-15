@@ -301,6 +301,36 @@
       <p>This course gives an in-depth understanding of <span id="modalCourseName"></span>.</p>
     </div>
   </div>
+<!-- Payment Modal -->
+<div id="paymentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+    <h3>Enroll in <span id="selectedCourseName"></span></h3>
+    <form id="paymentForm">
+      <label for="paymentName">Your Name:</label>
+      <input type="text" id="paymentName" required>
+
+      <label for="paymentEmail">Email Address:</label>
+      <input type="email" id="paymentEmail" required>
+
+      <label for="paymentMethod">Select Payment Method:</label>
+      <select id="paymentMethod" required>
+        <option value="">--Choose--</option>
+        <option value="TRC20">Crypto (USDT-TRC20)</option>
+        <option value="BEP20">Crypto (USDT-BEP20)</option>
+        <option value="Card">Card Payment</option>
+        <option value="Mobile">Mobile Money</option>
+      </select>
+
+      <div id="extraPaymentFields"></div>
+
+      <button type="submit" class="enroll-button">Confirm Enrollment</button>
+    </form>
+    <div id="paymentSuccess" style="display:none; margin-top:10px; color:green;">
+      Enrollment successful! We'll contact you shortly.
+    </div>
+  </div>
+</div>
 
   <script>
     function toggleMainDropdown() {
@@ -331,6 +361,69 @@
     function closeModal() {
       document.getElementById('overviewModal').style.display = 'none';
     }
-  </script>
+<script>
+  function showOverview(courseName) {
+    document.getElementById('modalCourseName').innerText = courseName;
+    document.getElementById('modalTitle').innerText = `${courseName} - Overview`;
+    document.getElementById('overviewModal').style.display = 'flex';
+    document.getElementById('modalEnrollBtn').setAttribute('data-course', courseName);
+  }
+
+  function closeModal() {
+    document.getElementById('overviewModal').style.display = 'none';
+  }
+
+  function enrollFromModal() {
+    const course = document.getElementById('modalEnrollBtn').getAttribute('data-course');
+    closeModal();
+    document.getElementById('selectedCourseName').innerText = course;
+    document.getElementById('paymentModal').style.display = 'flex';
+  }
+
+  function closePaymentModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+    document.getElementById('paymentForm').reset();
+    document.getElementById('paymentSuccess').style.display = 'none';
+    document.getElementById('extraPaymentFields').innerHTML = '';
+  }
+
+  document.getElementById('paymentMethod').addEventListener('change', function () {
+    const method = this.value;
+    const extra = document.getElementById('extraPaymentFields');
+    extra.innerHTML = '';
+
+    if (method === 'TRC20' || method === 'BEP20') {
+      extra.innerHTML = `
+        <label for="txid">Enter Transaction ID (TxID):</label>
+        <input type="text" id="txid" required>
+        <p>Send payment to: <strong>${method === 'TRC20' ? 'TXYZ123...' : '0xABC456...'}</strong></p>
+      `;
+    } else if (method === 'Card') {
+      extra.innerHTML = `
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" required>
+        <label for="expiry">Expiry Date:</label>
+        <input type="text" id="expiry" placeholder="MM/YY" required>
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" required>
+      `;
+    } else if (method === 'Mobile') {
+      extra.innerHTML = `
+        <label for="mobileNumber">Mobile Number:</label>
+        <input type="text" id="mobileNumber" required>
+        <p>Use MoMo to pay to: <strong>+233 123 456 789</strong></p>
+      `;
+    }
+  });
+
+  document.getElementById('paymentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    // Optionally send data to backend here
+    document.getElementById('paymentSuccess').style.display = 'block';
+    this.reset();
+    document.getElementById('extraPaymentFields').innerHTML = '';
+    setTimeout(closePaymentModal, 3000); // Auto-close modal after 3 seconds
+  });
+</script>
 </body>
 </html>
