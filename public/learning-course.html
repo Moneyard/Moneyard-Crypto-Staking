@@ -12,39 +12,34 @@
       background-color: #fff;
     }
 
-   header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
-  background-color: #f8f8f8;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  flex-wrap: wrap;
-}
-
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background-color: #f8f8f8;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
+      position: relative;
+    }
 
     .logo {
       font-size: 20px;
       font-weight: bold;
       color: #2b7a78;
     }
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
 
-.user-icon {
-  font-size: 18px;
-  color: #2f2f2f;
-  cursor: pointer;
-}
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
     .search-bar-container {
       display: flex;
       align-items: center;
-      flex: 1;
       justify-content: center;
+      flex: 1;
     }
 
     .search-bar-container input {
@@ -52,10 +47,14 @@
       border-radius: 20px;
       border: 1px solid #ccc;
       width: 100%;
-      max-width: 250px;
+      max-width: 300px;
       outline: none;
     }
 
+    .fa-user {
+      font-size: 18px;
+      color: #2f2f2f;
+      cursor: pointer;
     }
 
     .menu-bar {
@@ -68,7 +67,7 @@
     .dropdown-menu {
       position: absolute;
       top: 50px;
-      right: 24px;
+      right: 0;
       background-color: #ffffff;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -135,7 +134,7 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      background-color: #ff5252;
+      background-color: #ff8c42; /* warm orange */
       color: white;
       padding: 4px 8px;
       font-size: 12px;
@@ -155,37 +154,44 @@
     @media (max-width: 600px) {
       header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+      }
+
+      .header-right {
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 10px;
       }
 
       .search-bar-container {
-        justify-content: flex-start;
         margin-top: 10px;
+        justify-content: center;
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <header>
-  <div class="logo">Moneyard Learning</div>
+    <div class="logo">Moneyard Learning</div>
 
-  <div class="search-bar-container">
-    <input type="text" placeholder="Search courses..." />
-  </div>
+    <div class="search-bar-container">
+      <input type="text" placeholder="Search courses..." />
+    </div>
 
-  <div class="header-right">
-    <i class="fas fa-user user-icon"></i>
-    <div class="menu-bar" onclick="toggleMainDropdown()">
-      <i class="fas fa-bars"></i>
-      <div class="dropdown-menu" id="mainDropdown">
-        <a href="#">Home</a>
-        <a href="#">My Courses</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
+    <div class="header-right">
+      <i class="fas fa-user"></i>
+      <div class="menu-bar" onclick="toggleMainDropdown()">
+        <i class="fas fa-bars"></i>
+        <div class="dropdown-menu" id="mainDropdown">
+          <a href="#">Home</a>
+          <a href="#">My Courses</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
   <div class="all-courses-dropdown">
     <label for="courseLevel">All Courses</label>
