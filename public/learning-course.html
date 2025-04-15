@@ -58,10 +58,8 @@
       position: relative;
     }
 
-    .menu-dropdown {
+    .dropdown {
       position: absolute;
-      top: 50px;
-      right: 24px;
       background-color: #ffffff;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -72,7 +70,7 @@
       z-index: 99;
     }
 
-    .menu-dropdown a {
+    .dropdown a {
       padding: 10px 15px;
       text-decoration: none;
       color: #333;
@@ -80,7 +78,7 @@
       transition: background 0.2s;
     }
 
-    .menu-dropdown a:hover {
+    .dropdown a:hover {
       background-color: #f5f5f5;
     }
 
@@ -115,42 +113,22 @@
       color: #555;
     }
 
-    .dropdown {
+    .courses-filter-section {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
       position: relative;
-      display: inline-block;
     }
 
-    .dropdown-btn {
-      background-color: #2b7a78;
-      color: white;
-      padding: 8px 12px;
-      font-size: 14px;
+    .courses-sidebar {
+      text-align: center;
+    }
+
+    .dropdown-icon-btn {
+      background: none;
       border: none;
-      border-radius: 4px;
+      font-size: 20px;
       cursor: pointer;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #ffffff;
-      min-width: 160px;
-      right: 0;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-      border-radius: 4px;
-      z-index: 1;
-    }
-
-    .dropdown-content a {
-      color: black;
-      padding: 10px 12px;
-      text-decoration: none;
-      display: block;
-      font-size: 14px;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #f1f1f1;
     }
 
     @media (max-width: 600px) {
@@ -178,9 +156,9 @@
       <input type="text" placeholder="Search courses..."/>
       <i class="fas fa-user"></i>
     </div>
-    <div class="menu-bar" onclick="toggleMenuDropdown()">
+    <div class="menu-bar" onclick="toggleUserDropdown()">
       <i class="fas fa-bars"></i>
-      <div class="menu-dropdown" id="dropdownMenu">
+      <div class="dropdown" id="dropdownMenu">
         <a href="#">Home</a>
         <a href="#">My Courses</a>
         <a href="#">Settings</a>
@@ -189,35 +167,39 @@
     </div>
   </header>
 
-  <div class="courses-filter-section" style="display: flex; justify-content: space-between; margin: 20px 0;">
-    <div class="courses-collapsible" style="flex: 1; padding-right: 20px;">
-      <div id="beginner" class="course-level" style="display: none;">
-        <h4>Beginner Courses</h4>
-        <ul>
-          <li><a href="#">Blockchain Technology Foundations</a></li>
-          <li><a href="#">Blockchain Technology Mastery</a></li>
-        </ul>
-      </div>
-      <div id="intermediate" class="course-level" style="display: none;">
-        <h4>Intermediate Courses</h4>
-        <p>Coming soon...</p>
-      </div>
-      <div id="advanced" class="course-level" style="display: none;">
-        <h4>Advanced Courses</h4>
-        <p>Coming soon...</p>
+  <!-- Center-Aligned Courses Dropdown -->
+  <div class="courses-filter-section">
+    <div class="courses-sidebar">
+      <h3>All Courses</h3>
+      <button class="dropdown-icon-btn" onclick="toggleCourseDropdown()">
+        <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="dropdown" id="courseDropdown">
+        <a href="#" onclick="toggleCourses('beginner')">Learning Courses</a>
+        <a href="#" onclick="toggleCourses('intermediate')">Intermediate</a>
+        <a href="#" onclick="toggleCourses('advanced')">Advanced</a>
       </div>
     </div>
+  </div>
 
-    <div class="courses-sidebar" style="width: 200px; text-align: right;">
-      <h3 style="margin-bottom: 10px;">All Courses</h3>
-      <div class="dropdown">
-        <button class="dropdown-btn" onclick="toggleCoursesDropdown()">Select Category</button>
-        <div class="dropdown-content" id="dropdownContent">
-          <a href="#" onclick="toggleCourses('beginner')">Beginner</a>
-          <a href="#" onclick="toggleCourses('intermediate')">Intermediate</a>
-          <a href="#" onclick="toggleCourses('advanced')">Advanced</a>
-        </div>
-      </div>
+  <!-- Collapsible Course Lists -->
+  <div class="courses-collapsible" style="padding: 0 20px;">
+    <div id="beginner" class="course-level" style="display: none;">
+      <h4>Learning Courses</h4>
+      <ul>
+        <li><a href="#">Blockchain Technology Foundations</a></li>
+        <li><a href="#">Blockchain Technology Mastery</a></li>
+      </ul>
+    </div>
+
+    <div id="intermediate" class="course-level" style="display: none;">
+      <h4>Intermediate Courses</h4>
+      <p>Coming soon...</p>
+    </div>
+
+    <div id="advanced" class="course-level" style="display: none;">
+      <h4>Advanced Courses</h4>
+      <p>Coming soon...</p>
     </div>
   </div>
 
@@ -237,13 +219,13 @@
   </section>
 
   <script>
-    function toggleMenuDropdown() {
+    function toggleUserDropdown() {
       const menu = document.getElementById("dropdownMenu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 
-    function toggleCoursesDropdown() {
-      const dropdown = document.getElementById("dropdownContent");
+    function toggleCourseDropdown() {
+      const dropdown = document.getElementById("courseDropdown");
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     }
 
@@ -256,16 +238,16 @@
     }
 
     document.addEventListener('click', function(e) {
-      const menuDropdown = document.getElementById('dropdownMenu');
-      const courseDropdown = document.getElementById('dropdownContent');
+      const userMenu = document.getElementById('dropdownMenu');
+      const courseMenu = document.getElementById('courseDropdown');
       const menuBar = document.querySelector('.menu-bar');
-      const dropdownBtn = document.querySelector('.dropdown-btn');
+      const courseBtn = document.querySelector('.dropdown-icon-btn');
 
       if (!menuBar.contains(e.target)) {
-        menuDropdown.style.display = 'none';
+        userMenu.style.display = 'none';
       }
-      if (!dropdownBtn.contains(e.target) && !courseDropdown.contains(e.target)) {
-        courseDropdown.style.display = 'none';
+      if (!courseBtn.contains(e.target)) {
+        courseMenu.style.display = 'none';
       }
     });
   </script>
