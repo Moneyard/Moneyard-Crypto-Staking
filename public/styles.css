@@ -1108,3 +1108,10 @@ audio {
   font-size: 20px;
   cursor: pointer;
 }
+#course-content, #locked-message {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: auto;
+}
