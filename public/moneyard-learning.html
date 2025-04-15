@@ -387,6 +387,22 @@ window.onload = () => {
     document.getElementById("locked-message").style.display = "block";
   }
 };
- </script>
+<script>
+  function simulateAdminApproval() {
+    localStorage.setItem('courseAccess', 'true');
+    alert('Admin has approved your enrollment!');
+    showCourses();
+  }
+
+  function showCourses() {
+    const access = localStorage.getItem('courseAccess');
+    if (access === 'true') {
+      document.getElementById('locked-message').style.display = 'none';
+      document.getElementById('course-content').style.display = 'block';
+    }
+  }
+
+  window.onload = showCourses;
+</script>
 </body>
 </html>
