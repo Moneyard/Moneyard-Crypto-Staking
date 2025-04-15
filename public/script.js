@@ -419,3 +419,18 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
+window.onload = () => {
+  const access = localStorage.getItem("courseAccess");
+  if (access === "true") {
+    document.getElementById("course-content").style.display = "block";
+  } else {
+    document.getElementById("locked-message").style.display = "block";
+  }
+};
+
+// Simulate admin confirming payment
+function unlockCourse() {
+  localStorage.setItem("courseAccess", "true");
+  alert("Course unlocked! Reloading...");
+  window.location.reload();
+}
