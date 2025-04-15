@@ -28,10 +28,6 @@
       margin-bottom: 10px;
     }
 
-    .info {
-      margin-bottom: 20px;
-    }
-
     .info p {
       margin: 6px 0;
     }
@@ -53,21 +49,32 @@
       margin-top: 30px;
     }
 
-    .pay-section h2 {
-      font-size: 20px;
-      color: #00796b;
-    }
-
     .pay-option {
       background: #f1f8e9;
       padding: 15px;
       margin-bottom: 20px;
       border-left: 5px solid #689f38;
+      position: relative;
     }
 
-    .pay-option code {
+    code {
       font-size: 14px;
       color: #2e7d32;
+      display: inline-block;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     label {
@@ -84,7 +91,7 @@
       margin-bottom: 16px;
     }
 
-    button {
+    button[type="submit"] {
       background-color: #43a047;
       color: white;
       border: none;
@@ -94,7 +101,7 @@
       cursor: pointer;
     }
 
-    button:hover {
+    button[type="submit"]:hover {
       background-color: #388e3c;
     }
 
@@ -129,12 +136,14 @@
 
       <div class="pay-option">
         <strong>Tron (TRC20) Address:</strong><br>
-        <code>TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</code>
+        <code id="trc20">TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</code>
+        <button class="copy-btn" onclick="copyToClipboard('trc20')">Copy</button>
       </div>
 
       <div class="pay-option">
         <strong>BNB Smart Chain (BEP20) Address:</strong><br>
-        <code>0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</code>
+        <code id="bep20">0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</code>
+        <button class="copy-btn" onclick="copyToClipboard('bep20')">Copy</button>
       </div>
 
       <p>Please send exactly <strong>15 USDT</strong> to one of the addresses above.</p>
@@ -155,6 +164,13 @@
   </div>
 
   <script>
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Address copied to clipboard!');
+      });
+    }
+
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
@@ -165,9 +181,8 @@
         return;
       }
 
-      // Simulate backend request
       alert("Payment submitted! We'll verify and confirm your enrollment shortly.");
-      // You can replace the alert with actual fetch() to your backend endpoint if available.
+      // You can add fetch() here to send the data to your backend
     });
   </script>
 
