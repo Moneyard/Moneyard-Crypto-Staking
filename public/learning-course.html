@@ -1,243 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moneyard Learning</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fff;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moneyard Learning</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff3e0; /* Warm orange tone */
+    }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 24px;
-      background-color: #f8f8f8;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      flex-wrap: wrap;
-    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background-color: #ffab40;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
+      position: relative;
+    }
 
-    .logo {
-      font-size: 20px;
-      font-weight: bold;
-      color: #2b7a78;
-    }
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffffff;
+      flex: 1;
+    }
 
-    .search-bar-container {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      justify-content: center;
-    }
+    .search-bar-container {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+    }
 
-    .search-bar-container input {
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      width: 100%;
-      max-width: 250px;
-      outline: none;
-    }
+    .search-bar-container input {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: none;
+      width: 100%;
+      max-width: 250px;
+      outline: none;
+    }
 
-    .search-bar-container .fa-user {
-      margin-left: 12px;
-      font-size: 18px;
-      color: #2f2f2f;
-      cursor: pointer;
-    }
+    .right-icons {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-    .menu-bar {
-      font-size: 18px;
-      color: #17252a;
-      cursor: pointer;
-      position: relative;
-    }
+    .right-icons .fa-user {
+      font-size: 18px;
+      color: #ffffff;
+      cursor: pointer;
+    }
 
-    .dropdown-menu {
-      position: absolute;
-      top: 50px;
-      right: 24px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      display: none;
-      flex-direction: column;
-      min-width: 160px;
-      z-index: 99;
-    }
+    .menu-bar {
+      font-size: 18px;
+      color: #ffffff;
+      cursor: pointer;
+      position: relative;
+    }
 
-    .dropdown-menu a {
-      padding: 10px 15px;
-      text-decoration: none;
-      color: #333;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
+    .dropdown-menu {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      min-width: 160px;
+      z-index: 99;
+    }
 
-    .dropdown-menu a:hover {
-      background-color: #f5f5f5;
-    }
+    .dropdown-menu a {
+      padding: 10px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #eee;
+    }
 
-    .all-courses-dropdown {
-      text-align: center;
-      margin: 20px 0;
-    }
+    .dropdown-menu a:hover {
+      background-color: #f0f0f0;
+    }
 
-    .all-courses-dropdown select {
-      font-size: 16px;
-      padding: 6px 12px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
+    main {
+      padding: 20px;
+    }
 
-    .level-content {
-      display: none;
-      padding: 10px 20px;
-    }
+    h1 {
+      color: #e65100;
+    }
 
-    .course-advert {
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      margin: 10px auto;
-      padding: 20px;
-      max-width: 700px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      position: relative;
-      background: #fff;
-    }
+    .course-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
 
-    .course-advert h3 {
-      margin-top: 0;
-      color: #17252a;
-    }
+    .course-card h3 {
+      margin: 0 0 10px;
+    }
 
-    .trademark {
-      font-size: 12px;
-      font-weight: bold;
-      color: #2b7a78;
-    }
-
-    .paid-label {
-  position: absolute;
-  top: -10px; /* shift up to avoid overlap */
-  left: 10px;
-  background-color: #ffe0b2; /* light warm orange background */
-  color: #e65100; /* strong warm orange text */
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-  font-weight: bold;
-  z-index: 2;
-}
-
-    .overview-arrow {
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
-      font-size: 18px;
-      color: #2b7a78;
-      cursor: pointer;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .search-bar-container {
-        justify-content: flex-start;
-        margin-top: 10px;
-      }
-    }
-  </style>
+    .course-card p {
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="logo">Moneyard Learning</div>
 
-    <div class="search-bar-container">
-      <input type="text" placeholder="Search courses..." />
-      <i class="fas fa-user"></i>
-    </div>
+  <header>
+    <div class="logo">Moneyard Learning</div>
 
-    <div class="menu-bar" onclick="toggleMainDropdown()">
-      <i class="fas fa-bars"></i>
-      <div class="dropdown-menu" id="mainDropdown">
-        <a href="#">Home</a>
-        <a href="#">My Courses</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </div>
-    </div>
-  </header>
+    <div class="search-bar-container">
+      <input type="text" placeholder="Search courses..." />
+    </div>
 
-  <div class="all-courses-dropdown">
-    <label for="courseLevel">All Courses</label>
-    <select id="courseLevel" onchange="toggleCoursesDropdown(this.value)">
-      <option value="">Select Level</option>
-      <option value="beginnerCourses">Beginner Courses</option>
-      <option value="intermediateCourses">Intermediate Courses</option>
-      <option value="advancedCourses">Advanced Courses</option>
-    </select>
-  </div>
+    <div class="right-icons">
+      <i class="fas fa-user"></i>
+      <div class="menu-bar" onclick="toggleMainDropdown()">
+        <i class="fas fa-bars"></i>
+        <div class="dropdown-menu" id="mainDropdown">
+          <a href="#">Home</a>
+          <a href="#">My Courses</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
 
-  <div class="level-content" id="beginnerCourses">
-    <div class="course-advert">
-      <h3>Learning Courses: Blockchain Technology Foundations</h3>
-      <p class="trademark">Moneyard Learning</p>
-      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
-    </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>Learning Courses: Blockchain Technology Mastery</h3>
-      <p class="trademark">Moneyard Learning</p>
-      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
-    </div>
-  </div>
+  <main>
+    <h1>Welcome Back!</h1>
 
-  <div class="level-content" id="intermediateCourses">
-    <div class="course-advert">
-      <h3>Learning Courses: Smart Contracts in Practice</h3>
-      <p class="trademark">Moneyard Learning</p>
-      <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148;</span>
-    </div>
-  </div>
+    <div class="course-card">
+      <h3>Crypto Basics</h3>
+      <p>Understand blockchain, crypto wallets, and how to start investing safely.</p>
+    </div>
 
-  <div class="level-content" id="advancedCourses">
-    <div class="course-advert">
-      <h3>Learning Courses: Advanced Blockchain Security</h3>
-      <p class="trademark">Moneyard Learning</p>
-      <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148;</span>
-    </div>
-  </div>
+    <div class="course-card">
+      <h3>Staking 101</h3>
+      <p>Learn how staking works, APY concepts, and how to choose a staking plan.</p>
+    </div>
 
-  <script>
-    function toggleMainDropdown() {
-      const dropdown = document.getElementById("mainDropdown");
-      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-    }
+    <div class="course-card">
+      <h3>Advanced Yield Strategies</h3>
+      <p>Explore high-yield savings, farming techniques, and risk management tips.</p>
+    </div>
+  </main>
 
-    document.addEventListener("click", function (e) {
-      const dropdown = document.getElementById("mainDropdown");
-      const menu = document.querySelector(".menu-bar");
-      if (!menu.contains(e.target)) dropdown.style.display = "none";
-    });
+  <script>
+    function toggleMainDropdown() {
+      const menu = document.getElementById('mainDropdown');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+      menu.style.flexDirection = 'column';
+    }
+  </script>
 
-    function toggleCoursesDropdown(levelId) {
-      const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
-      levels.forEach((id) => {
-        const section = document.getElementById(id);
-        section.style.display = (id === levelId) ? "block" : "none";
-      });
-    }
-  </script>
 </body>
 </html>
