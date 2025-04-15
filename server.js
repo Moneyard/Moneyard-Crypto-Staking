@@ -20,20 +20,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
     if (err) return console.error('DB Error:', err);
     console.log('Connected to SQLite:', dbPath);
 });
-// Insert default courses if they don't exist
-const defaultCourses = [
-  { title: 'Intro to Crypto', description: 'Basics of cryptocurrencies and blockchain' },
-  { title: 'How Staking Works', description: 'Learn the mechanics behind staking crypto' },
-  { title: 'DeFi Essentials', description: 'Explore decentralized finance applications' }
-];
-
-defaultCourses.forEach(course => {
-  db.get('SELECT * FROM courses WHERE title = ?', [course.title], (err, row) => {
-    if (!row) {
-      db.run('INSERT INTO courses (title, description) VALUES (?, ?)', [course.title, course.description]);
-    }
-  });
-});
 
 // Tables
 db.run(`CREATE TABLE IF NOT EXISTS users (
@@ -258,73 +244,3 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-// [PREVIOUS CODE OMITTED FOR BREVITY, KEEP YOUR EXISTING CODE ABOVE]
-
-// New: Create Courses and Enrollments Tables
-db.run(`CREATE TABLE IF NOT EXISTS courses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    description TEXT
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS enrollments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    course_id INTEGER,
-    enrolled_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(course_id) REFERENCES courses(id)
-)`);
-
-// New: Enroll User into a Course
-app.post('/api/enroll', (req, res) => {
-    const { userId, courseId } = req.body;
-    if (!userId || !courseId) {
-        return res.status(400).json({ error: 'Missing userId or courseId' });
-    }
-
-    // Confirm user and course exist
-    db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
-        if (err || !user) return res.status(404).json({ error: 'User not found' });
-
-        db.get('SELECT * FROM courses WHERE id = ?', [courseId], (err, course) => {
-            if (err || !course) return res.status(404).json({ error: 'Course not found' });
-
-            // Check if already enrolled
-            db.get('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?', [userId, courseId], (err, row) => {
-                if (row) return res.status(400).json({ error: 'Already enrolled in this course' });
-
-                // Enroll user
-                db.run('INSERT INTO enrollments (user_id, course_id) VALUES (?, ?)', [userId, courseId], function(err) {
-                    if (err) return res.status(500).json({ error: 'Enrollment failed' });
-                    res.json({ success: true, message: 'User enrolled in course', enrollmentId: this.lastID });
-                });
-            });
-        });
-    });
-});
-
-// OPTIONAL: Get list of courses
-app.get('/api/courses', (req, res) => {
-    db.all('SELECT * FROM courses', [], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Failed to fetch courses' });
-        res.json(rows);
-    });
-});
-
-// OPTIONAL: Get user's enrolled courses
-app.get('/api/enrollments', (req, res) => {
-    const userId = req.query.userId;
-    if (!userId) return res.status(400).json({ error: 'Missing userId' });
-
-    db.all(`
-        SELECT courses.* FROM courses
-        JOIN enrollments ON courses.id = enrollments.course_id
-        WHERE enrollments.user_id = ?
-    `, [userId], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Failed to load enrollments' });
-        res.json(rows);
-    });
-});
-
-// [EXISTING ENDPOINTS BELOW...]
