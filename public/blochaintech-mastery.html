@@ -3,62 +3,204 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Courses | Moneyard Academy</title>
+  <title>Course Details</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
       padding: 20px;
     }
-    h2 {
+    h1 {
+      color: #264653;
+    }
+    .course-details {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      position: relative;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .enroll-btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #2a9d8f;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .enroll-btn:hover {
+      background: #21867a;
+    }
+    a.back {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
       color: #2a9d8f;
     }
-    .course-section {
-      margin-bottom: 30px;
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
     }
-    .course-list a {
-      display: block;
-      padding: 12px;
-      margin: 8px 0;
+    .modal-content {
       background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      text-decoration: none;
-      color: #333;
-      transition: background 0.2s;
+      padding: 30px;
+      border-radius: 8px;
+      width: 95%;
+      max-width: 500px;
     }
-    .course-list a:hover {
-      background: #e0f7f1;
+    .modal-content h3 {
+      color: #264653;
+    }
+    .modal-content p, .modal-content input {
+      margin: 10px 0;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 18px;
+      background: #2a9d8f;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1e7469;
     }
   </style>
 </head>
 <body>
 
-  <h1>Moneyard Academy</h1>
+  <div class="course-details">
+    <h1 id="courseTitle">Loading...</h1>
+    <div id="courseContent">Please wait while we load the course details.</div>
+    <button class="enroll-btn" id="enrollButton">Enroll Now</button>
+  </div>
 
-  <div class="course-section">
-    <h2>Beginner Courses</h2>
-    <div class="course-list">
-      <a href="course.html?name=Blockchain%20Technology%20Foundations">Blockchain Technology Foundations</a>
-      <a href="course.html?name=Micro-Investing%20Essentials">Micro-Investing Essentials</a>
+  <a href="courses.html" class="back">&larr; Back to all courses</a>
+
+  <!-- Payment Modal -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-content">
+      <h3>Enroll in <span id="modalCourseName"></span></h3>
+      <p><strong>Send USDT (TRC20):</strong><br> TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</p>
+      <p><strong>Send USDT (BEP20):</strong><br> 0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</p>
+      <p>After payment, enter your transaction ID (TxID) below:</p>
+      <input type="text" id="txidInput" placeholder="Enter your USDT Transaction ID" />
+      <button onclick="submitTxid()">Submit</button>
+      <p id="txidStatus"></p>
+      <button onclick="closeModal()">Cancel</button>
     </div>
   </div>
 
-  <div class="course-section">
-    <h2>Intermediate Courses</h2>
-    <div class="course-list">
-      <a href="course.html?name=Blockchain%20Technology%20Mastery">Blockchain Technology Mastery</a>
-      <a href="course.html?name=Smart%20Contracts%20in%20Practice">Smart Contracts in Practice</a>
-    </div>
-  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseName = urlParams.get('name');
 
-  <div class="course-section">
-    <h2>Advanced Courses</h2>
-    <div class="course-list">
-      <a href="course.html?name=Advanced%20Blockchain%20Security">Advanced Blockchain Security</a>
-      <a href="course.html?name=High-Yield%20Savings%20Tools">High-Yield Savings Tools</a>
-    </div>
-  </div>
+    const courses = {
+      "Blockchain Technology Foundations": `
+        <p><strong>Description:</strong> Learn blockchain basics, crypto fundamentals, and DApps.</p>
+        <ul>
+          <li>Blockchain architecture</li>
+          <li>Crypto & mining explained</li>
+          <li>DApps & smart contracts</li>
+        </ul>
+        <p><strong>Duration:</strong> 4 weeks | <strong>Price:</strong> Free</p>
+      `,
+      "Blockchain Technology Mastery": `
+        <p><strong>Description:</strong> Dive into advanced blockchain use, protocols, and secure DApp development.</p>
+        <ul>
+          <li>DApp development</li>
+          <li>Blockchain protocols</li>
+          <li>Smart contract security</li>
+        </ul>
+        <p><strong>Duration:</strong> 8 weeks | <strong>Price:</strong> $49 USDT</p>
+      `,
+      "Smart Contracts in Practice": `
+        <p><strong>Description:</strong> Practical guide to Solidity and deploying smart contracts.</p>
+        <ul>
+          <li>Solidity syntax</li>
+          <li>Deploying on Ethereum</li>
+          <li>Secure contract tips</li>
+        </ul>
+        <p><strong>Duration:</strong> 6 weeks | <strong>Price:</strong> $29 USDT</p>
+      `,
+      "Micro-Investing Essentials": `
+        <p><strong>Description:</strong> Learn how to start investing with small amounts and build a portfolio.</p>
+        <ul>
+          <li>Micro-investing tools</li>
+          <li>Portfolio strategies</li>
+          <li>Risk management</li>
+        </ul>
+        <p><strong>Duration:</strong> 5 weeks | <strong>Price:</strong> $19 USDT</p>
+      `,
+      "Advanced Blockchain Security": `
+        <p><strong>Description:</strong> Master blockchain security including vulnerability management and attack prevention.</p>
+        <ul>
+          <li>Threat modeling</li>
+          <li>Common blockchain attacks</li>
+          <li>Secure coding best practices</li>
+        </ul>
+        <p><strong>Duration:</strong> 6 weeks | <strong>Price:</strong> $39 USDT</p>
+      `,
+      "High-Yield Savings Tools": `
+        <p><strong>Description:</strong> Discover smart saving tools and how to earn more on your deposits.</p>
+        <ul>
+          <li>High-yield platforms</li>
+          <li>Interest rate comparison</li>
+          <li>Maximizing savings</li>
+        </ul>
+        <p><strong>Duration:</strong> 4 weeks | <strong>Price:</strong> $25 USDT</p>
+      `
+    };
 
+    document.getElementById("courseTitle").textContent = courseName;
+    document.getElementById("courseContent").innerHTML = courses[courseName] || "<p>Course not found.</p>";
+
+    document.getElementById("enrollButton").addEventListener("click", () => {
+      document.getElementById("modalCourseName").textContent = courseName;
+      document.getElementById("paymentModal").style.display = "flex";
+    });
+
+    function closeModal() {
+      document.getElementById("paymentModal").style.display = "none";
+      document.getElementById("txidInput").value = "";
+      document.getElementById("txidStatus").textContent = "";
+    }
+
+    function submitTxid() {
+      const txid = document.getElementById("txidInput").value.trim();
+      const status = document.getElementById("txidStatus");
+
+      if (txid.length < 10) {
+        status.textContent = "Please enter a valid Transaction ID.";
+        status.style.color = "red";
+        return;
+      }
+
+      status.textContent = "Thank you! Your enrollment will be confirmed after verification.";
+      status.style.color = "green";
+
+      // You can optionally send the txid to your backend here using fetch()
+      // fetch('/api/confirm-payment', { method: 'POST', body: JSON.stringify({ txid, courseName }) });
+    }
+  </script>
 </body>
 </html>
