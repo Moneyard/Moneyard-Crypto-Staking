@@ -401,3 +401,21 @@ document.querySelectorAll('.module-toggle').forEach(button => {
     content.style.display = content.style.display === 'block' ? 'none' : 'block';
   });
 });
+// Course Overview Modal Logic
+const modal = document.getElementById("courseOverviewModal");
+const btn = document.getElementById("openOverviewModal");
+const span = document.querySelector(".modal .close");
+
+btn.onclick = function () {
+  modal.style.display = "block";
+};
+
+span.onclick = function () {
+  modal.style.display = "none";
+};
+
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
