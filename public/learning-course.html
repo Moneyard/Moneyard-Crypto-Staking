@@ -303,49 +303,120 @@
   </div>
 
   <!-- Modal -->
-  <div id="courseModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Course Overview</h2>
-      <p id="courseOverviewContent">Course details will be shown here...</p>
-    </div>
+<div id="courseModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="courseTitle">Course Overview</h2>
+    <p id="courseOverviewContent">Course details will be shown here...</p>
   </div>
+</div>
 
-  <script>
-    function toggleMainDropdown() {
-      const dropdown = document.getElementById("mainDropdown");
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    }
+<script>
+  function openModal(courseName) {
+    const courseContent = {
+      "Blockchain Technology Foundations": `
+        <strong>Description:</strong> 
+        This introductory course provides the foundation for understanding blockchain technology. 
+        It covers key concepts like blockchain architecture, how cryptocurrency works, and the potential applications in various industries. 
+        You will also get an overview of decentralized applications (DApps) and the basics of smart contracts.
+        
+        <strong>Course Highlights:</strong>
+        <ul>
+          <li>Blockchain technology overview</li>
+          <li>Understanding cryptocurrency</li>
+          <li>Exploring decentralized applications (DApps)</li>
+          <li>Introduction to smart contracts</li>
+        </ul>
+        <strong>Duration:</strong> 4 weeks | <strong>Price:</strong> Free
+      `,
+      "Blockchain Technology Mastery": `
+        <strong>Description:</strong>
+        Blockchain Technology Mastery is an advanced course designed for those looking to deepen their understanding of blockchain technology. 
+        The course explores real-world applications, blockchain security, and smart contracts. 
+        You will dive deep into building decentralized applications (DApps) and explore various blockchain protocols.
+        
+        <strong>Course Highlights:</strong>
+        <ul>
+          <li>Building decentralized applications (DApps)</li>
+          <li>Exploring blockchain protocols</li>
+          <li>Advanced smart contract development</li>
+          <li>Blockchain security and best practices</li>
+        </ul>
+        <strong>Duration:</strong> 8 weeks | <strong>Price:</strong> $49
+      `,
+      "Smart Contracts in Practice": `
+        <strong>Description:</strong>
+        Learn how to create, deploy, and interact with smart contracts on the blockchain. This course focuses on Solidity programming and how to write secure smart contracts. 
+        You will get hands-on experience in deploying contracts on platforms like Ethereum.
+        
+        <strong>Course Highlights:</strong>
+        <ul>
+          <li>Solidity programming fundamentals</li>
+          <li>Creating and deploying smart contracts</li>
+          <li>Using smart contracts in decentralized applications</li>
+          <li>Best practices for writing secure contracts</li>
+        </ul>
+        <strong>Duration:</strong> 6 weeks | <strong>Price:</strong> $29
+      `,
+      "Micro-Investing Essentials": `
+        <strong>Description:</strong>
+        This course will teach you the fundamentals of micro-investing, including how to invest small amounts in various financial assets. 
+        You will learn about different investment tools and platforms that allow you to start with minimal capital.
+        
+        <strong>Course Highlights:</strong>
+        <ul>
+          <li>Understanding micro-investing</li>
+          <li>Investment platforms and tools</li>
+          <li>Building a diversified investment portfolio</li>
+          <li>Risk management in micro-investing</li>
+        </ul>
+        <strong>Duration:</strong> 5 weeks | <strong>Price:</strong> $19
+      `,
+      "Advanced Blockchain Security": `
+        <strong>Description:</strong>
+        This advanced course dives deep into blockchain security, focusing on preventing attacks, securing decentralized applications, and ensuring the integrity of blockchain systems. 
+        You'll learn about blockchain vulnerabilities and how to safeguard your projects against common threats.
+        
+        <strong>Course Highlights:</strong>
+        <ul>
+          <li>Blockchain security fundamentals</li>
+          <li>Securing decentralized applications (DApps)</li>
+          <li>Understanding blockchain vulnerabilities</li>
+          <li>Advanced attack prevention techniques</li>
+        </ul>
+        <strong>Duration:</strong> 6 weeks | <strong>Price:</strong> $39
+      `,
+      "High-Yield Savings Tools": `
+        <strong>Description:</strong>
+        Explore how high-yield savings accounts and other financial tools can help you maximize your savings. This course introduces you to financial tools and strategies that allow you to earn more on your deposits.
+        
+        <strong>Course Highlights:</strong>
+        <ul>
+          <li>Understanding high-yield savings accounts</li>
+          <li>Exploring other high-return financial tools</li>
+          <li>Strategies to maximize savings growth</li>
+          <li>Risk considerations for high-yield investments</li>
+        </ul>
+        <strong>Duration:</strong> 4 weeks | <strong>Price:</strong> $25
+      `
+    };
 
-    function toggleCoursesDropdown(level) {
-      const levels = ['beginnerCourses', 'intermediateCourses', 'advancedCourses'];
-      levels.forEach((lvl) => {
-        const content = document.getElementById(lvl);
-        content.style.display = (lvl === level) ? "block" : "none";
-      });
-    }
+    const courseTitle = document.getElementById("courseTitle");
+    const modalContent = document.getElementById("courseOverviewContent");
+    const modal = document.getElementById("courseModal");
 
-    function openModal(courseName) {
-      const courseContent = {
-        "Blockchain Technology Foundations": "Are you ready to dive into blockchain technology? This free course covers the basics of blockchain technology, cryptocurrency, and decentralized applications.",
-        "Blockchain Technology Mastery": "Blockchain Technology Mastery is an advanced course designed for those looking to deepen their understanding of blockchain. Explore real-world applications, security, and smart contracts.",
-        "Smart Contracts in Practice": "Learn how to write and deploy smart contracts on the blockchain. This course will teach you the fundamentals of Ethereum, Solidity, and decentralized applications.",
-        "Micro-Investing Essentials": "Learn the basics of micro-investing, how to start investing with small amounts of money, and the key concepts behind it.",
-        "Advanced Blockchain Security": "This advanced course dives deep into blockchain security, focusing on preventing attacks, vulnerabilities, and securing decentralized applications.",
-        "High-Yield Savings Tools": "Explore high-yield savings accounts and tools to maximize your savings with practical strategies and real-world applications."
-      };
+    // Set course title and content
+    courseTitle.textContent = courseName;
+    modalContent.innerHTML = courseContent[courseName];
 
-      const modalContent = document.getElementById("courseOverviewContent");
-      const modal = document.getElementById("courseModal");
+    // Show modal
+    modal.style.display = "block";
+  }
 
-      modalContent.textContent = courseContent[courseName];
-      modal.style.display = "block";
-    }
-
-    function closeModal() {
-      const modal = document.getElementById("courseModal");
-      modal.style.display = "none";
-    }
-  </script>
+  function closeModal() {
+    const modal = document.getElementById("courseModal");
+    modal.style.display = "none";
+  }
+</script>
 </body>
 </html>
