@@ -283,6 +283,85 @@
         section.style.display = (id === levelId) ? "block" : "none";
       });
     }
-  </script>
+  <script>
+<!-- Add this before closing </body> -->
+<!-- COURSE OVERVIEW MODAL -->
+<div id="overviewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:#fff; max-width:500px; width:90%; padding:20px; border-radius:8px; position:relative;">
+    <span style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;" onclick="closeOverviewModal()">&times;</span>
+    <h2 id="overviewTitle">Course Overview</h2>
+    <p id="overviewContent">This course covers...</p>
+  </div>
+</div>
+
+<!-- PAID ENROLLMENT MODAL -->
+<div id="enrollModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:#fff; max-width:500px; width:90%; padding:20px; border-radius:8px; position:relative;">
+    <span style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;" onclick="closeEnrollModal()">&times;</span>
+    <h2>Enroll & Pay</h2>
+    <form onsubmit="submitPayment(event)">
+      <label>Name:<br><input type="text" required style="width:100%; padding:6px; margin-bottom:10px;"></label><br>
+      <label>Email:<br><input type="email" required style="width:100%; padding:6px; margin-bottom:10px;"></label><br>
+      <label>Card Info:<br><input type="text" placeholder="1234 5678 9012 3456" required style="width:100%; padding:6px; margin-bottom:10px;"></label><br>
+      <label>Amount:<br><input id="paymentAmount" type="text" readonly style="width:100%; padding:6px; margin-bottom:10px;"></label><br>
+      <button type="submit" style="padding:10px 20px; background:#2b7a78; color:white; border:none; border-radius:4px;">Pay Now</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // OVERVIEW MODAL
+  function showOverview(title) {
+    document.getElementById('overviewTitle').innerText = title;
+    document.getElementById('overviewContent').innerText = 'Detailed overview about: ' + title;
+    document.getElementById('overviewModal').style.display = 'flex';
+  }
+
+  function closeOverviewModal() {
+    document.getElementById('overviewModal').style.display = 'none';
+  }
+
+  // REPLACE ALERTS with proper overview modal
+  document.querySelectorAll('.overview-arrow').forEach(el => {
+    el.onclick = function() {
+      const title = this.parentElement.querySelector('h3')?.innerText || 'Course';
+      showOverview(title);
+    }
+  });
+
+  // PAID ENROLLMENT MODAL
+  function showEnrollModal(amount) {
+    document.getElementById('paymentAmount').value = '$' + amount;
+    document.getElementById('enrollModal').style.display = 'flex';
+  }
+
+  function closeEnrollModal() {
+    document.getElementById('enrollModal').style.display = 'none';
+  }
+
+  // Attach enroll button event (only for paid courses)
+  document.querySelectorAll('.course-advert').forEach(advert => {
+    const isPaid = advert.querySelector('.paid-label');
+    if (isPaid) {
+      const button = advert.querySelector('.enroll-button');
+      const priceText = advert.querySelector('.duration-price')?.innerText;
+      const match = priceText?.match(/\$\d+/);
+      const amount = match ? match[0].replace('$', '') : '0';
+      if (button) {
+        button.onclick = function () {
+          showEnrollModal(amount);
+        };
+      }
+    }
+  });
+
+  // Fake submit logic
+  function submitPayment(event) {
+    event.preventDefault();
+    alert("Payment processed! You are now enrolled.");
+    closeEnrollModal();
+  }
+</script>
+
 </body>
 </html>
