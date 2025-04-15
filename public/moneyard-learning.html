@@ -352,6 +352,14 @@
     }
 
     loadModules();
-  </script>
+window.onload = () => {
+  const access = localStorage.getItem("courseAccess");
+  if (access === "true") {
+    document.getElementById("course-content").style.display = "block";
+  } else {
+    document.getElementById("locked-message").style.display = "block";
+  }
+};
+ </script>
 </body>
 </html>
