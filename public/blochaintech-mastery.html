@@ -110,22 +110,6 @@
       font-size: 13px;
       color: #777;
     }
-
-    .enroll-button {
-      display: inline-block;
-      margin: 20px 0;
-      padding: 12px 24px;
-      background-color: #1e88e5;
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-    }
-
-    .enroll-button:hover {
-      background-color: #1565c0;
-    }
   </style>
 </head>
 <body>
@@ -143,11 +127,15 @@
       You will receive an accredited certificate upon completion of this course.
     </div>
 
-    <p>
-      Dive deep into blockchain architecture, smart contracts, decentralized apps, and real-world use cases. Ideal for intermediate to advanced learners.
-    </p>
+    <!-- Course Description -->
+    <p>Master blockchain technology and become a certified expert in distributed ledger systems, cryptocurrencies, smart contracts, and more.</p>
 
-    <a href="success.html?course=Blockchain%20Technology%20Mastery" class="enroll-button">Enroll Now</a>
+    <!-- Enroll Button -->
+    <a href="payment-success.html?course=Blockchain%20Technology%20Mastery">
+      <button style="padding: 12px 24px; background: #00796b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+        Enroll Now - 15 USDT
+      </button>
+    </a>
 
     <div class="pay-section">
       <h2>Payment Instructions (USDT)</h2>
@@ -192,14 +180,12 @@
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
-
       if (!email) {
         alert('Please enter your email.');
         return;
       }
-
-      // Redirect to success page
-      window.location.href = 'success.html?course=Blockchain%20Technology%20Mastery';
+      // Redirect to success page with course tag
+      window.location.href = 'payment-success.html?course=Blockchain%20Technology%20Mastery';
     });
   </script>
 
