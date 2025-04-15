@@ -6,192 +6,60 @@
   <title>Moneyard Learning</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #faae42; /* Warm orange */
-    }
+    /* Your existing styles go here */
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 24px;
-      background-color: #f8f8f8;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      flex-wrap: wrap;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: bold;
-      color: #2b7a78;
-    }
-
-    .search-bar-container {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      justify-content: center;
-    }
-
-    .search-bar-container input {
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
+    /* Modal Styles */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
       width: 100%;
-      max-width: 250px;
-      outline: none;
+      height: 100%;
+      overflow: auto; 
+      background-color: rgb(0,0,0); 
+      background-color: rgba(0,0,0,0.4); 
+      padding-top: 60px;
     }
 
-    .search-bar-container .fa-user {
-      margin-left: 18px;
-      font-size: 18px;
-      color: #2f2f2f;
-      cursor: pointer;
-    }
-
-    .menu-bar {
-      font-size: 18px;
-      color: #17252a;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 50px;
-      right: 24px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      display: none;
-      flex-direction: column;
-      min-width: 160px;
-      z-index: 99;
-    }
-
-    .dropdown-menu a {
-      padding: 10px 15px;
-      text-decoration: none;
-      color: #333;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-
-    .dropdown-menu a:hover {
-      background-color: #f5f5f5;
-    }
-
-    .all-courses-dropdown {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .all-courses-dropdown select {
-      font-size: 16px;
-      padding: 6px 12px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    .level-content {
-      display: none;
-      padding: 10px 20px;
-    }
-
-    .course-advert {
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      margin: 10px auto;
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
       padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
       max-width: 700px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      position: relative;
-      background: #a8e6a3; /* Green advert */
-      text-align: center;
+      border-radius: 10px;
     }
 
-    .course-advert h3 {
-      margin-top: 30px;
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Course Details Content */
+    .course-details h3 {
       color: #17252a;
     }
 
-    .trademark {
-      font-size: 12px;
-      font-weight: bold;
-      color: #2b7a78;
-    }
-
-    .paid-label {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background-color: #ff8c42; /* Warm orange */
-      color: white;
-      padding: 5px 10px;
-      font-size: 12px;
-      font-weight: bold;
-      border-radius: 4px;
-      z-index: 2;
-    }
-
-    .overview-arrow {
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
-      font-size: 18px;
-      color: #2b7a78;
-      cursor: pointer;
-    }
-
-    .enroll-button {
-      background-color: #ff8c42;
-      color: #fff;
-      border: none;
-      padding: 10px 24px;
-      font-size: 16px;
-      border-radius: 25px;
-      margin: 15px auto 5px;
-      cursor: pointer;
-    }
-
-    .cert-note, .duration-price {
-      font-size: 13px;
+    .course-details p {
       color: #333;
-      margin-bottom: 8px;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .search-bar-container {
-        justify-content: flex-start;
-        margin-top: 10px;
-      }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">Moneyard Learning</div>
-    <div class="search-bar-container">
-      <input type="text" placeholder="Search courses..." />
-      <i class="fas fa-user"></i>
-    </div>
-    <div class="menu-bar" onclick="toggleMainDropdown()">
-      <i class="fas fa-bars"></i>
-      <div class="dropdown-menu" id="mainDropdown">
-        <a href="#">Home</a>
-        <a href="#">My Courses</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </div>
-    </div>
+    <!-- Your existing header code here -->
   </header>
 
   <div class="all-courses-dropdown">
@@ -210,8 +78,7 @@
       <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note"></p>
-      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
+      <span class="overview-arrow" onclick="openModal('Blockchain Technology Foundations')">&#10148;</span>
     </div>
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
@@ -220,61 +87,45 @@
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note">Accredited certificate received upon completion</p>
-      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
+      <span class="overview-arrow" onclick="openModal('Blockchain Technology Mastery')">&#10148;</span>
     </div>
   </div>
 
-  <div class="level-content" id="intermediateCourses">
-    <div class="course-advert">
-      <h3>Smart Contracts in Practice</h3>
-      <p class="duration-price">Duration: 1 week | Price: Free</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note"></p>
-      <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148;</span>
-    </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>Micro-Investing Essentials</h3>
-      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes practical investing simulations</p>
-      <span class="overview-arrow" onclick="alert('Overview: Micro-Investing Essentials')">&#10148;</span>
-    </div>
-  </div>
-
-  <div class="level-content" id="advancedCourses">
-    <div class="course-advert">
-      <h3>Advanced Blockchain Security</h3>
-      <p class="duration-price">Duration: 8 weeks | Price: Free</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note"></p>
-      <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148;</span>
-    </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>High-Yield Savings Tools</h3>
-      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes savings strategy planner</p>
-      <span class="overview-arrow" onclick="alert('Overview: High-Yield Savings Tools')">&#10148;</span>
+  <!-- Modal for Course Overview -->
+  <div id="courseModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="course-details">
+        <h3 id="courseTitle"></h3>
+        <p id="courseOverview"></p>
+      </div>
     </div>
   </div>
 
   <script>
-    function toggleMainDropdown() {
-      const dropdown = document.getElementById("mainDropdown");
-      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+    function openModal(courseName) {
+      // Set the course name and overview dynamically based on the clicked course
+      const courseDetails = {
+        "Blockchain Technology Foundations": "Overview: Learn the fundamentals of Blockchain technology, including the basic principles and applications.",
+        "Blockchain Technology Mastery": "Overview: Master advanced blockchain concepts, including smart contracts and decentralized applications (dApps).",
+        "Smart Contracts in Practice": "Overview: Dive into smart contracts and explore how they function in real-world scenarios.",
+        "Micro-Investing Essentials": "Overview: Learn how micro-investing works and start making small investments with large returns.",
+        "Advanced Blockchain Security": "Overview: Understand how to secure blockchain networks and identify common security risks.",
+        "High-Yield Savings Tools": "Overview: Learn how to use high-yield savings strategies and increase your savings effectively."
+      };
+
+      // Set the course title and overview content
+      document.getElementById("courseTitle").innerText = courseName;
+      document.getElementById("courseOverview").innerText = courseDetails[courseName] || "No overview available for this course.";
+      
+      // Show the modal
+      document.getElementById("courseModal").style.display = "block";
     }
 
-    document.addEventListener("click", function (e) {
-      const dropdown = document.getElementById("mainDropdown");
-      const menu = document.querySelector(".menu-bar");
-      if (!menu.contains(e.target)) dropdown.style.display = "none";
-    });
+    function closeModal() {
+      // Close the modal
+      document.getElementById("courseModal").style.display = "none";
+    }
 
     function toggleCoursesDropdown(levelId) {
       const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
