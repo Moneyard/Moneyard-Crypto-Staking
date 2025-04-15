@@ -65,30 +65,6 @@ db.run(`
     FOREIGN KEY(user_id) REFERENCES users(id)
   )
 `);
-db.run(`CREATE TABLE IF NOT EXISTS courses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    description TEXT
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS enrollments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    course_id INTEGER,
-    enrolled_on TEXT
-)`);
-const sampleCourses = [
-  { title: 'Crypto Basics', description: 'Learn the fundamentals of crypto' },
-  { title: 'Staking 101', description: 'How staking works and how to earn' }
-];
-
-sampleCourses.forEach(course => {
-  db.get('SELECT * FROM courses WHERE title = ?', [course.title], (err, row) => {
-    if (!row) {
-      db.run('INSERT INTO courses (title, description) VALUES (?, ?)', [course.title, course.description]);
-    }
-  });
-});
 
 // Signup
 app.post('/api/signup', async (req, res) => {
