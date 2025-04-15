@@ -3,76 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Payment Successful - Moneyard Learning</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Blockchain Technology Mastery - Moneyard Learning</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f9ff;
-      text-align: center;
-      padding: 40px 20px;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
     }
 
-    .success-box {
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
       background: white;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-      display: inline-block;
       padding: 30px;
-      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    h2 {
-      color: green;
+    h1 {
+      color: #00695c;
+      font-size: 28px;
       margin-bottom: 10px;
     }
 
-    p {
-      margin: 10px 0;
-      font-size: 16px;
+    .info p {
+      margin: 6px 0;
     }
 
-    .certificate-preview {
-      margin-top: 25px;
+    .highlight {
+      color: #1e88e5;
+      font-weight: bold;
     }
 
-    .certificate-preview img {
-      max-width: 100%;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
+    .cert-note {
+      background: #e8f5e9;
+      padding: 10px;
+      border-left: 4px solid #43a047;
+      margin: 20px 0;
+      font-style: italic;
     }
 
-    .download-btn {
+    .pay-section {
+      margin-top: 30px;
+    }
+
+    .pay-option {
+      background: #f1f8e9;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-left: 5px solid #689f38;
+      position: relative;
+    }
+
+    code {
+      font-size: 14px;
+      color: #2e7d32;
       display: inline-block;
-      background-color: #007bff;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
+      word-break: break-all;
     }
 
-    .back-link {
+    .copy-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    label {
       display: block;
-      margin-top: 25px;
-      color: #555;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 16px;
+    }
+
+    button[type="submit"] {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #388e3c;
+    }
+
+    .footer-note {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    .enroll-button {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 12px 24px;
+      background-color: #1e88e5;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+
+    .enroll-button:hover {
+      background-color: #1565c0;
     }
   </style>
 </head>
 <body>
-  <div class="success-box">
-    <h2>Payment Successful!</h2>
-    <p>Thank you for enrolling in <strong>Blockchain Technology Mastery</strong>.</p>
-    <p>You will receive a confirmation email shortly.</p>
 
-    <div class="certificate-preview">
-      <h3>Preview of Your Certificate:</h3>
-      <img src="certificate_sample.png" alt="Sample Certificate" />
-      <br />
-      <a href="blockchain_certificate.pdf" class="download-btn" download>Download Certificate (PDF)</a>
+  <div class="container">
+    <h1>Blockchain Technology Mastery</h1>
+
+    <div class="info">
+      <p><span class="highlight">Duration:</span> 1 week</p>
+      <p><span class="highlight">Price:</span> $15 USDT</p>
+      <p><span class="highlight">Provider:</span> Moneyard Learning</p>
     </div>
 
-    <a href="dashboard.html" class="back-link">Go to Dashboard</a>
+    <div class="cert-note">
+      You will receive an accredited certificate upon completion of this course.
+    </div>
+
+    <p>
+      Dive deep into blockchain architecture, smart contracts, decentralized apps, and real-world use cases. Ideal for intermediate to advanced learners.
+    </p>
+
+    <a href="success.html?course=Blockchain%20Technology%20Mastery" class="enroll-button">Enroll Now</a>
+
+    <div class="pay-section">
+      <h2>Payment Instructions (USDT)</h2>
+
+      <div class="pay-option">
+        <strong>Tron (TRC20) Address:</strong><br>
+        <code id="trc20">TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f</code>
+        <button class="copy-btn" onclick="copyToClipboard('trc20')">Copy</button>
+      </div>
+
+      <div class="pay-option">
+        <strong>BNB Smart Chain (BEP20) Address:</strong><br>
+        <code id="bep20">0x2837db956aba84eb2670d00aeea5c0d8a9e20a01</code>
+        <button class="copy-btn" onclick="copyToClipboard('bep20')">Copy</button>
+      </div>
+
+      <p>Please send exactly <strong>15 USDT</strong> to one of the addresses above.</p>
+
+      <h2>Submit Your Payment Details</h2>
+      <form id="paymentForm">
+        <label for="email">Your Email</label>
+        <input type="email" id="email" required placeholder="Enter your email" />
+
+        <label for="txid">Transaction ID (TxID) <small>(optional)</small></label>
+        <input type="text" id="txid" placeholder="Paste your TxID here (if available)" />
+
+        <button type="submit">Submit Payment</button>
+      </form>
+
+      <p class="footer-note">Your enrollment will be confirmed within 1–12 hours after verification.</p>
+    </div>
   </div>
+
+  <script>
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Address copied to clipboard!');
+      });
+    }
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+
+      if (!email) {
+        alert('Please enter your email.');
+        return;
+      }
+
+      // Redirect to success page
+      window.location.href = 'success.html?course=Blockchain%20Technology%20Mastery';
+    });
+  </script>
+
 </body>
 </html>
