@@ -164,44 +164,6 @@
       margin-bottom: 8px;
     }
 
-    /* Modal Styling */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgb(0,0,0);
-      background-color: rgba(0,0,0,0.4);
-      padding-top: 60px;
-    }
-
-    .modal-content {
-      background-color: #fefefe;
-      margin: 5% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 700px;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
     @media (max-width: 600px) {
       header {
         flex-direction: column;
@@ -249,7 +211,7 @@
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note"></p>
-      <span class="overview-arrow" onclick="openModal('Blockchain Technology Foundations')">&#10148;</span>
+      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
     </div>
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
@@ -258,7 +220,7 @@
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note">Accredited certificate received upon completion</p>
-      <span class="overview-arrow" onclick="openModal('Blockchain Technology Mastery')">&#10148;</span>
+      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
     </div>
   </div>
 
@@ -269,7 +231,7 @@
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note"></p>
-      <span class="overview-arrow" onclick="openModal('Smart Contracts in Practice')">&#10148;</span>
+      <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148;</span>
     </div>
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
@@ -277,146 +239,50 @@
       <p class="duration-price">Duration: 2 weeks | Price: $25</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Accredited certificate received upon completion</p>
-      <span class="overview-arrow" onclick="openModal('Micro-Investing Essentials')">&#10148;</span>
+      <p class="cert-note">Includes practical investing simulations</p>
+      <span class="overview-arrow" onclick="alert('Overview: Micro-Investing Essentials')">&#10148;</span>
     </div>
   </div>
 
   <div class="level-content" id="advancedCourses">
     <div class="course-advert">
       <h3>Advanced Blockchain Security</h3>
-      <p class="duration-price">Duration: 1 week | Price: Free</p>
+      <p class="duration-price">Duration: 8 weeks | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
       <p class="cert-note"></p>
-      <span class="overview-arrow" onclick="openModal('Advanced Blockchain Security')">&#10148;</span>
+      <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148;</span>
     </div>
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
       <h3>High-Yield Savings Tools</h3>
-      <p class="duration-price">Duration: 3 weeks | Price: $35</p>
+      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Accredited certificate received upon completion</p>
-      <span class="overview-arrow" onclick="openModal('High-Yield Savings Tools')">&#10148;</span>
+      <p class="cert-note">Includes savings strategy planner</p>
+      <span class="overview-arrow" onclick="alert('Overview: High-Yield Savings Tools')">&#10148;</span>
     </div>
   </div>
 
-  <!-- Modal -->
-<div id="courseModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2 id="courseTitle">Course Overview</h2>
-    <p id="courseOverviewContent">Course details will be shown here...</p>
-  </div>
-</div>
+  <script>
+    function toggleMainDropdown() {
+      const dropdown = document.getElementById("mainDropdown");
+      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+    }
 
-<script>
-  function openModal(courseName) {
-    const courseContent = {
-      "Blockchain Technology Foundations": `
-        <strong>Description:</strong> 
-        This introductory course provides the foundation for understanding blockchain technology. 
-        It covers key concepts like blockchain architecture, how cryptocurrency works, and the potential applications in various industries. 
-        You will also get an overview of decentralized applications (DApps) and the basics of smart contracts.
-        
-        <strong>Course Highlights:</strong>
-        <ul>
-          <li>Blockchain technology overview</li>
-          <li>Understanding cryptocurrency</li>
-          <li>Exploring decentralized applications (DApps)</li>
-          <li>Introduction to smart contracts</li>
-        </ul>
-        <strong>Duration:</strong> 4 weeks | <strong>Price:</strong> Free
-      `,
-      "Blockchain Technology Mastery": `
-        <strong>Description:</strong>
-        Blockchain Technology Mastery is an advanced course designed for those looking to deepen their understanding of blockchain technology. 
-        The course explores real-world applications, blockchain security, and smart contracts. 
-        You will dive deep into building decentralized applications (DApps) and explore various blockchain protocols.
-        
-        <strong>Course Highlights:</strong>
-        <ul>
-          <li>Building decentralized applications (DApps)</li>
-          <li>Exploring blockchain protocols</li>
-          <li>Advanced smart contract development</li>
-          <li>Blockchain security and best practices</li>
-        </ul>
-        <strong>Duration:</strong> 8 weeks | <strong>Price:</strong> $49
-      `,
-      "Smart Contracts in Practice": `
-        <strong>Description:</strong>
-        Learn how to create, deploy, and interact with smart contracts on the blockchain. This course focuses on Solidity programming and how to write secure smart contracts. 
-        You will get hands-on experience in deploying contracts on platforms like Ethereum.
-        
-        <strong>Course Highlights:</strong>
-        <ul>
-          <li>Solidity programming fundamentals</li>
-          <li>Creating and deploying smart contracts</li>
-          <li>Using smart contracts in decentralized applications</li>
-          <li>Best practices for writing secure contracts</li>
-        </ul>
-        <strong>Duration:</strong> 6 weeks | <strong>Price:</strong> $29
-      `,
-      "Micro-Investing Essentials": `
-        <strong>Description:</strong>
-        This course will teach you the fundamentals of micro-investing, including how to invest small amounts in various financial assets. 
-        You will learn about different investment tools and platforms that allow you to start with minimal capital.
-        
-        <strong>Course Highlights:</strong>
-        <ul>
-          <li>Understanding micro-investing</li>
-          <li>Investment platforms and tools</li>
-          <li>Building a diversified investment portfolio</li>
-          <li>Risk management in micro-investing</li>
-        </ul>
-        <strong>Duration:</strong> 5 weeks | <strong>Price:</strong> $19
-      `,
-      "Advanced Blockchain Security": `
-        <strong>Description:</strong>
-        This advanced course dives deep into blockchain security, focusing on preventing attacks, securing decentralized applications, and ensuring the integrity of blockchain systems. 
-        You'll learn about blockchain vulnerabilities and how to safeguard your projects against common threats.
-        
-        <strong>Course Highlights:</strong>
-        <ul>
-          <li>Blockchain security fundamentals</li>
-          <li>Securing decentralized applications (DApps)</li>
-          <li>Understanding blockchain vulnerabilities</li>
-          <li>Advanced attack prevention techniques</li>
-        </ul>
-        <strong>Duration:</strong> 6 weeks | <strong>Price:</strong> $39
-      `,
-      "High-Yield Savings Tools": `
-        <strong>Description:</strong>
-        Explore how high-yield savings accounts and other financial tools can help you maximize your savings. This course introduces you to financial tools and strategies that allow you to earn more on your deposits.
-        
-        <strong>Course Highlights:</strong>
-        <ul>
-          <li>Understanding high-yield savings accounts</li>
-          <li>Exploring other high-return financial tools</li>
-          <li>Strategies to maximize savings growth</li>
-          <li>Risk considerations for high-yield investments</li>
-        </ul>
-        <strong>Duration:</strong> 4 weeks | <strong>Price:</strong> $25
-      `
-    };
+    document.addEventListener("click", function (e) {
+      const dropdown = document.getElementById("mainDropdown");
+      const menu = document.querySelector(".menu-bar");
+      if (!menu.contains(e.target)) dropdown.style.display = "none";
+    });
 
-    const courseTitle = document.getElementById("courseTitle");
-    const modalContent = document.getElementById("courseOverviewContent");
-    const modal = document.getElementById("courseModal");
-
-    // Set course title and content
-    courseTitle.textContent = courseName;
-    modalContent.innerHTML = courseContent[courseName];
-
-    // Show modal
-    modal.style.display = "block";
-  }
-
-  function closeModal() {
-    const modal = document.getElementById("courseModal");
-    modal.style.display = "none";
-  }
-</script>
+    function toggleCoursesDropdown(levelId) {
+      const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
+      levels.forEach((id) => {
+        const section = document.getElementById(id);
+        section.style.display = (id === levelId) ? "block" : "none";
+      });
+    }
+  </script>
 </body>
 </html>
