@@ -956,6 +956,7 @@ audio {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  text-align: center; /* Center the text */
   transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
@@ -963,5 +964,4 @@ audio {
 .moneyard-learning-btn:hover {
   background-color: #2e958d; /* Darker green on hover */
 }
-
 
