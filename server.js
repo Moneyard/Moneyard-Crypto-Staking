@@ -20,6 +20,20 @@ const db = new sqlite3.Database(dbPath, (err) => {
     if (err) return console.error('DB Error:', err);
     console.log('Connected to SQLite:', dbPath);
 });
+// Insert default courses if they don't exist
+const defaultCourses = [
+  { title: 'Intro to Crypto', description: 'Basics of cryptocurrencies and blockchain' },
+  { title: 'How Staking Works', description: 'Learn the mechanics behind staking crypto' },
+  { title: 'DeFi Essentials', description: 'Explore decentralized finance applications' }
+];
+
+defaultCourses.forEach(course => {
+  db.get('SELECT * FROM courses WHERE title = ?', [course.title], (err, row) => {
+    if (!row) {
+      db.run('INSERT INTO courses (title, description) VALUES (?, ?)', [course.title, course.description]);
+    }
+  });
+});
 
 // Tables
 db.run(`CREATE TABLE IF NOT EXISTS users (
