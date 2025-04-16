@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download Certificate</title>
+  <meta charset="UTF-8">
+  <title>Moneyard Certificate</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding: 30px;
-      background: #f9f9f9;
+      background: #f0f0f0;
+      padding: 50px;
     }
 
     input {
-      padding: 10px;
-      width: 300px;
-      margin-bottom: 15px;
+      padding: 12px;
+      width: 280px;
+      margin-bottom: 20px;
       font-size: 16px;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
     }
 
     button {
@@ -26,7 +25,7 @@
       background-color: #2b7a78;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
     }
@@ -37,59 +36,72 @@
   </style>
 </head>
 <body>
-  <h2>Download Your Certificate</h2>
-  <input type="text" id="nameInput" placeholder="Enter your full name" />
-  <br />
-  <button onclick="downloadCertificate()">Download Certificate</button>
+
+  <h2>Generate Your Moneyard Certificate</h2>
+  <input type="text" id="fullName" placeholder="Enter your full name" />
+  <br>
+  <button onclick="generateAndDownload()">Download Certificate</button>
 
   <canvas id="certificateCanvas" width="1000" height="700"></canvas>
 
   <script>
-    function downloadCertificate() {
-      const name = document.getElementById('nameInput').value.trim();
+    function generateAndDownload() {
+      const name = document.getElementById("fullName").value.trim();
       if (!name) {
-        alert('Please enter your full name');
+        alert("Please enter your full name.");
         return;
       }
 
-      const canvas = document.getElementById('certificateCanvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
+      const canvas = document.getElementById("certificateCanvas");
+      const ctx = canvas.getContext("2d");
 
-      // Use a working hosted image
-      img.crossOrigin = "anonymous"; // allow cross-origin image use
-      img.src = 'https://i.imgur.com/3d2a0Yz.png'; // Replace with your actual certificate background image URL
+      // Background
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      img.onload = function () {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+      // Border
+      ctx.strokeStyle = "#2b7a78";
+      ctx.lineWidth = 8;
+      ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
 
-        // Name text
-        ctx.font = '36px Georgia';
-        ctx.fillStyle = '#000';
-        ctx.textAlign = 'center';
-        ctx.fillText(name, canvas.width / 2, 360);
+      // Title
+      ctx.font = "40px Georgia";
+      ctx.fillStyle = "#2b7a78";
+      ctx.textAlign = "center";
+      ctx.fillText("Certificate of Completion", canvas.width / 2, 120);
 
-        // Course Title
-        ctx.font = '24px Georgia';
-        ctx.fillText("Moneyard Blockchain Basics", canvas.width / 2, 420);
+      // Subtitle
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "#444";
+      ctx.fillText("This is to certify that", canvas.width / 2, 200);
 
-        // Date
-        ctx.font = '18px Arial';
-        ctx.fillStyle = '#555';
-        ctx.fillText("Issued on: " + new Date().toLocaleDateString(), canvas.width / 2, 470);
+      // Name
+      ctx.font = "32px Georgia";
+      ctx.fillStyle = "#000";
+      ctx.fillText(name, canvas.width / 2, 260);
 
-        const link = document.createElement('a');
-        link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      };
+      // Course
+      ctx.font = "22px Arial";
+      ctx.fillText("has successfully completed the course", canvas.width / 2, 320);
 
-      img.onerror = function () {
-        alert('Certificate image failed to load. Please check the image URL.');
-      };
+      ctx.font = "26px Georgia";
+      ctx.fillText("Moneyard: Blockchain Basics", canvas.width / 2, 370);
+
+      // Date
+      const today = new Date().toLocaleDateString();
+      ctx.font = "18px Arial";
+      ctx.fillText(`Date: ${today}`, canvas.width / 2, 430);
+
+      // Signature
+      ctx.fillText("Authorized by Moneyard Academy", canvas.width / 2, 500);
+
+      // Download
+      const link = document.createElement("a");
+      link.download = `Moneyard_Certificate_${name.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
     }
   </script>
+
 </body>
 </html>
