@@ -112,11 +112,31 @@
   let isAdmin = false;
 
   const courses = [
-    { title: "Blockchain Basics", level: "beginner", status: "approved" },
-    { title: "Crypto Wallet Setup", level: "beginner", status: "pending" },
-    { title: "Smart Contracts Deep Dive", level: "intermediate", status: "pending" },
-    { title: "DeFi Risks and Security", level: "advanced", status: "pending" }
-  ];
+  {
+    title: "Blockchain Basics",
+    level: "beginner",
+    status: "approved",
+    lessonUrl: "lesson-beginner-1.html"
+  },
+  {
+    title: "Crypto Wallet Setup",
+    level: "beginner",
+    status: "pending",
+    lessonUrl: "lesson-beginner-2.html"
+  },
+  {
+    title: "Smart Contracts Deep Dive",
+    level: "intermediate",
+    status: "pending",
+    lessonUrl: "lesson-intermediate-1.html"
+  },
+  {
+    title: "DeFi Risks and Security",
+    level: "advanced",
+    status: "pending",
+    lessonUrl: "lesson-advanced-1.html"
+  }
+];
 
   function adminLogin() {
     const username = document.getElementById("adminUsername").value;
@@ -199,20 +219,27 @@
   }
 
   function startLesson(index) {
-    const progressBar = document.getElementById(`progress-${index}`);
-    const certBtn = document.getElementById(`certBtn-${index}`);
-    let width = 0;
-    const interval = setInterval(() => {
-      if (width >= 100) {
-        clearInterval(interval);
-        alert("Lesson Completed!");
-        certBtn.style.display = "block";
-      } else {
-        width += 10;
-        progressBar.style.width = width + "%";
-      }
-    }, 500);
+  const nameInput = document.getElementById(`name-${index}`);
+  const name = nameInput ? nameInput.value.trim() : "";
+
+  if (!name) {
+    alert("Please enter your full name before starting the lesson.");
+    return;
   }
+
+  const course = courses[index];
+  if (!course.lessonUrl) {
+    alert("Lesson page not found.");
+    return;
+  }
+
+  // Optional: Store user name in localStorage to show on lesson page
+  localStorage.setItem("moneyardUserName", name);
+  localStorage.setItem("moneyardCourseTitle", course.title);
+
+  // Redirect to lesson page
+  window.location.href = course.lessonUrl;
+}
 
   function downloadImageCertificateFromForm(index) {
     const nameInput = document.getElementById(`name-${index}`);
