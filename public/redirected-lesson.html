@@ -203,37 +203,49 @@
       }, 500);
     }
 
+    function downloadImageCertificateFromForm(index) {
+      const nameInput = document.getElementById(`name-${index}`);
+      const name = nameInput.value.trim();
+      if (!name) {
+        alert("Please enter your name first.");
+        return;
+      }
+      const course = courses[index].title;
+      downloadImageCertificate(name, course);
+    }
+
     function downloadImageCertificate(name, course) {
-  const canvas = document.getElementById('certificateCanvas');
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
+      const canvas = document.getElementById('certificateCanvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
 
-  // Base64 version of your certificate image
-  img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAADdZk0xAAA..."; // truncated here
+      // Embedded base64 PNG of your generated certificate:
+      img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa8AAAGQCAYAAAAz3+9tAAAACXBIWXMAABYlAAAWJQFJUiTwAAAgAElEQVR4nOzde5wc1Zn38T/NOetm..." // Replace with full base64 string
 
-  img.onload = function () {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
 
-    ctx.font = '32px Georgia';
-    ctx.fillStyle = '#222';
-    ctx.textAlign = 'center';
-    ctx.fillText(name, canvas.width / 2, 310);
+        ctx.font = '38px Georgia';
+        ctx.fillStyle = '#222';
+        ctx.textAlign = 'center';
+        ctx.fillText(name, canvas.width / 2, 320);
 
-    ctx.font = '24px Georgia';
-    ctx.fillText(course, canvas.width / 2, 370);
+        ctx.font = '26px Georgia';
+        ctx.fillText(course, canvas.width / 2, 380);
 
-    ctx.font = '16px Arial';
-    ctx.fillStyle = '#555';
-    ctx.fillText(new Date().toLocaleDateString(), canvas.width - 150, canvas.height - 50);
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#555';
+        ctx.fillText(new Date().toLocaleDateString(), canvas.width - 160, canvas.height - 45);
 
-    const link = document.createElement('a');
-    link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  };
-}
+        const link = document.createElement('a');
+        link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+    }
+
     filterCourses();
   </script>
 </body>
