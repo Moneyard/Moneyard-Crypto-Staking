@@ -3,77 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download Certificate - Fix</title>
+  <title>Download Certificate</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 20px;
-      background: #f0f0f0;
+      padding: 30px;
+      background: #f9f9f9;
     }
 
-    .btn {
-      padding: 10px 20px;
+    input {
+      padding: 10px;
+      width: 300px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 12px 24px;
       background-color: #2b7a78;
-      color: #fff;
+      color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 16px;
       cursor: pointer;
     }
 
     canvas {
       display: none;
     }
-
-    input {
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 300px;
-    }
   </style>
 </head>
 <body>
-  <h1>Download Certificate</h1>
-  <input type="text" id="name" placeholder="Enter your full name" />
+  <h2>Download Your Certificate</h2>
+  <input type="text" id="nameInput" placeholder="Enter your full name" />
   <br />
-  <button class="btn" onclick="generateCertificate()">Download Certificate</button>
+  <button onclick="downloadCertificate()">Download Certificate</button>
 
   <canvas id="certificateCanvas" width="1000" height="700"></canvas>
 
   <script>
-    function generateCertificate() {
-      const name = document.getElementById("name").value.trim();
+    function downloadCertificate() {
+      const name = document.getElementById('nameInput').value.trim();
       if (!name) {
-        alert("Please enter your name first.");
+        alert('Please enter your full name');
         return;
       }
 
-      const canvas = document.getElementById("certificateCanvas");
-      const ctx = canvas.getContext("2d");
+      const canvas = document.getElementById('certificateCanvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
 
-      const background = new Image();
-      background.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAPoCAYAAAAwPbm0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAgAElEQVR4nO3deZBdZXXn8fdfamZmZs6ZN29mZjZmfOBAiKYJIQZACRUwQVmFiAoVXiAKioUNRCFVYq2FqqGouAlK1RFRQSxeFYLsKiKBEWlQFLgwUQRQZsYyqczJn3vZ//9y/Or3Zmbn57nfu/WfZ9rZ3X3z9nHeec853n//nXPPc2qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiotK9//H1jcCE3YhAHX2kO2CAAA";
+      // Use a working hosted image
+      img.crossOrigin = "anonymous"; // allow cross-origin image use
+      img.src = 'https://i.imgur.com/3d2a0Yz.png'; // Replace with your actual certificate background image URL
 
-      background.onload = function () {
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
 
-        ctx.fillStyle = "#000";
-        ctx.font = "bold 36px Georgia";
-        ctx.textAlign = "center";
+        // Name text
+        ctx.font = '36px Georgia';
+        ctx.fillStyle = '#000';
+        ctx.textAlign = 'center';
         ctx.fillText(name, canvas.width / 2, 360);
 
-        ctx.font = "24px Georgia";
-        ctx.fillText("Moneyard Blockchain Basics Course", canvas.width / 2, 420);
+        // Course Title
+        ctx.font = '24px Georgia';
+        ctx.fillText("Moneyard Blockchain Basics", canvas.width / 2, 420);
 
-        ctx.font = "18px Arial";
-        ctx.fillText("Issued on: " + new Date().toLocaleDateString(), canvas.width / 2, 480);
+        // Date
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#555';
+        ctx.fillText("Issued on: " + new Date().toLocaleDateString(), canvas.width / 2, 470);
 
-        const link = document.createElement("a");
-        link.download = `Moneyard_Certificate_${name.replace(/\s/g, "_")}.png`;
+        const link = document.createElement('a');
+        link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
+      };
+
+      img.onerror = function () {
+        alert('Certificate image failed to load. Please check the image URL.');
       };
     }
   </script>
