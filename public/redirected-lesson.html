@@ -129,17 +129,17 @@
       width: 842px;
       height: 595px;
       padding: 40px;
-      background: white;
+      background: #fff8e1;
       text-align: center;
-      border: 5px double gold;
+      border: 4px solid gold;
       margin: 40px auto;
-      background-image: linear-gradient(to bottom, #fffdf5, #fff8e1);
+      box-shadow: 0 0 20px rgba(218,165,32,0.6);
     }
 
     #certificate h1 {
       color: goldenrod;
       font-size: 36px;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     #certificate h2 {
@@ -154,28 +154,26 @@
     }
 
     #certificate img.logo {
-      margin-top: 20px;
-      height: 60px;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 20px auto;
+      height: 60px;
     }
 
-    .signature-section {
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      font-size: 16px;
+    }
+
+    .cert-footer {
       display: flex;
       justify-content: space-between;
-      margin-top: 50px;
-      padding: 0 60px;
-      align-items: center;
+      margin-top: 30px;
+      padding: 0 40px;
     }
 
-    .signature-section img {
+    .cert-footer img {
       height: 60px;
-    }
-
-    .signature-label {
-      font-size: 14px;
-      margin-top: 10px;
     }
   </style>
 </head>
@@ -198,29 +196,23 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Certificate Preview with Gold Theme -->
+  <!-- Updated Certificate Preview -->
   <div id="certificate">
     <h1>Certificate of Completion</h1>
     <p>This is to certify that</p>
     <h2 id="certName"></h2>
     <p>has successfully completed the course:</p>
     <h2 id="certCourse"></h2>
-    <p style="margin-top:30px;">Issued by Moneyard Learning</p>
+    <p>Issued by Moneyard Learning, an arm platform of</p>
+    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo" class="logo">
 
-    <img src="/mnt/data/20250409_162622.jpg" class="logo" alt="Moneyard Logo"/>
-
-    <div class="signature-section">
-      <div>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=Moneyard Certificate" alt="QR Code">
-        <div class="signature-label">Verify</div>
+    <div class="cert-footer">
+      <div class="signature">
+        <p>Signature</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?data=MoneyardCertificateVerification&size=80x80" alt="QR Code">
       </div>
-      <div>
-        <img src="https://i.imgur.com/MT5yY9p.png" alt="Signature Placeholder">
-        <div class="signature-label">Authorized Signature</div>
-      </div>
+      <p style="font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
     </div>
-
-    <p style="margin-top:30px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
   </div>
 
   <script>
