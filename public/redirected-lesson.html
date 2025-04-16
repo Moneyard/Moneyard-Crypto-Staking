@@ -56,6 +56,7 @@
       max-width: 600px;
       margin: 20px auto;
       position: relative;
+      border: 2px solid #FFD700; /* Gold border for premium feel */
     }
 
     .status {
@@ -129,11 +130,12 @@
       width: 842px;
       height: 595px;
       padding: 40px;
-      background: #FF8C00; /* Warm orange color */
+      background: white;
       text-align: center;
       border: 2px solid #2b7a78;
       margin: 40px auto;
-      border-radius: 8px;
+      position: relative;
+      border-radius: 10px;
     }
 
     #certificate h1 {
@@ -156,6 +158,24 @@
     #certificate img {
       margin-top: 10px;
       height: 60px;
+    }
+
+    #certificate .qr-code {
+      margin-top: 20px;
+      display: block;
+      width: 100px;
+      height: 100px;
+      background-color: #FFD700; /* Gold QR background */
+      border-radius: 10px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Center logo styling */
+    #certificate .logo {
+      margin: 40px auto;
+      max-width: 150px;
+      display: block;
     }
   </style>
 </head>
@@ -186,8 +206,11 @@
     <p>has successfully completed the course:</p>
     <h2 id="certCourse"></h2>
     <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
-    <img src="path/to/your/logo.png" alt="Moneyard Logo"> <!-- Make sure the logo path is correct -->
+    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo" class="logo">
     <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
+
+    <!-- QR Code for Verification -->
+    <div class="qr-code"></div> 
   </div>
 
   <script>
