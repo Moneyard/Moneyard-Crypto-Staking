@@ -126,26 +126,35 @@
 
     #certificate {
       display: none;
-      width: 600px;
-      height: 400px;
-      margin: 40px auto;
-      text-align: center;
+      width: 842px;
+      height: 595px;
       padding: 40px;
       background: white;
-      border: 6px double #2b7a78;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      text-align: center;
+      border: 2px solid #2b7a78;
+      margin: 40px auto;
     }
 
     #certificate h1 {
       color: #2b7a78;
-      font-size: 24px;
-      margin-bottom: 20px;
+      font-size: 32px;
+      margin-bottom: 30px;
     }
 
     #certificate h2 {
-      font-size: 18px;
-      margin: 20px 0;
+      font-size: 24px;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    #certificate p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    #certificate img {
+      margin-top: 10px;
+      height: 60px;
     }
   </style>
 </head>
@@ -168,14 +177,16 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Certificate Template -->
+  <!-- Updated Certificate Preview -->
   <div id="certificate">
     <h1>Certificate of Completion</h1>
-    <h2>This certificate is proudly presented to</h2>
-    <h2 id="certName" style="font-weight: bold; font-size: 22px;"></h2>
-    <p style="margin-top: 30px;">For successfully completing the course on</p>
+    <p>This is to certify that</p>
+    <h2 id="certName"></h2>
+    <p>has successfully completed the course:</p>
     <h2 id="certCourse"></h2>
-    <p>Issued by Moneyard Learning Platform</p>
+    <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
+    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo">
+    <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
   </div>
 
   <script>
@@ -191,9 +202,7 @@
       const container = document.getElementById("coursesContainer");
       container.innerHTML = "";
 
-      const filtered = level === "all"
-        ? courses
-        : courses.filter(course => course.level === level);
+      const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
 
       filtered.forEach((course, index) => {
         const card = document.createElement("div");
@@ -246,17 +255,15 @@
 
       const courseTitle = courses[index].title;
       const certDiv = document.getElementById("certificate");
-      const certName = document.getElementById("certName");
-      const certCourse = document.getElementById("certCourse");
 
-      certName.textContent = name;
-      certCourse.textContent = courseTitle;
+      document.getElementById("certName").textContent = name;
+      document.getElementById("certCourse").textContent = courseTitle;
 
       certDiv.style.display = "block";
 
       setTimeout(() => {
         html2pdf().from(certDiv).set({
-          margin: 1,
+          margin: 0,
           filename: `${name}_certificate.pdf`,
           html2canvas: { scale: 2 },
           jsPDF: { orientation: "landscape" }
@@ -266,7 +273,6 @@
       }, 300);
     }
 
-    // Initial render
     filterCourses();
   </script>
 </body>
