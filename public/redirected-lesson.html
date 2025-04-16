@@ -86,6 +86,12 @@
 <body>
   <header><h1>Moneyard Learning Platform</h1></header>
   <h2>Course Enrollment & Simulation</h2>
+<div id="adminLoginSection" style="text-align:center; margin:20px;">
+  <input type="text" id="adminUsername" placeholder="Admin Username" />
+  <input type="password" id="adminPassword" placeholder="Password" />
+  <button onclick="adminLogin()">Login as Admin</button>
+  <p id="adminStatus" style="color:green;"></p>
+</div>
 
   <div class="filter-bar">
     <label for="levelSelect">Select Course Level:</label>
@@ -199,6 +205,136 @@
     }
 
     filterCourses();
+<script>
+  let isAdmin = false;
+
+  const courses = [
+    { title: "Blockchain Basics", level: "beginner", status: "approved" },
+    { title: "Crypto Wallet Setup", level: "beginner", status: "pending" },
+    { title: "Smart Contracts Deep Dive", level: "intermediate", status: "approved" },
+    { title: "DeFi Risks and Security", level: "advanced", status: "rejected" }
+  ];
+
+  function adminLogin() {
+    const username = document.getElementById("adminUsername").value;
+    const password = document.getElementById("adminPassword").value;
+
+    if (username === "admin" && password === "1234") {
+      isAdmin = true;
+      document.getElementById("adminStatus").innerText = "Logged in as Admin";
+      filterCourses(); // show approval buttons
+    } else {
+      alert("Incorrect credentials");
+    }
+  }
+
+  function filterCourses() {
+    const level = document.getElementById("levelSelect").value;
+    const container = document.getElementById("coursesContainer");
+    container.innerHTML = "";
+
+    const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
+
+    filtered.forEach((course, index) => {
+      const card = document.createElement("div");
+      card.className = "course-card";
+
+      const statusClass = course.status === "approved" ? "approved" :
+                          course.status === "pending" ? "pending" : "rejected";
+
+      card.innerHTML = `
+        <h3>${course.title}</h3>
+        <div class="status ${statusClass}" id="status-${index}">${course.status.toUpperCase()}</div>
+        <div id="content-${index}">
+          ${course.status === 'approved' ? `
+            <input class="name-input" id="name-${index}" type="text" placeholder="Enter your full name"/>
+            <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
+            <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
+            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="downloadImageCertificateFromForm(${index})">Download Certificate</button>
+          ` : course.status === 'pending' ? `
+            <p><i>Your enrollment is pending admin approval.</i></p>
+          ` : `
+            <p><i>Your enrollment was rejected. Please contact support.</i></p>
+          `}
+        </div>
+        ${isAdmin ? `
+        <div style="text-align:center; margin-top:10px;">
+          <button onclick="updateStatus(${index}, 'approved')">Approve</button>
+          <button onclick="updateStatus(${index}, 'rejected')">Reject</button>
+        </div>
+        ` : ``}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function updateStatus(index, newStatus) {
+    courses[index].status = newStatus;
+    filterCourses(); // refresh UI
+  }
+
+  function startLesson(index) {
+    const progressBar = document.getElementById(`progress-${index}`);
+    const certBtn = document.getElementById(`certBtn-${index}`);
+    let width = 0;
+    const interval = setInterval(() => {
+      if (width >= 100) {
+        clearInterval(interval);
+        alert("Lesson Completed!");
+        certBtn.style.display = "block";
+      } else {
+        width += 10;
+        progressBar.style.width = width + "%";
+      }
+    }, 500);
+  }
+
+  function downloadImageCertificateFromForm(index) {
+    const nameInput = document.getElementById(`name-${index}`);
+    const name = nameInput ? nameInput.value.trim() : "Your Name";
+    const course = document.querySelectorAll(".course-card h3")[index]?.innerText || "Moneyard Course";
+
+    if (!name) {
+      alert("Please enter your full name before downloading.");
+      return;
+    }
+
+    const canvas = document.getElementById('certificateCanvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgCAYAAAA10dzkAAA..."; // Replace with full base64 image
+
+    img.onload = function () {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      ctx.font = '32px Georgia';
+      ctx.fillStyle = '#222';
+      ctx.textAlign = 'center';
+      ctx.fillText(name, canvas.width / 2, 310);
+
+      ctx.font = '24px Georgia';
+      ctx.fillText(course, canvas.width / 2, 370);
+
+      ctx.font = '16px Arial';
+      ctx.fillStyle = '#555';
+      ctx.fillText(new Date().toLocaleDateString(), canvas.width - 150, canvas.height - 50);
+
+      const link = document.createElement('a');
+      link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+
+    img.onerror = function () {
+      alert("Failed to load certificate image.");
+    };
+  }
+
+  filterCourses(); // initial load
   </script>
 </body>
 </html>
