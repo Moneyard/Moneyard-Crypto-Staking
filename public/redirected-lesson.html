@@ -10,81 +10,130 @@
       background: #f4f6f8;
       padding: 30px;
     }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    select {
+      padding: 10px;
+      margin: 20px auto;
+      display: block;
+      font-size: 16px;
+      border-radius: 6px;
+    }
     .course-box {
       background: #fff;
-      padding: 25px;
-      max-width: 600px;
-      margin: auto;
+      padding: 20px;
+      margin-bottom: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .course-box h2 {
-      margin-bottom: 20px;
-      color: #2c3e50;
+    .course-box h3 {
+      margin: 0 0 10px;
     }
     .status {
-      font-size: 16px;
-      color: orange;
-      margin-bottom: 20px;
+      font-weight: bold;
+      margin: 10px 0;
     }
-    .btn {
-      padding: 12px 20px;
+    .status.pending { color: orange; }
+    .status.approved { color: green; }
+    .status.rejected { color: crimson; }
+    .btn-group button {
+      padding: 10px 15px;
+      margin-right: 10px;
+      margin-top: 10px;
       border: none;
-      border-radius: 6px;
-      color: white;
-      background-color: #2980b9;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
+      color: #fff;
     }
-    .btn:disabled {
-      background: #ccc;
-      cursor: default;
-    }
-    #toast {
+    .approve-btn { background-color: #27ae60; }
+    .reject-btn { background-color: #c0392b; }
+    .start-btn {
       display: none;
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #27ae60;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #2980b9;
       color: white;
-      padding: 12px 20px;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    #startCourse {
-      margin-top: 20px;
-      display: none;
-      background: #16a085;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Course Approval Simulator</h1>
 
-  <div class="course-box">
-    <h2>Course: Web Development Bootcamp</h2>
-    <p class="status" id="courseStatus">Status: Pending Admin Approval</p>
-    <button class="btn" id="simulateApprovalBtn" onclick="simulateCourseApproval()">Simulate Admin Approval</button>
-    <button class="btn" id="startCourse" onclick="alert('Course started!')">Start Course</button>
+    <select id="courseLevel" onchange="filterCourses()">
+      <option value="all">Select Level</option>
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+    </select>
+
+    <div id="coursesArea">
+      <!-- Course Boxes will be injected here -->
+    </div>
   </div>
 
-  <div id="toast">Course Approved!</div>
-
   <script>
-    function simulateCourseApproval() {
-      document.getElementById("courseStatus").innerText = "Status: Approved by Admin";
-      document.getElementById("courseStatus").style.color = "green";
-      document.getElementById("simulateApprovalBtn").disabled = true;
-      document.getElementById("simulateApprovalBtn").innerText = "Approved";
-      
-      // Toast
-      const toast = document.getElementById("toast");
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 3000);
+    const courseData = [
+      { id: 1, level: "beginner", title: "HTML & CSS Fundamentals" },
+      { id: 2, level: "beginner", title: "Intro to JavaScript" },
+      { id: 3, level: "intermediate", title: "Frontend Frameworks" },
+      { id: 4, level: "advanced", title: "Full Stack Development" },
+      { id: 5, level: "advanced", title: "API Design & Security" }
+    ];
 
-      // Show Start Course button
-      document.getElementById("startCourse").style.display = "inline-block";
+    function renderCourses(filtered = courseData) {
+      const area = document.getElementById("coursesArea");
+      area.innerHTML = "";
+      filtered.forEach(course => {
+        const box = document.createElement("div");
+        box.className = "course-box";
+        box.id = "course-" + course.id;
+        box.innerHTML = `
+          <h3>${course.title}</h3>
+          <p class="status pending" id="status-${course.id}">Status: Pending Admin Approval</p>
+          <div class="btn-group">
+            <button class="approve-btn" onclick="approveCourse(${course.id})">Approve</button>
+            <button class="reject-btn" onclick="rejectCourse(${course.id})">Reject</button>
+          </div>
+          <button class="start-btn" id="start-${course.id}" onclick="alert('Starting ${course.title}')">Start Course</button>
+        `;
+        area.appendChild(box);
+      });
     }
-  </script>
 
+    function filterCourses() {
+      const level = document.getElementById("courseLevel").value;
+      if (level === "all" || level === "") {
+        renderCourses(courseData);
+      } else {
+        const filtered = courseData.filter(c => c.level === level);
+        renderCourses(filtered);
+      }
+    }
+
+    function approveCourse(id) {
+      document.getElementById(`status-${id}`).innerText = "Status: Approved by Admin";
+      document.getElementById(`status-${id}`).className = "status approved";
+      document.getElementById(`start-${id}`).style.display = "inline-block";
+    }
+
+    function rejectCourse(id) {
+      document.getElementById(`status-${id}`).innerText = "Status: Rejected by Admin";
+      document.getElementById(`status-${id}`).className = "status rejected";
+      document.getElementById(`start-${id}`).style.display = "none";
+    }
+
+    // Render default view (all beginner courses visible initially)
+    filterCourses();
+  </script>
 </body>
 </html>
