@@ -212,6 +212,17 @@
       Start A Course
     </button>
   </header>
+
+  <div class="all-courses-dropdown">
+    <label for="courseLevel">All Courses</label>
+    <select id="courseLevel" onchange="toggleCoursesDropdown(this.value)">
+      <option value="">Select Level</option>
+      <option value="beginnerCourses">Beginner Courses</option>
+      <option value="intermediateCourses">Intermediate Courses</option>
+      <option value="advancedCourses">Advanced Courses</option>
+    </select>
+  </div>
+
 <!-- Featured Courses Always Visible -->
 <div class="level-content" id="featuredCourses" style="display: block;">
   <div class="course-advert">
@@ -232,16 +243,6 @@
     <span class="overview-arrow" onclick="alert('Overview: Digital Wallets')">&#10148;</span>
   </div>
 </div>
-
-  <div class="all-courses-dropdown">
-    <label for="courseLevel">All Courses</label>
-    <select id="courseLevel" onchange="toggleCoursesDropdown(this.value)">
-      <option value="">Select Level</option>
-      <option value="beginnerCourses">Beginner Courses</option>
-      <option value="intermediateCourses">Intermediate Courses</option>
-      <option value="advancedCourses">Advanced Courses</option>
-    </select>
-  </div>
 
   <div class="level-content" id="beginnerCourses">
     <div class="course-advert">
