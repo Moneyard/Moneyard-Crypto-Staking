@@ -20,6 +20,7 @@
       background-color: #f8f8f8;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       flex-wrap: wrap;
+      position: relative; /* Make sure button can be positioned inside header */
     }
 
     .logo {
@@ -164,6 +165,20 @@
       margin-bottom: 8px;
     }
 
+    .start-lesson-btn {
+      background-color: #ff8c42;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      position: absolute;
+      right: 24px;
+      top: 15px;
+      z-index: 10;
+    }
+
     @media (max-width: 600px) {
       header {
         flex-direction: column;
@@ -192,6 +207,10 @@
         <a href="#">Logout</a>
       </div>
     </div>
+    <!-- Start Lesson Button Added Here -->
+    <button onclick="window.location.href='redirected-lesson.html'" class="start-lesson-btn">
+      Start Lesson 1
+    </button>
   </header>
 
   <div class="all-courses-dropdown">
@@ -265,14 +284,17 @@
       dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
 
-    function toggleCoursesDropdown(level) {
-      document.querySelectorAll('.level-content').forEach(content => content.style.display = 'none');
-      const selectedLevel = document.getElementById(level);
+    function toggleCoursesDropdown(value) {
+      const levelContents = document.querySelectorAll('.level-content');
+      levelContents.forEach(content => {
+        content.style.display = 'none';
+      });
+      const selectedLevel = document.getElementById(value);
       if (selectedLevel) selectedLevel.style.display = 'block';
     }
 
-    function redirectToLesson(lessonUrl) {
-      window.location.href = lessonUrl;
+    function redirectToLesson(lessonURL) {
+      window.location.href = lessonURL;
     }
   </script>
 </body>
