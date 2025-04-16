@@ -148,8 +148,8 @@
 
       const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
 
-      filtered.forEach((course, index) => {
-        const card = document.createElement("div");
+      filtered.forEach((course) => {
+  const index = courses.indexOf(course); // Get correct index in original array document.createElement("div");
         card.className = "course-card";
 
         const statusClass = course.status === "approved" ? "approved" :
