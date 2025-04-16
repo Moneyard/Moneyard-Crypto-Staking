@@ -82,7 +82,7 @@
       color: white;
     }
 
-    .start-btn, .progress-btn, .certificate-btn {
+    .start-btn, .certificate-btn {
       display: block;
       margin: 15px auto 0;
       padding: 10px 20px;
@@ -94,7 +94,7 @@
       cursor: pointer;
     }
 
-    .start-btn:hover, .progress-btn:hover, .certificate-btn:hover {
+    .start-btn:hover, .certificate-btn:hover {
       background-color: #205e5e;
     }
 
@@ -143,7 +143,6 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Hidden canvas for certificate -->
   <canvas id="certificateCanvas" style="display: none;"></canvas>
 
   <script>
@@ -219,24 +218,23 @@
       const ctx = canvas.getContext('2d');
       const img = new Image();
 
-      // Embedded base64 PNG of your generated certificate:
-      img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa8AAAGQCAYAAAAz3+9tAAAACXBIWXMAABYlAAAWJQFJUiTwAAAgAElEQVR4nOzde5wc1Zn38T/NOetm..." // Replace with full base64 string
+      img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAFICAYAAABf4owhAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AQNDBwHhtKwjwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAMUSURBVHja7dExAQAwEAOh+jedUxcMmRBOx5...'; // your full base64 image
 
       img.onload = function () {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
 
-        ctx.font = '38px Georgia';
+        ctx.font = '36px Georgia';
         ctx.fillStyle = '#222';
         ctx.textAlign = 'center';
         ctx.fillText(name, canvas.width / 2, 320);
 
         ctx.font = '26px Georgia';
-        ctx.fillText(course, canvas.width / 2, 380);
+        ctx.fillText(course, canvas.width / 2, 385);
 
         ctx.font = '18px Arial';
-        ctx.fillStyle = '#555';
+        ctx.fillStyle = '#666';
         ctx.fillText(new Date().toLocaleDateString(), canvas.width - 160, canvas.height - 45);
 
         const link = document.createElement('a');
