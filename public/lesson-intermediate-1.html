@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lesson - Intermediate 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef1f5;
+      padding: 20px;
+    }
+    .lesson-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2980b9;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #2980b9;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #2471a3;
+    }
+  </style>
+</head>
+<body>
+  <div class="lesson-container">
+    <h2>Welcome to Intermediate Level</h2>
+    <h3>User: <span id="userName">...</span> | Course: <span id="courseTitle">Intermediate</span></h3>
+
+    <iframe src="https://www.youtube.com/embed/SSo_EIwHSd4" allowfullscreen></iframe>
+
+    <p><strong>Lesson Topic:</strong> Smart Contracts</p>
+    <p>
+      This lesson explains how smart contracts work on Ethereum and other blockchains. 
+      You’ll understand use cases and risks, plus how to interact with them.
+    </p>
+
+    <ul>
+      <li>What is a Smart Contract?</li>
+      <li>Basic Solidity Example</li>
+      <li>Smart Contract Use Cases</li>
+    </ul>
+
+    <button class="btn" onclick="goToNext()">Next Lesson</button>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const name = localStorage.getItem("moneyardUserName") || "Student";
+      const course = localStorage.getItem("moneyardCourseTitle") || "Intermediate";
+      document.getElementById("userName").innerText = name;
+      document.getElementById("courseTitle").innerText = course;
+    };
+
+    function goToNext() {
+      window.location.href = "lesson-intermediate-2.html"; // next lesson
+    }
+  </script>
+</body>
+</html>
