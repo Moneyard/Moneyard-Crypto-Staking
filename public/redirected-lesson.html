@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Course Simulation</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -68,20 +69,9 @@
       right: 20px;
     }
 
-    .approved {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    .pending {
-      background-color: #FF9800;
-      color: white;
-    }
-
-    .rejected {
-      background-color: #f44336;
-      color: white;
-    }
+    .approved { background-color: #4CAF50; color: white; }
+    .pending { background-color: #FF9800; color: white; }
+    .rejected { background-color: #f44336; color: white; }
 
     .start-btn, .progress-btn, .certificate-btn {
       display: block;
@@ -131,14 +121,13 @@
       padding: 40px;
       background: white;
       text-align: center;
-      border: 2px solid #2b7a78;
+      border: 6px double gold;
       margin: 40px auto;
-      border-radius: 15px;
-      background-color: #f7f7f7;
+      background-image: linear-gradient(white, #fffbe6);
     }
 
     #certificate h1 {
-      color: #2b7a78;
+      color: #bfa700;
       font-size: 32px;
       margin-bottom: 30px;
     }
@@ -154,29 +143,34 @@
       margin: 10px 0;
     }
 
-    #certificate img {
+    #certificate img.logo {
       margin-top: 10px;
       height: 60px;
-      width: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .gold-theme {
-      color: #ffd700;
+    .signature-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      padding: 0 50px;
+    }
+
+    .signature-box {
+      font-size: 14px;
       text-align: center;
-      font-weight: bold;
     }
 
-    .signature-qr {
-      margin-top: 40px;
+    .signature-img {
+      height: 50px;
+      margin-bottom: 8px;
     }
 
-    .signature-qr img {
-      width: 100px;
-      margin-right: 20px;
-    }
-
-    .signature-qr div {
-      display: inline-block;
+    #qrCodeCanvas {
+      height: 80px;
+      margin: 0 auto;
     }
   </style>
 </head>
@@ -199,24 +193,28 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Updated Certificate Preview -->
+  <!-- Certificate -->
   <div id="certificate">
-    <h1 class="gold-theme">Certificate of Completion</h1>
+    <h1>Certificate of Completion</h1>
     <p>This is to certify that</p>
     <h2 id="certName"></h2>
     <p>has successfully completed the course:</p>
     <h2 id="certCourse"></h2>
-    <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
-    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo">
-    <div class="signature-qr">
-      <div>
-        <img src="signature.png" alt="Signature" />
+    <p style="margin-top:30px;">Issued by Moneyard Learning, an arm platform of</p>
+
+    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo" class="logo">
+
+    <canvas id="qrCodeCanvas"></canvas>
+
+    <div class="signature-section">
+      <div class="signature-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Signature_example.svg" class="signature-img" alt="Signature">
+        <div>Director, Moneyard</div>
       </div>
-      <div>
-        <img src="qr-code.png" alt="QR Code" />
+      <div class="signature-box">
+        <p>Date: <script>document.write(new Date().toLocaleDateString());</script></p>
       </div>
     </div>
-    <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
   </div>
 
   <script>
@@ -239,7 +237,7 @@
         card.className = "course-card";
 
         const statusClass = course.status === "approved" ? "approved" :
-                          course.status === "pending" ? "pending" : "rejected";
+                            course.status === "pending" ? "pending" : "rejected";
 
         card.innerHTML = `
           <h3>${course.title}</h3>
@@ -289,6 +287,12 @@
       document.getElementById("certName").textContent = name;
       document.getElementById("certCourse").textContent = courseTitle;
 
+      // Generate QR Code
+      const qrData = `${name} - ${courseTitle} - Moneyard`;
+      QRCode.toCanvas(document.getElementById("qrCodeCanvas"), qrData, { width: 80 }, function (error) {
+        if (error) console.error(error);
+      });
+
       certDiv.style.display = "block";
 
       setTimeout(() => {
@@ -300,7 +304,7 @@
         }).save().then(() => {
           certDiv.style.display = "none";
         });
-      }, 300);
+      }, 500);
     }
 
     filterCourses();
