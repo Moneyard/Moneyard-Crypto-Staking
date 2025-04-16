@@ -207,22 +207,29 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Updated Certificate Preview -->
-  <div id="certificate">
-    <img src="/mnt/data/20250409_162622.jpg" class="logo" alt="Moneyard Logo">
-    <img src="/mnt/data/A_certificate_of_completion_issued_by_Moneyard_is_.png" class="seal" alt="Verified Seal">
-    <h1>Certificate of Completion</h1>
-    <p>This is to certify that</p>
-    <h2 id="certName"></h2>
-    <p>has successfully completed the course:</p>
-    <h2 id="certCourse"></h2>
-    <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of Moneyard</p>
-    <img src="/mnt/data/signature_mwaba_lewis.png" class="signature" alt="Signed by Mwaba Lewis">
-    <p>Founder, Moneyard</p>
-    <img src="/mnt/data/qr_code_moneyard.png" class="qr" alt="QR Code">
-    <div class="cert-number">Certificate No: MYD-<script>document.write(Date.now());</script></div>
-    <p style="margin-top:20px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
+  <!-- Certificate Preview - Styled Like the Generated One -->
+<div id="certificate" style="display: none;">
+  <div style="width: 842px; height: 595px; padding: 50px; border: 10px solid #bfa046; background: #fffdf5; position: relative; font-family: Georgia, serif; text-align: center;">
+    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo" style="width: 80px; margin-bottom: 20px;" />
+    <h1 style="font-size: 32px; color: #bfa046; margin: 0;">Certificate of Completion</h1>
+    <p style="margin-top: 20px; font-size: 18px; color: #333;">This certifies that</p>
+    <h2 id="certName" style="font-size: 26px; color: #222; margin: 10px 0;"></h2>
+    <p style="font-size: 18px; color: #333;">has successfully completed the course</p>
+    <h2 id="certCourse" style="font-size: 24px; color: #444; margin: 10px 0 30px;"></h2>
+    <p style="font-size: 14px; color: #555;">Issued by Moneyard Learning, an arm of the Moneyard Platform</p>
+
+    <img src="/mnt/data/signature_mwaba_lewis.png" alt="Signature" style="width: 150px; margin-top: 30px;" />
+    <p style="font-size: 14px; margin-top: 4px; color: #444;">Mwaba Lewis<br>Founder, Moneyard</p>
+
+    <img src="/mnt/data/qr_code_moneyard.png" alt="QR Code" style="width: 60px; position: absolute; bottom: 40px; left: 50px;" />
+    <img src="/mnt/data/A_certificate_of_completion_issued_by_Moneyard_is_.png" alt="Verified Seal" style="width: 70px; position: absolute; top: 50px; right: 50px;" />
+    
+    <div style="position: absolute; bottom: 40px; right: 50px; font-size: 12px; color: #777;">
+      Certificate No: MYD-<script>document.write(Date.now());</script><br>
+      Date: <script>document.write(new Date().toLocaleDateString());</script>
+    </div>
   </div>
+</div>
 
   <script>
     const courses = [
