@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Course Simulation</title>
+  <title>Course Simulator with Multiple Lessons</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -72,6 +72,14 @@
       line-height: 20px;
       transition: width 0.3s ease;
     }
+
+    .lesson {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
@@ -93,25 +101,37 @@
         title: "Blockchain Basics",
         level: "beginner",
         status: "approved",
-        progress: 0
+        lessons: [
+          { title: "Introduction to Blockchain", status: "approved", progress: 0 },
+          { title: "Blockchain Use Cases", status: "pending", progress: 0 }
+        ]
       },
       {
         title: "Crypto Wallet Setup",
         level: "beginner",
         status: "pending",
-        progress: 0
+        lessons: [
+          { title: "Setting up a Wallet", status: "approved", progress: 0 },
+          { title: "Transferring Cryptocurrency", status: "pending", progress: 0 }
+        ]
       },
       {
         title: "Smart Contracts",
         level: "intermediate",
         status: "rejected",
-        progress: 0
+        lessons: [
+          { title: "What are Smart Contracts?", status: "rejected", progress: 0 },
+          { title: "Creating Smart Contracts", status: "rejected", progress: 0 }
+        ]
       },
       {
         title: "DeFi Mastery",
         level: "advanced",
         status: "pending",
-        progress: 0
+        lessons: [
+          { title: "Introduction to DeFi", status: "pending", progress: 0 },
+          { title: "Advanced DeFi Strategies", status: "pending", progress: 0 }
+        ]
       }
     ];
 
@@ -123,19 +143,30 @@
         const courseDiv = document.createElement("div");
         courseDiv.className = "course";
 
+        let lessonHtml = '';
+        course.lessons.forEach((lesson, lessonIndex) => {
+          lessonHtml += `
+            <div class="lesson">
+              <h4>${lesson.title}</h4>
+              <p class="status ${lesson.status}">Status: ${lesson.status.charAt(0).toUpperCase() + lesson.status.slice(1)}</p>
+              ${lesson.status === "approved" ? `<button class="start-btn" onclick="startLesson(${index}, ${lessonIndex})">Start Lesson</button>` : ""}
+              ${lesson.status === "pending" ? `
+                <button class="simulate-approve" onclick="simulateApproval(${index}, ${lessonIndex})">Simulate Approve</button>
+                <button class="simulate-reject" onclick="simulateRejection(${index}, ${lessonIndex})">Simulate Reject</button>
+              ` : ""}
+              ${lesson.progress > 0 ? `
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${lesson.progress}%">${lesson.progress}%</div>
+                </div>` : ""}
+            </div>
+          `;
+        });
+
         courseDiv.innerHTML = `
           <h3>${course.title}</h3>
           <p>Level: ${course.level.charAt(0).toUpperCase() + course.level.slice(1)}</p>
-          <p class="status ${course.status}">Status: ${course.status.charAt(0).toUpperCase() + course.status.slice(1)}</p>
-          ${course.status === "approved" ? `<button class="start-btn" onclick="startCourse(${index})">Start Course</button>` : ""}
-          ${course.status === "pending" ? `
-            <button class="simulate-approve" onclick="simulateApproval(${index})">Simulate Approve</button>
-            <button class="simulate-reject" onclick="simulateRejection(${index})">Simulate Reject</button>
-          ` : ""}
-          ${course.progress > 0 ? `
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${course.progress}%">${course.progress}%</div>
-            </div>` : ""}
+          <p class="status ${course.status}">Course Status: ${course.status.charAt(0).toUpperCase() + course.status.slice(1)}</p>
+          ${lessonHtml}
         `;
 
         container.appendChild(courseDiv);
@@ -152,24 +183,24 @@
       }
     }
 
-    function simulateApproval(index) {
-      courses[index].status = "approved";
+    function simulateApproval(courseIndex, lessonIndex) {
+      courses[courseIndex].lessons[lessonIndex].status = "approved";
       renderCourses(courses);
     }
 
-    function simulateRejection(index) {
-      courses[index].status = "rejected";
+    function simulateRejection(courseIndex, lessonIndex) {
+      courses[courseIndex].lessons[lessonIndex].status = "rejected";
       renderCourses(courses);
     }
 
-    function startCourse(index) {
+    function startLesson(courseIndex, lessonIndex) {
       let progress = 0;
       const interval = setInterval(() => {
         if (progress >= 100) {
           clearInterval(interval);
         } else {
           progress += 10;
-          courses[index].progress = progress;
+          courses[courseIndex].lessons[lessonIndex].progress = progress;
           renderCourses(courses);
         }
       }, 300);
