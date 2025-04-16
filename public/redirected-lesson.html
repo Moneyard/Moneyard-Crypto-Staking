@@ -129,16 +129,15 @@
       width: 842px;
       height: 595px;
       padding: 40px;
-      background: linear-gradient(to bottom, #fffbea, #fff2cc);
+      background: #FF8C00; /* Warm orange color */
       text-align: center;
-      border: 4px solid gold;
-      box-shadow: 0 0 10px rgba(255,215,0,0.5);
+      border: 2px solid #2b7a78;
       margin: 40px auto;
-      position: relative;
+      border-radius: 8px;
     }
 
     #certificate h1 {
-      color: #b8860b;
+      color: #2b7a78;
       font-size: 32px;
       margin-bottom: 30px;
     }
@@ -154,25 +153,9 @@
       margin: 10px 0;
     }
 
-    #certificate img.logo {
-      display: block;
-      margin: 30px auto 10px;
+    #certificate img {
+      margin-top: 10px;
       height: 60px;
-    }
-
-    .signature {
-      text-align: left;
-      margin-top: 60px;
-      font-size: 14px;
-      font-style: italic;
-    }
-
-    .qr-code {
-      position: absolute;
-      bottom: 40px;
-      right: 40px;
-      width: 80px;
-      height: 80px;
     }
   </style>
 </head>
@@ -203,14 +186,8 @@
     <p>has successfully completed the course:</p>
     <h2 id="certCourse"></h2>
     <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
-    <img class="logo" src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo">
-    <p style="margin-top:20px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
-
-    <div class="signature">
-      Signature: ____________________________
-    </div>
-
-    <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=MoneyardCertificate" alt="QR Code">
+    <img src="path/to/your/logo.png" alt="Moneyard Logo"> <!-- Make sure the logo path is correct -->
+    <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
   </div>
 
   <script>
@@ -233,7 +210,7 @@
         card.className = "course-card";
 
         const statusClass = course.status === "approved" ? "approved" :
-                            course.status === "pending" ? "pending" : "rejected";
+                          course.status === "pending" ? "pending" : "rejected";
 
         card.innerHTML = `
           <h3>${course.title}</h3>
