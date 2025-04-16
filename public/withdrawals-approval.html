@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lesson Redirect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    .withdrawal-simulation {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .withdrawal-simulation h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .withdrawal-simulation p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    #simulateBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #2b7a78;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #simulateBtn:disabled {
+      background: #ccc;
+      cursor: default;
+    }
+    #toast {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4caf50;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+    #nextActions {
+      margin-top: 20px;
+      display: none;
+    }
+    #nextActions button {
+      background: #faae42;
+      border: none;
+      padding: 10px 20px;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="withdrawal-simulation">
+    <h2>Withdrawal Request</h2>
+    <p><strong>Amount:</strong> $120</p>
+    <p><strong>Status:</strong> <span id="approvalStatus" style="color: orange;">Pending Admin Approval</span></p>
+
+    <button id="simulateBtn" onclick="simulateAdminApproval()">Simulate Admin Approval</button>
+
+    <div id="toast">Admin has approved the withdrawal!</div>
+
+    <div id="nextActions">
+      <button onclick="window.location.href='dashboard.html'">Return to Dashboard</button>
+    </div>
+  </div>
+
+  <script>
+    function simulateAdminApproval() {
+      const statusEl = document.getElementById("approvalStatus");
+      const btn = document.getElementById("simulateBtn");
+      const toast = document.getElementById("toast");
+
+      // Update status
+      statusEl.innerText = "Approved by Admin";
+      statusEl.style.color = "green";
+
+      // Disable button
+      btn.disabled = true;
+      btn.innerText = "Approved";
+
+      // Show toast
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+
+      // Show return button
+      document.getElementById("nextActions").style.display = "block";
+
+      // Optional redirect after 5 seconds
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 5000);
+    }
+  </script>
+
+</body>
+</html>
