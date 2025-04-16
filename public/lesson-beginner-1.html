@@ -90,6 +90,16 @@
   </div>
 
   <script>
+  window.onload = function () {
+    const name = localStorage.getItem("moneyardUserName") || "Learner";
+    const courseTitle = localStorage.getItem("moneyardCourseTitle") || "Your Course";
+    document.getElementById("courseTitle").innerText = courseTitle;
+    document.getElementById("userName").innerText = name;
+  };
+</scrip>
+
+<h2>Welcome <span id="userName"></span> to <span id="courseTitle"></span></h2>
+
     // Populate user and course info from localStorage
     window.onload = function () {
       const name = localStorage.getItem("moneyardUserName") || "Learner";
