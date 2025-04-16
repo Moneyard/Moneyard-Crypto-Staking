@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Course Simulation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -82,7 +83,7 @@
       color: white;
     }
 
-    .start-btn {
+    .start-btn, .progress-btn, .certificate-btn {
       display: block;
       margin: 15px auto 0;
       padding: 10px 20px;
@@ -94,7 +95,7 @@
       cursor: pointer;
     }
 
-    .start-btn:hover {
+    .start-btn:hover, .progress-btn:hover, .certificate-btn:hover {
       background-color: #205e5e;
     }
 
@@ -112,52 +113,39 @@
       transition: width 0.3s ease;
     }
 
-    /* Certificate Modal */
-    #overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 999;
+    .name-input {
+      margin: 10px auto;
+      display: block;
+      font-size: 15px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 300px;
     }
 
-    #certificatePopup {
+    #certificate {
       display: none;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      padding: 30px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      border-radius: 10px;
+      width: 600px;
+      height: 400px;
+      margin: 40px auto;
       text-align: center;
-      z-index: 1000;
+      padding: 40px;
+      background: white;
+      border: 6px double #2b7a78;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
 
-    #certificatePopup h2 {
-      margin-top: 0;
+    #certificate h1 {
       color: #2b7a78;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
 
-    #certificatePopup p {
-      margin: 10px 0;
-    }
-
-    #closeBtn {
-      margin-top: 20px;
-      padding: 8px 16px;
-      background-color: #2b7a78;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #closeBtn:hover {
-      background-color: #205e5e;
+    #certificate h2 {
+      font-size: 18px;
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -180,15 +168,14 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Certificate Modal -->
-  <div id="overlay"></div>
-  <div id="certificatePopup">
-    <h2>Certificate of Completion</h2>
-    <p>Congratulations!</p>
-    <p>You have successfully completed:</p>
-    <p><strong id="courseName"></strong></p>
-    <p>Date: <span id="completionDate"></span></p>
-    <button id="closeBtn" onclick="closeCertificate()">Close</button>
+  <!-- Certificate Template -->
+  <div id="certificate">
+    <h1>Certificate of Completion</h1>
+    <h2>This certificate is proudly presented to</h2>
+    <h2 id="certName" style="font-weight: bold; font-size: 22px;"></h2>
+    <p style="margin-top: 30px;">For successfully completing the course on</p>
+    <h2 id="certCourse"></h2>
+    <p>Issued by Moneyard Learning Platform</p>
   </div>
 
   <script>
@@ -235,8 +222,10 @@
           <h3>${course.title}</h3>
           <div class="status ${statusClass}">${course.status.toUpperCase()}</div>
           ${course.status === 'approved' ? `
+            <input class="name-input" id="name-${index}" type="text" placeholder="Enter your full name"/>
             <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
             <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
+            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="generateCertificate(${index})">Print Certificate</button>
           ` : course.status === 'pending' ? `
             <p><i>Your enrollment is pending admin approval.</i></p>
           ` : `
@@ -250,31 +239,41 @@
 
     function startLesson(index) {
       const progressBar = document.getElementById(`progress-${index}`);
+      const certBtn = document.getElementById(`certBtn-${index}`);
       let width = 0;
       const interval = setInterval(() => {
         if (width >= 100) {
           clearInterval(interval);
-          showCertificate(courses[index].title);
+          alert("Lesson Completed!");
+          certBtn.style.display = "block";
         } else {
           width += 10;
           progressBar.style.width = width + "%";
         }
-      }, 400);
+      }, 500);
     }
 
-    function showCertificate(courseTitle) {
-      document.getElementById("courseName").textContent = courseTitle;
-      document.getElementById("completionDate").textContent = new Date().toLocaleDateString();
-      document.getElementById("overlay").style.display = "block";
-      document.getElementById("certificatePopup").style.display = "block";
+    function generateCertificate(index) {
+      const name = document.getElementById(`name-${index}`).value;
+      if (!name.trim()) {
+        alert("Please enter your name first.");
+        return;
+      }
+
+      const courseTitle = courses[index].title;
+      document.getElementById("certName").textContent = name;
+      document.getElementById("certCourse").textContent = courseTitle;
+
+      const certDiv = document.getElementById("certificate");
+      certDiv.style.display = "block";
+
+      setTimeout(() => {
+        html2pdf().from(certDiv).set({ margin: 1, filename: `${name}_certificate.pdf`, html2canvas: { scale: 2 } }).save();
+        certDiv.style.display = "none";
+      }, 1000);
     }
 
-    function closeCertificate() {
-      document.getElementById("certificatePopup").style.display = "none";
-      document.getElementById("overlay").style.display = "none";
-    }
-
-    // Load on page load
+    // Initial load
     filterCourses();
   </script>
 </body>
