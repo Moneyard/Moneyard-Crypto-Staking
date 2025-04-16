@@ -1,326 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Course Simulation</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Course Simulation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    /* Keep your original design and layout */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
 
-    header {
-      background-color: #2b7a78;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+    header {
+      background-color: #2b7a78;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
 
-    h2 {
-      text-align: center;
-      margin-top: 20px;
-    }
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
 
-    .filter-bar {
-      max-width: 600px;
-      margin: 20px auto;
-      text-align: center;
-    }
+    .filter-bar {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: center;
+    }
 
-    .filter-bar label {
-      font-size: 16px;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 8px;
-    }
+    .filter-bar label {
+      font-size: 16px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
 
-    select {
-      padding: 10px 16px;
-      font-size: 16px;
-      width: 220px;
-      max-width: 100%;
-      border-radius: 6px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-    }
+    select {
+      padding: 10px 16px;
+      font-size: 16px;
+      width: 220px;
+      max-width: 100%;
+      border-radius: 6px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+    }
 
-    .course-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: 20px auto;
-      position: relative;
-    }
+    .course-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 20px auto;
+      position: relative;
+    }
 
-    .status {
-      font-size: 14px;
-      font-weight: bold;
-      padding: 5px 10px;
-      border-radius: 4px;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
+    .status {
+      font-size: 14px;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 4px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
 
-    .approved {
-      background-color: #4CAF50;
-      color: white;
-    }
+    .approved {
+      background-color: #4CAF50;
+      color: white;
+    }
 
-    .pending {
-      background-color: #FF9800;
-      color: white;
-    }
+    .pending {
+      background-color: #FF9800;
+      color: white;
+    }
 
-    .rejected {
-      background-color: #f44336;
-      color: white;
-    }
+    .rejected {
+      background-color: #f44336;
+      color: white;
+    }
 
-    .start-btn, .progress-btn, .certificate-btn {
-      display: block;
-      margin: 15px auto 0;
-      padding: 10px 20px;
-      background-color: #2b7a78;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 15px;
-      cursor: pointer;
-    }
+    .start-btn, .progress-btn, .certificate-btn {
+      display: block;
+      margin: 15px auto 0;
+      padding: 10px 20px;
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
-    .start-btn:hover, .progress-btn:hover, .certificate-btn:hover {
-      background-color: #205e5e;
-    }
+    .start-btn:hover, .progress-btn:hover, .certificate-btn:hover {
+      background-color: #205e5e;
+    }
 
-    .progress-bar {
-      margin-top: 12px;
-      background-color: #eee;
-      border-radius: 8px;
-      overflow: hidden;
-    }
+    .progress-bar {
+      margin-top: 12px;
+      background-color: #eee;
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
-    .progress-fill {
-      height: 12px;
-      background-color: #4CAF50;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
+    .progress-fill {
+      height: 12px;
+      background-color: #4CAF50;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
 
-    .name-input {
-      margin: 10px auto;
-      display: block;
-      font-size: 15px;
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      width: 80%;
-      max-width: 300px;
-    }
+    .name-input {
+      margin: 10px auto;
+      display: block;
+      font-size: 15px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 300px;
+    }
 
-    #certificate {
-      display: none;
-      width: 842px;
-      height: 595px;
-      padding: 40px;
-      background: white;
-      text-align: center;
-      border: 2px solid #2b7a78;
-      margin: 40px auto;
-      position: relative;
-    }
+    /* Certificate Styling */
+    #certificate {
+      display: none;
+      width: 842px;
+      height: 595px;
+      padding: 40px;
+      background: white;
+      text-align: center;
+      border: 2px solid #2b7a78;
+      margin: 40px auto;
+      position: relative;
+    }
 
-    #certificate h1 {
-      color: #2b7a78;
-      font-size: 32px;
-      margin-bottom: 30px;
-    }
+    #certificate h1 {
+      color: #2b7a78;
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
 
-    #certificate h2 {
-      font-size: 24px;
-      margin: 10px 0;
-      color: #333;
-    }
+    #certificate h2 {
+      font-size: 24px;
+      margin: 10px 0;
+      color: #333;
+    }
 
-    #certificate p {
-      font-size: 16px;
-      margin: 10px 0;
-    }
+    #certificate p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
 
-    #certificate img {
-      margin-top: 10px;
-      height: 60px;
-    }
+    #certificate img {
+      margin-top: 10px;
+      height: 60px;
+    }
 
-    .seal {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 100px;
-      height: 100px;
-      background-color: green;
-      border-radius: 50%;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    .seal {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      background-color: green;
+      border-radius: 50%;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-    .qr-code {
-      position: absolute;
-      bottom: 40px;
-      right: 40px;
-    }
+    .qr-code {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+    }
 
-    .signature {
-      position: absolute;
-      bottom: 60px;
-      left: 40px;
-      font-size: 18px;
-      font-style: italic;
-      color: #2b7a78;
-    }
+    .signature {
+      position: absolute;
+      bottom: 60px;
+      left: 40px;
+      font-size: 18px;
+      font-style: italic;
+      color: #2b7a78;
+    }
 
-    .gold-border {
-      border: 5px solid gold;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
+    .gold-border {
+      border: 5px solid gold;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
 
-  </style>
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Moneyard Learning Platform</h1>
-  </header>
+  <header>
+    <h1>Moneyard Learning Platform</h1>
+  </header>
 
-  <h2>Course Enrollment & Simulation</h2>
+  <h2>Course Enrollment & Simulation</h2>
 
-  <div class="filter-bar">
-    <label for="levelSelect">Select Course Level:</label>
-    <select id="levelSelect" onchange="filterCourses()">
-      <option value="all">All Levels</option>
-      <option value="beginner">Beginner</option>
-      <option value="intermediate">Intermediate</option>
-      <option value="advanced">Advanced</option>
-    </select>
-  </div>
+  <div class="filter-bar">
+    <label for="levelSelect">Select Course Level:</label>
+    <select id="levelSelect" onchange="filterCourses()">
+      <option value="all">All Levels</option>
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+    </select>
+  </div>
 
-  <div id="coursesContainer"></div>
+  <div id="coursesContainer"></div>
 
-  <!-- Updated Certificate Preview -->
-  <div id="certificate" class="gold-border">
-    <div class="seal">Certified</div>
-    <h1>Certificate of Completion</h1>
-    <p>This is to certify that</p>
-    <h2 id="certName"></h2>
-    <p>has successfully completed the course:</p>
-    <h2 id="certCourse"></h2>
-    <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
-    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo">
-    <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
+  <!-- Certificate Preview -->
+  <div id="certificate" class="gold-border">
+    <div class="seal">Certified</div>
+    <h1>Certificate of Completion</h1>
+    <p>This is to certify that</p>
+    <h2 id="certName"></h2>
+    <p>has successfully completed the course:</p>
+    <h2 id="certCourse"></h2>
+    <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
+    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo">
+    <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
 
-    <!-- Signature and QR Code -->
-    <div class="signature">Signature</div>
-    <div class="qr-code">
-      <img src="https://via.placeholder.com/100x100.png?text=QR" alt="QR Code">
-    </div>
-  </div>
+    <!-- Signature and QR Code -->
+    <div class="signature">Signature</div>
+    <div class="qr-code">
+      <img src="https://via.placeholder.com/100x100.png?text=QR" alt="QR Code">
+    </div>
+  </div>
 
-  <script>
-    const courses = [
-      { title: "Blockchain Basics", level: "beginner", status: "approved" },
-      { title: "Crypto Wallet Setup", level: "beginner", status: "pending" },
-      { title: "Smart Contracts Deep Dive", level: "intermediate", status: "approved" },
-      { title: "DeFi Risks and Security", level: "advanced", status: "rejected" }
-    ];
+  <script>
+    const courses = [
+      { title: "Blockchain Basics", level: "beginner", status: "approved" },
+      { title: "Crypto Wallet Setup", level: "beginner", status: "pending" },
+      { title: "Smart Contracts Deep Dive", level: "intermediate", status: "approved" },
+      { title: "DeFi Risks and Security", level: "advanced", status: "rejected" }
+    ];
 
-    function filterCourses() {
-      const level = document.getElementById("levelSelect").value;
-      const container = document.getElementById("coursesContainer");
-      container.innerHTML = "";
+    function filterCourses() {
+      const level = document.getElementById("levelSelect").value;
+      const container = document.getElementById("coursesContainer");
+      container.innerHTML = "";
 
-      const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
+      const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
 
-      filtered.forEach((course, index) => {
-        const card = document.createElement("div");
-        card.className = "course-card";
+      filtered.forEach((course, index) => {
+        const card = document.createElement("div");
+        card.className = "course-card";
 
-        const statusClass = course.status === "approved" ? "approved" :
-                            course.status === "pending" ? "pending" : "rejected";
+        const statusClass = course.status === "approved" ? "approved" :
+                            course.status === "pending" ? "pending" : "rejected";
 
-        card.innerHTML = `
-          <h3>${course.title}</h3>
-          <div class="status ${statusClass}">${course.status.toUpperCase()}</div>
-          ${course.status === 'approved' ? `
-            <input class="name-input" id="name-${index}" type="text" placeholder="Enter your full name"/>
-            <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
-            <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
-            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="generateCertificate(${index})">Print Certificate</button>
-          ` : course.status === 'pending' ? `
-            <p><i>Your enrollment is pending admin approval.</i></p>
-          ` : `
-            <p><i>Your enrollment was rejected. Please contact support.</i></p>
-          `}
-        `;
+        card.innerHTML = `
+          <h3>${course.title}</h3>
+          <div class="status ${statusClass}">${course.status.toUpperCase()}</div>
+          ${course.status === 'approved' ? `
+            <input class="name-input" id="name-${index}" type="text" placeholder="Enter your full name"/>
+            <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
+            <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
+            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="generateCertificate(${index})">Print Certificate</button>
+          ` : course.status === 'pending' ? `
+            <p><i>Your enrollment is pending admin approval.</i></p>
+          ` : `
+            <p><i>Your enrollment was rejected. Please contact support.</i></p>
+          `}
+        `;
 
-        container.appendChild(card);
-      });
-    }
+        container.appendChild(card);
+      });
+    }
 
-    function startLesson(index) {
-      const progressBar = document.getElementById(`progress-${index}`);
-      const certBtn = document.getElementById(`certBtn-${index}`);
-      let width = 0;
-      const interval = setInterval(() => {
-        if (width >= 100) {
-          clearInterval(interval);
-          alert("Lesson Completed!");
-          certBtn.style.display = "block";
-        } else {
-          width += 10;
-          progressBar.style.width = width + "%";
-        }
-      }, 500);
-    }
+    function startLesson(index) {
+      const progressBar = document.getElementById(`progress-${index}`);
+      const certBtn = document.getElementById(`certBtn-${index}`);
+      let width = 0;
+      const interval = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(interval);
+          alert("Lesson Completed!");
+          certBtn.style.display = "block";
+        } else {
+          width += 10;
+          progressBar.style.width = width + "%";
+        }
+      }, 500);
+    }
 
-    function generateCertificate(index) {
-      const name = document.getElementById(`name-${index}`).value.trim();
-      if (!name) {
-        alert("Please enter your name first.");
-        return;
-      }
+    function generateCertificate(index) {
+      const name = document.getElementById(`name-${index}`).value.trim();
+      if (!name) {
+        alert("Please enter your name first.");
+        return;
+      }
 
-      const courseTitle = courses[index].title;
-      const certDiv = document.getElementById("certificate");
+      const courseTitle = courses[index].title;
+      const certDiv = document.getElementById("certificate");
 
-      document.getElementById("certName").textContent = name;
-      document.getElementById("certCourse").textContent = courseTitle;
+      document.getElementById("certName").textContent = name;
+      document.getElementById("certCourse").textContent = courseTitle;
 
-      certDiv.style.display = "block";
+      certDiv.style.display = "block";
 
-      setTimeout(() => {
-        html2pdf().from(certDiv).set({
-          margin: 0,
-          filename: `${name}_certificate.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { orientation: "landscape" }
-        }).save().then(() => {
-          certDiv.style.display = "none";
-        });
-      }, 300);
-    }
+      setTimeout(() => {
+        html2pdf().from(certDiv).set({
+          margin: 0,
+          filename: `${name}_certificate.pdf`,
+          html2canvas: { scale: 2 },
+          jsPDF: { orientation: "landscape" }
+        }).save().then(() => {
+          certDiv.style.display = "none";
+        });
+      }, 300);
+    }
 
-    filterCourses();
-  </script>
+    filterCourses();
+  </script>
 </body>
 </html>
