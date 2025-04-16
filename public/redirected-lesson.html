@@ -2,42 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lesson Redirect</title>
+  <title>Course Approval Simulation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
-    .withdrawal-simulation {
-      max-width: 600px;
-      margin: 40px auto;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
       padding: 30px;
+    }
+    .course-box {
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
+      padding: 25px;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .withdrawal-simulation h2 {
+    .course-box h2 {
       margin-bottom: 20px;
-      color: #333;
+      color: #2c3e50;
     }
-    .withdrawal-simulation p {
+    .status {
       font-size: 16px;
-      margin: 10px 0;
+      color: orange;
+      margin-bottom: 20px;
     }
-    #simulateBtn {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #2b7a78;
-      color: #fff;
+    .btn {
+      padding: 12px 20px;
       border: none;
       border-radius: 6px;
+      color: white;
+      background-color: #2980b9;
       cursor: pointer;
+      font-size: 16px;
     }
-    #simulateBtn:disabled {
+    .btn:disabled {
       background: #ccc;
       cursor: default;
     }
@@ -46,70 +45,44 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #4caf50;
+      background: #27ae60;
       color: white;
-      padding: 14px 24px;
+      padding: 12px 20px;
       border-radius: 6px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      z-index: 9999;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    #nextActions {
+    #startCourse {
       margin-top: 20px;
       display: none;
-    }
-    #nextActions button {
-      background: #faae42;
-      border: none;
-      padding: 10px 20px;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
+      background: #16a085;
     }
   </style>
 </head>
 <body>
 
-  <div class="withdrawal-simulation">
-    <h2>Withdrawal Request</h2>
-    <p><strong>Amount:</strong> $120</p>
-    <p><strong>Status:</strong> <span id="approvalStatus" style="color: orange;">Pending Admin Approval</span></p>
-
-    <button id="simulateBtn" onclick="simulateAdminApproval()">Simulate Admin Approval</button>
-
-    <div id="toast">Admin has approved the withdrawal!</div>
-
-    <div id="nextActions">
-      <button onclick="window.location.href='dashboard.html'">Return to Dashboard</button>
-    </div>
+  <div class="course-box">
+    <h2>Course: Web Development Bootcamp</h2>
+    <p class="status" id="courseStatus">Status: Pending Admin Approval</p>
+    <button class="btn" id="simulateApprovalBtn" onclick="simulateCourseApproval()">Simulate Admin Approval</button>
+    <button class="btn" id="startCourse" onclick="alert('Course started!')">Start Course</button>
   </div>
 
+  <div id="toast">Course Approved!</div>
+
   <script>
-    function simulateAdminApproval() {
-      const statusEl = document.getElementById("approvalStatus");
-      const btn = document.getElementById("simulateBtn");
+    function simulateCourseApproval() {
+      document.getElementById("courseStatus").innerText = "Status: Approved by Admin";
+      document.getElementById("courseStatus").style.color = "green";
+      document.getElementById("simulateApprovalBtn").disabled = true;
+      document.getElementById("simulateApprovalBtn").innerText = "Approved";
+      
+      // Toast
       const toast = document.getElementById("toast");
-
-      // Update status
-      statusEl.innerText = "Approved by Admin";
-      statusEl.style.color = "green";
-
-      // Disable button
-      btn.disabled = true;
-      btn.innerText = "Approved";
-
-      // Show toast
       toast.style.display = "block";
-      setTimeout(() => {
-        toast.style.display = "none";
-      }, 3000);
+      setTimeout(() => { toast.style.display = "none"; }, 3000);
 
-      // Show return button
-      document.getElementById("nextActions").style.display = "block";
-
-      // Optional redirect after 5 seconds
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 5000);
+      // Show Start Course button
+      document.getElementById("startCourse").style.display = "inline-block";
     }
   </script>
 
