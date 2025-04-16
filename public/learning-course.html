@@ -9,7 +9,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #faae42; /* Warm orange */
+      background-color: #faae42;
     }
 
     header {
@@ -110,7 +110,7 @@
       max-width: 700px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       position: relative;
-      background: #a8e6a3; /* Green advert */
+      background: #a8e6a3;
       text-align: center;
     }
 
@@ -129,7 +129,7 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background-color: #ff8c42; /* Warm orange */
+      background-color: #ff8c42;
       color: white;
       padding: 5px 10px;
       font-size: 12px;
@@ -169,6 +169,7 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
       .search-bar-container {
         justify-content: flex-start;
         margin-top: 10px;
@@ -204,6 +205,7 @@
     </select>
   </div>
 
+  <!-- BEGINNER COURSES -->
   <div class="level-content" id="beginnerCourses">
     <div class="course-advert">
       <h3>Learning Courses: Blockchain Technology Foundations</h3>
@@ -213,26 +215,27 @@
       <p class="cert-note"></p>
       <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
     </div>
+
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
-      <div class="course-card">
-  <a href="blockchaintech-mastery.html" style="text-decoration: none; color: inherit;">
-    <h3>Blockchain Technology Mastery</h3>
-    <p class="duration-price">Duration: 1 week | Price: $15</p>
-    <p class="trademark">Moneyard Learning</p>
-    <p class="cert-note">Accredited certificate received upon completion</p>
-  </a>
-  <button class="enroll-button" onclick="window.location.href='blochaintech-mastery.html'">Enroll Now</button>
-  <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
-</div>
+      <a href="blockchaintech-mastery.html" style="text-decoration: none; color: inherit;">
+        <h3>Blockchain Technology Mastery</h3>
+        <p class="duration-price">Duration: 1 week | Price: $15</p>
+        <p class="trademark">Moneyard Learning</p>
+        <p class="cert-note">Accredited certificate received upon completion</p>
+      </a>
+      <button class="enroll-button" onclick="window.location.href='blockchaintech-mastery.html'">Enroll Now</button>
+      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
+    </div>
+  </div>
 
+  <!-- INTERMEDIATE COURSES -->
   <div class="level-content" id="intermediateCourses">
     <div class="course-advert">
       <h3>Smart Contracts in Practice</h3>
       <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note"></p>
       <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148;</span>
     </div>
     <div class="course-advert">
@@ -246,13 +249,13 @@
     </div>
   </div>
 
+  <!-- ADVANCED COURSES -->
   <div class="level-content" id="advancedCourses">
     <div class="course-advert">
       <h3>Advanced Blockchain Security</h3>
       <p class="duration-price">Duration: 8 weeks | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
       <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note"></p>
       <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148;</span>
     </div>
     <div class="course-advert">
