@@ -1,332 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moneyard Course Simulation</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Moneyard Certificate</title>
   <style>
-    /* Keep your original design and layout */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
+      font-family: 'Georgia', serif;
+      background: #f9f7f1;
+      padding: 50px;
     }
 
-    header {
-      background-color: #2b7a78;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    h2 {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .filter-bar {
-      max-width: 600px;
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    .filter-bar label {
-      font-size: 16px;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    select {
-      padding: 10px 16px;
-      font-size: 16px;
-      width: 220px;
-      max-width: 100%;
-      border-radius: 6px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-    }
-
-    .course-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: 20px auto;
-      position: relative;
-    }
-
-    .status {
-      font-size: 14px;
-      font-weight: bold;
-      padding: 5px 10px;
-      border-radius: 4px;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-
-    .approved {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    .pending {
-      background-color: #FF9800;
-      color: white;
-    }
-
-    .rejected {
-      background-color: #f44336;
-      color: white;
-    }
-
-    .start-btn, .progress-btn, .certificate-btn {
-      display: block;
-      margin: 15px auto 0;
-      padding: 10px 20px;
-      background-color: #2b7a78;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .start-btn:hover, .progress-btn:hover, .certificate-btn:hover {
-      background-color: #205e5e;
-    }
-
-    .progress-bar {
-      margin-top: 12px;
-      background-color: #eee;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 12px;
-      background-color: #4CAF50;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    .name-input {
-      margin: 10px auto;
-      display: block;
-      font-size: 15px;
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      width: 80%;
-      max-width: 300px;
-    }
-
-    /* Certificate Styling */
-    #certificate {
-      display: none;
-      width: 842px;
-      height: 595px;
+    .certificate {
+      width: 900px;
+      height: 650px;
+      margin: 0 auto;
       padding: 40px;
-      background: white;
-      text-align: center;
-      border: 2px solid #2b7a78;
-      margin: 40px auto;
+      border: 10px solid #d4af37;
+      border-radius: 15px;
+      background: linear-gradient(to bottom right, #fff9e6, #fff);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
       position: relative;
     }
 
-    #certificate h1 {
-      color: #2b7a78;
-      font-size: 32px;
-      margin-bottom: 30px;
+    .certificate h1 {
+      text-align: center;
+      font-size: 48px;
+      color: #bfa037;
+      text-shadow: 1px 1px 1px #fff;
+      margin-bottom: 10px;
     }
 
-    #certificate h2 {
+    .certificate h2 {
+      text-align: center;
       font-size: 24px;
-      margin: 10px 0;
+      color: #555;
+      margin-top: 0;
+    }
+
+    .certificate .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .certificate .logo img {
+      width: 120px;
+      height: auto;
+    }
+
+    .certificate .content {
+      text-align: center;
+      font-size: 20px;
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .certificate .recipient {
+      font-size: 28px;
+      font-weight: bold;
+      color: #000;
+      margin: 20px 0;
+    }
+
+    .certificate .signature {
+      position: absolute;
+      bottom: 60px;
+      left: 60px;
+      font-style: italic;
+      font-size: 18px;
       color: #333;
     }
 
-    #certificate p {
-      font-size: 16px;
-      margin: 10px 0;
-    }
-
-    #certificate img {
-      margin-top: 10px;
+    .certificate .signature img {
       height: 60px;
     }
 
-    .seal {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 100px;
-      height: 100px;
-      background-color: green;
-      border-radius: 50%;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .qr-code {
-      position: absolute;
-      bottom: 40px;
-      right: 40px;
-    }
-
-    .signature {
+    .certificate .issuer {
       position: absolute;
       bottom: 60px;
-      left: 40px;
+      right: 60px;
       font-size: 18px;
-      font-style: italic;
-      color: #2b7a78;
+      color: #333;
+      font-weight: bold;
     }
 
-    .gold-border {
-      border: 5px solid gold;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    .certificate .gold-seal {
+      position: absolute;
+      top: 30px;
+      right: 30px;
     }
 
+    .certificate .gold-seal img {
+      width: 100px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Moneyard Learning Platform</h1>
-  </header>
+  <div class="certificate">
+    <div class="logo">
+      <img src="https://raw.githubusercontent.com/yourusername/yourrepo/main/Public/M.png" alt="Moneyard Logo">
+    </div>
+    <h1>Certificate of Achievement</h1>
+    <h2>This certifies that</h2>
+    <div class="recipient">[User Full Name]</div>
+    <div class="content">
+      has successfully achieved<br>
+      <strong>Gold Tier Status</strong> in the <strong>Moneyard Staking Program</strong>.<br>
+      Your consistent investment has earned you premium recognition.
+    </div>
 
-  <h2>Course Enrollment & Simulation</h2>
-
-  <div class="filter-bar">
-    <label for="levelSelect">Select Course Level:</label>
-    <select id="levelSelect" onchange="filterCourses()">
-      <option value="all">All Levels</option>
-      <option value="beginner">Beginner</option>
-      <option value="intermediate">Intermediate</option>
-      <option value="advanced">Advanced</option>
-    </select>
-  </div>
-
-  <div id="coursesContainer"></div>
-
-  <!-- Certificate Preview -->
-  <div id="certificate" class="gold-border">
-    <div class="seal">Certified</div>
-    <h1>Certificate of Completion</h1>
-    <p>This is to certify that</p>
-    <h2 id="certName"></h2>
-    <p>has successfully completed the course:</p>
-    <h2 id="certCourse"></h2>
-    <p style="margin-top:40px;">Issued by Moneyard Learning, an arm platform of</p>
-    <!-- Replace this path with the correct logo path -->
-    <img src="path/to/MoneyardLogo.jpg" alt="Moneyard Logo"> <!-- Make sure the path is correct -->
-    <p style="margin-top:60px; font-size:14px;">Date: <script>document.write(new Date().toLocaleDateString());</script></p>
-
-    <!-- Signature and QR Code -->
     <div class="signature">
-      <!-- Optionally, replace this with an actual signature image -->
-      <img src="path/to/signature.jpg" alt="Signature" style="height: 50px;"> <!-- Replace with actual image if available -->
+      <img src="https://i.imgur.com/lXQxJto.png" alt="Signature"><br>
+      Moneyard Admin
     </div>
-    <div class="qr-code">
-      <img src="https://via.placeholder.com/100x100.png?text=QR" alt="QR Code">
+
+    <div class="issuer">
+      Date: April 16, 2025<br>
+      Certified by: Moneyard Team
+    </div>
+
+    <div class="gold-seal">
+      <img src="https://i.imgur.com/kYPqX9s.png" alt="Gold Seal">
     </div>
   </div>
-
-  <script>
-    const courses = [
-      { title: "Blockchain Basics", level: "beginner", status: "approved" },
-      { title: "Crypto Wallet Setup", level: "beginner", status: "pending" },
-      { title: "Smart Contracts Deep Dive", level: "intermediate", status: "approved" },
-      { title: "DeFi Risks and Security", level: "advanced", status: "rejected" }
-    ];
-
-    function filterCourses() {
-      const level = document.getElementById("levelSelect").value;
-      const container = document.getElementById("coursesContainer");
-      container.innerHTML = "";
-
-      const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
-
-      filtered.forEach((course, index) => {
-        const card = document.createElement("div");
-        card.className = "course-card";
-
-        const statusClass = course.status === "approved" ? "approved" :
-                            course.status === "pending" ? "pending" : "rejected";
-
-        card.innerHTML = `
-          <h3>${course.title}</h3>
-          <div class="status ${statusClass}">${course.status.toUpperCase()}</div>
-          ${course.status === 'approved' ? `
-            <input class="name-input" id="name-${index}" type="text" placeholder="Enter your full name"/>
-            <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
-            <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
-            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="generateCertificate(${index})">Print Certificate</button>
-          ` : course.status === 'pending' ? `
-            <p><i>Your enrollment is pending admin approval.</i></p>
-          ` : `
-            <p><i>Your enrollment was rejected. Please contact support.</i></p>
-          `}
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    function startLesson(index) {
-      const progressBar = document.getElementById(`progress-${index}`);
-      const certBtn = document.getElementById(`certBtn-${index}`);
-      let width = 0;
-      const interval = setInterval(() => {
-        if (width >= 100) {
-          clearInterval(interval);
-          alert("Lesson Completed!");
-          certBtn.style.display = "block";
-        } else {
-          width += 10;
-          progressBar.style.width = width + "%";
-        }
-      }, 500);
-    }
-
-    function generateCertificate(index) {
-      const name = document.getElementById(`name-${index}`).value.trim();
-      if (!name) {
-        alert("Please enter your name first.");
-        return;
-      }
-
-      const courseTitle = courses[index].title;
-      const certDiv = document.getElementById("certificate");
-
-      document.getElementById("certName").textContent = name;
-      document.getElementById("certCourse").textContent = courseTitle;
-
-      certDiv.style.display = "block";
-
-      setTimeout(() => {
-        html2pdf().from(certDiv).set({
-          margin: 0,
-          filename: `${name}_certificate.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { orientation: "landscape" }
-        }).save().then(() => {
-          certDiv.style.display = "none";
-        });
-      }, 300);
-    }
-
-    filterCourses();
-  </script>
 </body>
 </html>
