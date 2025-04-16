@@ -5,56 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Learning</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-    h2, h3 { color: #2c3e50; }
-    .module-link { display: block; margin: 10px 0; color: #2980b9; text-decoration: none; }
-    .module-link:hover { text-decoration: underline; }
-    #locked-message, #course-content { padding: 20px; background: white; border-radius: 8px; max-width: 600px; margin: auto; }
-    button { margin: 20px auto; display: block; padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #219150; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #locked-message {
+      text-align: center;
+      padding: 20px;
+      background: #ffe6e6;
+      border: 1px solid #ff0000;
+      color: #900;
+    }
+    .module {
+      margin-bottom: 10px;
+    }
+    .module-header {
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .module-content {
+      display: none;
+      padding: 10px;
+      border: 1px solid #007bff;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      background: #f1f9ff;
+    }
+    .completed {
+      background: #28a745 !important;
+    }
+    button {
+      margin: 20px 0;
+      padding: 10px 15px;
+      background: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
 
 <!-- LOCKED MESSAGE -->
-<div id="locked-message" style="display: none;">
+<div id="locked-message">
   <h3>Course Locked</h3>
-  <p>You must complete payment and be approved to access this course.</p>
+  <p>You must deposit and be approved to access the course.</p>
 </div>
+
+<!-- UNLOCK BUTTON -->
+<button onclick="unlockCourse()">Simulate Admin Approval</button>
 
 <!-- COURSE CONTENT -->
-<div id="course-content" style="display: none;">
+<div id="course-content" style="display:none;">
   <h2>Welcome to Your Course</h2>
-  <p>Module 1: Introduction to Cryptocurrency</p>
-  <p>Module 2: How Wallets Work</p>
-  <p>Module 3: Trading & Investing Basics</p>
 
-  <h3>Available Modules</h3>
-  <a href="crypto-basics.html" class="module-link">Module 1: Cryptocurrency Basics</a>
-  <a href="savings-basics.html" class="module-link">Module 2: High-Yield Savings</a>
-  <a href="investing-basics.html" class="module-link">Module 3: Micro-Investing</a>
+  <div class="module" id="module1">
+    <div class="module-header" onclick="toggleModule(1)">Module 1: Introduction to Cryptocurrency</div>
+    <div class="module-content">
+      <p>Learn the basics of what cryptocurrency is and how it works. Understand blockchain technology and its real-world impact.</p>
+    </div>
+  </div>
+
+  <div class="module" id="module2">
+    <div class="module-header" onclick="toggleModule(2)">Module 2: How Wallets Work</div>
+    <div class="module-content">
+      <p>Discover how to use hot and cold wallets, private keys, and keep your crypto secure.</p>
+    </div>
+  </div>
+
+  <div class="module" id="module3">
+    <div class="module-header" onclick="toggleModule(3)">Module 3: Trading & Investing Basics</div>
+    <div class="module-content">
+      <p>Explore how to buy, sell, and hold crypto assets. Learn about risks, strategies, and long-term investing.</p>
+    </div>
+  </div>
 </div>
-
-<!-- Simulate Admin Approval -->
-<button onclick="unlockCourse()">Simulate Admin Approval</button>
 
 <script>
   function unlockCourse() {
     localStorage.setItem("courseAccess", "true");
-    alert("Access approved! Reloading...");
-    window.location.reload();
+    alert("Course unlocked! Reloading...");
+    location.reload();
   }
 
-  function checkAccess() {
-    const access = localStorage.getItem("courseAccess");
-    if (access === "true") {
-      document.getElementById("course-content").style.display = "block";
+  function toggleModule(moduleNumber) {
+    const content = document.querySelector(`#module${moduleNumber} .module-content`);
+    const header = document.querySelector(`#module${moduleNumber} .module-header`);
+    const viewedKey = `module${moduleNumber}_viewed`;
+
+    if (content.style.display === "block") {
+      content.style.display = "none";
     } else {
-      document.getElementById("locked-message").style.display = "block";
+      content.style.display = "block";
+      localStorage.setItem(viewedKey, "true");
+      header.classList.add("completed");
     }
   }
 
-  window.onload = checkAccess;
+  function showCourses() {
+    const access = localStorage.getItem("courseAccess");
+    if (access === "true") {
+      document.getElementById("locked-message").style.display = "none";
+      document.getElementById("course-content").style.display = "block";
+
+      // Mark completed modules
+      for (let i = 1; i <= 3; i++) {
+        if (localStorage.getItem(`module${i}_viewed`) === "true") {
+          document.querySelector(`#module${i} .module-header`).classList.add("completed");
+        }
+      }
+    }
+  }
+
+  window.onload = showCourses;
 </script>
 
 </body>
