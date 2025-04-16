@@ -1,110 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lesson 1 - Blockchain Foundations</title>
+  <meta charset="UTF-8">
+  <title>Lesson Redirect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f5f5;
+      background: #f2f2f2;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-
-    header {
-      background-color: #2b7a78;
-      color: white;
-      padding: 15px 20px;
-      font-size: 20px;
-      font-weight: bold;
+    .withdrawal-simulation {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
     }
-
-    .lesson-container {
-      background: white;
-      padding: 20px;
-      max-width: 800px;
-      margin: 30px auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    .withdrawal-simulation h2 {
+      margin-bottom: 20px;
+      color: #333;
     }
-
-    .lesson-title {
-      font-size: 24px;
-      color: #17252a;
-      margin-bottom: 10px;
-    }
-
-    .lesson-content {
+    .withdrawal-simulation p {
       font-size: 16px;
-      line-height: 1.6;
-      color: #444;
+      margin: 10px 0;
     }
-
-    #adminApprovalSection {
-      margin-top: 30px;
-      padding: 15px;
-      border: 1px dashed #2b7a78;
-      border-radius: 8px;
-      display: none;
-      background-color: #f0fdfb;
-    }
-
-    #adminApprovalButton {
-      background-color: #2b7a78;
-      color: white;
-      border: none;
+    #simulateBtn {
       padding: 10px 20px;
       font-size: 16px;
+      background: #2b7a78;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      border-radius: 5px;
     }
-
-    #approvalStatus {
-      margin-top: 10px;
-      color: green;
-      font-weight: bold;
+    #simulateBtn:disabled {
+      background: #ccc;
+      cursor: default;
+    }
+    #toast {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4caf50;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+    #nextActions {
+      margin-top: 20px;
+      display: none;
+    }
+    #nextActions button {
+      background: #faae42;
+      border: none;
+      padding: 10px 20px;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <header>Moneyard Learning - Lesson 1</header>
+  <div class="withdrawal-simulation">
+    <h2>Withdrawal Request</h2>
+    <p><strong>Amount:</strong> $120</p>
+    <p><strong>Status:</strong> <span id="approvalStatus" style="color: orange;">Pending Admin Approval</span></p>
 
-  <div class="lesson-container">
-    <div class="lesson-title">Blockchain Technology Foundations</div>
-    <div class="lesson-content">
-      <p>Welcome to Lesson 1. In this lesson, you’ll learn the basics of blockchain technology, including:</p>
-      <ul>
-        <li>What is a blockchain?</li>
-        <li>How does decentralization work?</li>
-        <li>Real-world use cases of blockchain</li>
-      </ul>
-      <p>Read through the material carefully, and when ready, proceed to the next lesson or complete the quiz.</p>
-    </div>
+    <button id="simulateBtn" onclick="simulateAdminApproval()">Simulate Admin Approval</button>
 
-    <!-- Admin Approval Simulation -->
-    <div id="adminApprovalSection">
-      <button id="adminApprovalButton">Simulate Admin Approval</button>
-      <p id="approvalStatus"></p>
+    <div id="toast">Admin has approved the withdrawal!</div>
+
+    <div id="nextActions">
+      <button onclick="window.location.href='dashboard.html'">Return to Dashboard</button>
     </div>
   </div>
 
   <script>
-    // Simulate login role (admin or user)
-    localStorage.setItem("role", "admin"); // Change to "user" to hide approval button
+    function simulateAdminApproval() {
+      const statusEl = document.getElementById("approvalStatus");
+      const btn = document.getElementById("simulateBtn");
+      const toast = document.getElementById("toast");
 
-    // Show button only for admin
-    const role = localStorage.getItem("role");
-    if (role === "admin") {
-      document.getElementById("adminApprovalSection").style.display = "block";
+      // Update status
+      statusEl.innerText = "Approved by Admin";
+      statusEl.style.color = "green";
+
+      // Disable button
+      btn.disabled = true;
+      btn.innerText = "Approved";
+
+      // Show toast
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+
+      // Show return button
+      document.getElementById("nextActions").style.display = "block";
+
+      // Optional redirect after 5 seconds
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 5000);
     }
-
-    // Handle admin approval click
-    document.getElementById("adminApprovalButton").addEventListener("click", () => {
-      document.getElementById("approvalStatus").innerText = "Status: Approved by Admin";
-      alert("Approval simulated! Withdrawal status marked as approved.");
-    });
   </script>
 
 </body>
