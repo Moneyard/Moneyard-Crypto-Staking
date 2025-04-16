@@ -92,6 +92,7 @@
     <input type="password" id="adminPassword" placeholder="Password" />
     <button onclick="adminLogin()">Login as Admin</button>
     <p id="adminStatus" style="color:green;"></p>
+<button id="logoutBtn" onclick="adminLogout()" style="display:none; margin-top:10px;">Logout</button>
   </div>
 
   <div class="filter-bar">
@@ -120,8 +121,16 @@
     function adminLogin() {
       const username = document.getElementById("adminUsername").value;
       const password = document.getElementById("adminPassword").value;
-
-      if (username === "admin" && password === "1234") {
+document.getElementById("logoutBtn").style.display = "inline-block";
+function adminLogout() {
+  isAdmin = false;
+  document.getElementById("adminStatus").innerText = "";
+  document.getElementById("logoutBtn").style.display = "none";
+  document.getElementById("adminUsername").value = "";
+  document.getElementById("adminPassword").value = "";
+  filterCourses(); // Refresh UI without admin privileges
+}
+      if (username === "yourNewUsername" && password === "yourNewPassword") {
         isAdmin = true;
         document.getElementById("adminStatus").innerText = "Logged in as Admin";
         filterCourses();
