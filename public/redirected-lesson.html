@@ -2,138 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Course Approval Simulation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Simulation</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      padding: 30px;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    select {
-      padding: 10px;
-      margin: 20px auto;
-      display: block;
-      font-size: 16px;
-      border-radius: 6px;
-    }
-    .course-box {
-      background: #fff;
+      background: #f1f1f1;
       padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .course-box h3 {
-      margin: 0 0 10px;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
+    select {
+      padding: 6px 10px;
+      font-size: 16px;
+    }
+
+    .course-list {
+      margin-top: 20px;
+    }
+
+    .course {
+      background: #fff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
     .status {
       font-weight: bold;
-      margin: 10px 0;
+      margin-top: 5px;
     }
-    .status.pending { color: orange; }
+
     .status.approved { color: green; }
-    .status.rejected { color: crimson; }
-    .btn-group button {
-      padding: 10px 15px;
-      margin-right: 10px;
+    .status.pending { color: orange; }
+    .status.rejected { color: red; }
+
+    button {
       margin-top: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
-      color: #fff;
     }
-    .approve-btn { background-color: #27ae60; }
-    .reject-btn { background-color: #c0392b; }
-    .start-btn {
-      display: none;
-      margin-top: 15px;
-      padding: 10px 15px;
-      background: #2980b9;
+
+    .start-btn { background-color: #007bff; color: white; }
+    .simulate-approve { background-color: #28a745; color: white; margin-right: 5px; }
+    .simulate-reject { background-color: #dc3545; color: white; }
+
+    .progress-bar {
+      margin-top: 10px;
+      height: 20px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #4caf50;
+      width: 0%;
+      text-align: center;
       color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      line-height: 20px;
+      transition: width 0.3s ease;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Course Approval Simulator</h1>
-
-    <select id="courseLevel" onchange="filterCourses()">
-      <option value="all">Select Level</option>
+  <div class="header">
+    <h2>Moneyard Course Simulator</h2>
+    <select id="levelSelect" onchange="filterCourses()">
+      <option value="all">All Levels</option>
       <option value="beginner">Beginner</option>
       <option value="intermediate">Intermediate</option>
       <option value="advanced">Advanced</option>
     </select>
-
-    <div id="coursesArea">
-      <!-- Course Boxes will be injected here -->
-    </div>
   </div>
 
+  <div class="course-list" id="courseList"></div>
+
   <script>
-    const courseData = [
-      { id: 1, level: "beginner", title: "HTML & CSS Fundamentals" },
-      { id: 2, level: "beginner", title: "Intro to JavaScript" },
-      { id: 3, level: "intermediate", title: "Frontend Frameworks" },
-      { id: 4, level: "advanced", title: "Full Stack Development" },
-      { id: 5, level: "advanced", title: "API Design & Security" }
+    const courses = [
+      {
+        title: "Blockchain Basics",
+        level: "beginner",
+        status: "approved",
+        progress: 0
+      },
+      {
+        title: "Crypto Wallet Setup",
+        level: "beginner",
+        status: "pending",
+        progress: 0
+      },
+      {
+        title: "Smart Contracts",
+        level: "intermediate",
+        status: "rejected",
+        progress: 0
+      },
+      {
+        title: "DeFi Mastery",
+        level: "advanced",
+        status: "pending",
+        progress: 0
+      }
     ];
 
-    function renderCourses(filtered = courseData) {
-      const area = document.getElementById("coursesArea");
-      area.innerHTML = "";
-      filtered.forEach(course => {
-        const box = document.createElement("div");
-        box.className = "course-box";
-        box.id = "course-" + course.id;
-        box.innerHTML = `
+    function renderCourses(filteredCourses) {
+      const container = document.getElementById("courseList");
+      container.innerHTML = "";
+
+      filteredCourses.forEach((course, index) => {
+        const courseDiv = document.createElement("div");
+        courseDiv.className = "course";
+
+        courseDiv.innerHTML = `
           <h3>${course.title}</h3>
-          <p class="status pending" id="status-${course.id}">Status: Pending Admin Approval</p>
-          <div class="btn-group">
-            <button class="approve-btn" onclick="approveCourse(${course.id})">Approve</button>
-            <button class="reject-btn" onclick="rejectCourse(${course.id})">Reject</button>
-          </div>
-          <button class="start-btn" id="start-${course.id}" onclick="alert('Starting ${course.title}')">Start Course</button>
+          <p>Level: ${course.level.charAt(0).toUpperCase() + course.level.slice(1)}</p>
+          <p class="status ${course.status}">Status: ${course.status.charAt(0).toUpperCase() + course.status.slice(1)}</p>
+          ${course.status === "approved" ? `<button class="start-btn" onclick="startCourse(${index})">Start Course</button>` : ""}
+          ${course.status === "pending" ? `
+            <button class="simulate-approve" onclick="simulateApproval(${index})">Simulate Approve</button>
+            <button class="simulate-reject" onclick="simulateRejection(${index})">Simulate Reject</button>
+          ` : ""}
+          ${course.progress > 0 ? `
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${course.progress}%">${course.progress}%</div>
+            </div>` : ""}
         `;
-        area.appendChild(box);
+
+        container.appendChild(courseDiv);
       });
     }
 
     function filterCourses() {
-      const level = document.getElementById("courseLevel").value;
-      if (level === "all" || level === "") {
-        renderCourses(courseData);
+      const selected = document.getElementById("levelSelect").value;
+      if (selected === "all") {
+        renderCourses(courses);
       } else {
-        const filtered = courseData.filter(c => c.level === level);
+        const filtered = courses.filter(c => c.level === selected);
         renderCourses(filtered);
       }
     }
 
-    function approveCourse(id) {
-      document.getElementById(`status-${id}`).innerText = "Status: Approved by Admin";
-      document.getElementById(`status-${id}`).className = "status approved";
-      document.getElementById(`start-${id}`).style.display = "inline-block";
+    function simulateApproval(index) {
+      courses[index].status = "approved";
+      renderCourses(courses);
     }
 
-    function rejectCourse(id) {
-      document.getElementById(`status-${id}`).innerText = "Status: Rejected by Admin";
-      document.getElementById(`status-${id}`).className = "status rejected";
-      document.getElementById(`start-${id}`).style.display = "none";
+    function simulateRejection(index) {
+      courses[index].status = "rejected";
+      renderCourses(courses);
     }
 
-    // Render default view (all beginner courses visible initially)
-    filterCourses();
+    function startCourse(index) {
+      let progress = 0;
+      const interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+        } else {
+          progress += 10;
+          courses[index].progress = progress;
+          renderCourses(courses);
+        }
+      }, 300);
+    }
+
+    window.onload = () => renderCourses(courses);
   </script>
 </body>
 </html>
