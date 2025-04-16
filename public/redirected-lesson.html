@@ -3,181 +3,249 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Course Simulation</title>
+  <title>Moneyard Course Simulation</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
     }
 
-    h1 {
+    header {
+      background-color: #2b7a78;
+      color: white;
+      padding: 20px;
       text-align: center;
-      color: #2b7a78;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .filter-bar {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .filter-bar label {
+      font-size: 16px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
     }
 
     select {
-      width: 100%;
-      max-width: 400px;
-      padding: 10px;
-      margin: 20px auto;
-      display: block;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 10px 16px;
       font-size: 16px;
-    }
-
-    .course {
+      width: 220px;
+      max-width: 100%;
+      border-radius: 6px;
       background-color: #fff;
       border: 1px solid #ccc;
-      border-left: 5px solid #2b7a78;
-      padding: 15px;
-      margin: 10px auto;
-      max-width: 600px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .course h3 {
-      margin: 0;
+    .course-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 20px auto;
+      position: relative;
     }
 
     .status {
+      font-size: 14px;
       font-weight: bold;
-      margin: 10px 0;
+      padding: 5px 10px;
+      border-radius: 4px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
 
-    .status.approved {
-      color: green;
+    .approved {
+      background-color: #4CAF50;
+      color: white;
     }
 
-    .status.pending {
-      color: orange;
+    .pending {
+      background-color: #FF9800;
+      color: white;
     }
 
-    .status.rejected {
-      color: red;
+    .rejected {
+      background-color: #f44336;
+      color: white;
     }
 
-    .progress-bar {
-      width: 100%;
-      background-color: #eee;
-      border-radius: 5px;
-      overflow: hidden;
-      height: 20px;
-      margin-top: 10px;
-    }
-
-    .progress {
-      height: 100%;
-      background-color: #2b7a78;
-      width: 0%;
-      transition: width 0.4s;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 8px 16px;
+    .start-btn {
+      display: block;
+      margin: 15px auto 0;
+      padding: 10px 20px;
       background-color: #2b7a78;
       color: white;
       border: none;
       border-radius: 4px;
+      font-size: 15px;
       cursor: pointer;
     }
 
-    button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+    .start-btn:hover {
+      background-color: #205e5e;
     }
 
-    /* Certificate popup */
-    .certificate-popup {
-      display: none;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%; max-width: 500px;
-      background: white;
-      border: 2px solid #2b7a78;
-      padding: 30px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      z-index: 1000;
-      text-align: center;
+    .progress-bar {
+      margin-top: 12px;
+      background-color: #eee;
       border-radius: 8px;
+      overflow: hidden;
     }
 
-    .certificate-popup h2 {
-      margin-top: 0;
-      color: #2b7a78;
+    .progress-fill {
+      height: 12px;
+      background-color: #4CAF50;
+      width: 0%;
+      transition: width 0.3s ease;
     }
 
+    /* Certificate Modal */
     #overlay {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0, 0, 0, 0.6);
       z-index: 999;
+    }
+
+    #certificatePopup {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    #certificatePopup h2 {
+      margin-top: 0;
+      color: #2b7a78;
+    }
+
+    #certificatePopup p {
+      margin: 10px 0;
+    }
+
+    #closeBtn {
+      margin-top: 20px;
+      padding: 8px 16px;
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #closeBtn:hover {
+      background-color: #205e5e;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Moneyard Learning Platform</h1>
+  </header>
 
-  <h1>Course Dashboard</h1>
+  <h2>Course Enrollment & Simulation</h2>
 
-  <select id="levelSelect" onchange="filterCourses()">
-    <option value="all">-- Select Course Level --</option>
-    <option value="beginner">Beginner</option>
-    <option value="intermediate">Intermediate</option>
-    <option value="advanced">Advanced</option>
-  </select>
+  <div class="filter-bar">
+    <label for="levelSelect">Select Course Level:</label>
+    <select id="levelSelect" onchange="filterCourses()">
+      <option value="all">All Levels</option>
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+    </select>
+  </div>
 
-  <div id="courseContainer"></div>
+  <div id="coursesContainer"></div>
 
-  <!-- Certificate Popup -->
+  <!-- Certificate Modal -->
   <div id="overlay"></div>
-  <div id="certificatePopup" class="certificate-popup">
+  <div id="certificatePopup">
     <h2>Certificate of Completion</h2>
-    <p>This certifies that <strong>User Name</strong> has successfully completed the course:</p>
+    <p>Congratulations!</p>
+    <p>You have successfully completed:</p>
     <p><strong id="courseName"></strong></p>
     <p>Date: <span id="completionDate"></span></p>
-    <button onclick="closeCertificate()">Close</button>
+    <button id="closeBtn" onclick="closeCertificate()">Close</button>
   </div>
 
   <script>
     const courses = [
-      { title: "Intro to Crypto", level: "beginner", status: "approved" },
-      { title: "Blockchain Basics", level: "beginner", status: "pending" },
-      { title: "Staking Strategies", level: "intermediate", status: "approved" },
-      { title: "Advanced Yield Farming", level: "advanced", status: "rejected" },
-      { title: "Risk Management", level: "intermediate", status: "approved" },
-      { title: "Smart Contracts 101", level: "advanced", status: "pending" }
+      {
+        title: "Blockchain Basics",
+        level: "beginner",
+        status: "approved"
+      },
+      {
+        title: "Crypto Wallet Setup",
+        level: "beginner",
+        status: "pending"
+      },
+      {
+        title: "Smart Contracts Deep Dive",
+        level: "intermediate",
+        status: "approved"
+      },
+      {
+        title: "DeFi Risks and Security",
+        level: "advanced",
+        status: "rejected"
+      }
     ];
 
-    function renderCourses(level = "all") {
-      const container = document.getElementById("courseContainer");
+    function filterCourses() {
+      const level = document.getElementById("levelSelect").value;
+      const container = document.getElementById("coursesContainer");
       container.innerHTML = "";
 
-      const filtered = level === "all" ? courses : courses.filter(c => c.level === level);
+      const filtered = level === "all"
+        ? courses
+        : courses.filter(course => course.level === level);
 
       filtered.forEach((course, index) => {
-        const div = document.createElement("div");
-        div.className = "course";
-        div.innerHTML = `
-          <h3>${course.title}</h3>
-          <p class="status ${course.status}">Status: ${course.status}</p>
-          <button onclick="startLesson(${index})" ${course.status !== 'approved' ? 'disabled' : ''}>Start Lesson</button>
-          <div class="progress-bar">
-            <div class="progress" id="progress-${index}"></div>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
+        const card = document.createElement("div");
+        card.className = "course-card";
 
-    function filterCourses() {
-      const selected = document.getElementById("levelSelect").value;
-      renderCourses(selected);
+        const statusClass = course.status === "approved" ? "approved" :
+                            course.status === "pending" ? "pending" : "rejected";
+
+        card.innerHTML = `
+          <h3>${course.title}</h3>
+          <div class="status ${statusClass}">${course.status.toUpperCase()}</div>
+          ${course.status === 'approved' ? `
+            <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
+            <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
+          ` : course.status === 'pending' ? `
+            <p><i>Your enrollment is pending admin approval.</i></p>
+          ` : `
+            <p><i>Your enrollment was rejected. Please contact support.</i></p>
+          `}
+        `;
+
+        container.appendChild(card);
+      });
     }
 
     function startLesson(index) {
@@ -206,9 +274,8 @@
       document.getElementById("overlay").style.display = "none";
     }
 
-    // Initial render
-    renderCourses();
+    // Load on page load
+    filterCourses();
   </script>
-
 </body>
 </html>
