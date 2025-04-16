@@ -203,49 +203,37 @@
       }, 500);
     }
 
-    function downloadImageCertificateFromForm(index) {
-      const nameInput = document.getElementById(`name-${index}`).value.trim();
-      if (!nameInput) {
-        alert("Please enter your name.");
-        return;
-      }
-      downloadImageCertificate(nameInput, courses[index].title);
-    }
-
     function downloadImageCertificate(name, course) {
-      const canvas = document.getElementById('certificateCanvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      img.src = '/mnt/data/A_certificate_of_completion_issued_by_Moneyard_is_.png';
+  const canvas = document.getElementById('certificateCanvas');
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
 
-      img.onload = function () {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+  // Base64 version of your certificate image
+  img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAADdZk0xAAA..."; // truncated here
 
-        // Add name
-        ctx.font = '32px Georgia';
-        ctx.fillStyle = '#222';
-        ctx.textAlign = 'center';
-        ctx.fillText(name, canvas.width / 2, 310);
+  img.onload = function () {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
 
-        // Add course title
-        ctx.font = '24px Georgia';
-        ctx.fillText(course, canvas.width / 2, 370);
+    ctx.font = '32px Georgia';
+    ctx.fillStyle = '#222';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, canvas.width / 2, 310);
 
-        // Add issue date
-        ctx.font = '16px Arial';
-        ctx.fillStyle = '#555';
-        ctx.fillText(new Date().toLocaleDateString(), canvas.width - 150, canvas.height - 50);
+    ctx.font = '24px Georgia';
+    ctx.fillText(course, canvas.width / 2, 370);
 
-        // Download
-        const link = document.createElement('a');
-        link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      };
-    }
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#555';
+    ctx.fillText(new Date().toLocaleDateString(), canvas.width - 150, canvas.height - 50);
 
+    const link = document.createElement('a');
+    link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+}
     filterCourses();
   </script>
 </body>
