@@ -218,8 +218,7 @@
       const img = new Image();
 
       // Replace this with your actual base64 certificate image
-      <img id="certificateImage" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAIAAADwf7zUAAEAAElEQVR4nCz9..." alt="Certificate" />
-;
+      img.src = "data:image/png;base64,REPLACE_WITH_YOUR_FULL_BASE64_IMAGE";
 
       img.onload = function () {
         canvas.width = img.width;
