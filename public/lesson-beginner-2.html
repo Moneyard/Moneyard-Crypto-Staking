@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lesson - Beginner 2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    .lesson-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2ecc71;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #2ecc71;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <div class="lesson-container">
+    <h2>Hello <span id="userName">...</span>, welcome to Lesson 2</h2>
+    <h3>Course: <span id="courseTitle">Beginner</span></h3>
+
+    <iframe src="https://www.youtube.com/embed/YIVAluSL9SU" allowfullscreen></iframe>
+
+    <p><strong>Lesson Topic:</strong> What is a Crypto Wallet?</p>
+    <p>
+      Learn about the types of wallets: custodial vs non-custodial, how to create your first wallet, 
+      and security tips to keep your funds safe.
+    </p>
+
+    <ul>
+      <li>Public vs Private Keys</li>
+      <li>Hot vs Cold Wallets</li>
+      <li>Security Do's and Don'ts</li>
+    </ul>
+
+    <button class="btn" onclick="goToNext()">Next Lesson</button>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const name = localStorage.getItem("moneyardUserName") || "Learner";
+      const course = localStorage.getItem("moneyardCourseTitle") || "Beginner";
+      document.getElementById("userName").innerText = name;
+      document.getElementById("courseTitle").innerText = course;
+    };
+
+    function goToNext() {
+      window.location.href = "lesson-beginner-3.html"; // future lesson
+    }
+  </script>
+</body>
+</html>
