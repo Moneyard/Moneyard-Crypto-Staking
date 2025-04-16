@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lesson - Intermediate 2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef1f5;
+      padding: 20px;
+    }
+    .lesson-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2980b9;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #2980b9;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #2471a3;
+    }
+  </style>
+</head>
+<body>
+  <div class="lesson-container">
+    <h2>Lesson 2: How DeFi Protocols Work</h2>
+    <h3>User: <span id="userName">...</span> | Course: <span id="courseTitle">Intermediate</span></h3>
+
+    <iframe src="https://www.youtube.com/embed/YVgfHZMFFFQ" allowfullscreen></iframe>
+
+    <p><strong>Topics Covered:</strong></p>
+    <ul>
+      <li>Liquidity Pools & AMMs</li>
+      <li>Yield Farming</li>
+      <li>Borrowing & Lending in DeFi</li>
+    </ul>
+
+    <button class="btn" onclick="goToNext()">Next Lesson</button>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const name = localStorage.getItem("moneyardUserName") || "Student";
+      const course = localStorage.getItem("moneyardCourseTitle") || "Intermediate";
+      document.getElementById("userName").innerText = name;
+      document.getElementById("courseTitle").innerText = course;
+    };
+
+    function goToNext() {
+      window.location.href = "lesson-intermediate-3.html"; // next lesson
+    }
+  </script>
+</body>
+</html>
