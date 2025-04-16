@@ -9,7 +9,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #faae42;
+      background-color: #faae42; /* Warm orange */
     }
 
     header {
@@ -110,7 +110,7 @@
       max-width: 700px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       position: relative;
-      background: #a8e6a3;
+      background: #a8e6a3; /* Green advert */
       text-align: center;
     }
 
@@ -129,7 +129,7 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background-color: #ff8c42;
+      background-color: #ff8c42; /* Warm orange */
       color: white;
       padding: 5px 10px;
       font-size: 12px;
@@ -169,7 +169,6 @@
         flex-direction: column;
         align-items: flex-start;
       }
-
       .search-bar-container {
         justify-content: flex-start;
         margin-top: 10px;
@@ -205,37 +204,37 @@
     </select>
   </div>
 
-  <!-- BEGINNER COURSES -->
   <div class="level-content" id="beginnerCourses">
     <div class="course-advert">
       <h3>Learning Courses: Blockchain Technology Foundations</h3>
       <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
+      <button class="enroll-button" onclick="redirectToLesson('blockchain-lesson.html')">Enroll Now</button>
       <p class="cert-note"></p>
       <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Foundations')">&#10148;</span>
     </div>
-
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
-      <a href="blockchaintech-mastery.html" style="text-decoration: none; color: inherit;">
-        <h3>Blockchain Technology Mastery</h3>
-        <p class="duration-price">Duration: 1 week | Price: $15</p>
-        <p class="trademark">Moneyard Learning</p>
-        <p class="cert-note">Accredited certificate received upon completion</p>
-      </a>
-      <button class="enroll-button" onclick="window.location.href='blockchaintech-mastery.html'">Enroll Now</button>
-      <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
+      <div class="course-card">
+        <a href="blockchaintech-mastery.html" style="text-decoration: none; color: inherit;">
+          <h3>Blockchain Technology Mastery</h3>
+          <p class="duration-price">Duration: 1 week | Price: $15</p>
+          <p class="trademark">Moneyard Learning</p>
+          <p class="cert-note">Accredited certificate received upon completion</p>
+        </a>
+        <button class="enroll-button" onclick="redirectToLesson('blochaintech-mastery.html')">Enroll Now</button>
+        <span class="overview-arrow" onclick="alert('Overview: Blockchain Technology Mastery')">&#10148;</span>
+      </div>
     </div>
   </div>
 
-  <!-- INTERMEDIATE COURSES -->
   <div class="level-content" id="intermediateCourses">
     <div class="course-advert">
       <h3>Smart Contracts in Practice</h3>
       <p class="duration-price">Duration: 1 week | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
+      <button class="enroll-button" onclick="redirectToLesson('smart-contracts-lesson.html')">Enroll Now</button>
+      <p class="cert-note"></p>
       <span class="overview-arrow" onclick="alert('Overview: Smart Contracts in Practice')">&#10148;</span>
     </div>
     <div class="course-advert">
@@ -243,50 +242,37 @@
       <h3>Micro-Investing Essentials</h3>
       <p class="duration-price">Duration: 2 weeks | Price: $25</p>
       <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
+      <button class="enroll-button" onclick="redirectToLesson('micro-investing-lesson.html')">Enroll Now</button>
       <p class="cert-note">Includes practical investing simulations</p>
       <span class="overview-arrow" onclick="alert('Overview: Micro-Investing Essentials')">&#10148;</span>
     </div>
   </div>
 
-  <!-- ADVANCED COURSES -->
   <div class="level-content" id="advancedCourses">
     <div class="course-advert">
       <h3>Advanced Blockchain Security</h3>
       <p class="duration-price">Duration: 8 weeks | Price: Free</p>
       <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
+      <button class="enroll-button" onclick="redirectToLesson('blockchain-security-lesson.html')">Enroll Now</button>
+      <p class="cert-note"></p>
       <span class="overview-arrow" onclick="alert('Overview: Advanced Blockchain Security')">&#10148;</span>
-    </div>
-    <div class="course-advert">
-      <span class="paid-label">Paid Course</span>
-      <h3>High-Yield Savings Tools</h3>
-      <p class="duration-price">Duration: 2 weeks | Price: $25</p>
-      <p class="trademark">Moneyard Learning</p>
-      <button class="enroll-button">Enroll Now</button>
-      <p class="cert-note">Includes savings strategy planner</p>
-      <span class="overview-arrow" onclick="alert('Overview: High-Yield Savings Tools')">&#10148;</span>
     </div>
   </div>
 
   <script>
     function toggleMainDropdown() {
-      const dropdown = document.getElementById("mainDropdown");
-      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+      const dropdown = document.getElementById('mainDropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
 
-    document.addEventListener("click", function (e) {
-      const dropdown = document.getElementById("mainDropdown");
-      const menu = document.querySelector(".menu-bar");
-      if (!menu.contains(e.target)) dropdown.style.display = "none";
-    });
+    function toggleCoursesDropdown(level) {
+      document.querySelectorAll('.level-content').forEach(content => content.style.display = 'none');
+      const selectedLevel = document.getElementById(level);
+      if (selectedLevel) selectedLevel.style.display = 'block';
+    }
 
-    function toggleCoursesDropdown(levelId) {
-      const levels = ["beginnerCourses", "intermediateCourses", "advancedCourses"];
-      levels.forEach((id) => {
-        const section = document.getElementById(id);
-        section.style.display = (id === levelId) ? "block" : "none";
-      });
+    function redirectToLesson(lessonUrl) {
+      window.location.href = lessonUrl;
     }
   </script>
 </body>
