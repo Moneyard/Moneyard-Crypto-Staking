@@ -244,16 +244,3 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-app.post('/approve-withdrawal', authenticateToken, (req, res) => {
-  const { withdrawalId } = req.body;
-
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied: Admins only.' });
-  }
-
-  // Proceed with approval
-  db.run('UPDATE withdrawals SET status = "approved" WHERE id = ?', [withdrawalId], function(err) {
-    if (err) return res.status(500).json({ message: 'Database error' });
-    res.json({ message: 'Withdrawal approved by admin' });
-  });
-});
