@@ -48,6 +48,10 @@
   </style>
 </head>
 <body>
+<button id="admin-approve-btn" style="display: none;" onclick="simulateAdminApproval()">
+  Simulate Admin Approval
+</button>
+<p id="approval-status" style="margin-top: 10px;"></p>
 
 <!-- LOCKED MESSAGE -->
 <div id="locked-message">
@@ -121,6 +125,24 @@
   }
 
   window.onload = showCourses;
+<script>
+  // Simulate user login role (for testing purposes)
+  // In production, you'd set this after login
+  localStorage.setItem("role", "admin"); // Change to "user" to hide button
+
+  // Show button only if user is admin
+  const role = localStorage.getItem("role");
+  if (role === "admin") {
+    document.getElementById("admin-approve-btn").style.display = "inline-block";
+  }
+function simulateAdminApproval() {
+  document.getElementById("approval-status").innerText = "Status: Approved by Admin";
+}
+  // Simulated approval function
+  function simulateAdminApproval() {
+    alert("Approval simulated! Withdrawal status marked as approved.");
+    // Add frontend effects here like updating a status element
+  }
 </script>
 
 </body>
