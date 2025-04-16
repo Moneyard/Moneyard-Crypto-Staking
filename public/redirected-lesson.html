@@ -275,6 +275,37 @@
 
     // Initial load
     filterCourses();
+function generateCertificate(index) {
+  const name = document.getElementById(`name-${index}`).value.trim();
+  if (!name) {
+    alert("Please enter your name first.");
+    return;
+  }
+
+  const courseTitle = courses[index].title;
+  const certDiv = document.getElementById("certificate");
+  const certName = document.getElementById("certName");
+  const certCourse = document.getElementById("certCourse");
+
+  certName.textContent = name;
+  certCourse.textContent = courseTitle;
+
+  // Make certificate visible before rendering
+  certDiv.style.display = "block";
+
+  // Give the browser a moment to render
+  setTimeout(() => {
+    html2pdf().from(certDiv).set({
+      margin: 1,
+      filename: `${name}_certificate.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { orientation: "landscape" }
+    }).save().then(() => {
+      certDiv.style.display = "none"; // Hide again after download
+    });
+  }, 300); // Give 300ms for rendering
+}
+
   </script>
 </body>
 </html>
