@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Course Simulation</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -123,69 +122,6 @@
       width: 80%;
       max-width: 300px;
     }
-
-    #certificate {
-      display: none;
-      width: 842px;
-      height: 595px;
-      padding: 40px;
-      background: white;
-      text-align: center;
-      border: 8px solid #bfa046;
-      margin: 40px auto;
-      background-image: linear-gradient(to bottom right, #fff9e6, #fff3cc);
-      position: relative;
-    }
-
-    #certificate h1 {
-      color: #bfa046;
-      font-size: 36px;
-      margin-bottom: 20px;
-    }
-
-    #certificate h2 {
-      font-size: 24px;
-      margin: 10px 0;
-      color: #333;
-    }
-
-    #certificate p {
-      font-size: 16px;
-      margin: 10px 0;
-      color: #444;
-    }
-
-    #certificate .logo {
-      width: 100px;
-      margin: 0 auto 20px;
-    }
-
-    #certificate .signature {
-      width: 150px;
-      margin-top: 40px;
-    }
-
-    #certificate .seal {
-      width: 80px;
-      position: absolute;
-      top: 40px;
-      right: 40px;
-    }
-
-    #certificate .qr {
-      width: 80px;
-      position: absolute;
-      bottom: 40px;
-      left: 40px;
-    }
-
-    #certificate .cert-number {
-      position: absolute;
-      bottom: 40px;
-      right: 40px;
-      font-size: 14px;
-      color: #888;
-    }
   </style>
 </head>
 <body>
@@ -207,29 +143,8 @@
 
   <div id="coursesContainer"></div>
 
-  <!-- Certificate Preview - Styled Like the Generated One -->
-<div id="certificate" style="display: none;">
-  <div style="width: 842px; height: 595px; padding: 50px; border: 10px solid #bfa046; background: #fffdf5; position: relative; font-family: Georgia, serif; text-align: center;">
-    <img src="/mnt/data/20250409_162622.jpg" alt="Moneyard Logo" style="width: 80px; margin-bottom: 20px;" />
-    <h1 style="font-size: 32px; color: #bfa046; margin: 0;">Certificate of Completion</h1>
-    <p style="margin-top: 20px; font-size: 18px; color: #333;">This certifies that</p>
-    <h2 id="certName" style="font-size: 26px; color: #222; margin: 10px 0;"></h2>
-    <p style="font-size: 18px; color: #333;">has successfully completed the course</p>
-    <h2 id="certCourse" style="font-size: 24px; color: #444; margin: 10px 0 30px;"></h2>
-    <p style="font-size: 14px; color: #555;">Issued by Moneyard Learning, an arm of the Moneyard Platform</p>
-
-    <img src="/mnt/data/signature_mwaba_lewis.png" alt="Signature" style="width: 150px; margin-top: 30px;" />
-    <p style="font-size: 14px; margin-top: 4px; color: #444;">Mwaba Lewis<br>Founder, Moneyard</p>
-
-    <img src="/mnt/data/qr_code_moneyard.png" alt="QR Code" style="width: 60px; position: absolute; bottom: 40px; left: 50px;" />
-    <img src="/mnt/data/A_certificate_of_completion_issued_by_Moneyard_is_.png" alt="Verified Seal" style="width: 70px; position: absolute; top: 50px; right: 50px;" />
-    
-    <div style="position: absolute; bottom: 40px; right: 50px; font-size: 12px; color: #777;">
-      Certificate No: MYD-<script>document.write(Date.now());</script><br>
-      Date: <script>document.write(new Date().toLocaleDateString());</script>
-    </div>
-  </div>
-</div>
+  <!-- Hidden canvas for certificate -->
+  <canvas id="certificateCanvas" style="display: none;"></canvas>
 
   <script>
     const courses = [
@@ -260,7 +175,7 @@
             <input class="name-input" id="name-${index}" type="text" placeholder="Enter your full name"/>
             <button class="start-btn" onclick="startLesson(${index})">Start Lesson</button>
             <div class="progress-bar"><div id="progress-${index}" class="progress-fill"></div></div>
-            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="generateCertificate(${index})">Print Certificate</button>
+            <button class="certificate-btn" id="certBtn-${index}" style="display:none" onclick="downloadImageCertificateFromForm(${index})">Download Certificate</button>
           ` : course.status === 'pending' ? `
             <p><i>Your enrollment is pending admin approval.</i></p>
           ` : `
@@ -288,31 +203,47 @@
       }, 500);
     }
 
-    function generateCertificate(index) {
-      const name = document.getElementById(`name-${index}`).value.trim();
-      if (!name) {
-        alert("Please enter your name first.");
+    function downloadImageCertificateFromForm(index) {
+      const nameInput = document.getElementById(`name-${index}`).value.trim();
+      if (!nameInput) {
+        alert("Please enter your name.");
         return;
       }
+      downloadImageCertificate(nameInput, courses[index].title);
+    }
 
-      const courseTitle = courses[index].title;
-      const certDiv = document.getElementById("certificate");
+    function downloadImageCertificate(name, course) {
+      const canvas = document.getElementById('certificateCanvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = '/mnt/data/A_certificate_of_completion_issued_by_Moneyard_is_.png';
 
-      document.getElementById("certName").textContent = name;
-      document.getElementById("certCourse").textContent = courseTitle;
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
 
-      certDiv.style.display = "block";
+        // Add name
+        ctx.font = '32px Georgia';
+        ctx.fillStyle = '#222';
+        ctx.textAlign = 'center';
+        ctx.fillText(name, canvas.width / 2, 310);
 
-      setTimeout(() => {
-        html2pdf().from(certDiv).set({
-          margin: 0,
-          filename: `${name}_certificate.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { orientation: "landscape" }
-        }).save().then(() => {
-          certDiv.style.display = "none";
-        });
-      }, 300);
+        // Add course title
+        ctx.font = '24px Georgia';
+        ctx.fillText(course, canvas.width / 2, 370);
+
+        // Add issue date
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#555';
+        ctx.fillText(new Date().toLocaleDateString(), canvas.width - 150, canvas.height - 50);
+
+        // Download
+        const link = document.createElement('a');
+        link.download = `Moneyard_Certificate_${name.replace(/\s/g, '_')}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      };
     }
 
     filterCourses();
