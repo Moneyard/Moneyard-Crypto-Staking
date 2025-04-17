@@ -5,14 +5,12 @@
   <title>Learning Tracker - Moneyard</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f8fb;
       margin: 0;
       padding: 0;
+      scroll-behavior: smooth;
     }
     .tracker-container {
       max-width: 800px;
@@ -22,37 +20,31 @@
       border-radius: 10px;
       box-shadow: 0 0 12px rgba(0,0,0,0.08);
     }
-    h2 {
+    .tracker-container h2 {
       text-align: center;
       color: #007b8a;
       margin-bottom: 30px;
     }
-    .overview, .lesson {
-      margin-bottom: 40px;
+    .lesson {
+      margin-bottom: 30px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
     }
-    .overview .lesson-title {
+    .lesson-title {
       font-weight: bold;
       margin-bottom: 10px;
+      font-size: 18px;
     }
-    .start-button {
-      display: inline-block;
-      padding: 8px 16px;
-      background-color: #00c6a7;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 14px;
-    }
-    .start-button:hover {
-      background-color: #1e8d77;
+    .lesson-content {
+      display: none;
+      margin-top: 10px;
     }
     .progress-bar {
       height: 20px;
       background: #e0e0e0;
       border-radius: 20px;
       overflow: hidden;
-      margin: 10px 0;
+      margin-bottom: 10px;
     }
     .progress {
       height: 100%;
@@ -60,120 +52,115 @@
       width: 0%;
       transition: width 0.5s ease-in-out;
     }
-    .lesson-content {
-      display: none;
-      margin-top: 15px;
-      animation: fadeIn 0.3s ease-in-out;
+    .lesson-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
     }
-    .active .lesson-content {
-      display: block;
-    }
-    .back-button, .nav-button {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 6px 12px;
-      background-color: #007b8a;
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-    .nav-button:hover, .back-button:hover {
-      background-color: #005f6b;
-    }
-    hr {
+    button {
+      padding: 8px 16px;
       border: none;
-      border-top: 1px solid #ccc;
-      margin: 40px 0;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .start-btn { background: #00c6a7; color: white; }
+    .complete-btn { background: #007b8a; color: white; }
+    .nav-btn { background: #ccc; }
+    .popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 999;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
 <div class="tracker-container">
+  <h2>Your Learning Progress</h2>
 
-  <h2 id="overview">Learning Overview</h2>
-
-  <div class="overview">
+  <div class="lesson" id="lesson1">
     <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
-    <a href="#lesson1" class="start-button">Start Lesson</a>
+    <div class="progress-bar"><div class="progress" data-lesson="1"></div></div>
+    <div class="lesson-buttons">
+      <button class="start-btn" onclick="toggleContent(1)">Start Lesson</button>
+      <button class="complete-btn" onclick="completeLesson(1)">Complete Lesson</button>
+      <a href="#lesson2" class="nav-btn">Next</a>
+    </div>
+    <div class="lesson-content" id="content1">
+      <p>Crypto staking is the process of locking your crypto assets to support blockchain operations and earn rewards...</p>
+    </div>
   </div>
 
-  <div class="overview">
+  <div class="lesson" id="lesson2">
     <div class="lesson-title">Lesson 2: How Moneyard Works</div>
-    <a href="#lesson2" class="start-button">Start Lesson</a>
+    <div class="progress-bar"><div class="progress" data-lesson="2"></div></div>
+    <div class="lesson-buttons">
+      <a href="#lesson1" class="nav-btn">Back</a>
+      <button class="start-btn" onclick="toggleContent(2)">Start Lesson</button>
+      <button class="complete-btn" onclick="completeLesson(2)">Complete Lesson</button>
+      <a href="#lesson3" class="nav-btn">Next</a>
+    </div>
+    <div class="lesson-content" id="content2">
+      <p>Moneyard lets you deposit, stake, and earn from your crypto with daily returns and compounding interest...</p>
+    </div>
   </div>
 
-  <div class="overview">
+  <div class="lesson" id="lesson3">
     <div class="lesson-title">Lesson 3: Start Earning</div>
-    <a href="#lesson3" class="start-button">Start Lesson</a>
-  </div>
-
-  <hr>
-
-  <div id="lesson1" class="lesson">
-    <h2 onclick="toggleLesson(this)">Lesson 1: What is Crypto Staking?</h2>
-    <div class="progress-bar"><div class="progress" data-progress="100"></div></div>
-    <div class="lesson-content">
-      <p>Crypto staking allows users to earn rewards by locking their crypto in a blockchain protocol.</p>
-      <a href="#overview" class="back-button">Back to Overview</a>
-      <a href="#lesson2" class="nav-button">Next Lesson</a>
+    <div class="progress-bar"><div class="progress" data-lesson="3"></div></div>
+    <div class="lesson-buttons">
+      <a href="#lesson2" class="nav-btn">Back</a>
+      <button class="start-btn" onclick="toggleContent(3)">Start Lesson</button>
+      <button class="complete-btn" onclick="completeLesson(3)">Complete Lesson</button>
+    </div>
+    <div class="lesson-content" id="content3">
+      <p>To start earning, create an account, choose a staking plan, deposit crypto, and watch your balance grow over time...</p>
     </div>
   </div>
+</div>
 
-  <div id="lesson2" class="lesson">
-    <h2 onclick="toggleLesson(this)">Lesson 2: How Moneyard Works</h2>
-    <div class="progress-bar"><div class="progress" data-progress="70"></div></div>
-    <div class="lesson-content">
-      <p>Moneyard helps users stake crypto securely, track rewards, and withdraw earnings anytime.</p>
-      <a href="#lesson1" class="nav-button">Previous</a>
-      <a href="#overview" class="back-button">Back to Overview</a>
-      <a href="#lesson3" class="nav-button">Next Lesson</a>
-    </div>
-  </div>
-
-  <div id="lesson3" class="lesson">
-    <h2 onclick="toggleLesson(this)">Lesson 3: Start Earning</h2>
-    <div class="progress-bar"><div class="progress" data-progress="30"></div></div>
-    <div class="lesson-content">
-      <p>Get started by choosing a staking plan, depositing crypto, and watching your earnings grow.</p>
-      <a href="#lesson2" class="nav-button">Previous</a>
-      <a href="#overview" class="back-button">Back to Overview</a>
-    </div>
-  </div>
-
+<!-- Completion Popup -->
+<div class="popup" id="popup">
+  <h3>Lesson Completed!</h3>
+  <p>Great job finishing this lesson!</p>
+  <button onclick="closePopup()">Close</button>
 </div>
 
 <script>
-  // Animate progress bars
+  // Restore saved progress
   document.querySelectorAll('.progress').forEach(bar => {
-    const value = bar.getAttribute('data-progress');
-    bar.style.width = value + '%';
+    const lesson = bar.getAttribute('data-lesson');
+    const saved = localStorage.getItem('lesson' + lesson) || 0;
+    bar.style.width = saved + '%';
   });
 
-  // Toggle lesson content on header click
-  function toggleLesson(header) {
-    const lesson = header.parentElement;
-    lesson.classList.toggle('active');
+  function toggleContent(id) {
+    const content = document.getElementById('content' + id);
+    content.style.display = content.style.display === 'block' ? 'none' : 'block';
   }
 
-  // Auto-expand lesson if jumped via link
-  window.addEventListener('hashchange', expandFromHash);
-  window.addEventListener('load', expandFromHash);
+  function completeLesson(id) {
+    localStorage.setItem('lesson' + id, 100);
+    const bar = document.querySelector('.progress[data-lesson="' + id + '"]');
+    bar.style.width = '100%';
+    showPopup();
+  }
 
-  function expandFromHash() {
-    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
-    if (location.hash) {
-      const target = document.querySelector(location.hash);
-      if (target && target.classList.contains('lesson')) {
-        target.classList.add('active');
-      }
-    }
+  function showPopup() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'block';
+  }
+
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
   }
 </script>
 
