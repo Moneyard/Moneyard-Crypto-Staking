@@ -62,6 +62,17 @@ db.run(`CREATE TABLE IF NOT EXISTS stakes (
   FOREIGN KEY(user_id) REFERENCES users(id)
 )`);
 
+// NEW: Lesson Progress Tracking Table
+db.run(`CREATE TABLE IF NOT EXISTS lesson_progress (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  lesson_id TEXT,
+  progress INTEGER DEFAULT 0,
+  completed INTEGER DEFAULT 0,
+  last_updated TEXT,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
 // Signup
 app.post('/api/signup', async (req, res) => {
   const { email, password } = req.body;
@@ -228,6 +239,49 @@ app.post('/api/unstake', (req, res) => {
   db.run("UPDATE stakes SET status = 'completed' WHERE id = ?", [stakeId], (err) => {
     if (err) return res.status(500).json({ error: 'Failed to unstake' });
     res.json({ success: true, message: 'Stake successfully unstaked' });
+  });
+});
+
+// === NEW === LESSON TRACKING API
+
+// Save or Update Lesson Progress
+app.post('/api/lesson-progress', (req, res) => {
+  const { userId, lessonId, progress, completed } = req.body;
+  const now = new Date().toISOString();
+
+  db.get("SELECT * FROM lesson_progress WHERE user_id = ? AND lesson_id = ?", [userId, lessonId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+
+    if (row) {
+      db.run(`UPDATE lesson_progress 
+              SET progress = ?, completed = ?, last_updated = ? 
+              WHERE user_id = ? AND lesson_id = ?`,
+        [progress, completed, now, userId, lessonId],
+        (err) => {
+          if (err) return res.status(500).json({ error: 'Failed to update progress' });
+          res.json({ success: true, updated: true });
+        });
+    } else {
+      db.run(`INSERT INTO lesson_progress 
+              (user_id, lesson_id, progress, completed, last_updated) 
+              VALUES (?, ?, ?, ?, ?)`,
+        [userId, lessonId, progress, completed, now],
+        (err) => {
+          if (err) return res.status(500).json({ error: 'Failed to insert progress' });
+          res.json({ success: true, inserted: true });
+        });
+    }
+  });
+});
+
+// Fetch Lesson Progress
+app.get('/api/lesson-progress', (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+  db.all(`SELECT * FROM lesson_progress WHERE user_id = ?`, [userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch lesson progress' });
+    res.json(rows);
   });
 });
 
