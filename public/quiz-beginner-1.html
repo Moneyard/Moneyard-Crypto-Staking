@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beginner Quiz 1 - Moneyard Learning</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      margin: 0;
+    }
+    header {
+      background-color: #2b7a78;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question h3 {
+      margin-bottom: 10px;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    button {
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+      display: block;
+      width: 100%;
+    }
+    #result {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Moneyard Quiz: Beginner Level - Lesson 1</h1>
+  </header>
+
+  <div class="quiz-container">
+    <form id="quizForm">
+      <div class="question">
+        <h3>1. What is a cryptocurrency?</h3>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> A type of food</label>
+          <label><input type="radio" name="q1" value="b"> A digital or virtual currency secured by cryptography</label>
+          <label><input type="radio" name="q1" value="c"> A bank-issued credit card</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>2. Which of the following is a well-known cryptocurrency?</h3>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> PayPal</label>
+          <label><input type="radio" name="q2" value="b"> Bitcoin</label>
+          <label><input type="radio" name="q2" value="c"> Stripe</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>3. What is a blockchain?</h3>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> A social media platform</label>
+          <label><input type="radio" name="q3" value="b"> A chain of online stores</label>
+          <label><input type="radio" name="q3" value="c"> A decentralized digital ledger</label>
+        </div>
+      </div>
+
+      <button type="button" onclick="submitQuiz()">Finish Quiz</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function submitQuiz() {
+      const answers = {
+        q1: 'b',
+        q2: 'b',
+        q3: 'c'
+      };
+
+      let score = 0;
+      let total = Object.keys(answers).length;
+
+      for (let q in answers) {
+        const selected = document.querySelector(`input[name="${q}"]:checked`);
+        if (selected && selected.value === answers[q]) {
+          score++;
+        }
+      }
+
+      const resultText = `You scored ${score} out of ${total}`;
+      document.getElementById("result").innerText = resultText;
+
+      if (score === total) {
+        localStorage.setItem("quiz-beginner-1", "completed");
+      }
+    }
+  </script>
+</body>
+</html>
