@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Foundations Course</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .course-accordion {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #f8f9fa;
+        }
+        .module-content {
+            padding: 15px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="course-accordion">
+    <div class="accordion" id="courseAccordion">
+
+        <!-- Module 1 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#module1">
+                    Module 1: Introduction to Blockchain
+                </button>
+            </h2>
+            <div id="module1" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                <div class="module-content">
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>History (Bitcoin, Satoshi Nakamoto)</li>
+                        <li>Key Features: Decentralization, Immutability, Transparency</li>
+                        <li>Types: Public, Private, Consortium Blockchains</li>
+                    </ul>
+                    <p><strong>Activity:</strong> Case study on Bitcoin’s impact</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repeat for Modules 2-8 (sample pattern above) -->
+        <!-- Add remaining modules following the same structure -->
+
+    </div>
+</div>
+
+<!-- Bootstrap JS + Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
