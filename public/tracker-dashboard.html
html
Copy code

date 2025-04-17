@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard Lesson Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+    header {
+      background: #2b7a78;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      text-align: center;
+      margin: 20px;
+    }
+    .tracker-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    .level-section {
+      background: white;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .level-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #17252a;
+    }
+    .lesson {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eee;
+      padding: 10px 0;
+    }
+    .lesson:first-child {
+      border-top: none;
+    }
+    .lesson span {
+      flex: 1;
+    }
+    .status {
+      font-weight: bold;
+    }
+    .status.completed {
+      color: green;
+    }
+    .status.pending {
+      color: orange;
+    }
+    .status.not-started {
+      color: red;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      background: #3aafa9;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .action-btn:hover {
+      background: #2b7a78;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lesson Tracker Dashboard</h1>
+  </header>
+  <h2>Your Progress Overview</h2>
+  <div class="tracker-container" id="trackerContainer">
+    <!-- Sections will be injected here -->
+  </div>
+
+  <script>
+    const lessonData = {
+      beginner: [
+        { title: "Beginner Lesson 1", lesson: "lesson-beginner-1.html", quiz: "quiz-beginner-1.html", completed: true },
+        { title: "Beginner Lesson 2", lesson: "lesson-beginner-2.html", quiz: "quiz-beginner-2.html", completed: true },
+        { title: "Beginner Lesson 3", lesson: "lesson-beginner-3.html", quiz: "quiz-beginner-3.html", completed: false },
+        { title: "Beginner Lesson 4", lesson: "lesson-beginner-4.html", quiz: null, completed: false }
+      ],
+      intermediate: [
+        { title: "Intermediate Lesson 1", lesson: "lesson-intermediate-1.html", quiz: "quiz-intermediate-1.html", completed: true },
+        { title: "Intermediate Lesson 2", lesson: "lesson-intermediate-2.html", quiz: null, completed: false },
+        { title: "Intermediate Lesson 3", lesson: "lesson-intermediate-3.html", quiz: null, completed: false }
+      ],
+      advanced: [
+        { title: "Advanced Lesson 1", lesson: "lesson-advanced-1.html", quiz: "quiz-advanced-1.html", completed: false },
+        { title: "Advanced Lesson 2", lesson: "lesson-advanced-2.html", quiz: null, completed: false }
+      ]
+    };
+
+    function renderTracker() {
+      const container = document.getElementById('trackerContainer');
+      container.innerHTML = "";
+
+      Object.keys(lessonData).forEach(level => {
+        const section = document.createElement('div');
+        section.className = "level-section";
+
+        const title = document.createElement('div');
+        title.className = "level-title";
+        title.textContent = level.charAt(0).toUpperCase() + level.slice(1) + " Lessons";
+        section.appendChild(title);
+
+        lessonData[level].forEach((lesson, index) => {
+          const row = document.createElement('div');
+          row.className = "lesson";
+
+          const name = document.createElement('span');
+          name.textContent = lesson.title;
+
+          const status = document.createElement('span');
+          status.className = "status " + (lesson.completed ? "completed" : "not-started");
+          status.textContent = lesson.completed ? "Completed" : "Not Started";
+
+          const actions = document.createElement('span');
+          if (!lesson.completed) {
+            const lessonBtn = document.createElement('button');
+            lessonBtn.textContent = "Go to Lesson";
+            lessonBtn.className = "action-btn";
+            lessonBtn.onclick = () => window.location.href = lesson.lesson;
+            actions.appendChild(lessonBtn);
+          } else if (lesson.quiz) {
+            const quizBtn = document.createElement('button');
+            quizBtn.textContent = "Take Quiz";
+            quizBtn.className = "action-btn";
+            quizBtn.onclick = () => window.location.href = lesson.quiz;
+            actions.appendChild(quizBtn);
+          }
+
+          row.appendChild(name);
+          row.appendChild(status);
+          row.appendChild(actions);
+          section.appendChild(row);
+        });
+
+        container.appendChild(section);
+      });
+    }
+
+    renderTracker();
+  </script>
+</body>
+</html>
