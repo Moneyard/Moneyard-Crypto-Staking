@@ -214,10 +214,17 @@
     <span onclick="closeLesson()">X</span>
     <div id="lessonContent"></div>
     <a id="learnMoreLink" class="learn-more-link" target="_blank">Learn More</a>
-    <div id="audioControls">
-      <button onclick="playAudio()">Play Audio</button>
-      <button onclick="stopAudio()">Stop Audio</button>
-    </div>
+    <div id="audioSection">
+  <h3>Listen to Audio Lesson</h3>
+  
+  <!-- Audio Element -->
+  <audio id="cryptoAudio" src="audio/crypto-basics.mp3"></audio>
+  
+  <!-- Audio Controls -->
+  <div id="audioControls">
+    <button onclick="playAudio()">Play Audio ▶️</button>
+    <button onclick="stopAudio()">Stop Audio ■</button>
+  </div>
   </div>
 
   <script>
@@ -359,7 +366,16 @@
       const totalModules = modules.length;
       const completed = completedModules.length;
       const percent = (completed / totalModules) * 100;
-      document.getElementById('progressFill').style.width = `${percent}%`;
+     function playAudio() {
+    const audio = document.getElementById("cryptoAudio");
+    audio.play();
+  }
+
+  function stopAudio() {
+    const audio = document.getElementById("cryptoAudio");
+    audio.pause();
+    audio.currentTime = 0; // Reset audio to the beginning
+  } document.getElementById('progressFill').style.width = `${percent}%`;
     }
 
     loadModules();
