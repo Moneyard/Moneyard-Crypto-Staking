@@ -362,11 +362,15 @@
       speechSynthesis.speak(contentUtterance);
     }
 
-    function updateProgress() {
-      const totalModules = modules.length;
-      const completed = completedModules.length;
-      const percent = (completed / totalModules) * 100;
-     function playAudio() {
+  function updateProgress() {
+    const totalModules = modules.length;
+    const completed = completedModules.length;
+    const percent = (completed / totalModules) * 100;
+
+    document.getElementById('progressFill').style.width = `${percent}%`;
+  }
+
+  function playAudio() {
     const audio = document.getElementById("cryptoAudio");
     audio.play();
   }
@@ -375,18 +379,18 @@
     const audio = document.getElementById("cryptoAudio");
     audio.pause();
     audio.currentTime = 0; // Reset audio to the beginning
-  } document.getElementById('progressFill').style.width = `${percent}%`;
-    }
-
-    loadModules();
-window.onload = () => {
-  const access = localStorage.getItem("courseAccess");
-  if (access === "true") {
-    document.getElementById("course-content").style.display = "block";
-  } else {
-    document.getElementById("locked-message").style.display = "block";
   }
-};
+
+  loadModules();
+
+  window.onload = () => {
+    const access = localStorage.getItem("courseAccess");
+    if (access === "true") {
+      document.getElementById("course-content").style.display = "block";
+    } else {
+      document.getElementById("locked-message").style.display = "block";
+    }
+  };
 </script>
 </body>
 </html>
