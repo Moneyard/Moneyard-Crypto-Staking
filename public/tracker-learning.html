@@ -1,39 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Learning Tracker</title>
+  <title>Learning Tracker - Moneyard</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
+      background: #f4f8fb;
       margin: 0;
-      padding: 20px;
-      background-color: #f2f7ff;
+      padding: 0;
     }
-    h1 {
-      color: #1e88e5;
+    .tracker-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
+    .tracker-container h2 {
+      text-align: center;
+      color: #007b8a;
+      margin-bottom: 30px;
     }
     .lesson {
-      background: white;
-      margin-bottom: 10px;
-      padding: 15px;
-      border-left: 5px solid #4caf50;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
-    .completed {
-      background-color: #e8f5e9;
-      border-left-color: #388e3c;
+    .lesson-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .progress-bar {
+      height: 20px;
+      background: #e0e0e0;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #00c6a7, #1e8d77);
+      width: 0%;
+      transition: width 0.5s ease-in-out;
     }
   </style>
 </head>
 <body>
-  <h1>My Learning Progress</h1>
 
-  <div class="lesson completed">Beginner Lesson 1 - Completed</div>
-  <div class="lesson completed">Beginner Lesson 2 - Completed</div>
-  <div class="lesson">Beginner Lesson 3 - In Progress</div>
-  <div class="lesson">Intermediate Lesson 1 - Locked</div>
-  <div class="lesson">Advanced Lesson 1 - Locked</div>
+<div class="tracker-container">
+  <h2>Your Learning Progress</h2>
+
+  <div class="lesson">
+    <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
+    <div class="progress-bar"><div class="progress" data-progress="100"></div></div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title">Lesson 2: How Moneyard Works</div>
+    <div class="progress-bar"><div class="progress" data-progress="70"></div></div>
+  </div>
+
+  <div class="lesson">
+    <div class="lesson-title">Lesson 3: Start Earning</div>
+    <div class="progress-bar"><div class="progress" data-progress="30"></div></div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.progress').forEach(bar => {
+    const value = bar.getAttribute('data-progress');
+    bar.style.width = value + '%';
+  });
+</script>
 
 </body>
 </html>
