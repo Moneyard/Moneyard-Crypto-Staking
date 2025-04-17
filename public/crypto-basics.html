@@ -1,14 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cryptocurrency Basics</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Financial Literacy & Micro-Investment Course</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f9ff;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2d6a4f;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      background-color: #74c69d;
+      color: white;
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+    .tabs button:hover,
+    .tabs button.active {
+      background-color: #40916c;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Cryptocurrency Basics</h1>
-<p>Welcome to the Cryptocurrency Basics module. Here, you'll learn about blockchain technology, how to store crypto securely in wallets, and the basics of trading cryptocurrencies.</p>
+  <h1>6-Week Financial Literacy & Micro-Investment Course</h1>
+
+  <div class="tabs">
+    <button class="tablink active" onclick="showTab(0)">Week 1</button>
+    <button class="tablink" onclick="showTab(1)">Week 2</button>
+    <button class="tablink" onclick="showTab(2)">Week 3</button>
+    <button class="tablink" onclick="showTab(3)">Week 4</button>
+    <button class="tablink" onclick="showTab(4)">Week 5</button>
+    <button class="tablink" onclick="showTab(5)">Week 6</button>
+  </div>
+
+  <div class="tab-content active">
+    <h2>Week 1: Introduction to Financial Literacy</h2>
+    <p>Learn the basics of money management, budgeting, and financial goals.</p>
+    <iframe src="https://www.youtube.com/embed/DDNuMfOKuco" allowfullscreen></iframe>
+  </div>
+
+  <div class="tab-content">
+    <h2>Week 2: Budgeting & Saving Techniques</h2>
+    <p>Explore techniques to control spending and build emergency savings.</p>
+    <iframe src="https://www.youtube.com/embed/cnW_HDIBmz4" allowfullscreen></iframe>
+  </div>
+
+  <div class="tab-content">
+    <h2>Week 3: Understanding Banking & Credit</h2>
+    <p>Understand bank accounts, credit scores, loans, and financial institutions.</p>
+    <iframe src="https://www.youtube.com/embed/fTTGALaRZoc" allowfullscreen></iframe>
+  </div>
+
+  <div class="tab-content">
+    <h2>Week 4: Introduction to Investing</h2>
+    <p>Get familiar with stocks, bonds, mutual funds, and risk vs reward.</p>
+    <iframe src="https://www.youtube.com/embed/qIw-yFC-HNU" allowfullscreen></iframe>
+  </div>
+
+  <div class="tab-content">
+    <h2>Week 5: Micro-Investing Tools & Apps</h2>
+    <p>Discover platforms like Acorns, Robinhood, and other micro-investment tools.</p>
+    <iframe src="https://www.youtube.com/embed/EDcnZ5B6VAU" allowfullscreen></iframe>
+  </div>
+
+  <div class="tab-content">
+    <h2>Week 6: Building Wealth & Staying Consistent</h2>
+    <p>Learn how to stay committed and automate your path to long-term wealth.</p>
+    <iframe src="https://www.youtube.com/embed/bbo7oGkq-BM" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    function showTab(index) {
+      const tabs = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.tablink');
+      tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+        buttons[i].classList.toggle('active', i === index);
+      });
+    }
+  </script>
 
 </body>
 </html>
