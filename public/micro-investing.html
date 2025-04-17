@@ -1,119 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Micro-Investing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Literacy & Micro Investments Course</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #2f4f4f;
+        }
+
+        .lesson,
+        .quiz,
+        .certificate {
+            display: none;
+        }
+
+        .lesson.active,
+        .quiz.active,
+        .certificate.active {
+            display: block;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .quiz label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .quiz input {
+            margin-right: 10px;
+        }
+    </style>
 </head>
+
 <body>
-<header class="module-header">
-  <h1 class="module-title">Moneyard Learning Modules</h1>
-  <nav class="module-nav">
-    <a href="cryptocurrency.html" class="nav-link">Cryptocurrency</a>
-    <a href="high-yield-savings.html" class="nav-link">High-Yield Savings</a>
-    <a href="micro-investing.html" class="nav-link">Micro-Investing</a>
-    <a href="budgeting.html" class="nav-link">Budgeting Basics</a>
-  </nav>
-</header>
 
-<style>
-.module-header {
-  background: #e0f2f1;
-  padding: 20px 0;
-  text-align: center;
-  border-bottom: 2px solid #00796b;
-}
-.module-title {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 700;
-  color: #00796b;
-}
-.module-nav {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-}
-.nav-link {
-  font-size: 18px;
-  color: #00796b;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s;
-}
-.nav-link:hover,
-.nav-link.active {
-  color: #004d40;
-  border-bottom: 2px solid #004d40;
-}
-</style>
+    <div class="container">
+        <h1>Financial Literacy & Micro Investments Course</h1>
 
-  <!-- Progress Tracker -->
-  <div style="margin-bottom: 20px;">
-    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-      <span>Cryptocurrency</span>
-      <span>High-Yield Savings</span>
-      <span>Micro-Investing</span>
+        <!-- Lesson 1 -->
+        <div id="lesson1" class="lesson active">
+            <h2>Lesson 1: Introduction to Financial Literacy</h2>
+            <p>Financial literacy is the ability to understand and effectively use various financial skills, including personal financial management, budgeting, and investing.</p>
+            <button class="button" onclick="nextLesson(2)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div id="lesson2" class="lesson">
+            <h2>Lesson 2: Importance of Saving</h2>
+            <p>Saving is a critical part of financial health. Learn how to manage your money and build your savings to secure your future.</p>
+            <button class="button" onclick="nextLesson(3)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div id="lesson3" class="lesson">
+            <h2>Lesson 3: Understanding Investments</h2>
+            <p>Investing can help you grow your wealth. In this lesson, we'll explore different types of investments such as stocks, bonds, and crypto assets.</p>
+            <button class="button" onclick="nextLesson(4)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 4 -->
+        <div id="lesson4" class="lesson">
+            <h2>Lesson 4: Risk Management in Investments</h2>
+            <p>Every investment involves risk. Learn how to assess and manage risks when making financial decisions, especially in the volatile crypto market.</p>
+            <button class="button" onclick="nextLesson(5)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div id="lesson5" class="lesson">
+            <h2>Lesson 5: Building an Investment Portfolio</h2>
+            <p>A diversified portfolio helps reduce risk. Learn how to build a portfolio that balances risk and reward to achieve long-term financial goals.</p>
+            <button class="button" onclick="nextLesson(6)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 6 -->
+        <div id="lesson6" class="lesson">
+            <h2>Lesson 6: Introduction to Micro Investments</h2>
+            <p>Micro investments allow individuals to invest small amounts of money. Learn how to start investing with just a few dollars and watch your wealth grow over time.</p>
+            <button class="button" onclick="showQuiz(1)">Start Quiz</button>
+        </div>
+
+        <!-- Quiz 1 -->
+        <div id="quiz1" class="quiz">
+            <h2>Quiz 1: Introduction to Financial Literacy</h2>
+            <form id="quiz1Form">
+                <label>What is financial literacy?</label>
+                <input type="radio" name="q1" value="correct"> Understanding personal financial management<br>
+                <input type="radio" name="q1" value="incorrect"> Understanding only how to save money<br><br>
+
+                <button type="submit" class="button">Submit Quiz</button>
+            </form>
+        </div>
+
+        <!-- Quiz 2 -->
+        <div id="quiz2" class="quiz">
+            <h2>Quiz 2: Importance of Saving</h2>
+            <form id="quiz2Form">
+                <label>Why is saving important?</label>
+                <input type="radio" name="q1" value="correct"> To secure financial future<br>
+                <input type="radio" name="q1" value="incorrect"> To avoid spending too much<br><br>
+
+                <button type="submit" class="button">Submit Quiz</button>
+            </form>
+        </div>
+
+        <!-- Certificate -->
+        <div id="certificate" class="certificate">
+            <h2>Certificate of Completion</h2>
+            <p>Congratulations on completing the Financial Literacy & Micro Investments Course!</p>
+            <p>This certificate is awarded to:</p>
+            <h3 id="certificateName">[Your Name]</h3>
+            <p>Completion Date: <span id="completionDate"></span></p>
+            <button class="button" onclick="downloadCertificate()">Download Certificate</button>
+        </div>
     </div>
-    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
-      <div id="progress-crypto" style="flex: 1; background: #2b7a78;"></div>
-      <div id="progress-hysa" style="flex: 1; background: #2b7a78;"></div>
-      <div id="progress-micro" style="flex: 1; background: #00b894;"></div>
-    </div>
-  </div>
 
-  <!-- Welcome & Module Content -->
-  <h2>Micro-Investing</h2>
-  <p id="micro-content">
-    Micro-investing allows users to invest small amounts of money, often by rounding up spare change from purchases and investing it automatically.
-    <br><br>
-    Topics include:
-    <ul>
-      <li>What is micro-investing?</li>
-      <li>Popular micro-investing apps</li>
-      <li>Benefits of automated investing</li>
-      <li>Building long-term wealth from small habits</li>
-    </ul>
-  </p>
+    <script>
+        let currentLesson = 1;
 
-  <!-- Video -->
-  <iframe width="100%" height="250" src="https://www.youtube.com/embed/pRZDLqlx3QE" frameborder="0" allowfullscreen></iframe>
+        // Show the first lesson
+        document.getElementById(`lesson${currentLesson}`).classList.add('active');
 
-  <!-- Navigation -->
-  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
-    <button onclick="window.location.href='high-yield-savings.html'">Previous</button>
-    <button style="visibility: hidden;">Next</button>
-  </div>
-<section id="micro-fractional" class="module-section">
-  <h2>Fractional Shares & Automatic Investments</h2>
-  <p>
-    Micro-investing platforms let you invest small amounts regularly. Fractional shares mean you don’t need hundreds of dollars to invest in big companies—you can start with as little as $1.
-  </p>
-  <ul>
-    <li>How apps like Acorns and Robinhood work</li>
-    <li>What are fractional shares?</li>
-    <li>Setting up automated investments</li>
-    <li>Benefits of dollar-cost averaging</li>
-  </ul>
-  <img src="images/fractional-investing-chart.png" alt="Micro-Investing Illustration" />
-  <iframe width="100%" height="315" src="https://www.youtube.com/embed/SwXM4Nu3mMk" title="Micro Investing Explained" frameborder="0" allowfullscreen></iframe>
-  <button onclick="window.location.href='micro-investing.html#fractional'">Learn More</button>
-</section>
+        // Function to move to the next lesson
+        function nextLesson(lessonNumber) {
+            // Hide the current lesson
+            document.getElementById(`lesson${currentLesson}`).classList.remove('active');
+            currentLesson = lessonNumber;
+            // Show the next lesson
+            document.getElementById(`lesson${currentLesson}`).classList.add('active');
+        }
 
-<script>
-  const synth2 = new SpeechSynthesisUtterance(
-    "Welcome to the module on Fractional Shares and Automatic Investments. Learn how micro-investing makes it possible to grow wealth with small amounts. Learn more."
-  );
-  window.speechSynthesis.speak(synth2);
-</script>
+        // Function to show the quiz
+        function showQuiz(quizNumber) {
+            document.getElementById(`lesson${currentLesson}`).classList.remove('active');
+            document.getElementById(`quiz${quizNumber}`).classList.add('active');
+        }
 
-  <!-- Speech -->
-  <script>
-    const text = `Welcome to this session on Micro-Investing. This module introduces you to investing with spare change using apps, 
-    automating small deposits, and building long-term investment habits with minimal effort. Learn more.`;
+        // Handle quiz submission
+        document.getElementById("quiz1Form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            checkQuiz(1);
+        });
 
-    const utter = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(utter);
-  </script>
+        document.getElementById("quiz2Form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            checkQuiz(2);
+        });
+
+        // Check quiz score
+        function checkQuiz(quizNumber) {
+            const form = document.getElementById(`quiz${quizNumber}Form`);
+            const selectedAnswer = form.querySelector('input[type="radio"]:checked');
+            let correctAnswers = 0;
+
+            if (selectedAnswer && selectedAnswer.value === 'correct') {
+                correctAnswers = 1;
+            }
+
+            if (correctAnswers > 0) {
+                if (quizNumber === 1) {
+                    showQuiz(2);
+                } else if (quizNumber === 2) {
+                    showCertificate();
+                }
+            } else {
+                alert("You need to answer the quiz correctly to proceed.");
+            }
+        }
+
+        // Show certificate
+        function showCertificate() {
+            const currentDate = new Date().toLocaleDateString();
+            document.getElementById("completionDate").innerText = currentDate;
+            const userName = prompt("Enter your name for the certificate:");
+            document.getElementById("certificateName").innerText = userName;
+            document.getElementById("certificate").classList.add('active');
+        }
+
+        // Download certificate
+        function downloadCertificate() {
+            alert("Certificate downloaded!");
+        }
+    </script>
+
 </body>
+
 </html>
