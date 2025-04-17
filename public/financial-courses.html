@@ -21,13 +21,60 @@
 
     <!-- LESSONS 1 to 10 -->
     <div id="lesson1" class="lesson active"><h2>Lesson 1: What is Financial Literacy?</h2><p>It’s the foundation of understanding how money works in the world: budgeting, investing, borrowing, saving, and more.</p><button onclick="nextLesson(2)">Next</button></div>
-    <!-- (Other lessons here) -->
+    <div id="lesson2" class="lesson"><h2>Lesson 2: Budgeting Basics</h2><p>Learn to plan your income and expenses. Use tools like the 50/30/20 rule.</p><button onclick="nextLesson(3)">Next</button></div>
+    <div id="lesson3" class="lesson"><h2>Lesson 3: Emergency Funds</h2><p>Start building a safety net for unexpected costs—aim for 3–6 months of expenses.</p><button onclick="nextLesson(4)">Next</button></div>
+    <div id="lesson4" class="lesson"><h2>Lesson 4: Understanding Credit</h2><p>Credit impacts your ability to borrow. Learn about credit scores, reports, and responsible usage.</p><button onclick="nextLesson(5)">Next</button></div>
+    <div id="lesson5" class="lesson"><h2>Lesson 5: Savings & Compounding</h2><p>Learn how interest works and the power of compounding your savings over time.</p><button onclick="nextLesson(6)">Next</button></div>
+    <div id="lesson6" class="lesson"><h2>Lesson 6: Investing Basics</h2><p>Understand risk vs. reward, and different types of assets: stocks, bonds, crypto, real estate.</p><button onclick="nextLesson(7)">Next</button></div>
+    <div id="lesson7" class="lesson"><h2>Lesson 7: Diversification</h2><p>Diversify to reduce risk: mix of assets, industries, time horizons.</p><button onclick="nextLesson(8)">Next</button></div>
+    <div id="lesson8" class="lesson"><h2>Lesson 8: Crypto Investing</h2><p>Learn the basics of crypto, wallets, network fees, risks and rewards.</p><button onclick="nextLesson(9)">Next</button></div>
+    <div id="lesson9" class="lesson"><h2>Lesson 9: Long-Term Strategy</h2><p>Patience pays. Learn to avoid emotional investing and “FOMO.”</p><button onclick="nextLesson(10)">Next</button></div>
+    <div id="lesson10" class="lesson"><h2>Lesson 10: Micro-Investing</h2><p>Start small, grow big. Apps and tools now allow you to invest with as little as $1.</p><button onclick="startQuiz()">Take Final Quiz</button></div>
 
     <!-- QUIZ -->
     <div id="quiz" class="quiz">
       <h2>Final Quiz</h2>
       <form id="quizForm">
-        <!-- Quiz questions here -->
+        <label>1. What does financial literacy help with?</label>
+        <input type="radio" name="q1" value="correct"/> Managing money<br/>
+        <input type="radio" name="q1" value="wrong"/> Memorizing currency<br/>
+
+        <label>2. The 50/30/20 rule refers to:</label>
+        <input type="radio" name="q2" value="correct"/> Needs/Wants/Savings<br/>
+        <input type="radio" name="q2" value="wrong"/> Expenses only<br/>
+
+        <label>3. Emergency funds are for:</label>
+        <input type="radio" name="q3" value="correct"/> Unplanned expenses<br/>
+        <input type="radio" name="q3" value="wrong"/> Vacation trips<br/>
+
+        <label>4. Credit score affects:</label>
+        <input type="radio" name="q4" value="correct"/> Loan approvals<br/>
+        <input type="radio" name="q4" value="wrong"/> Grocery prices<br/>
+
+        <label>5. Compound interest means:</label>
+        <input type="radio" name="q5" value="correct"/> Earning interest on interest<br/>
+        <input type="radio" name="q5" value="wrong"/> Interest that never grows<br/>
+
+        <label>6. Investing involves:</label>
+        <input type="radio" name="q6" value="correct"/> Risk and reward<br/>
+        <input type="radio" name="q6" value="wrong"/> Guaranteed returns<br/>
+
+        <label>7. Diversification reduces:</label>
+        <input type="radio" name="q7" value="correct"/> Risk<br/>
+        <input type="radio" name="q7" value="wrong"/> Return<br/>
+
+        <label>8. Crypto wallets are used to:</label>
+        <input type="radio" name="q8" value="correct"/> Store and transfer digital assets<br/>
+        <input type="radio" name="q8" value="wrong"/> Print money<br/>
+
+        <label>9. Long-term investing avoids:</label>
+        <input type="radio" name="q9" value="correct"/> Emotional decisions<br/>
+        <input type="radio" name="q9" value="wrong"/> Small profits<br/>
+
+        <label>10. Micro-investing allows:</label>
+        <input type="radio" name="q10" value="correct"/> Investing small amounts regularly<br/>
+        <input type="radio" name="q10" value="wrong"/> Big spending only<br/>
+
         <button type="submit">Submit Quiz</button>
       </form>
     </div>
@@ -40,13 +87,13 @@
       <p>has successfully completed the Financial Literacy & Micro Investments Course.</p>
       <p>Date: <span id="certDate"></span></p>
       <p>You can now download your certificate:</p>
-      <button onclick="downloadCertificate()" style="padding: 12px 24px; background-color: #28a745; color: white; font-size: 16px; border: none; border-radius: 5px;">
-        Download Certificate
-      </button>
+      <a href="certificate.png" download="Moneyard_Certificate.png">
+        <button style="padding: 12px 24px; background-color: #28a745; color: white; font-size: 16px; border: none; border-radius: 5px;">
+          Download Certificate
+        </button>
+      </a>
     </div>
   </div>
-
-  <canvas id="certificateCanvas" style="display:none;"></canvas>
 
   <script>
     let current = 1;
@@ -78,43 +125,6 @@
         alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
       }
     });
-
-    function downloadCertificate() {
-      const canvas = document.getElementById('certificateCanvas');
-      const context = canvas.getContext('2d');
-      
-      // Load the original certificate image
-      const certificateImage = new Image();
-      certificateImage.src = 'certificate.png'; // Your certificate template image
-      certificateImage.onload = function() {
-        // Set canvas size to match the certificate image
-        canvas.width = certificateImage.width;
-        canvas.height = certificateImage.height;
-
-        // Draw the certificate image on the canvas
-        context.drawImage(certificateImage, 0, 0);
-
-        // Get the user's name and date from the page
-        const name = document.getElementById("certName").textContent;
-        const date = document.getElementById("certDate").textContent;
-
-        // Set text styles
-        context.font = '24px Arial';
-        context.fillStyle = 'black';
-        context.textAlign = 'center';
-
-        // Draw the name and date onto the image
-        context.fillText(name, canvas.width / 2, 250); // Adjust Y-position as needed
-        context.fillText(date, canvas.width / 2, 300); // Adjust Y-position as needed
-
-        // Trigger download
-        const dataUrl = canvas.toDataURL('image/png');
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = 'Personalized_Certificate.png';
-        a.click();
-      };
-    }
   </script>
 </body>
 </html>
