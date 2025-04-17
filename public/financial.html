@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Financial Literacy & Micro-Investment Course</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f5f9fc;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #ccc;
+      cursor: pointer;
+    }
+    .tab {
+      padding: 14px 20px;
+      background: #e0f3f1;
+      color: #007e7e;
+      margin-right: 5px;
+      border-radius: 10px 10px 0 0;
+    }
+    .tab.active {
+      background: #007e7e;
+      color: white;
+    }
+    .content {
+      display: none;
+      padding-top: 20px;
+    }
+    .content.active {
+      display: block;
+    }
+    h2 {
+      color: #007e7e;
+    }
+    ul {
+      margin-top: 10px;
+    }
+    .lesson {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>6-Week Financial Literacy & Micro-Investment Course</h1>
+    <div class="tabs">
+      <div class="tab active" data-tab="week1">Week 1</div>
+      <div class="tab" data-tab="week2">Week 2</div>
+      <div class="tab" data-tab="week3">Week 3</div>
+      <div class="tab" data-tab="week4">Week 4</div>
+      <div class="tab" data-tab="week5">Week 5</div>
+      <div class="tab" data-tab="week6">Week 6</div>
+    </div>
+
+    <div id="week1" class="content active">
+      <h2>Week 1: Introduction to Financial Literacy</h2>
+      <div class="lesson">
+        <strong>Topics Covered:</strong>
+        <ul>
+          <li>What is Financial Literacy?</li>
+          <li>Importance of Financial Education</li>
+          <li>Basic Money Management Terms</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <strong>Activities:</strong>
+        <ul>
+          <li>Create your first budget</li>
+          <li>Track daily expenses for 7 days</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="week2" class="content">
+      <h2>Week 2: Budgeting & Saving Techniques</h2>
+      <div class="lesson">
+        <strong>Topics Covered:</strong>
+        <ul>
+          <li>The 50/30/20 Rule</li>
+          <li>Zero-based Budgeting</li>
+          <li>Emergency Funds & Goals</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <strong>Activities:</strong>
+        <ul>
+          <li>Create a goal-oriented budget</li>
+          <li>Set a saving goal and track it</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="week3" class="content">
+      <h2>Week 3: Understanding Banking & Credit</h2>
+      <div class="lesson">
+        <strong>Topics Covered:</strong>
+        <ul>
+          <li>Types of Bank Accounts</li>
+          <li>How Credit Works</li>
+          <li>Understanding Credit Scores</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <strong>Activities:</strong>
+        <ul>
+          <li>Compare banks for interest rates</li>
+          <li>Check your credit score (free tools)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="week4" class="content">
+      <h2>Week 4: Introduction to Investing</h2>
+      <div class="lesson">
+        <strong>Topics Covered:</strong>
+        <ul>
+          <li>Difference between Saving and Investing</li>
+          <li>Risk vs Reward</li>
+          <li>Common Investment Terms</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <strong>Activities:</strong>
+        <ul>
+          <li>Research 3 investment platforms</li>
+          <li>Set a personal investment goal</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="week5" class="content">
+      <h2>Week 5: Micro-Investing Tools & Apps</h2>
+      <div class="lesson">
+        <strong>Topics Covered:</strong>
+        <ul>
+          <li>What is Micro-Investing?</li>
+          <li>Best Apps (e.g., Acorns, Chime, Moneyard)</li>
+          <li>How Round-ups & Recurring Investments Work</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <strong>Activities:</strong>
+        <ul>
+          <li>Sign up for a micro-investing app</li>
+          <li>Invest your first $5–$10</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="week6" class="content">
+      <h2>Week 6: Building Wealth & Staying Consistent</h2>
+      <div class="lesson">
+        <strong>Topics Covered:</strong>
+        <ul>
+          <li>Long-term Investment Strategies</li>
+          <li>Dollar Cost Averaging</li>
+          <li>Compound Growth & Passive Income</li>
+        </ul>
+      </div>
+      <div class="lesson">
+        <strong>Activities:</strong>
+        <ul>
+          <li>Create a 1-year wealth plan</li>
+          <li>Set up auto-investing if available</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+
+        tab.classList.add('active');
+        document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
