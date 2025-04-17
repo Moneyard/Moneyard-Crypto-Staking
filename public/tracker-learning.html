@@ -60,23 +60,36 @@
       width: 0%;
       transition: width 0.5s ease-in-out;
     }
-    .back-button {
+    .lesson-content {
+      display: none;
+      margin-top: 15px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .active .lesson-content {
+      display: block;
+    }
+    .back-button, .nav-button {
       display: inline-block;
-      margin-top: 10px;
+      margin-top: 15px;
       padding: 6px 12px;
       background-color: #007b8a;
       color: #fff;
       text-decoration: none;
       font-size: 14px;
       border-radius: 5px;
+      margin-right: 10px;
     }
-    .back-button:hover {
+    .nav-button:hover, .back-button:hover {
       background-color: #005f6b;
     }
     hr {
       border: none;
       border-top: 1px solid #ccc;
       margin: 40px 0;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -104,33 +117,64 @@
   <hr>
 
   <div id="lesson1" class="lesson">
-    <h2>Lesson 1: What is Crypto Staking?</h2>
+    <h2 onclick="toggleLesson(this)">Lesson 1: What is Crypto Staking?</h2>
     <div class="progress-bar"><div class="progress" data-progress="100"></div></div>
-    <p>Crypto staking allows users to earn rewards by locking their crypto in a blockchain protocol.</p>
-    <a href="#overview" class="back-button">Back to Overview</a>
+    <div class="lesson-content">
+      <p>Crypto staking allows users to earn rewards by locking their crypto in a blockchain protocol.</p>
+      <a href="#overview" class="back-button">Back to Overview</a>
+      <a href="#lesson2" class="nav-button">Next Lesson</a>
+    </div>
   </div>
 
   <div id="lesson2" class="lesson">
-    <h2>Lesson 2: How Moneyard Works</h2>
+    <h2 onclick="toggleLesson(this)">Lesson 2: How Moneyard Works</h2>
     <div class="progress-bar"><div class="progress" data-progress="70"></div></div>
-    <p>Moneyard helps users stake crypto securely, track rewards, and withdraw earnings anytime.</p>
-    <a href="#overview" class="back-button">Back to Overview</a>
+    <div class="lesson-content">
+      <p>Moneyard helps users stake crypto securely, track rewards, and withdraw earnings anytime.</p>
+      <a href="#lesson1" class="nav-button">Previous</a>
+      <a href="#overview" class="back-button">Back to Overview</a>
+      <a href="#lesson3" class="nav-button">Next Lesson</a>
+    </div>
   </div>
 
   <div id="lesson3" class="lesson">
-    <h2>Lesson 3: Start Earning</h2>
+    <h2 onclick="toggleLesson(this)">Lesson 3: Start Earning</h2>
     <div class="progress-bar"><div class="progress" data-progress="30"></div></div>
-    <p>Get started by choosing a staking plan, depositing crypto, and watching your earnings grow.</p>
-    <a href="#overview" class="back-button">Back to Overview</a>
+    <div class="lesson-content">
+      <p>Get started by choosing a staking plan, depositing crypto, and watching your earnings grow.</p>
+      <a href="#lesson2" class="nav-button">Previous</a>
+      <a href="#overview" class="back-button">Back to Overview</a>
+    </div>
   </div>
 
 </div>
 
 <script>
+  // Animate progress bars
   document.querySelectorAll('.progress').forEach(bar => {
     const value = bar.getAttribute('data-progress');
     bar.style.width = value + '%';
   });
+
+  // Toggle lesson content on header click
+  function toggleLesson(header) {
+    const lesson = header.parentElement;
+    lesson.classList.toggle('active');
+  }
+
+  // Auto-expand lesson if jumped via link
+  window.addEventListener('hashchange', expandFromHash);
+  window.addEventListener('load', expandFromHash);
+
+  function expandFromHash() {
+    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+    if (location.hash) {
+      const target = document.querySelector(location.hash);
+      if (target && target.classList.contains('lesson')) {
+        target.classList.add('active');
+      }
+    }
+  }
 </script>
 
 </body>
