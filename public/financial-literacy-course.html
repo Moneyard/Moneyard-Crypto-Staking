@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Financial Literacy & Micro-Investment Course</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #1d3557;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      background-color: #2a9d8f;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tabs button.active,
+    .tabs button:hover {
+      background-color: #21867a;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+      margin: 10px 0;
+    }
+    .resources a {
+      display: inline-block;
+      margin: 8px 12px 8px 0;
+      padding: 10px 15px;
+      background-color: #457b9d;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .resources a:hover {
+      background-color: #1d3557;
+    }
+    .certificate {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .certificate button {
+      background-color: #52b788;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .certificate button:hover {
+      background-color: #40916c;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Financial Literacy & Micro-Investment Course</h1>
+
+<div class="tabs">
+  <button class="tablink active" onclick="showTab(0)">Week 1</button>
+  <button class="tablink" onclick="showTab(1)">Week 2</button>
+  <button class="tablink" onclick="showTab(2)">Week 3</button>
+  <button class="tablink" onclick="showTab(3)">Week 4</button>
+  <button class="tablink" onclick="showTab(4)">Week 5</button>
+  <button class="tablink" onclick="showTab(5)">Week 6</button>
+</div>
+
+<!-- WEEK 1 -->
+<div class="tab-content active">
+  <h2>Week 1: Introduction to Financial Literacy</h2>
+  <p>Get started with the fundamentals of money management, budgeting, and financial goals.</p>
+  <iframe src="https://www.youtube.com/embed/DDNuMfOKuco" allowfullscreen></iframe>
+  <div class="resources">
+    <a href="pdfs/week1.pdf" download>Download PDF Notes</a>
+    <a href="quizzes/week1.html">Take Quiz</a>
+  </div>
+</div>
+
+<!-- WEEK 2 -->
+<div class="tab-content">
+  <h2>Week 2: Budgeting & Saving Techniques</h2>
+  <p>Learn how to create realistic budgets and build healthy saving habits.</p>
+  <iframe src="https://www.youtube.com/embed/cnW_HDIBmz4" allowfullscreen></iframe>
+  <div class="resources">
+    <a href="pdfs/week2.pdf" download>Download PDF Notes</a>
+    <a href="quizzes/week2.html">Take Quiz</a>
+  </div>
+</div>
+
+<!-- WEEK 3 -->
+<div class="tab-content">
+  <h2>Week 3: Understanding Banking & Credit</h2>
+  <p>Dive into the world of banks, credit scores, loans, and borrowing smartly.</p>
+  <iframe src="https://www.youtube.com/embed/fTTGALaRZoc" allowfullscreen></iframe>
+  <div class="resources">
+    <a href="pdfs/week3.pdf" download>Download PDF Notes</a>
+    <a href="quizzes/week3.html">Take Quiz</a>
+  </div>
+</div>
+
+<!-- WEEK 4 -->
+<div class="tab-content">
+  <h2>Week 4: Introduction to Investing</h2>
+  <p>Discover the basics of investing in stocks, bonds, and other financial assets.</p>
+  <iframe src="https://www.youtube.com/embed/qIw-yFC-HNU" allowfullscreen></iframe>
+  <div class="resources">
+    <a href="pdfs/week4.pdf" download>Download PDF Notes</a>
+    <a href="quizzes/week4.html">Take Quiz</a>
+  </div>
+</div>
+
+<!-- WEEK 5 -->
+<div class="tab-content">
+  <h2>Week 5: Micro-Investing Tools & Apps</h2>
+  <p>Explore apps and platforms like Acorns, Robinhood, and others for small-scale investing.</p>
+  <iframe src="https://www.youtube.com/embed/EDcnZ5B6VAU" allowfullscreen></iframe>
+  <div class="resources">
+    <a href="pdfs/week5.pdf" download>Download PDF Notes</a>
+    <a href="quizzes/week5.html">Take Quiz</a>
+  </div>
+</div>
+
+<!-- WEEK 6 -->
+<div class="tab-content">
+  <h2>Week 6: Building Wealth & Staying Consistent</h2>
+  <p>Learn how to automate investments and maintain consistent financial discipline.</p>
+  <iframe src="https://www.youtube.com/embed/bbo7oGkq-BM" allowfullscreen></iframe>
+  <div class="resources">
+    <a href="pdfs/week6.pdf" download>Download PDF Notes</a>
+    <a href="quizzes/week6.html">Take Quiz</a>
+  </div>
+</div>
+
+<!-- Certificate Section -->
+<div class="certificate">
+  <h2>Congratulations on Completing the Course!</h2>
+  <p>Click below to download your Certificate of Completion.</p>
+  <button onclick="downloadCertificate()">Download Certificate</button>
+</div>
+
+<script>
+  function showTab(index) {
+    const contents = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('.tablink');
+    contents.forEach((tab, i) => {
+      tab.classList.toggle('active', i === index);
+      buttons[i].classList.toggle('active', i === index);
+    });
+  }
+
+  function downloadCertificate() {
+    window.open('certificate/financial-literacy-certificate.pdf', '_blank');
+  }
+</script>
+
+</body>
+</html>
