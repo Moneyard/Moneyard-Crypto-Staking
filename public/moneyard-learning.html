@@ -220,13 +220,15 @@
   <!-- Audio Element -->
   <audio id="cryptoAudio" src="audio/crypto-basics.mp3"></audio>
   
-  <!-- Audio Controls -->
   <div id="audioControls">
-  <audio id="cryptoAudio" src="audio/crypto-basics.mp3" autoplay></audio>
-  <button onclick="playAudio()">Play Audio ▶️</button>
-  <button onclick="pauseAudio()">Pause Audio ⏸️</button>
-  <button onclick="stopAudio()">Stop Audio ■</button>
-</div>
+    <button onclick="playAudio()">Play Audio</button>
+    <button onclick="pauseAudio()">Pause Audio</button>
+    <button onclick="stopAudio()">Stop Audio</button>
+    <audio id="cryptoAudio" src="audio/crypto-basics.mp3"></audio>
+  </div>
+
+  <div id="progress">
+    <div id="progressFill"></div>
   </div>
 
   <script>
@@ -324,9 +326,15 @@
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button onclick="startLesson('${mod.id}')">${unlocked ? 'Start Lesson' : 'Unlock Lesson'}</button>
+          <button id="startBtn_${mod.id}" class="start-lesson-button">${unlocked ? 'Start Lesson' : 'Unlock Lesson'}</button>
         `;
         container.appendChild(card);
+
+        // Attach event listener for the button
+        const startButton = document.getElementById(`startBtn_${mod.id}`);
+        startButton.addEventListener('click', function() {
+          startLesson(mod.id);
+        });
       });
 
       updateProgress();
@@ -334,12 +342,20 @@
 
     function startLesson(moduleId) {
       currentModule = modules.find(mod => mod.id === moduleId);
-      document.getElementById('lessonContent').innerHTML = currentModule.content;
-      document.getElementById('learnMoreLink').href = currentModule.link;
-      document.getElementById('lessonModal').style.display = 'block';
+      
+      // Ensure the elements exist before interacting with them
+      const lessonContent = document.getElementById('lessonContent');
+      const lessonModal = document.getElementById('lessonModal');
+      const learnMoreLink = document.getElementById('learnMoreLink');
 
-      // Start speech
-      speakContent(currentModule.title, currentModule.desc, currentModule.content);
+      if (lessonContent && lessonModal && learnMoreLink) {
+        lessonContent.innerHTML = currentModule.content;
+        learnMoreLink.href = currentModule.link;
+        lessonModal.style.display = 'block';
+
+        // Start speech
+        speakContent(currentModule.title, currentModule.desc, currentModule.content);
+      }
     }
 
     function closeLesson() {
@@ -371,23 +387,21 @@
       document.getElementById('progressFill').style.width = `${percent}%`;
     }
 
-    // Function to play the audio
+    // Audio Controls Functions
     function playAudio() {
       const audio = document.getElementById("cryptoAudio");
       audio.play();
     }
 
-    // Function to stop and reset the audio
+    function pauseAudio() {
+      const audio = document.getElementById("cryptoAudio");
+      audio.pause();
+    }
+
     function stopAudio() {
       const audio = document.getElementById("cryptoAudio");
       audio.pause();
       audio.currentTime = 0; // Reset audio to the beginning
-    }
-
-    // Function to pause the audio
-    function pauseAudio() {
-      const audio = document.getElementById("cryptoAudio");
-      audio.pause(); // Pause the audio
     }
 
     loadModules();
@@ -400,6 +414,6 @@
         document.getElementById("locked-message").style.display = "block";
       }
     };
-</script>
+  </script>
 </body>
 </html>
