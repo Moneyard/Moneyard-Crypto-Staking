@@ -222,9 +222,10 @@
   
   <!-- Audio Controls -->
   <div id="audioControls">
-  <audio id="cryptoAudio" src="audio/crypto-basics.mp3"></audio>
-  <button onclick="playAudio()">Play Audio</button>
-  <button onclick="stopAudio()">Stop Audio</button>
+  <audio id="cryptoAudio" src="audio/crypto-basics.mp3" autoplay></audio>
+  <button onclick="playAudio()">Play Audio ▶️</button>
+  <button onclick="pauseAudio()">Pause Audio ⏸️</button>
+  <button onclick="stopAudio()">Stop Audio ■</button>
 </div>
   </div>
 
@@ -253,8 +254,7 @@
             <li>How to stake and earn rewards safely</li>
           </ul>
           <div class='quiz-section'>
-            <div>
-           class='quiz-question'><strong>1:</strong> What is staking?</div>
+            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
             <button onclick="alert('Correct!')">Earning by holding crypto</button>
             <button onclick="alert('Nope!')">Sending crypto fast</button>
           </div>
@@ -363,35 +363,43 @@
       speechSynthesis.speak(contentUtterance);
     }
 
-  function updateProgress() {
-    const totalModules = modules.length;
-    const completed = completedModules.length;
-    const percent = (completed / totalModules) * 100;
+    function updateProgress() {
+      const totalModules = modules.length;
+      const completed = completedModules.length;
+      const percent = (completed / totalModules) * 100;
 
-    document.getElementById('progressFill').style.width = `${percent}%`;
-  }
-
-  function playAudio() {
-    const audio = document.getElementById("cryptoAudio");
-    audio.play();
-  }
-
-  function stopAudio() {
-    const audio = document.getElementById("cryptoAudio");
-    audio.pause();
-    audio.currentTime = 0; // Reset audio to the beginning
-  }
-
-  loadModules();
-
-  window.onload = () => {
-    const access = localStorage.getItem("courseAccess");
-    if (access === "true") {
-      document.getElementById("course-content").style.display = "block";
-    } else {
-      document.getElementById("locked-message").style.display = "block";
+      document.getElementById('progressFill').style.width = `${percent}%`;
     }
-  };
+
+    // Function to play the audio
+    function playAudio() {
+      const audio = document.getElementById("cryptoAudio");
+      audio.play();
+    }
+
+    // Function to stop and reset the audio
+    function stopAudio() {
+      const audio = document.getElementById("cryptoAudio");
+      audio.pause();
+      audio.currentTime = 0; // Reset audio to the beginning
+    }
+
+    // Function to pause the audio
+    function pauseAudio() {
+      const audio = document.getElementById("cryptoAudio");
+      audio.pause(); // Pause the audio
+    }
+
+    loadModules();
+
+    window.onload = () => {
+      const access = localStorage.getItem("courseAccess");
+      if (access === "true") {
+        document.getElementById("course-content").style.display = "block";
+      } else {
+        document.getElementById("locked-message").style.display = "block";
+      }
+    };
 </script>
 </body>
 </html>
