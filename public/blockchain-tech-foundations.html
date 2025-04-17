@@ -3,136 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blockchain & Crypto Mastery</title>
+    <title>Blockchain for Beginners & Investors</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .crypto-course {
-            --primary-color: #2ecc71;
-            --lab-color: #f1c40f;
+        .course-tab {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
         }
-        .day-card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        .lab-box {
-            background: #e8f6f3;
-            border: 1px solid var(--lab-color);
+        .investor-tip {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
             padding: 15px;
             margin: 15px 0;
         }
-        .key-concept {
-            color: var(--primary-color);
-            font-weight: bold;
+        .crypto-glossary {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .visual-guide {
+            max-width: 800px;
+            margin: 20px auto;
         }
     </style>
 </head>
 <body>
 
-<!-- Trigger Button -->
-<button type="button" class="btn btn-success m-4" data-bs-toggle="modal" data-bs-target="#courseModal">
-    Launch Crypto Course
-</button>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">💰 Blockchain & Crypto Essentials Course</h2>
+    
+    <!-- Course Roadmap -->
+    <div class="visual-guide">
+        <img src="https://via.placeholder.com/800x200.png?text=Course+Roadmap:+From+Blockchain+Basics+to+DeFi+Investing" 
+             alt="Course progression" class="img-fluid rounded">
+    </div>
 
-<!-- Course Modal -->
-<div class="modal fade" id="courseModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h3>🔗 Blockchain & Cryptocurrency Deep Dive</h3>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="accordion" id="courseAccordion">
+    <!-- Week Navigation -->
+    <ul class="nav nav-pills mb-4 justify-content-center">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" href="#week1">Week 1</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#week2">Week 2</a></li>
+        <!-- Add Weeks 3-6 -->
+    </ul>
 
-                    <!-- Week 1 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#week1">
-                                📅 Week 1: Blockchain Foundations
-                            </button>
-                        </h2>
-                        <div id="week1" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
-                            <div class="accordion-body">
-                                
-                                <!-- Day 1-1 -->
-                                <div class="day-card p-3">
-                                    <h5>Day 1: What is Blockchain?</h5>
-                                    <div class="key-concept">Key Concepts:</div>
-                                    <ul>
-                                        <li>Distributed vs centralized systems</li>
-                                        <li>Blocks, chains, and hashing</li>
-                                        <li>Immutability through cryptography</li>
-                                    </ul>
-                                    <div class="lab-box">
-                                        <strong>🧪 Lab 1:</strong> Create your first hash
-                                        <pre><code>// Using Python
-import hashlib
-print(hashlib.sha256(b"Blockchain").hexdigest())</code></pre>
-                                    </div>
-                                </div>
+    <div class="tab-content">
 
-                                <!-- Day 1-2 -->
-                                <div class="day-card p-3">
-                                    <h5>Day 2: Bitcoin Architecture</h5>
-                                    <ul>
-                                        <li>UTXO model explained</li>
-                                        <li>Merkle trees in transactions</li>
-                                        <li>Full node vs light client</li>
-                                    </ul>
-                                    <div class="lab-box">
-                                        <strong>🔍 Activity:</strong> Explore a Bitcoin block
-                                        <a href="https://blockstream.info" target="_blank" class="d-block mt-2">
-                                            Blockstream Explorer
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Continue through Day 5 for Week 1 -->
-                                
-                            </div>
+        <!-- Week 1 - Blockchain Basics -->
+        <div class="tab-pane fade show active" id="week1">
+            <div class="course-tab">
+                <h3><span class="badge bg-primary">Week 1</span> Understanding Blockchain</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>📘 What You'll Learn:</h4>
+                        <ul>
+                            <li>How blockchain differs from traditional databases</li>
+                            <li>Public vs private blockchains</li>
+                            <li>Real-world use cases (non-crypto)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>📈 Investor Insight:</h4>
+                        <div class="investor-tip">
+                            <strong>Why It Matters:</strong> 
+                            <p>Blockchain adoption grew 76% in Fortune 500 companies since 2020 (Deloitte)</p>
                         </div>
                     </div>
-
-                    <!-- Week 2 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week2">
-                                📅 Week 2: Bitcoin in Depth
-                            </button>
-                        </h2>
-                        <div id="week2" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
-                            <div class="accordion-body">
-                                <!-- Day 2-1 to 2-5 content similar to Week 1 -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Weeks 3-6 following same structure with detailed content -->
-
                 </div>
-            </div>
-            <div class="modal-footer">
-                <div class="row w-100">
-                    <div class="col-md-6">
-                        <strong>📚 Course Includes:</strong>
-                        <ul>
-                            <li>36 Detailed Lessons</li>
-                            <li>25+ Hands-on Labs</li>
-                            <li>6 Real-world Projects</li>
-                        </ul>
+
+                <h4 class="mt-4">🔍 Practical Examples</h4>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="https://via.placeholder.com/200x100.png?text=Bitcoin+Transaction" 
+                             alt="Transaction example" class="img-fluid mb-2">
+                        <p>How a Bitcoin transaction works</p>
                     </div>
-                    <div class="col-md-6">
-                        <strong>🛠️ Tools You'll Use:</strong>
-                        <ul>
-                            <li>MetaMask Wallet</li>
-                            <li>Remix IDE</li>
-                            <li>Hardhat Framework</li>
-                        </ul>
+                    <div class="col-md-4 text-center">
+                        <img src="https://via.placeholder.com/200x100.png?text=Supply+Chain" 
+                             alt="Supply chain" class="img-fluid mb-2">
+                        <p>Walmart's food tracking system</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Week 2 - Bitcoin Essentials -->
+        <div class="tab-pane fade" id="week2">
+            <div class="course-tab">
+                <h3><span class="badge bg-primary">Week 2</span> Bitcoin Fundamentals</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>📘 Core Concepts:</h4>
+                        <ul>
+                            <li>Mining and proof-of-work</li>
+                            <li>Wallet security best practices</li>
+                            <li>Market cycles history</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>📈 Investor Insight:</h4>
+                        <div class="investor-tip">
+                            <strong>Key Metric:</strong> 
+                            <p>Bitcoin's 10-year ROI: 6,500% vs S&P 500's 200%</p>
+                            <small>(2013-2023 data)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>🛠️ Hands-On Exercise</h5>
+                        <p>Track a live Bitcoin transaction:</p>
+                        <code>1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</code>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>📊 Price Analysis</h5>
+                        <img src="https://via.placeholder.com/300x150.png?text=Bitcoin+Price+Chart" 
+                             alt="BTC chart" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Weeks 3-6 Following Same Pattern -->
+
+    </div>
+
+    <!-- Crypto Glossary -->
+    <div class="crypto-glossary">
+        <h4>📖 Essential Terms</h4>
+        <dl class="row">
+            <dt class="col-sm-3">DeFi</dt>
+            <dd class="col-sm-9">Decentralized Finance (e.g., lending without banks)</dd>
+            
+            <dt class="col-sm-3">NFT</dt>
+            <dd class="col-sm-9">Digital ownership certificates (art, tickets)</dd>
+        </dl>
     </div>
 </div>
 
