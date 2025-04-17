@@ -4,40 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blockchain & Cryptocurrency Course</title>
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .crypto-course {
-            --primary-color: #4CAF50;
-            --accent-color: #2196F3;
-        }
-        .module-header {
-            background: #f8f9fa !important;
-        }
-        .lab-section {
-            background: #e3f2fd;
-            border-left: 4px solid var(--accent-color);
-            padding: 15px;
+        .course-modal .lab-section {
+            background: #e8f4fc;
+            border-left: 3px solid #0d6efd;
+            padding: 12px;
             margin: 10px 0;
         }
-        .modal-content {
-            border-radius: 15px;
+        .course-modal .accordion-button:not(.collapsed) {
+            background-color: #f8f9fa;
+        }
+        .course-modal .badge {
+            background: #4CAF50;
         }
     </style>
 </head>
 <body>
 
 <!-- Trigger Button -->
-<button type="button" class="btn btn-success m-4" data-bs-toggle="modal" data-bs-target="#cryptoCourse">
-    Open Cryptocurrency Course
+<button type="button" class="btn btn-primary m-4" data-bs-toggle="modal" data-bs-target="#courseModal">
+    Open Full Course (6 Weeks)
 </button>
 
 <!-- Course Modal -->
-<div class="modal fade" id="cryptoCourse" tabindex="-1">
+<div class="modal fade course-modal" id="courseModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">🚀 Blockchain & Cryptocurrency Fundamentals</h3>
+                <h3 class="modal-title">📚 Blockchain & Cryptocurrency Fundamentals <span class="badge">6 Weeks</span></h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -46,21 +41,21 @@
                     <!-- Week 1 -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button module-header" type="button" data-bs-toggle="collapse" data-bs-target="#week1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week1">
                                 Week 1: Blockchain & Crypto Basics
                             </button>
                         </h2>
-                        <div id="week1" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
+                        <div id="week1" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
                             <div class="accordion-body">
-                                <h5>Topics Covered:</h5>
+                                <h5>📖 Topics:</h5>
                                 <ul>
-                                    <li>Evolution of digital money</li>
+                                    <li>Evolution from physical to digital money</li>
                                     <li>Bitcoin whitepaper analysis</li>
-                                    <li>Wallet creation & management</li>
+                                    <li>Wallet types (hot vs cold storage)</li>
                                 </ul>
                                 <div class="lab-section">
-                                    <strong>Lab:</strong> Create MetaMask wallet<br>
-                                    <code>npm install -g metamask</code>
+                                    <strong>🔧 Lab:</strong> Create MetaMask wallet<br>
+                                    <code>> metamask.io/download</code>
                                 </div>
                             </div>
                         </div>
@@ -69,39 +64,128 @@
                     <!-- Week 2 -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button collapsed module-header" type="button" data-bs-toggle="collapse" data-bs-target="#week2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week2">
                                 Week 2: Bitcoin Deep Dive
                             </button>
                         </h2>
                         <div id="week2" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
                             <div class="accordion-body">
-                                <h5>Topics Covered:</h5>
+                                <h5>📖 Topics:</h5>
                                 <ul>
-                                    <li>Proof of Work mechanics</li>
-                                    <li>Transaction lifecycle</li>
-                                    <li>Hard forks vs soft forks</li>
+                                    <li>Proof of Work (PoW) mechanics</li>
+                                    <li>UTXO model explained</li>
+                                    <li>Mining economics</li>
                                 </ul>
                                 <div class="lab-section">
-                                    <strong>Activity:</strong> Track BTC transaction<br>
-                                    <a href="https://blockchain.com/explorer">Blockchain Explorer</a>
+                                    <strong>🔍 Activity:</strong> Track BTC transaction<br>
+                                    <a href="https://blockchain.com/explorer" target="_blank">Blockchain Explorer</a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Add Weeks 3-6 following same pattern -->
+                    <!-- Week 3 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week3">
+                                Week 3: Ethereum & Smart Contracts
+                            </button>
+                        </h2>
+                        <div id="week3" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                <h5>📖 Topics:</h5>
+                                <ul>
+                                    <li>Ethereum Virtual Machine (EVM)</li>
+                                    <li>ERC-20 token standard</li>
+                                    <li>Gas fee calculation</li>
+                                </ul>
+                                <div class="lab-section">
+                                    <strong>🛠️ Lab:</strong> Deploy ERC-20 token<br>
+                                    <code>// SPDX-License-Identifier: MIT<br>
+                                    pragma solidity ^0.8.0;</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 4 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week4">
+                                Week 4: Crypto Ecosystems
+                            </button>
+                        </h2>
+                        <div id="week4" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                <h5>📖 Topics:</h5>
+                                <ul>
+                                    <li>CEX vs DEX exchanges</li>
+                                    <li>DeFi protocols (Uniswap, Aave)</li>
+                                    <li>NFT use cases</li>
+                                </ul>
+                                <div class="lab-section">
+                                    <strong>💱 Lab:</strong> Swap tokens on testnet<br>
+                                    <small>Use Goerli ETH from faucet</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 5 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week5">
+                                Week 5: Security & Risks
+                            </button>
+                        </h2>
+                        <div id="week5" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                <h5>📖 Topics:</h5>
+                                <ul>
+                                    <li>51% attack prevention</li>
+                                    <li>Smart contract audits</li>
+                                    <li>Regulatory compliance</li>
+                                </ul>
+                                <div class="lab-section">
+                                    <strong>🔐 Activity:</strong> Multi-sig wallet setup<br>
+                                    <code>Gnosis Safe: gnosis-safe.io</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 6 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#week6">
+                                Week 6: Future of Crypto
+                            </button>
+                        </h2>
+                        <div id="week6" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                <h5>📖 Topics:</h5>
+                                <ul>
+                                    <li>Central Bank Digital Currencies</li>
+                                    <li>Web3 and Metaverse</li>
+                                    <li>Crypto taxation basics</li>
+                                </ul>
+                                <div class="lab-section">
+                                    <strong>🎓 Final Project:</strong><br>
+                                    Build portfolio tracker using CoinGecko API
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
             <div class="modal-footer">
-                <small class="text-muted">Course includes 6 weeks content + labs</small>
+                <small class="text-muted">Includes quizzes, labs, and final project</small>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
