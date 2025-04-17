@@ -5,6 +5,9 @@
   <title>Learning Tracker - Moneyard</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f8fb;
@@ -26,6 +29,8 @@
     }
     .lesson {
       margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ddd;
     }
     .lesson-title {
       font-weight: bold;
@@ -44,20 +49,18 @@
       width: 0%;
       transition: width 0.5s ease-in-out;
     }
-    .start-button {
+    .back-button {
       display: inline-block;
-      padding: 8px 16px;
-      background-color: #00c6a7;
+      margin-top: 10px;
+      padding: 6px 12px;
+      background-color: #007b8a;
       color: #fff;
-      font-size: 14px;
-      border: none;
-      border-radius: 6px;
       text-decoration: none;
-      cursor: pointer;
-      transition: background 0.3s;
+      font-size: 14px;
+      border-radius: 5px;
     }
-    .start-button:hover {
-      background-color: #009f87;
+    .back-button:hover {
+      background-color: #005f6b;
     }
   </style>
 </head>
@@ -66,21 +69,24 @@
 <div class="tracker-container">
   <h2>Your Learning Progress</h2>
 
-  <div class="lesson">
+  <div id="lesson1" class="lesson">
     <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
     <div class="progress-bar"><div class="progress" data-progress="100"></div></div>
-    <a href="tracker-learning.html#lesson1" class="start-button">Start Lesson</a>
+    <a href="learning-overview.html" class="back-button">Back to Overview</a>
   </div>
 
-  <div class="lesson">
+  <div id="lesson2" class="lesson">
     <div class="lesson-title">Lesson 2: How Moneyard Works</div>
     <div class="progress-bar"><div class="progress" data-progress="70"></div></div>
-    <a href="tracker-learning.html#lesson2" class="start-button">Start Lesson</a>
+    <a href="learning-overview.html" class="back-button">Back to Overview</a>
   </div>
 
-  <div id="lesson1" class="lesson">...</div>
-<div id="lesson2" class="lesson">...</div>
-<div id="lesson3" class="lesson">...</div>
+  <div id="lesson3" class="lesson">
+    <div class="lesson-title">Lesson 3: Start Earning</div>
+    <div class="progress-bar"><div class="progress" data-progress="30"></div></div>
+    <a href="learning-overview.html" class="back-button">Back to Overview</a>
+  </div>
+</div>
 
 <script>
   document.querySelectorAll('.progress').forEach(bar => {
