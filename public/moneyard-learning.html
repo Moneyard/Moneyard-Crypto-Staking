@@ -214,21 +214,10 @@
     <span onclick="closeLesson()">X</span>
     <div id="lessonContent"></div>
     <a id="learnMoreLink" class="learn-more-link" target="_blank">Learn More</a>
-    <div id="audioSection">
-  <h3>Listen to Audio Lesson</h3>
-  
-  <!-- Audio Element -->
-  <audio id="cryptoAudio" src="audio/crypto-basics.mp3"></audio>
-  
-  <div id="audioControls">
-    <button onclick="playAudio()">Play Audio</button>
-    <button onclick="pauseAudio()">Pause Audio</button>
-    <button onclick="stopAudio()">Stop Audio</button>
-    <audio id="cryptoAudio" src="audio/crypto-basics.mp3"></audio>
-  </div>
-
-  <div id="progress">
-    <div id="progressFill"></div>
+    <div id="audioControls">
+      <button onclick="playAudio()">Play Audio</button>
+      <button onclick="stopAudio()">Stop Audio</button>
+    </div>
   </div>
 
   <script>
@@ -256,7 +245,8 @@
             <li>How to stake and earn rewards safely</li>
           </ul>
           <div class='quiz-section'>
-            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
+            <div>
+           class='quiz-question'><strong>1:</strong> What is staking?</div>
             <button onclick="alert('Correct!')">Earning by holding crypto</button>
             <button onclick="alert('Nope!')">Sending crypto fast</button>
           </div>
@@ -326,15 +316,9 @@
         card.innerHTML = `
           <h3>${mod.title}</h3>
           <p>${mod.desc}</p>
-          <button id="startBtn_${mod.id}" class="start-lesson-button">${unlocked ? 'Start Lesson' : 'Unlock Lesson'}</button>
+          <button onclick="startLesson('${mod.id}')">${unlocked ? 'Start Lesson' : 'Unlock Lesson'}</button>
         `;
         container.appendChild(card);
-
-        // Attach event listener for the button
-        const startButton = document.getElementById(`startBtn_${mod.id}`);
-        startButton.addEventListener('click', function() {
-          startLesson(mod.id);
-        });
       });
 
       updateProgress();
@@ -342,20 +326,12 @@
 
     function startLesson(moduleId) {
       currentModule = modules.find(mod => mod.id === moduleId);
-      
-      // Ensure the elements exist before interacting with them
-      const lessonContent = document.getElementById('lessonContent');
-      const lessonModal = document.getElementById('lessonModal');
-      const learnMoreLink = document.getElementById('learnMoreLink');
+      document.getElementById('lessonContent').innerHTML = currentModule.content;
+      document.getElementById('learnMoreLink').href = currentModule.link;
+      document.getElementById('lessonModal').style.display = 'block';
 
-      if (lessonContent && lessonModal && learnMoreLink) {
-        lessonContent.innerHTML = currentModule.content;
-        learnMoreLink.href = currentModule.link;
-        lessonModal.style.display = 'block';
-
-        // Start speech
-        speakContent(currentModule.title, currentModule.desc, currentModule.content);
-      }
+      // Start speech
+      speakContent(currentModule.title, currentModule.desc, currentModule.content);
     }
 
     function closeLesson() {
@@ -383,37 +359,18 @@
       const totalModules = modules.length;
       const completed = completedModules.length;
       const percent = (completed / totalModules) * 100;
-
       document.getElementById('progressFill').style.width = `${percent}%`;
     }
 
-    // Audio Controls Functions
-    function playAudio() {
-      const audio = document.getElementById("cryptoAudio");
-      audio.play();
-    }
-
-    function pauseAudio() {
-      const audio = document.getElementById("cryptoAudio");
-      audio.pause();
-    }
-
-    function stopAudio() {
-      const audio = document.getElementById("cryptoAudio");
-      audio.pause();
-      audio.currentTime = 0; // Reset audio to the beginning
-    }
-
     loadModules();
-
-    window.onload = () => {
-      const access = localStorage.getItem("courseAccess");
-      if (access === "true") {
-        document.getElementById("course-content").style.display = "block";
-      } else {
-        document.getElementById("locked-message").style.display = "block";
-      }
-    };
-  </script>
+window.onload = () => {
+  const access = localStorage.getItem("courseAccess");
+  if (access === "true") {
+    document.getElementById("course-content").style.display = "block";
+  } else {
+    document.getElementById("locked-message").style.display = "block";
+  }
+};
+</script>
 </body>
 </html>
