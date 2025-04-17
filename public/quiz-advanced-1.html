@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Quiz 1 - Moneyard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    h2 { color: #2b7a78; }
+    .question {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .question h3 { margin-bottom: 10px; }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Advanced Quiz 1: DeFi Security</h2>
+  <div class="question">
+    <h3>1. What is a rug pull in DeFi?</h3>
+    <label><input type="radio" name="q1"> A price drop</label><br>
+    <label><input type="radio" name="q1"> A scam where developers exit with investors' funds</label><br>
+    <label><input type="radio" name="q1"> A type of token</label><br>
+    <label><input type="radio" name="q1"> A crypto joke</label>
+  </div>
+  <div class="question">
+    <h3>2. How can users minimize risks in DeFi?</h3>
+    <label><input type="radio" name="q2"> By trusting all platforms</label><br>
+    <label><input type="radio" name="q2"> By doing research and using audits</label><br>
+    <label><input type="radio" name="q2"> By ignoring fees</label><br>
+    <label><input type="radio" name="q2"> By using unknown wallets</label>
+  </div>
+  <button onclick="submitQuiz()">Submit Quiz</button>
+
+  <script>
+    function submitQuiz() {
+      alert("Quiz complete! Your score will be reviewed.");
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>
