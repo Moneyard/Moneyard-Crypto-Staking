@@ -2,32 +2,9 @@
 <html>
 <head>
   <title>Lesson Tracker Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h2>Lesson Tracker Dashboard</h2>
-
-    <div class="tracker-section">
-      <h3>Beginner Progress</h3>
-      <ul>
-        <li>Lesson 1: <span class="status">Completed</span></li>
-        <li>Lesson 2: <span class="status">In Progress</span></li>
-        <li>Lesson 3: <span class="status">Pending</span></li>
-      </ul>
-
-      <h3>Intermediate Progress</h3>
-      <ul>
-        <li>Lesson 1: <span class="status">Pending</span></li>
-      </ul>
-
-      <h3>Advanced Progress</h3>
-      <ul>
-        <li>Lesson 1: <span class="status">Pending</span></li>
-      </ul>
-    </div>
-
-    <a href="dashboard.html" class="back-button">Back to Dashboard</a>
-  </div>
+  <h1>Lesson Tracker</h1>
+  <p>This is your learning progress dashboard.</p>
 </body>
 </html>
