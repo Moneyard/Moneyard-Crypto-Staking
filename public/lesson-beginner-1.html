@@ -31,11 +31,15 @@
     .content {
       margin-bottom: 20px;
     }
+    ul {
+      padding-left: 20px;
+    }
     .quiz-section {
       margin-top: 30px;
     }
-    .quiz-section input[type="radio"] {
-      margin-right: 10px;
+    .quiz-section label {
+      display: block;
+      margin-bottom: 10px;
     }
     .btn {
       padding: 12px 20px;
@@ -45,6 +49,7 @@
       border-radius: 5px;
       cursor: pointer;
       margin-top: 20px;
+      transition: background 0.3s;
     }
     .btn:hover {
       background-color: #219653;
@@ -57,7 +62,6 @@
     <h3>You're now learning: <span id="courseTitle">...</span></h3>
 
     <div class="video-section">
-      <!-- Replace with actual video or YouTube link -->
       <iframe src="https://www.youtube.com/embed/qkxdys-Ek9U" allowfullscreen></iframe>
     </div>
 
@@ -67,7 +71,6 @@
         This lesson introduces the fundamentals of blockchain technology, how blocks are linked together, 
         and why decentralization is important in the world of crypto.
       </p>
-
       <ul>
         <li>What is a blockchain?</li>
         <li>How do blocks get added?</li>
@@ -78,9 +81,9 @@
     <div class="quiz-section">
       <h4>Quick Check: What is a Blockchain?</h4>
       <form id="quizForm">
-        <label><input type="radio" name="q1" value="a" /> A social media network</label><br />
-        <label><input type="radio" name="q1" value="b" /> A digital ledger of transactions</label><br />
-        <label><input type="radio" name="q1" value="c" /> A centralized database</label><br />
+        <label><input type="radio" name="q1" value="a" /> A social media network</label>
+        <label><input type="radio" name="q1" value="b" /> A digital ledger of transactions</label>
+        <label><input type="radio" name="q1" value="c" /> A centralized database</label>
         <button class="btn" type="submit">Submit Answer</button>
       </form>
       <p id="quizFeedback" style="margin-top:10px;"></p>
@@ -90,7 +93,6 @@
   </div>
 
   <script>
-    // Populate user and course info from localStorage
     window.onload = function () {
       const name = localStorage.getItem("moneyardUserName") || "Learner";
       const courseTitle = localStorage.getItem("moneyardCourseTitle") || "Course";
@@ -98,7 +100,6 @@
       document.getElementById("courseTitle").innerText = courseTitle;
     };
 
-    // Quiz check logic
     document.getElementById("quizForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const answer = document.querySelector('input[name="q1"]:checked');
@@ -115,9 +116,7 @@
       }
     });
 
-    // Next lesson button
     function goToNextLesson() {
-      // Redirect to the next lesson page (replace URL with actual file)
       window.location.href = "lesson-beginner-2.html";
     }
   </script>
