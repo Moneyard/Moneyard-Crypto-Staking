@@ -1,144 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cryptocurrency Module</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lesson - Beginner 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      color: #333;
+    }
+    .lesson-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #27ae60;
+    }
+    .video-section iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      margin-bottom: 20px;
+    }
+    .content {
+      margin-bottom: 20px;
+    }
+    .quiz-section {
+      margin-top: 30px;
+    }
+    .quiz-section input[type="radio"] {
+      margin-right: 10px;
+    }
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      background-color: #27ae60;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #219653;
+    }
+  </style>
 </head>
 <body>
-<header class="module-header">
-  <h1 class="module-title">Moneyard Learning Modules</h1>
-  <nav class="module-nav">
-    <a href="cryptocurrency.html" class="nav-link">Cryptocurrency</a>
-    <a href="high-yield-savings.html" class="nav-link">High-Yield Savings</a>
-    <a href="micro-investing.html" class="nav-link">Micro-Investing</a>
-    <a href="budgeting.html" class="nav-link">Budgeting Basics</a>
-  </nav>
-</header>
+  <div class="lesson-container">
+    <h2>Welcome <span id="userName">...</span>!</h2>
+    <h3>You're now learning: <span id="courseTitle">...</span></h3>
 
-<style>
-.module-header {
-  background: #e0f2f1;
-  padding: 20px 0;
-  text-align: center;
-  border-bottom: 2px solid #00796b;
-}
-.module-title {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 700;
-  color: #00796b;
-}
-.module-nav {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-}
-.nav-link {
-  font-size: 18px;
-  color: #00796b;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s;
-}
-.nav-link:hover,
-.nav-link.active {
-  color: #004d40;
-  border-bottom: 2px solid #004d40;
-}
-</style>
-
-  
-
-  <!-- Progress Tracker -->
-  <div style="margin-bottom: 20px;">
-    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-      <span>Cryptocurrency</span>
-      <span>High-Yield Savings</span>
-      <span>Micro-Investing</span>
+    <div class="video-section">
+      <!-- Replace with actual video or YouTube link -->
+      <iframe src="https://www.youtube.com/embed/qkxdys-Ek9U" allowfullscreen></iframe>
     </div>
-    <div style="display: flex; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden;">
-      <div id="progress-crypto" style="flex: 1; background: #00b894;"></div>
-      <div id="progress-hysa" style="flex: 1; background: #e0e0e0;"></div>
-      <div id="progress-micro" style="flex: 1; background: #e0e0e0;"></div>
+
+    <div class="content">
+      <h4>Lesson Overview</h4>
+      <p>
+        This lesson introduces the fundamentals of blockchain technology, how blocks are linked together, 
+        and why decentralization is important in the world of crypto.
+      </p>
+
+      <ul>
+        <li>What is a blockchain?</li>
+        <li>How do blocks get added?</li>
+        <li>Consensus mechanisms: Proof of Work vs Proof of Stake</li>
+      </ul>
     </div>
+
+    <div class="quiz-section">
+      <h4>Quick Check: What is a Blockchain?</h4>
+      <form id="quizForm">
+        <label><input type="radio" name="q1" value="a" /> A social media network</label><br />
+        <label><input type="radio" name="q1" value="b" /> A digital ledger of transactions</label><br />
+        <label><input type="radio" name="q1" value="c" /> A centralized database</label><br />
+        <button class="btn" type="submit">Submit Answer</button>
+      </form>
+      <p id="quizFeedback" style="margin-top:10px;"></p>
+    </div>
+
+    <button class="btn" onclick="goToNextLesson()">Next Lesson</button>
   </div>
 
-  <!-- Welcome & Module Content -->
-  <h2>Cryptocurrency</h2>
-  <p id="crypto-content">
-    Cryptocurrency is a digital currency secured by cryptography and operates independently of a central bank. It's used for online purchases, investments, and peer-to-peer transactions.
-    <br><br>
-    Topics include:
-    <ul>
-      <li>What is cryptocurrency?</li>
-      <li>Blockchain technology</li>
-      <li>Bitcoin vs altcoins</li>
-      <li>Storing crypto securely</li>
-      <li>Risks and regulations</li>
-    </ul>
-  </p>
-
-  <!-- Video -->
-  <iframe width="100%" height="250" src="https://www.youtube.com/embed/SSo_EIwHSd4" frameborder="0" allowfullscreen></iframe>
-
-  <!-- Navigation -->
-  <div style="display: flex; justify-content: space-between; margin-top: 40px;">
-    <button style="visibility: hidden;">Previous</button>
-    <button onclick="window.location.href='high-yield-savings.html'">Next</button>
-  </div>
-<section id="crypto-stablecoins" class="module-section">
-  <h2>Understanding Stablecoins & Crypto Security</h2>
-  <p>
-    Stablecoins are cryptocurrencies designed to maintain a stable value by being pegged to a reserve asset like the US Dollar. They're useful for minimizing volatility while still benefiting from blockchain features.
-  </p>
-  <ul>
-    <li>Why stablecoins are safer than most cryptos</li>
-    <li>How USDT, USDC, and BUSD work</li>
-    <li>Wallet types: hot vs cold storage</li>
-    <li>Staying safe from phishing and scams</li>
-  </ul>
-  <img src="images/stablecoin-diagram.png" alt="Stablecoin Illustration" />
-  <iframe width="100%" height="315" src="https://www.youtube.com/embed/1YyAzVmP4K8" title="Crypto Security and Stablecoins" frameborder="0" allowfullscreen></iframe>
-  <button onclick="window.location.href='cryptocurrency.html#stablecoins'">Learn More</button>
-</section>
-<section id="crypto-section">
-    <h2>Cryptocurrency</h2>
-    
-    <button class="accordion">What is Cryptocurrency?</button>
-    <div class="accordion-content">
-        <p>Cryptocurrency is a form of digital currency that operates independently of a central authority, utilizing blockchain technology for decentralized transactions.</p>
-        <img src="crypto-image1.jpg" alt="Cryptocurrency Blockchain Illustration">
-    </div>
-
-    <button class="accordion">How to Buy and Sell Cryptocurrency</button>
-    <div class="accordion-content">
-        <p>Learn how to use platforms like Coinbase to buy and sell cryptocurrencies. Set up a wallet and understand how to transfer your crypto safely.</p>
-        <img src="crypto-image2.jpg" alt="Buying Cryptocurrency Guide">
-    </div>
-
-    <button class="accordion">Staking and Yield Farming</button>
-    <div class="accordion-content">
-        <p>Staking is the process of locking up cryptocurrency to earn rewards, while yield farming involves providing liquidity to decentralized platforms for additional returns.</p>
-        <img src="crypto-image3.jpg" alt="Staking and Yield Farming Process">
-    </div>
-</section>
-
-<script>
-  const synth1 = new SpeechSynthesisUtterance(
-    "Welcome to the module on Understanding Stablecoins and Crypto Security. Today you'll learn why stablecoins are key in minimizing crypto risks, how they work, and how to stay secure. Learn more."
-  );
-  window.speechSynthesis.speak(synth1);
-</script>
-
-  <!-- Speech -->
   <script>
-    const text = `Welcome to this module on Cryptocurrency. Cryptocurrency is a digital currency that operates without centralized control. 
-    In this module, you'll explore blockchain technology, how cryptocurrencies work, storing crypto securely, and the risks involved. 
-    Learn more.`;
+    // Populate user and course info from localStorage
+    window.onload = function () {
+      const name = localStorage.getItem("moneyardUserName") || "Learner";
+      const courseTitle = localStorage.getItem("moneyardCourseTitle") || "Course";
+      document.getElementById("userName").innerText = name;
+      document.getElementById("courseTitle").innerText = courseTitle;
+    };
 
-    const utter = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(utter);
+    // Quiz check logic
+    document.getElementById("quizForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const answer = document.querySelector('input[name="q1"]:checked');
+      const feedback = document.getElementById("quizFeedback");
+      if (!answer) {
+        feedback.innerText = "Please select an answer!";
+        feedback.style.color = "red";
+      } else if (answer.value === "b") {
+        feedback.innerText = "Correct! A blockchain is a digital ledger.";
+        feedback.style.color = "green";
+      } else {
+        feedback.innerText = "Oops! Try again. Hint: It's a type of ledger.";
+        feedback.style.color = "red";
+      }
+    });
+
+    // Next lesson button
+    function goToNextLesson() {
+      // Redirect to the next lesson page (replace URL with actual file)
+      window.location.href = "lesson-beginner-2.html";
+    }
   </script>
 </body>
 </html>
