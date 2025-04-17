@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beginner Quiz 2 - Moneyard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      color: #2b7a78;
+    }
+    .quiz-container {
+      background: white;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .question {
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 16px;
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>Beginner Quiz 2</h2>
+    
+    <div class="question">
+      <p><strong>1. What is a crypto wallet used for?</strong></p>
+      <input type="radio" name="q1" value="a"> Watching movies<br>
+      <input type="radio" name="q1" value="b"> Storing cryptocurrency<br>
+      <input type="radio" name="q1" value="c"> Sending emails
+    </div>
+
+    <div class="question">
+      <p><strong>2. What is a private key?</strong></p>
+      <input type="radio" name="q2" value="a"> A public password<br>
+      <input type="radio" name="q2" value="b"> A secret number to access your wallet<br>
+      <input type="radio" name="q2" value="c"> A debit card
+    </div>
+
+    <button onclick="submitQuiz()">Submit</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function submitQuiz() {
+      let score = 0;
+      const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+      const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+
+      if (q1 === "b") score++;
+      if (q2 === "b") score++;
+
+      const result = document.getElementById("result");
+      result.innerText = `You scored ${score}/2`;
+
+      if (score === 2) {
+        result.style.color = "green";
+        result.innerHTML += "<br>Great job! You've passed.";
+      } else {
+        result.style.color = "red";
+        result.innerHTML += "<br>Try reviewing the lesson and retake.";
+      }
+    }
+  </script>
+</body>
+</html>
