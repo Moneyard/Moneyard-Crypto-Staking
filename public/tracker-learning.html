@@ -22,26 +22,37 @@
       border-radius: 10px;
       box-shadow: 0 0 12px rgba(0,0,0,0.08);
     }
-    .tracker-container h2 {
+    h2 {
       text-align: center;
       color: #007b8a;
       margin-bottom: 30px;
     }
-    .lesson {
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #ddd;
+    .overview, .lesson {
+      margin-bottom: 40px;
     }
-    .lesson-title {
+    .overview .lesson-title {
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+    }
+    .start-button {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #00c6a7;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .start-button:hover {
+      background-color: #1e8d77;
     }
     .progress-bar {
       height: 20px;
       background: #e0e0e0;
       border-radius: 20px;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
     .progress {
       height: 100%;
@@ -62,30 +73,57 @@
     .back-button:hover {
       background-color: #005f6b;
     }
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 40px 0;
+    }
   </style>
 </head>
 <body>
 
 <div class="tracker-container">
-  <h2>Your Learning Progress</h2>
+
+  <h2 id="overview">Learning Overview</h2>
+
+  <div class="overview">
+    <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
+    <a href="#lesson1" class="start-button">Start Lesson</a>
+  </div>
+
+  <div class="overview">
+    <div class="lesson-title">Lesson 2: How Moneyard Works</div>
+    <a href="#lesson2" class="start-button">Start Lesson</a>
+  </div>
+
+  <div class="overview">
+    <div class="lesson-title">Lesson 3: Start Earning</div>
+    <a href="#lesson3" class="start-button">Start Lesson</a>
+  </div>
+
+  <hr>
 
   <div id="lesson1" class="lesson">
-    <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
+    <h2>Lesson 1: What is Crypto Staking?</h2>
     <div class="progress-bar"><div class="progress" data-progress="100"></div></div>
-    <a href="learning-overview.html" class="back-button">Back to Overview</a>
+    <p>Crypto staking allows users to earn rewards by locking their crypto in a blockchain protocol.</p>
+    <a href="#overview" class="back-button">Back to Overview</a>
   </div>
 
   <div id="lesson2" class="lesson">
-    <div class="lesson-title">Lesson 2: How Moneyard Works</div>
+    <h2>Lesson 2: How Moneyard Works</h2>
     <div class="progress-bar"><div class="progress" data-progress="70"></div></div>
-    <a href="learning-overview.html" class="back-button">Back to Overview</a>
+    <p>Moneyard helps users stake crypto securely, track rewards, and withdraw earnings anytime.</p>
+    <a href="#overview" class="back-button">Back to Overview</a>
   </div>
 
   <div id="lesson3" class="lesson">
-    <div class="lesson-title">Lesson 3: Start Earning</div>
+    <h2>Lesson 3: Start Earning</h2>
     <div class="progress-bar"><div class="progress" data-progress="30"></div></div>
-    <a href="learning-overview.html" class="back-button">Back to Overview</a>
+    <p>Get started by choosing a staking plan, depositing crypto, and watching your earnings grow.</p>
+    <a href="#overview" class="back-button">Back to Overview</a>
   </div>
+
 </div>
 
 <script>
