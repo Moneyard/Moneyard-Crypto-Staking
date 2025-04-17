@@ -56,6 +56,7 @@
       display: flex;
       gap: 10px;
       margin-top: 10px;
+      flex-wrap: wrap;
     }
     button {
       padding: 8px 16px;
@@ -83,49 +84,27 @@
 </head>
 <body>
 
+<div style="text-align:center; margin: 20px;">
+  <div class="progress-bar">
+    <div id="overallProgress" class="progress" style="width:0%"></div>
+  </div>
+  <p id="progressText">0% Completed</p>
+  <button id="downloadCertificateBtn" class="certificate-btn" style="display:none;" onclick="generateTrackerCertificate()">Download Certificate</button>
+  <button id="startStakingBtn" class="start-btn" style="display:none;" onclick="window.location.href='dashboard.html'">Start Staking</button>
+</div>
+
+<canvas id="confettiCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; display:none;"></canvas>
+
 <div class="tracker-container">
   <h2>Your Learning Progress</h2>
 
-  <div class="lesson" id="lesson1">
-    <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
-    <div class="progress-bar"><div class="progress" data-lesson="1"></div></div>
-    <div class="lesson-buttons">
-      <button class="start-btn" onclick="toggleContent(1)">Start Lesson</button>
-      <button class="complete-btn" onclick="completeLesson(1)">Complete Lesson</button>
-      <a href="#lesson2" class="nav-btn">Next</a>
-    </div>
-    <div class="lesson-content" id="content1">
-      <p>Crypto staking is the process of locking your crypto assets to support blockchain operations and earn rewards...</p>
-    </div>
-  </div>
-
-  <div class="lesson" id="lesson2">
-    <div class="lesson-title">Lesson 2: How Moneyard Works</div>
-    <div class="progress-bar"><div class="progress" data-lesson="2"></div></div>
-    <div class="lesson-buttons">
-      <a href="#lesson1" class="nav-btn">Back</a>
-      <button class="start-btn" onclick="toggleContent(2)">Start Lesson</button>
-      <button class="complete-btn" onclick="completeLesson(2)">Complete Lesson</button>
-      <a href="#lesson3" class="nav-btn">Next</a>
-    </div>
-    <div class="lesson-content" id="content2">
-      <p>Moneyard lets you deposit, stake, and earn from your crypto with daily returns and compounding interest...</p>
-    </div>
-  </div>
-
-  <div class="lesson" id="lesson3">
-    <div class="lesson-title">Lesson 3: Start Earning</div>
-    <div class="progress-bar"><div class="progress" data-lesson="3"></div></div>
-    <div class="lesson-buttons">
-      <a href="#lesson2" class="nav-btn">Back</a>
-      <button class="start-btn" onclick="toggleContent(3)">Start Lesson</button>
-      <button class="complete-btn" onclick="completeLesson(3)">Complete Lesson</button>
-    </div>
-    <div class="lesson-content" id="content3">
-      <p>To start earning, create an account, choose a staking plan, deposit crypto, and watch your balance grow over time...</p>
-    </div>
-  </div>
+  <!-- Lessons -->
+  <div id="lessonsContainer"></div>
 </div>
+
+<!-- Checklist -->
+<h2>Lesson Checklist</h2>
+<ul id="lessonChecklist" class="lesson-list"></ul>
 
 <!-- Completion Popup -->
 <div class="popup" id="popup">
@@ -135,11 +114,60 @@
 </div>
 
 <script>
-  // Restore saved progress
-  document.querySelectorAll('.progress').forEach(bar => {
-    const lesson = bar.getAttribute('data-lesson');
-    const saved = localStorage.getItem('lesson' + lesson) || 0;
-    bar.style.width = saved + '%';
+  const lessonData = [
+    {
+      id: 1,
+      title: "Lesson 1: What is Crypto Staking?",
+      content: "Crypto staking is the process of locking your crypto assets to support blockchain operations and earn rewards..."
+    },
+    {
+      id: 2,
+      title: "Lesson 2: How Moneyard Works",
+      content: "Moneyard lets you deposit, stake, and earn from your crypto with daily returns and compounding interest..."
+    },
+    {
+      id: 3,
+      title: "Lesson 3: Start Earning",
+      content: "To start earning, create an account, choose a staking plan, deposit crypto, and watch your balance grow over time..."
+    },
+    {
+      id: 4,
+      title: "Lesson 4: Risks & Rewards",
+      content: "Understanding the risks such as market volatility and the rewards like passive income is crucial before staking..."
+    },
+    {
+      id: 5,
+      title: "Lesson 5: Start Your First Stake",
+      content: "Visit the dashboard, pick a staking option, and follow the steps to begin staking your funds securely..."
+    },
+    {
+      id: 6,
+      title: "Lesson 6: Next Steps",
+      content: "Explore the Moneyard platform, refer others, and grow your portfolio with additional features like micro-investing..."
+    }
+  ];
+
+  const lessonsContainer = document.getElementById('lessonsContainer');
+  const checklist = document.getElementById('lessonChecklist');
+
+  lessonData.forEach((lesson, index) => {
+    lessonsContainer.innerHTML += `
+      <div class="lesson" id="lesson${lesson.id}">
+        <div class="lesson-title">${lesson.title}</div>
+        <div class="progress-bar"><div class="progress" data-lesson="${lesson.id}"></div></div>
+        <div class="lesson-buttons">
+          ${index > 0 ? `<a href="#lesson${lesson.id - 1}" class="nav-btn">Back</a>` : ''}
+          <button class="start-btn" onclick="toggleContent(${lesson.id})">Start Lesson</button>
+          <button class="complete-btn" onclick="completeLesson(${lesson.id})">Complete Lesson</button>
+          ${index < lessonData.length - 1 ? `<a href="#lesson${lesson.id + 1}" class="nav-btn">Next</a>` : ''}
+        </div>
+        <div class="lesson-content" id="content${lesson.id}">
+          <p>${lesson.content}</p>
+        </div>
+      </div>
+    `;
+
+    checklist.innerHTML += `<li><input type="checkbox" id="check${lesson.id}" disabled> ${lesson.title}</li>`;
   });
 
   function toggleContent(id) {
@@ -148,20 +176,105 @@
   }
 
   function completeLesson(id) {
-    localStorage.setItem('lesson' + id, 100);
-    const bar = document.querySelector('.progress[data-lesson="' + id + '"]');
-    bar.style.width = '100%';
+    localStorage.setItem('lesson' + id, '100');
+    document.querySelector(`.progress[data-lesson="${id}"]`).style.width = '100%';
+    document.getElementById('check' + id).checked = true;
     showPopup();
+    calculateProgress();
   }
 
   function showPopup() {
-    const popup = document.getElementById('popup');
-    popup.style.display = 'block';
+    document.getElementById('popup').style.display = 'block';
   }
 
   function closePopup() {
     document.getElementById('popup').style.display = 'none';
   }
+
+  function calculateProgress() {
+    let completed = 0;
+    lessonData.forEach(lesson => {
+      const progress = localStorage.getItem('lesson' + lesson.id);
+      if (progress === '100') {
+        completed++;
+        document.querySelector(`.progress[data-lesson="${lesson.id}"]`).style.width = '100%';
+        document.getElementById('check' + lesson.id).checked = true;
+      }
+    });
+
+    const percent = Math.round((completed / lessonData.length) * 100);
+    document.getElementById("overallProgress").style.width = percent + "%";
+    document.getElementById("progressText").innerText = `${percent}% Completed`;
+
+    if (percent === 100) {
+      document.getElementById("downloadCertificateBtn").style.display = "inline-block";
+      document.getElementById("startStakingBtn").style.display = "inline-block";
+      launchConfetti();
+    }
+  }
+
+  function generateTrackerCertificate() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 800;
+    canvas.height = 600;
+
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#333";
+    ctx.font = "32px serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Certificate of Completion", canvas.width / 2, 100);
+
+    ctx.font = "24px sans-serif";
+    const name = localStorage.getItem("moneyardUserName") || "Your Name";
+    ctx.fillText(name, canvas.width / 2, 180);
+    ctx.fillText("has successfully completed", canvas.width / 2, 220);
+    ctx.fillText("the Moneyard Learning Course", canvas.width / 2, 260);
+    ctx.fillText(new Date().toLocaleDateString(), canvas.width / 2, 320);
+
+    const link = document.createElement("a");
+    link.download = `Moneyard_Certificate_${name.replace(/\s/g, "_")}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+
+  function launchConfetti() {
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.style.display = "block";
+
+    const pieces = Array.from({ length: 150 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * -window.innerHeight,
+      size: Math.random() * 6 + 4,
+      color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+      speed: Math.random() * 3 + 2
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of pieces) {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+        p.y += p.speed;
+        if (p.y > window.innerHeight) p.y = -20;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    draw();
+
+    setTimeout(() => {
+      canvas.style.display = "none";
+    }, 6000);
+  }
+
+  // Initialize
+  calculateProgress();
 </script>
 
 </body>
