@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Literacy & Micro Investments Course</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #2f4f4f;
+        }
+
+        .lesson,
+        .quiz,
+        .certificate {
+            display: none;
+        }
+
+        .lesson.active,
+        .quiz.active,
+        .certificate.active {
+            display: block;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .quiz label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .quiz input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Financial Literacy & Micro Investments Course</h1>
+
+        <!-- Lesson 1 -->
+        <div id="lesson1" class="lesson active">
+            <h2>Lesson 1: Introduction to Financial Literacy</h2>
+            <p>Financial literacy is the ability to understand and effectively use various financial skills, including personal financial management, budgeting, and investing.</p>
+            <button class="button" onclick="nextLesson(2)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div id="lesson2" class="lesson">
+            <h2>Lesson 2: Importance of Saving</h2>
+            <p>Saving is a critical part of financial health. Learn how to manage your money and build your savings to secure your future.</p>
+            <button class="button" onclick="nextLesson(3)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div id="lesson3" class="lesson">
+            <h2>Lesson 3: Understanding Investments</h2>
+            <p>Investing can help you grow your wealth. In this lesson, we'll explore different types of investments such as stocks, bonds, and crypto assets.</p>
+            <button class="button" onclick="nextLesson(4)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 4 -->
+        <div id="lesson4" class="lesson">
+            <h2>Lesson 4: Risk Management in Investments</h2>
+            <p>Every investment involves risk. Learn how to assess and manage risks when making financial decisions, especially in the volatile crypto market.</p>
+            <button class="button" onclick="nextLesson(5)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div id="lesson5" class="lesson">
+            <h2>Lesson 5: Building an Investment Portfolio</h2>
+            <p>A diversified portfolio helps reduce risk. Learn how to build a portfolio that balances risk and reward to achieve long-term financial goals.</p>
+            <button class="button" onclick="nextLesson(6)">Next Lesson</button>
+        </div>
+
+        <!-- Lesson 6 -->
+        <div id="lesson6" class="lesson">
+            <h2>Lesson 6: Introduction to Micro Investments</h2>
+            <p>Micro investments allow individuals to invest small amounts of money. Learn how to start investing with just a few dollars and watch your wealth grow over time.</p>
+            <button class="button" onclick="showQuiz(1)">Start Quiz</button>
+        </div>
+
+        <!-- Quiz 1 -->
+        <div id="quiz1" class="quiz">
+            <h2>Quiz 1: Introduction to Financial Literacy</h2>
+            <form id="quiz1Form">
+                <label>What is financial literacy?</label>
+                <input type="radio" name="q1" value="correct"> Understanding personal financial management<br>
+                <input type="radio" name="q1" value="incorrect"> Understanding only how to save money<br><br>
+
+                <button type="submit" class="button">Submit Quiz</button>
+            </form>
+        </div>
+
+        <!-- Quiz 2 -->
+        <div id="quiz2" class="quiz">
+            <h2>Quiz 2: Importance of Saving</h2>
+            <form id="quiz2Form">
+                <label>Why is saving important?</label>
+                <input type="radio" name="q1" value="correct"> To secure financial future<br>
+                <input type="radio" name="q1" value="incorrect"> To avoid spending too much<br><br>
+
+                <button type="submit" class="button">Submit Quiz</button>
+            </form>
+        </div>
+
+        <!-- Certificate -->
+        <div id="certificate" class="certificate">
+            <h2>Certificate of Completion</h2>
+            <p>Congratulations on completing the Financial Literacy & Micro Investments Course!</p>
+            <p>This certificate is awarded to:</p>
+            <h3 id="certificateName">[Your Name]</h3>
+            <p>Completion Date: <span id="completionDate"></span></p>
+            <button class="button" onclick="downloadCertificate()">Download Certificate</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLesson = 1;
+
+        // Show the first lesson
+        document.getElementById(`lesson${currentLesson}`).classList.add('active');
+
+        // Function to move to the next lesson
+        function nextLesson(lessonNumber) {
+            // Hide the current lesson
+            document.getElementById(`lesson${currentLesson}`).classList.remove('active');
+            currentLesson = lessonNumber;
+            // Show the next lesson
+            document.getElementById(`lesson${currentLesson}`).classList.add('active');
+        }
+
+        // Function to show the quiz
+        function showQuiz(quizNumber) {
+            document.getElementById(`lesson${currentLesson}`).classList.remove('active');
+            document.getElementById(`quiz${quizNumber}`).classList.add('active');
+        }
+
+        // Handle quiz submission
+        document.getElementById("quiz1Form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            checkQuiz(1);
+        });
+
+        document.getElementById("quiz2Form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            checkQuiz(2);
+        });
+
+        // Check quiz score
+        function checkQuiz(quizNumber) {
+            const form = document.getElementById(`quiz${quizNumber}Form`);
+            const selectedAnswer = form.querySelector('input[type="radio"]:checked');
+            let correctAnswers = 0;
+
+            if (selectedAnswer && selectedAnswer.value === 'correct') {
+                correctAnswers = 1;
+            }
+
+            if (correctAnswers > 0) {
+                if (quizNumber === 1) {
+                    showQuiz(2);
+                } else if (quizNumber === 2) {
+                    showCertificate();
+                }
+            } else {
+                alert("You need to answer the quiz correctly to proceed.");
+            }
+        }
+
+        // Show certificate
+        function showCertificate() {
+            const currentDate = new Date().toLocaleDateString();
+            document.getElementById("completionDate").innerText = currentDate;
+            const userName = prompt("Enter your name for the certificate:");
+            document.getElementById("certificateName").innerText = userName;
+            document.getElementById("certificate").classList.add('active');
+        }
+
+        // Download certificate
+        function downloadCertificate() {
+            alert("Certificate downloaded!");
+        }
+    </script>
+
+</body>
+
+</html>
