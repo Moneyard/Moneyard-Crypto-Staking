@@ -230,14 +230,23 @@
         content: `
           <h2>Cryptocurrency Basics</h2>
           <p>Cryptocurrency is a digital or virtual currency that uses cryptography for security. It is decentralized and operates on blockchain technology. Learn how to store and transfer it securely.</p>
-          <iframe src="https://m.youtube.com/watch?v=YIVAluSL9SU&t=4s&pp=2AEEkAIB" allowfullscreen></iframe>
+          <iframe 
+            width="100%" 
+            height="315" 
+            src="https://www.youtube.com/embed/YIVAluSL9SU?start=4" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
           <ul>
             <li>What is blockchain technology?</li>
             <li>How do wallets and exchanges work?</li>
             <li>How to stake and earn rewards safely</li>
           </ul>
           <div class='quiz-section'>
-            <div class='quiz-question'><strong>1:</strong> What is staking?</div>
+            <div>
+           class='quiz-question'><strong>1:</strong> What is staking?</div>
             <button onclick="alert('Correct!')">Earning by holding crypto</button>
             <button onclick="alert('Nope!')">Sending crypto fast</button>
           </div>
