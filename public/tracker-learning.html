@@ -25,7 +25,7 @@
       margin-bottom: 30px;
     }
     .lesson {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
     .lesson-title {
       font-weight: bold;
@@ -36,6 +36,7 @@
       background: #e0e0e0;
       border-radius: 20px;
       overflow: hidden;
+      margin-bottom: 10px;
     }
     .progress {
       height: 100%;
@@ -44,17 +45,15 @@
       transition: width 0.5s ease-in-out;
     }
     .start-button {
-      display: block;
-      margin: 30px auto 0;
-      padding: 10px 25px;
+      display: inline-block;
+      padding: 8px 16px;
       background-color: #00c6a7;
       color: #fff;
-      font-size: 16px;
+      font-size: 14px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-align: center;
+      border-radius: 6px;
       text-decoration: none;
+      cursor: pointer;
       transition: background 0.3s;
     }
     .start-button:hover {
@@ -70,20 +69,18 @@
   <div class="lesson">
     <div class="lesson-title">Lesson 1: What is Crypto Staking?</div>
     <div class="progress-bar"><div class="progress" data-progress="100"></div></div>
+    <a href="tracker-learning.html#lesson1" class="start-button">Start Lesson</a>
   </div>
 
   <div class="lesson">
     <div class="lesson-title">Lesson 2: How Moneyard Works</div>
     <div class="progress-bar"><div class="progress" data-progress="70"></div></div>
+    <a href="tracker-learning.html#lesson2" class="start-button">Start Lesson</a>
   </div>
 
-  <div class="lesson">
-    <div class="lesson-title">Lesson 3: Start Earning</div>
-    <div class="progress-bar"><div class="progress" data-progress="30"></div></div>
-  </div>
-
-  <a href="tracker-learning.html" class="start-button">Start Lesson</a>
-</div>
+  <div id="lesson1" class="lesson">...</div>
+<div id="lesson2" class="lesson">...</div>
+<div id="lesson3" class="lesson">...</div>
 
 <script>
   document.querySelectorAll('.progress').forEach(bar => {
