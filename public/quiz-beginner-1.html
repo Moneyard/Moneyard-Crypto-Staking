@@ -27,6 +27,7 @@
     }
     h2 {
       text-align: center;
+      color: #2b7a78;
     }
     .question {
       margin-bottom: 20px;
@@ -50,6 +51,10 @@
       margin-top: 20px;
       display: block;
       width: 100%;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #205e5d;
     }
     #result {
       text-align: center;
@@ -108,17 +113,18 @@
       };
 
       let score = 0;
-      let total = Object.keys(answers).length;
+      const total = Object.keys(answers).length;
 
-      for (let q in answers) {
-        const selected = document.querySelector(`input[name="${q}"]:checked`);
-        if (selected && selected.value === answers[q]) {
+      for (let key in answers) {
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (selected && selected.value === answers[key]) {
           score++;
         }
       }
 
-      const resultText = `You scored ${score} out of ${total}`;
-      document.getElementById("result").innerText = resultText;
+      const result = document.getElementById("result");
+      result.innerText = `You scored ${score} out of ${total}`;
+      result.style.color = score === total ? "#4caf50" : "#e74c3c";
 
       if (score === total) {
         localStorage.setItem("quiz-beginner-1", "completed");
