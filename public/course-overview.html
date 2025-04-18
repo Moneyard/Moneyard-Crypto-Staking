@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Moneyard Tabs - Deposit & Course</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Moneyard - Deposit & Course</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,13 +11,11 @@
       margin: 0;
       padding: 20px;
     }
-
     .tabs {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
     }
-
     .tab-button {
       flex: 1;
       padding: 15px;
@@ -29,12 +27,10 @@
       border-radius: 8px 8px 0 0;
       transition: background 0.3s;
     }
-
     .tab-button.active {
       background: #28a745;
       color: white;
     }
-
     .tab-content {
       display: none;
       background: white;
@@ -43,11 +39,9 @@
       border-top: none;
       border-radius: 0 0 8px 8px;
     }
-
     .tab-content.active {
       display: block;
     }
-
     input, select, button {
       display: block;
       width: 100%;
@@ -56,7 +50,6 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-
     button {
       background-color: #28a745;
       color: white;
@@ -64,120 +57,159 @@
       cursor: pointer;
       border: none;
     }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      animation: fadeInScale 0.4s ease;
+    }
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .close-btn {
+      margin-top: 15px;
+      background: #dc3545;
+    }
   </style>
 </head>
-<body>
+<body onload="showTab('deposit')">
 
+  <!-- Tab Menu -->
   <div class="tabs">
     <button class="tab-button active" onclick="showTab('deposit')">Deposit</button>
     <button class="tab-button" onclick="showTab('course')">Course Overview</button>
   </div>
 
-  <div id="deposit" class="tab-content">
-  <h3>Deposit Funds</h3>
-  <label>Amount (USDT):</label>
-  <input type="number" id="deposit-amount" placeholder="Enter amount" />
-  
-  <label>Payment Method:</label>
-  <select id="deposit-method" onchange="updateAddressAndQR()">
-    <option value="TRC20">USDT - TRC20 (Tron)</option>
-    <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
-  </select>
+  <!-- Deposit Section -->
+  <div id="deposit" class="tab-content active">
+    <h3>Deposit Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="deposit-amount" placeholder="Enter amount" />
 
-  <div id="address-section" class="qr-section">
-    <p><strong>Deposit Address:</strong></p>
-    <p id="wallet-address" class="wallet-address">Please select a network</p>
-    <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
-    <div class="qr-section">
-      <img id="qr-image" src="" alt="QR Code" />
+    <label>Payment Method:</label>
+    <select id="deposit-method" onchange="updateAddressAndQR()">
+      <option value="TRC20">USDT - TRC20 (Tron)</option>
+      <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
+    </select>
+
+    <div id="address-section">
+      <p><strong>Deposit Address:</strong></p>
+      <p id="wallet-address">Please select a network</p>
+      <button onclick="copyAddress()">Copy Address</button>
+      <div><img id="qr-image" src="" alt="QR Code" style="max-width: 150px;" /></div>
+    </div>
+
+    <label>Transaction ID (optional):</label>
+    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+
+    <button onclick="enrollNow()">Enroll Now for $19 ≈ 19 USDT</button>
+    <p id="enroll-response"></p>
+  </div>
+
+  <!-- Course Section -->
+  <div id="course" class="tab-content">
+    <h3>Course Overview</h3>
+    <p>Explore blockchain, Bitcoin, Ethereum, tokenomics, DeFi, smart contracts and more with Prof. Schmalbach.</p>
+    <ul>
+      <li>Bitcoin & crypto origins</li>
+      <li>Blockchain mechanics</li>
+      <li>Regulation & innovation</li>
+      <li>Smart contracts & tokenization</li>
+    </ul>
+  </div>
+
+  <!-- Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h3>Enrollment Successful!</h3>
+      <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
     </div>
   </div>
 
-  <label>Transaction ID (optional):</label>
-  <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-  
-  <button class="modal-enroll" onclick="enrollNow()">Enroll Now for $19 ≈ 19 USDT</button>
-<p id="enroll-response"></p>
-</div>
-
-  <div id="course" class="tab-content">
-  <h3>Course Overview</h3>
-
-  <h4>Overview</h4>
-  <p><strong>More about this course:</strong><br>
-    The <em>Blockchain Mastery: From Fundamentals to Advanced Corporate Solutions</em> course explores the dynamic world of digital finance. Dive into Bitcoin's origins, the transformative rise of cryptocurrencies, and the innovative blockchain technology behind them. Gain insights into recent advancements, regulatory milestones, and diverse cryptocurrencies like Ethereum and Cardano. Demystify blockchain consensus mechanisms and explore topics such as DeFi, tokenomics, and smart contracts. Whether you're a student or a professional, embark on this thrilling journey into the future of money with Prof. Schmalbach. This course offers a comprehensive understanding of the rapidly evolving landscape of digital assets and their implications for businesses and investors alike.
-  </p>
-
-  <h4>What You Will Learn</h4>
-  <ul>
-    <li><strong>Bitcoin and Cryptocurrencies Exploration:</strong> Delve into the intricate world of Bitcoin and cryptocurrencies, uncovering their origins, development, and transformative impact on global finance.</li>
-
-    <li><strong>Blockchain Technology Analysis:</strong> This seminar meticulously explores blockchain technology's underlying principles, the complex dynamics of cryptocurrency markets, and the critical role of regulatory landscapes in shaping the industry's future.</li>
-
-    <li><strong>Bitcoin's Pioneering Role:</strong> Gain insights into Bitcoin's pioneering role in advancing digital currencies and its consequential influence on spawning a diverse array of cryptocurrencies.</li>
-
-    <li><strong>Comprehensive Understanding:</strong> Acquire a robust understanding of digital finance's current state and its potential evolution, equipping you with the knowledge to navigate and contribute to this.</li>
-  </ul>
-</div>
-
   <script>
+    // Tab switching
     function showTab(tabId) {
-      const tabs = document.querySelectorAll('.tab-content');
-      const buttons = document.querySelectorAll('.tab-button');
-      
-      tabs.forEach(tab => tab.classList.remove('active'));
-      buttons.forEach(btn => btn.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
+      const tabs = document.querySelectorAll(".tab-content");
+      const buttons = document.querySelectorAll(".tab-button");
+
+      tabs.forEach(tab => tab.classList.remove("active"));
+      buttons.forEach(btn => btn.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
     }
 
-  function updateAddressAndQR() {
-    var method = document.getElementById("deposit-method").value;
-    var address = "";
-    var qrCodeUrl = "";
-    if (method === "TRC20") {
-      address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
+    function updateAddressAndQR() {
+      var method = document.getElementById("deposit-method").value;
+      var address = "";
+      var qrCodeUrl = "";
+      if (method === "TRC20") {
+        address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
+      } else if (method === "BEP20") {
+        address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
+      }
       qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + address;
-    } else if (method === "BEP20") {
-      address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
-      qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + address;
+      document.getElementById("wallet-address").textContent = address;
+      document.getElementById("qr-image").src = qrCodeUrl;
     }
-    document.getElementById("wallet-address").textContent = address;
-    document.getElementById("qr-image").src = qrCodeUrl;
-  }
 
-  function copyAddress() {
-    const address = document.getElementById("wallet-address").textContent;
-    navigator.clipboard.writeText(address).then(() => {
-      alert("Address copied to clipboard");
-    });
-  }
+    function copyAddress() {
+      const address = document.getElementById("wallet-address").textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        alert("Address copied to clipboard");
+      });
+    }
 
-  function submitDeposit() {
-    var amount = document.getElementById("deposit-amount").value;
-    var txid = document.getElementById("deposit-txid").value;
-    var method = document.getElementById("deposit-method").value;
-    document.getElementById("deposit-response").innerText = "Deposit of " + amount + " " + method + " pending.";
-  }
-  function enrollNow() {
-    const response = document.getElementById("enroll-response");
+    function enrollNow() {
+      const amount = document.getElementById("deposit-amount").value;
+      const method = document.getElementById("deposit-method").value;
+      if (!amount || !method) {
+        alert("Please fill in all required fields before enrolling.");
+        return;
+      }
 
-    // Set the success message
-    response.textContent = "Enrollment successful! Redirecting to Admin for your course payment approval... When your deposit is approved - Start A Course.";
+      // Sound + vibration
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+      audio.play();
 
-    // Add animation class (optional)
-    response.style.opacity = "0";
-    response.style.transition = "opacity 1s";
-    setTimeout(() => {
-      response.style.opacity = "1";
-    }, 100);
+      // Show modal
+      document.getElementById("successModal").style.display = "flex";
 
-    // Redirect after 2 seconds
-    setTimeout(() => {
-      window.location.href = "deposit-approval.html";
-    }, 2000);
-  }
-</script>
+      // Redirect after 3 sec
+      setTimeout(() => {
+        window.location.href = "deposit-approval.html";
+      }, 3000);
+    }
+
+    function closeModal() {
+      document.getElementById("successModal").style.display = "none";
+    }
+  </script>
 </body>
 </html>
