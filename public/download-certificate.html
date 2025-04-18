@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Official Moneyard Certificate">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Official Moneyard Certificate" />
   <title>Moneyard Premium Certificate</title>
 
-  <!-- html2pdf.js for PDF download -->
+  <!-- PDF Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body {
+      background: #fffaf0;
+      font-family: 'Georgia', serif;
       margin: 0;
       padding: 0;
-      font-family: 'Georgia', serif;
-      background: #fff8dc;
       text-align: center;
     }
 
     .certificate {
       max-width: 1000px;
-      margin: 30px auto;
-      padding: 40px;
-      border: 12px solid #b8860b;
-      background: linear-gradient(to bottom right, #fff8dc, #fdf6e3);
-      box-shadow: 0 0 25px rgba(218,165,32, 0.4);
+      margin: 40px auto;
+      padding: 50px;
+      border: 12px double #daa520;
+      background: linear-gradient(to bottom right, #fffaf0, #fef6e4);
+      position: relative;
+      box-shadow: 0 0 30px rgba(218,165,32, 0.4);
     }
 
     .logo {
@@ -33,31 +34,71 @@
     }
 
     h1 {
+      font-size: 38px;
       color: #b8860b;
-      font-size: 42px;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
 
-    h2 {
-      color: #8b6508;
+    .subtitle {
+      font-size: 22px;
+      color: #555;
+      margin-top: 0;
+      margin-bottom: 30px;
+    }
+
+    .recipient {
       font-size: 28px;
-      margin: 20px 0;
+      font-weight: bold;
+      color: #b8860b;
+      margin: 10px 0;
     }
 
-    p {
-      font-size: 20px;
+    .course {
+      font-size: 24px;
+      color: #333;
+      margin: 15px 0 40px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 16px;
       color: #333;
     }
 
-    .bold {
-      font-weight: bold;
-      color: #b8860b;
+    .issuer {
+      margin-top: 10px;
+      font-size: 16px;
+      font-style: italic;
+      color: #8b4513;
     }
 
     .signature {
-      margin-top: 40px;
-      font-style: italic;
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
       color: #8b4513;
+    }
+
+    .verified-seal {
+      position: absolute;
+      top: 50px;
+      right: 50px;
+      width: 100px;
+      height: auto;
+    }
+
+    .qr-code {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      width: 100px;
+      height: auto;
+    }
+
+    .date {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #555;
     }
 
     .download-btn {
@@ -72,7 +113,7 @@
       cursor: pointer;
       font-weight: bold;
       transition: all 0.3s;
-      z-index: 999;
+      z-index: 1000;
     }
 
     .download-btn:hover {
@@ -83,43 +124,56 @@
 </head>
 <body>
 
-  <!-- Download PDF button -->
   <button class="download-btn" onclick="generatePDF()">Download Certificate</button>
 
-  <!-- Certificate content -->
   <div class="certificate" id="certificateContent">
-    <!-- Update the image path if stored in a subfolder like images/ -->
-    <img src="20250409_162622.jpg" alt="Moneyard Logo" class="logo">
+    <!-- Logo -->
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" class="logo" />
 
-    <h1>Certificate of Completion</h1>
-    <p>This is to proudly certify that</p>
+    <h1>CERTIFICATE OF COMPLETION</h1>
+    <p class="subtitle">This certificate is proudly presented to</p>
 
-    <h2 class="bold" id="learnerName">[Learner’s Full Name]</h2>
-    
-    <p>has successfully completed the course</p>
-    <h2 class="bold" id="courseTitle">[Course Title]</h2>
+    <!-- Learner Name (auto-filled) -->
+    <div class="recipient" id="learnerName">[Learner's Full Name]</div>
 
-    <p>on this day, <span id="dateIssued"></span></p>
+    <p class="course">For successfully completing the course</p>
 
-    <p class="signature">Authorized Signature __________________________</p>
+    <!-- Course Title (auto-filled) -->
+    <div class="recipient" id="courseTitle">[Course Title]</div>
+
+    <!-- Seal -->
+    <img src="verified-seal-gold.png" alt="Verified Seal" class="verified-seal" />
+
+    <!-- QR Code -->
+    <img src="qr-code.png" alt="QR Code" class="qr-code" />
+
+    <!-- Date -->
+    <p class="date">Issued on <span id="issueDate"></span></p>
+
+    <!-- Footer -->
+    <p class="footer">Issued by <strong>Moneyard Learning</strong>, an arm platform of <strong>MONEYARD</strong></p>
+    <p class="issuer">Signed by Mwaba Lewis, Founder of Moneyard</p>
+    <p class="signature">__________________________</p>
   </div>
 
   <script>
-    // Set today's date
-    document.getElementById('dateIssued').textContent = new Date().toLocaleDateString();
+    // Auto-fill values
+    document.getElementById('learnerName').textContent = "Jane Doe"; // customize here
+    document.getElementById('courseTitle').textContent = "Mastering Crypto Staking"; // customize here
 
-    // OPTIONAL: Replace with dynamic values if needed
-    document.getElementById('learnerName').textContent = 'Jane Smith';
-    document.getElementById('courseTitle').textContent = 'Advanced Crypto Staking Strategy';
+    // Set current date
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('issueDate').textContent = today.toLocaleDateString(undefined, options);
 
     function generatePDF() {
-      const element = document.getElementById('certificateContent');
+      const element = document.getElementById("certificateContent");
       const opt = {
         margin: 10,
-        filename: 'Moneyard_Certificate.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        filename: "Moneyard_Certificate.pdf",
+        image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        jsPDF: { unit: "mm", format: "a4", orientation: "landscape" }
       };
       html2pdf().set(opt).from(element).save();
     }
