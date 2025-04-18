@@ -1,57 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Official Moneyard Certificate">
-  <title>Moneyard Certificate</title>
+  <title>Moneyard Premium Certificate</title>
 
-  <!-- Include html2pdf library -->
+  <!-- html2pdf.js for PDF download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body {
-      font-family: 'Georgia', serif;
-      background: #f5f5f5;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      font-family: 'Georgia', serif;
+      background: #fff8dc;
       text-align: center;
     }
 
     .certificate {
-      width: 90%;
       max-width: 1000px;
-      margin: auto;
+      margin: 30px auto;
       padding: 40px;
-      border: 10px solid #8b4513;
-      background: white;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
-      position: relative;
+      border: 12px solid #b8860b;
+      background: linear-gradient(to bottom right, #fff8dc, #fdf6e3);
+      box-shadow: 0 0 25px rgba(218,165,32, 0.4);
     }
 
-    .certificate img.logo {
-      width: 150px;
+    .logo {
+      width: 120px;
       margin-bottom: 20px;
     }
 
-    .certificate h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-      color: #4b2e00;
+    h1 {
+      color: #b8860b;
+      font-size: 42px;
+      margin-bottom: 5px;
     }
 
-    .certificate h2 {
-      font-size: 24px;
+    h2 {
+      color: #8b6508;
+      font-size: 28px;
       margin: 20px 0;
-      color: #444;
     }
 
-    .certificate p {
+    p {
       font-size: 20px;
-      margin: 10px 0;
+      color: #333;
     }
 
-    .certificate .bold {
+    .bold {
       font-weight: bold;
+      color: #b8860b;
+    }
+
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      color: #8b4513;
     }
 
     .download-btn {
@@ -66,6 +72,7 @@
       cursor: pointer;
       font-weight: bold;
       transition: all 0.3s;
+      z-index: 999;
     }
 
     .download-btn:hover {
@@ -76,28 +83,34 @@
 </head>
 <body>
 
-  <!-- Download Button -->
+  <!-- Download PDF button -->
   <button class="download-btn" onclick="generatePDF()">Download Certificate</button>
 
-  <!-- Certificate Container -->
+  <!-- Certificate content -->
   <div class="certificate" id="certificateContent">
-    <img src="public/20250409_162622.jpg" alt="Moneyard Logo" class="logo">
+    <!-- Update the image path if stored in a subfolder like images/ -->
+    <img src="20250409_162622.jpg" alt="Moneyard Logo" class="logo">
+
     <h1>Certificate of Completion</h1>
-    <p>This is to certify that</p>
+    <p>This is to proudly certify that</p>
+
     <h2 class="bold" id="learnerName">[Learner’s Full Name]</h2>
+    
     <p>has successfully completed the course</p>
     <h2 class="bold" id="courseTitle">[Course Title]</h2>
+
     <p>on this day, <span id="dateIssued"></span></p>
-    <p style="margin-top: 40px;">Signature: __________________________</p>
+
+    <p class="signature">Authorized Signature __________________________</p>
   </div>
 
   <script>
-    // Auto fill today's date
+    // Set today's date
     document.getElementById('dateIssued').textContent = new Date().toLocaleDateString();
 
-    // Optional: Set dynamic name and course title here
-    document.getElementById('learnerName').textContent = 'John Doe';
-    document.getElementById('courseTitle').textContent = 'Introduction to Crypto Staking';
+    // OPTIONAL: Replace with dynamic values if needed
+    document.getElementById('learnerName').textContent = 'Jane Smith';
+    document.getElementById('courseTitle').textContent = 'Advanced Crypto Staking Strategy';
 
     function generatePDF() {
       const element = document.getElementById('certificateContent');
@@ -108,7 +121,6 @@
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
       };
-
       html2pdf().set(opt).from(element).save();
     }
   </script>
