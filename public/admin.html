@@ -162,26 +162,29 @@
     <p>Learn all about staking, crypto security, and financial growth with our expert-led content!</p>
   </div>
 
-  <div id="momoModal" class="modal">
-    <div class="modal-content">
-      <h2>Mobile Money Deposit</h2>
-      <p>Send to: <strong>+256700000000 (MTN)</strong></p>
-      <form id="modalDepositForm">
-        <label>Your MoMo Number:</label>
-        <input type="text" id="modalSenderPhone" required placeholder="+256..." />
+  <!-- Deposit Modal -->
+<div id="depositModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('depositModal')">&times;</span>
+    <h2>Deposit Funds</h2>
 
-        <label>Amount Sent:</label>
-        <input type="number" id="modalAmount" required placeholder="e.g. 50000" />
+    <label>Select Payment Method:</label>
+    <select id="paymentMethod" onchange="togglePaymentInstructions()">
+      <option value="">-- Select --</option>
+      <option value="mtn">Mobile Money - MTN</option>
+      <option value="airtel">Mobile Money - Airtel</option>
+      <option value="trc20">Crypto - TRC20</option>
+      <option value="bep20">Crypto - BEP20</option>
+    </select>
 
-        <label>Transaction ID:</label>
-        <input type="text" id="modalTxid" required placeholder="123ABC456XYZ" />
+    <!-- Instructions Display -->
+    <div id="paymentInstructions" style="margin-top: 15px;"></div>
 
-        <button type="submit">Submit Payment Proof</button>
-      </form>
-      <p id="modalMessage" style="margin-top:10px;color:green;"></p>
-      <button onclick="closeMomoModal()" style="position:absolute;top:10px;right:15px;background:none;border:none;font-size:18px;">&times;</button>
-    </div>
+    <input type="number" id="depositAmount" placeholder="Enter Amount" required />
+    <input type="text" id="txidInput" placeholder="Transaction ID (TxID) / Reference" required />
+    <button onclick="submitDeposit()">Submit Deposit</button>
   </div>
+</div>
 
   <div id="successModal" class="modal">
     <div class="modal-content">
