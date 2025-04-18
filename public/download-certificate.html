@@ -16,12 +16,13 @@
 
     .certificate {
       background: white;
-      border: 10px solid #d4af37;
+      border: 15px dashed #d4af37;
+      border-radius: 30px;
       padding: 30px;
       width: 900px;
       margin: auto;
       position: relative;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     }
 
     .header-brand {
@@ -38,6 +39,7 @@
     .header-brand::before {
       content: '🎓';
       font-size: 32px;
+      color: #1a7f38;
     }
 
     .certificate h1 {
@@ -91,17 +93,11 @@
       margin-top: 5px;
     }
 
-    .issuer-ribbon {
-      margin-top: 40px;
-      display: inline-block;
-      padding: 10px 20px;
-      background: #d4af37;
-      color: white;
-      font-weight: bold;
+    .issuer-line {
+      margin-top: 30px;
       font-size: 16px;
-      border-radius: 10px;
-      border: 2px solid #8b4513;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      font-weight: 500;
+      color: #222;
     }
 
     .signature {
@@ -166,7 +162,7 @@
 
     <input class="input-field" id="courseTitle" placeholder="Enter Course Title" />
 
-    <div class="issuer-ribbon">Issued by MONEYARD</div>
+    <p class="issuer-line">Issued by Moneyard</p>
 
     <p class="signature">Date Issued: <input class="date-input" id="issueDate" placeholder="MM/DD/YYYY" /></p>
     <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
