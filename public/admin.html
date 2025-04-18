@@ -11,11 +11,13 @@
       margin: 0;
       padding: 20px;
     }
+
     .tabs {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
     }
+
     .tab-button {
       flex: 1;
       padding: 15px;
@@ -27,10 +29,12 @@
       border-radius: 8px 8px 0 0;
       transition: background 0.3s;
     }
+
     .tab-button.active {
       background: #28a745;
       color: white;
     }
+
     .tab-content {
       display: none;
       background: white;
@@ -39,9 +43,11 @@
       border-top: none;
       border-radius: 0 0 8px 8px;
     }
+
     .tab-content.active {
       display: block;
     }
+
     input, select, button {
       display: block;
       width: 100%;
@@ -50,6 +56,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+
     button {
       background-color: #28a745;
       color: white;
@@ -57,6 +64,7 @@
       cursor: pointer;
       border: none;
     }
+
     .modal {
       display: none;
       position: fixed;
@@ -69,6 +77,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .modal-content {
       background-color: #fff;
       padding: 30px;
@@ -79,15 +88,18 @@
       animation: fadeInScale 0.4s ease;
       position: relative;
     }
+
     @keyframes fadeInScale {
       from { opacity: 0; transform: scale(0.8); }
       to { opacity: 1; transform: scale(1); }
     }
+
     .close-btn {
       margin-top: 15px;
       background: #dc3545;
       color: white;
     }
+
     .mobile-money-btn {
       background-color: #1db954;
       color: white;
@@ -97,6 +109,7 @@
       font-weight: bold;
       transition: 0.3s;
     }
+
     .mobile-money-btn:hover {
       background-color: #14833b;
     }
@@ -114,6 +127,7 @@
 
   <button onclick="openAdminModal()" style="position:fixed; top:20px; right:20px; background:#1b5e20; color:#fff; border:none; padding:10px 20px; border-radius:8px;">View Deposits</button>
 
+  <!-- Admin Deposit Modal -->
   <div id="adminDepositModal" class="modal">
     <div class="modal-content" style="max-width:800px;">
       <span onclick="closeAdminModal()" style="position:absolute; top:10px; right:20px; font-size:22px; cursor:pointer;">&times;</span>
@@ -132,6 +146,7 @@
     </div>
   </div>
 
+  <!-- Deposit Section -->
   <div id="deposit" class="tab-content active">
     <h3>Deposit Funds</h3>
     <label>Amount (USDT):</label>
@@ -157,35 +172,36 @@
     <button class="mobile-money-btn" onclick="openMomoModal()">Pay with Mobile Money</button>
   </div>
 
+  <!-- Course Overview Tab -->
   <div id="course" class="tab-content">
     <h3>Course Overview</h3>
     <p>Learn all about staking, crypto security, and financial growth with our expert-led content!</p>
   </div>
 
-  <!-- Deposit Modal -->
-<div id="depositModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('depositModal')">&times;</span>
-    <h2>Deposit Funds</h2>
+  <!-- MoMo Deposit Modal -->
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('depositModal')">&times;</span>
+      <h2>Deposit Funds</h2>
 
-    <label>Select Payment Method:</label>
-    <select id="paymentMethod" onchange="togglePaymentInstructions()">
-      <option value="">-- Select --</option>
-      <option value="mtn">Mobile Money - MTN</option>
-      <option value="airtel">Mobile Money - Airtel</option>
-      <option value="trc20">Crypto - TRC20</option>
-      <option value="bep20">Crypto - BEP20</option>
-    </select>
+      <label>Select Payment Method:</label>
+      <select id="paymentMethod" onchange="togglePaymentInstructions()">
+        <option value="">-- Select --</option>
+        <option value="mtn">Mobile Money - MTN</option>
+        <option value="airtel">Mobile Money - Airtel</option>
+        <option value="trc20">Crypto - TRC20</option>
+        <option value="bep20">Crypto - BEP20</option>
+      </select>
 
-    <!-- Instructions Display -->
-    <div id="paymentInstructions" style="margin-top: 15px;"></div>
+      <div id="paymentInstructions" style="margin-top: 15px;"></div>
 
-    <input type="number" id="depositAmount" placeholder="Enter Amount" required />
-    <input type="text" id="txidInput" placeholder="Transaction ID (TxID) / Reference" required />
-    <button onclick="submitDeposit()">Submit Deposit</button>
+      <input type="number" id="depositAmount" placeholder="Enter Amount" required />
+      <input type="text" id="txidInput" placeholder="Transaction ID (TxID) / Reference" required />
+      <button onclick="submitDeposit()">Submit Deposit</button>
+    </div>
   </div>
-</div>
 
+  <!-- Success Modal -->
   <div id="successModal" class="modal">
     <div class="modal-content">
       <h3>Enrollment Successful!</h3>
@@ -196,32 +212,29 @@
 
   <script>
     function showTab(tabId) {
-      const tabs = document.querySelectorAll(".tab-content");
-      const buttons = document.querySelectorAll(".tab-button");
-      tabs.forEach(tab => tab.classList.remove("active"));
-      buttons.forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
       document.getElementById(tabId).classList.add("active");
-      [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
+      [...document.querySelectorAll(".tab-button")].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
     }
 
     function updateAddressAndQR() {
       const method = document.getElementById("deposit-method").value;
-      let address = "";
-      let qrSrc = "";
-      if (method === "TRC20") {
-        address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
-        qrSrc = "trc20-qr.png";
-      } else if (method === "BEP20") {
-        address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
-        qrSrc = "bep20-qr.png";
-      }
+      const address = method === "TRC20"
+        ? "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy"
+        : method === "BEP20"
+        ? "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D"
+        : "";
+
+      const qrSrc = method === "TRC20" ? "trc20-qr.png" : method === "BEP20" ? "bep20-qr.png" : "";
+
       document.getElementById("wallet-address").textContent = address;
       document.getElementById("qr-image").src = qrSrc;
     }
 
     function copyAddress() {
-      const address = document.getElementById("wallet-address").textContent;
-      navigator.clipboard.writeText(address).then(() => alert("Address copied!"));
+      navigator.clipboard.writeText(document.getElementById("wallet-address").textContent)
+        .then(() => alert("Address copied!"));
     }
 
     function enrollNow() {
@@ -229,33 +242,35 @@
     }
 
     function togglePaymentInstructions() {
-  const method = document.getElementById("paymentMethod").value;
-  const instructions = document.getElementById("paymentInstructions");
+      const method = document.getElementById("paymentMethod").value;
+      const instructions = document.getElementById("paymentInstructions");
 
-  if (method === "mtn") {
-    instructions.innerHTML = `
-      <strong>MTN Mobile Money:</strong><br>
-      Send payment to <b>+256 77X XXX XXX</b><br>
-      Use your phone number or a clear reference.<br>
-      Copy and paste the transaction ID below.`;
-  } else if (method === "airtel") {
-    instructions.innerHTML = `
-      <strong>Airtel Mobile Money:</strong><br>
-      Send payment to <b>+256 75X XXX XXX</b><br>
-      Use your phone number or a clear reference.<br>
-      Copy and paste the transaction ID below.`;
-  } else if (method === "trc20") {
-    instructions.innerHTML = `
-      <strong>TRC20 Wallet Address:</strong><br>
-      <code>TXx12ExampleTronWalletHere</code>`;
-  } else if (method === "bep20") {
-    instructions.innerHTML = `
-      <strong>BEP20 Wallet Address:</strong><br>
-      <code>0xExampleBEP20WalletHere</code>`;
-  } else {
-    instructions.innerHTML = "";
-  }
-}
+      if (method === "mtn") {
+        instructions.innerHTML = `<strong>MTN Mobile Money:</strong><br>
+        Send payment to <b>+256 77X XXX XXX</b><br>
+        Use your phone number or a clear reference.<br>
+        Copy and paste the transaction ID below.`;
+      } else if (method === "airtel") {
+        instructions.innerHTML = `<strong>Airtel Mobile Money:</strong><br>
+        Send payment to <b>+256 75X XXX XXX</b><br>
+        Use your phone number or a clear reference.<br>
+        Copy and paste the transaction ID below.`;
+      } else if (method === "trc20") {
+        instructions.innerHTML = `<strong>TRC20 Wallet Address:</strong><br><code>TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy</code>`;
+      } else if (method === "bep20") {
+        instructions.innerHTML = `<strong>BEP20 Wallet Address:</strong><br><code>0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D</code>`;
+      } else {
+        instructions.innerHTML = "";
+      }
+    }
+
+    function openMomoModal() {
+      document.getElementById("depositModal").style.display = "flex";
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
 
     function openAdminModal() {
       document.getElementById("adminDepositModal").style.display = "flex";
@@ -265,16 +280,19 @@
       document.getElementById("adminDepositModal").style.display = "none";
     }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
+    function submitDeposit() {
+      // Add backend submission logic here
+      enrollNow();
     }
 
     function loadDepositsToTable() {
-      alert("This would fetch deposits and populate the table.");
+      // Backend logic to reload deposits
+      alert("Table refreshed (connect backend).");
     }
 
     function exportDepositsToCSV() {
-      alert("This would export deposits to a CSV file.");
+      // Add export logic here
+      alert("Exported (connect backend).");
     }
   </script>
 </body>
