@@ -272,47 +272,47 @@
   </div>
 
   <script>
-    function toggleMainDropdown() {
-      var dropdown = document.getElementById('mainDropdown');
-      dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
-    }
+  // JavaScript code I provided
+  function toggleCoursesDropdown(level) {
+    const allLevels = ['featuredCourses', 'beginnerCourses', 'intermediateCourses', 'advancedCourses'];
 
-    function toggleCoursesDropdown(level) {
-      var allLevels = ['beginnerCourses', 'intermediateCourses', 'advancedCourses'];
-      allLevels.forEach(id => {
-        document.getElementById(id)?.style.display = 'none';
-      });
-      if (level && document.getElementById(level)) {
-        document.getElementById(level).style.display = 'block';
-      }
-    }
+    allLevels.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
 
-    function redirectToLesson(page) {
-      window.location.href = page;
+    const selected = document.getElementById(level);
+    if (selected) {
+      selected.style.display = 'block';
     }
-    function toggleMainDropdown() {
-      const dropdown = document.getElementById('mainDropdown');
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
+  }
 
-    function filterCourses() {
-      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-      const courses = document.querySelectorAll('.course-advert');
-      
-      courses.forEach(course => {
-        const courseName = course.getAttribute('data-course-name').toLowerCase();
-        
-        if (courseName.includes(searchQuery)) {
-          course.style.display = 'block'; // Show the course if it matches
+  function searchCourses() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const courseSections = ['featuredCourses', 'beginnerCourses', 'intermediateCourses', 'advancedCourses'];
+
+    courseSections.forEach(sectionId => {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      const courses = section.getElementsByClassName("course-advert");
+      for (let i = 0; i < courses.length; i++) {
+        const title = courses[i].querySelector("h3")?.textContent.toLowerCase() || "";
+        const description = courses[i].querySelector("p")?.textContent.toLowerCase() || "";
+        const price = courses[i].querySelector(".price")?.textContent.toLowerCase() || "";
+
+        if (title.includes(input) || description.includes(input) || price.includes(input)) {
+          courses[i].style.display = "";
         } else {
-          course.style.display = 'none'; // Hide the course if it doesn't match
+          courses[i].style.display = "none";
         }
-      });
-    }
+      }
+    });
+  }
 
-    function redirectToLesson(lessonURL) {
-      window.location.href = lessonURL;
-    }
-  </script>
+  window.onload = function() {
+    toggleCoursesDropdown('featuredCourses');
+  };
+</script>
 </body>
 </html>
