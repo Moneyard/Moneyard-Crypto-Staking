@@ -134,51 +134,49 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-  // Signup
-  const signupForm = document.getElementById("signupForm");
-  signupForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("signupEmail").value;
-    const password = document.getElementById("signupPassword").value;
+  // Signup Handler
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
 
-    const res = await fetch("/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+  const res = await fetch('/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
 
-    const data = await res.json();
-    if (data.success) {
-      alert("Signup successful! Please login.");
-      signupForm.reset();
-      toggleForms('login');
-    } else {
-      alert(data.error || "Signup failed.");
-    }
-  });
+  const data = await res.json();
+  if (res.ok) {
+    alert('Signup successful! Please login.');
+    document.getElementById('signupForm').reset();
+    toggleForms(); // Show login form
+  } else {
+    alert(data.message); // "User already exists" or other error
+  }
+});
 
-  // Login
-  const loginForm = document.getElementById("loginForm");
-  loginForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
+// Login Handler
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
 
-    const res = await fetch("/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+  const res = await fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
 
-    const data = await res.json();
-    if (data.success) {
-      localStorage.setItem("userId", data.userId);
-      localStorage.setItem("email", email);
-      window.location.href = "/dashboard";
-    } else {
-      alert(data.error || "Login failed.");
-    }
-  });
+  const data = await res.json();
+  if (res.ok && data.token) {
+    localStorage.setItem('authToken', data.token);
+    window.location.href = 'dashboard.html';
+  } else {
+    alert(data.message || 'Login failed');
+  }
+});
+
 
   // Stake plans
   const stakePlansContainer = document.getElementById("stake-plans");
