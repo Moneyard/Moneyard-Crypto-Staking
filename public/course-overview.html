@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Moneyard Tabs - Deposit & Course</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 15px;
+      background: #e0e0e0;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      color: #333;
+      border-radius: 8px 8px 0 0;
+      transition: background 0.3s;
+    }
+
+    .tab-button.active {
+      background: #28a745;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    input, select, button {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('deposit')">Deposit</button>
+    <button class="tab-button" onclick="showTab('course')">Course Overview</button>
+  </div>
+
+  <div id="deposit" class="tab-content active">
+    <h3>Make a Deposit</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" placeholder="Enter amount">
+    
+    <label>Payment Method:</label>
+    <select onchange="updateAddress(this.value)">
+      <option value="">-- Select Method --</option>
+      <option value="TRC20">USDT - TRC20</option>
+      <option value="BEP20">USDT - BEP20</option>
+    </select>
+    
+    <div id="deposit-address" style="margin-top:10px;"></div>
+    
+    <label>Transaction ID (optional):</label>
+    <input type="text" placeholder="Paste TxID">
+
+    <button onclick="alert('Deposit Submitted')">Submit</button>
+  </div>
+
+  <div id="course" class="tab-content">
+    <h3>Course Overview</h3>
+    <p><strong>Getting Started with Crypto:</strong><br>
+    Learn how wallets, coins, and staking work within Moneyard.</p>
+
+    <p><strong>Deposit Instructions:</strong><br>
+    Step-by-step instructions for TRC20 and BEP20 deposits.</p>
+
+    <p><strong>Security Tips:</strong><br>
+    Always verify wallet addresses and avoid sharing sensitive info.</p>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      const tabs = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.tab-button');
+      
+      tabs.forEach(tab => tab.classList.remove('active'));
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function updateAddress(method) {
+      const addr = {
+        TRC20: "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy",
+        BEP20: "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D"
+      };
+      document.getElementById("deposit-address").innerHTML = method ?
+        `<strong>Deposit Address:</strong><br>${addr[method]}` : "";
+    }
+  </script>
+
+</body>
+</html>
