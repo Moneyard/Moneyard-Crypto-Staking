@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Certificate</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
@@ -31,7 +31,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      color: #1a7f38;
     }
 
     .header-brand::before {
@@ -65,12 +66,29 @@
       margin: 12px auto;
     }
 
-    .seal-image {
+    .seal {
       position: absolute;
       top: 20px;
       right: 20px;
       width: 100px;
       height: 100px;
+      background: #d4af37;
+      border-radius: 50%;
+      border: 3px solid #8b4513;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .seal::after {
+      content: "VERIFIED";
+      font-size: 14px;
+      margin-top: 5px;
     }
 
     .issuer-ribbon {
@@ -119,6 +137,15 @@
       background: #b8860b;
       transform: scale(1.05);
     }
+
+    .date-input {
+      font-size: 18px;
+      border: none;
+      border-bottom: 2px solid black;
+      background: transparent;
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -126,7 +153,7 @@
   <div class="certificate" id="certificateContent">
     <div class="watermark">MONEYARD</div>
 
-    <img src="https://i.imgur.com/mCKi8rE.png" alt="Verified Seal" class="seal-image" />
+    <div class="seal">✓</div>
 
     <div class="header-brand">MONEYARD LEARNING</div>
 
@@ -140,7 +167,8 @@
     <input class="input-field" id="courseTitle" placeholder="Enter Course Title" />
 
     <div class="issuer-ribbon">Issued by MONEYARD</div>
-    <p class="signature">Date Issued: <span id="issueDate"></span></p>
+
+    <p class="signature">Date Issued: <input class="date-input" id="issueDate" placeholder="MM/DD/YYYY" /></p>
     <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
   </div>
 
@@ -150,14 +178,16 @@
     function generatePDF() {
       const name = document.getElementById('learnerName').value;
       const course = document.getElementById('courseTitle').value;
+      const date = document.getElementById('issueDate').value;
 
-      if (!name || !course) {
-        alert('Please enter both name and course title before downloading.');
+      if (!name || !course || !date) {
+        alert('Please enter name, course, and date before downloading.');
         return;
       }
 
       document.getElementById('learnerName').outerHTML = `<h2>${name}</h2>`;
       document.getElementById('courseTitle').outerHTML = `<h2>${course}</h2>`;
+      document.getElementById('issueDate').outerHTML = `<strong>${date}</strong>`;
 
       const element = document.getElementById('certificateContent');
       const opt = {
@@ -170,8 +200,6 @@
 
       html2pdf().set(opt).from(element).save();
     }
-
-    document.getElementById('issueDate').textContent = new Date().toLocaleDateString();
   </script>
 
 </body>
