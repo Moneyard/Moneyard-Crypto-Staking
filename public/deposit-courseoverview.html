@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moneyard - Deposit & Course</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .accordion {
+      background-color: #fff;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      background: #28a745;
+      color: white;
+      padding: 15px 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background: #fff;
+      padding: 0 20px;
+    }
+
+    .accordion-content.open {
+      padding: 20px;
+      max-height: 500px; /* adjust if needed */
+    }
+
+    input, select, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">Deposit</div>
+    <div class="accordion-content">
+      <label>Amount (USDT):</label>
+      <input type="number" placeholder="Enter amount" />
+      <label>Payment Method:</label>
+      <select onchange="updateAddress(this.value)">
+        <option value="">-- Select Method --</option>
+        <option value="TRC20">USDT - TRC20</option>
+        <option value="BEP20">USDT - BEP20</option>
+      </select>
+      <div id="deposit-address" style="margin-top:10px;"></div>
+      <label>Transaction ID (optional):</label>
+      <input type="text" placeholder="Paste TxID" />
+      <button onclick="alert('Deposit Submitted')">Submit</button>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">Course Overview</div>
+    <div class="accordion-content">
+      <h4>Getting Started with Crypto</h4>
+      <p>Understand wallets, coins, and how staking works with Moneyard.</p>
+      <h4>Deposit Guide</h4>
+      <p>Step-by-step guide to safely deposit using TRC20 or BEP20 methods.</p>
+      <h4>Safety Tips</h4>
+      <p>Always double-check the deposit address. Never share your private keys.</p>
+    </div>
+  </div>
+
+  <script>
+    function toggleAccordion(header) {
+      const content = header.nextElementSibling;
+      content.classList.toggle("open");
+    }
+
+    function updateAddress(method) {
+      const addr = {
+        TRC20: "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy",
+        BEP20: "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D"
+      };
+      document.getElementById("deposit-address").innerHTML = method ? 
+        `<strong>Deposit Address:</strong><br>${addr[method]}` : "";
+    }
+  </script>
+
+</body>
+</html>
