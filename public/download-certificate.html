@@ -16,8 +16,8 @@
 
     .certificate {
       background: white;
-      border: 15px dashed #d4af37;
-      border-radius: 30px;
+      border: 10px solid #FFD700;
+      border-radius: 20px;
       padding: 30px;
       width: 900px;
       margin: auto;
@@ -74,14 +74,14 @@
       right: 20px;
       width: 100px;
       height: 100px;
-      background: #d4af37;
+      background: #FFD700;
       border-radius: 50%;
       border: 3px solid #8b4513;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: white;
+      color: black;
       font-size: 16px;
       font-weight: bold;
       box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
@@ -91,6 +91,7 @@
       content: "VERIFIED";
       font-size: 14px;
       margin-top: 5px;
+      color: black;
     }
 
     .issuer-line {
@@ -104,6 +105,23 @@
       margin-top: 20px;
       font-weight: bold;
       font-size: 18px;
+    }
+
+    .date-issued {
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .date-issued input {
+      border: none;
+      border-bottom: 1px solid black;
+      background: transparent;
+      text-align: center;
+      font-size: 16px;
+      color: black;
     }
 
     .watermark {
@@ -133,15 +151,6 @@
       background: #b8860b;
       transform: scale(1.05);
     }
-
-    .date-input {
-      font-size: 18px;
-      border: none;
-      border-bottom: 2px solid black;
-      background: transparent;
-      text-align: center;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
@@ -149,7 +158,7 @@
   <div class="certificate" id="certificateContent">
     <div class="watermark">MONEYARD</div>
 
-    <div class="seal">✓</div>
+    <div class="seal">✨</div>
 
     <div class="header-brand">MONEYARD LEARNING</div>
 
@@ -164,8 +173,11 @@
 
     <p class="issuer-line">Issued by Moneyard</p>
 
-    <p class="signature">Date Issued: <input class="date-input" id="issueDate" placeholder="MM/DD/YYYY" /></p>
     <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
+
+    <div class="date-issued">
+      Date Issued: <input type="text" id="issueDate" placeholder="MM/DD/YYYY" />
+    </div>
   </div>
 
   <button class="download-btn" onclick="generatePDF()">Download Certificate</button>
