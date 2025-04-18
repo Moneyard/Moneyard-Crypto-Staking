@@ -12,13 +12,13 @@
       background: #fdfbf7;
       font-family: 'Georgia', serif;
       color: black;
+      text-align: center;
+      padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
     }
 
     .certificate {
@@ -26,12 +26,10 @@
       border: 10px solid #FFD700;
       border-radius: 20px;
       padding: 30px;
-      width: 100%;
-      max-width: 900px;
-      box-sizing: border-box;
-      position: relative;
+      width: 900px;
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-      text-align: center;
+      position: relative;
+      margin-top: 30px; /* This will bring the certificate slightly down */
     }
 
     .header-brand {
@@ -170,13 +168,6 @@
     .download-btn:hover {
       background: #b8860b;
       transform: scale(1.05);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .certificate {
-        max-width: 90%;
-      }
     }
   </style>
 </head>
