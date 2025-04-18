@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Official Moneyard Certificate">
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+/* Previous certificate styles remain unchanged */
+.download-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 30px;
+  background: #daa520;
+  color: white;
+  border: 2px solid #8b4513;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.download-btn:hover {
+  background: #b8860b;
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<!-- Download Button -->
+<button class="download-btn" onclick="generatePDF()">Download Certificate</button>
+
+<!-- Certificate Container (same as previous) -->
+<div class="certificate" id="certificateContent">
+  <!-- ... previous certificate content ... -->
+</div>
+
+<script>
+function generatePDF() {
+  const element = document.getElementById('certificateContent');
+  const opt = {
+    margin:       10,
+    filename:     'Moneyard_Certificate.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
+</script>
+
+</body>
+</html>
