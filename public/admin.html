@@ -113,6 +113,13 @@
     .mobile-money-btn:hover {
       background-color: #14833b;
     }
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+ul li {
+  margin-bottom: 5px;
+}
   </style>
 </head>
 <body onload="showTab('deposit')">
@@ -196,7 +203,17 @@
       <div id="paymentInstructions" style="margin-top: 15px;"></div>
 
       <input type="number" id="depositAmount" placeholder="Enter Amount" required />
-      <input type="text" id="txidInput" placeholder="Transaction ID (TxID) / Reference" required />
+      <p style="margin-top: 10px; font-weight: bold; color: green;">
+  After making your deposit, kindly send your payment screenshot to:
+</p>
+<ul>
+  <li>
+    WhatsApp: <a href="https://wa.me/YOUR_NUMBER_HERE" target="_blank" style="color: blue;">+1234567890</a>
+  </li>
+  <li>
+    Telegram: <a href="https://t.me/YOUR_USERNAME_HERE" target="_blank" style="color: blue;">@YourTelegramHandle</a>
+  </li>
+</ul>
       <button onclick="submitDeposit()">Submit Deposit</button>
     </div>
   </div>
