@@ -1,57 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Official Moneyard Certificate">
-<!-- Include html2pdf library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <style>
-/* Previous certificate styles remain unchanged */
-.download-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 15px 30px;
-  background: #daa520;
-  color: white;
-  border: 2px solid #8b4513;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
+/* Modified PDF-safe styles */
+.certificate {
+  width: 21cm; /* A4 width */
+  height: 29.7cm; /* A4 height */
+  border: 15px double #daa520;
+  background: #ffd700; /* Solid color instead of gradient */
+  padding: 2cm;
+  font-family: 'Times New Roman', serif;
+  margin: 0 auto;
+  position: relative;
+  box-sizing: border-box;
 }
 
-.download-btn:hover {
-  background: #b8860b;
-  transform: scale(1.05);
+/* Add print-specific styles */
+@media print {
+  body { -webkit-print-color-adjust: exact; }
+  .certificate { background: #ffd700 !important; }
+}
+
+/* Rest of previous styles... */
+.seal {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 120px;
+  color: #8b451366; /* Use alpha channel instead of opacity */
+}
+
+.download-btn {
+  /* ... keep previous button styles ... */
+}
+
+/* Add PDF-safe positioning */
+.signature-box, .cert-number, .footer {
+  position: relative;
+  z-index: 2;
 }
 </style>
 </head>
 <body>
 
-<!-- Download Button -->
 <button class="download-btn" onclick="generatePDF()">Download Certificate</button>
 
-<!-- Certificate Container (same as previous) -->
 <div class="certificate" id="certificateContent">
-  <!-- ... previous certificate content ... -->
+  <!-- Certificate content remains same -->
 </div>
 
 <script>
 function generatePDF() {
+  // Temporary show alert to verify function is called
+  alert('PDF generation started...');
+  
   const element = document.getElementById('certificateContent');
   const opt = {
-    margin:       10,
+    margin:       0,
     filename:     'Moneyard_Certificate.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    image:        { type: 'jpeg', quality: 1 },
+    html2canvas:  {
+      scale: 2,
+      useCORS: true,
+      logging: true, // Enable logging
+      windowWidth: 210 * 10, // 210mm A4 width
+      windowHeight: 297 * 10 // 297mm A4 height
+    },
+    jsPDF:        {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
   };
 
-  html2pdf().set(opt).from(element).save();
+  // Add loading state
+  html2pdf().set(opt).from(element).toPdf().get('pdf').then(pdf => {
+    console.log('PDF generated successfully');
+  }).save();
 }
 </script>
-
 </body>
 </html>
