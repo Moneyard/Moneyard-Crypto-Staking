@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Official Moneyard Certificate" />
   <title>Moneyard Certificate</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
-      background: url('https://www.transparenttextures.com/patterns/gold-fish-scale.png');
+      background: #fdfbf7;
       font-family: 'Georgia', serif;
       color: black;
       text-align: center;
@@ -16,19 +15,33 @@
     }
 
     .certificate {
-      background: rgba(255, 255, 240, 0.95);
+      background: white;
       border: 10px solid #d4af37;
       padding: 30px;
       width: 900px;
       margin: auto;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
       position: relative;
-      color: black;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    }
+
+    .header-brand {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .header-brand::before {
+      content: '🎓';
+      font-size: 32px;
     }
 
     .certificate h1 {
-      font-size: 40px;
-      margin-bottom: 15px;
+      font-size: 36px;
+      margin: 10px 0;
     }
 
     .certificate h2 {
@@ -52,36 +65,42 @@
       margin: 12px auto;
     }
 
-    .verified-seal {
+    .seal-image {
+      position: absolute;
+      top: 20px;
+      right: 20px;
       width: 100px;
       height: 100px;
-      background: radial-gradient(circle, #ffd700, #b8860b);
-      border-radius: 50%;
-      box-shadow: 0 0 12px #d4af37;
-      margin: 30px auto 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
+    }
+
+    .issuer-ribbon {
+      margin-top: 40px;
+      display: inline-block;
+      padding: 10px 20px;
+      background: #d4af37;
       color: white;
       font-weight: bold;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .verified-seal::before {
-      content: '✔';
-      font-size: 28px;
-      margin-bottom: 5px;
-    }
-
-    .issuer-section {
-      margin-top: 40px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 2px solid #8b4513;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
 
     .signature {
-      margin-top: 15px;
+      margin-top: 20px;
       font-weight: bold;
+      font-size: 18px;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      color: rgba(212, 175, 55, 0.08);
+      pointer-events: none;
+      white-space: nowrap;
     }
 
     .download-btn {
@@ -100,24 +119,16 @@
       background: #b8860b;
       transform: scale(1.05);
     }
-
-    .watermark {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 80px;
-      color: rgba(212, 175, 55, 0.07);
-      pointer-events: none;
-      white-space: nowrap;
-    }
   </style>
 </head>
 <body>
 
   <div class="certificate" id="certificateContent">
-    <!-- Watermark -->
     <div class="watermark">MONEYARD</div>
+
+    <img src="https://i.imgur.com/mCKi8rE.png" alt="Verified Seal" class="seal-image" />
+
+    <div class="header-brand">MONEYARD LEARNING</div>
 
     <h1>CERTIFICATE OF COMPLETION</h1>
     <p>This certificate is proudly presented to</p>
@@ -128,13 +139,9 @@
 
     <input class="input-field" id="courseTitle" placeholder="Enter Course Title" />
 
-    <div class="verified-seal">Verified</div>
-
-    <div class="issuer-section">
-      <p>Issued by <strong>Moneyard Learning</strong>, an arm platform of <strong>MONEYARD</strong></p>
-      <p>Date Issued: <span id="issueDate"></span></p>
-      <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
-    </div>
+    <div class="issuer-ribbon">Issued by MONEYARD</div>
+    <p class="signature">Date Issued: <span id="issueDate"></span></p>
+    <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
   </div>
 
   <button class="download-btn" onclick="generatePDF()">Download Certificate</button>
@@ -149,7 +156,6 @@
         return;
       }
 
-      // Replace input fields with static values for PDF
       document.getElementById('learnerName').outerHTML = `<h2>${name}</h2>`;
       document.getElementById('courseTitle').outerHTML = `<h2>${course}</h2>`;
 
@@ -159,11 +165,7 @@
         filename: 'Moneyard_Certificate.pdf',
         image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2 },
-        jsPDF: {
-          unit: 'px',
-          format: [900, 700],
-          orientation: 'landscape'
-        }
+        jsPDF: { unit: 'px', format: [900, 700], orientation: 'landscape' }
       };
 
       html2pdf().set(opt).from(element).save();
