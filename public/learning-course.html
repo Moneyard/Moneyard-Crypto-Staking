@@ -272,7 +272,7 @@
   </div>
 
   <script>
-  // JavaScript code I provided
+  // Show only the selected course section
   function toggleCoursesDropdown(level) {
     const allLevels = ['featuredCourses', 'beginnerCourses', 'intermediateCourses', 'advancedCourses'];
 
@@ -284,33 +284,39 @@
     const selected = document.getElementById(level);
     if (selected) {
       selected.style.display = 'block';
+    } else {
+      document.getElementById('featuredCourses').style.display = 'block';
     }
   }
 
-  function searchCourses() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const courseSections = ['featuredCourses', 'beginnerCourses', 'intermediateCourses', 'advancedCourses'];
+  // Toggle the main dropdown visibility
+  function toggleMainDropdown() {
+    const dropdown = document.getElementById('mainDropdown');
+    if (dropdown) {
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+  }
 
-    courseSections.forEach(sectionId => {
-      const section = document.getElementById(sectionId);
-      if (!section) return;
+  // Redirect to a specific lesson page
+  function redirectToLesson(page) {
+    if (page) {
+      window.location.href = page;
+    }
+  }
 
-      const courses = section.getElementsByClassName("course-advert");
-      for (let i = 0; i < courses.length; i++) {
-        const title = courses[i].querySelector("h3")?.textContent.toLowerCase() || "";
-        const description = courses[i].querySelector("p")?.textContent.toLowerCase() || "";
-        const price = courses[i].querySelector(".price")?.textContent.toLowerCase() || "";
+  // Filter all course sections based on search input
+  function filterCourses() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const allCourses = document.querySelectorAll('.course-advert');
 
-        if (title.includes(input) || description.includes(input) || price.includes(input)) {
-          courses[i].style.display = "";
-        } else {
-          courses[i].style.display = "none";
-        }
-      }
+    allCourses.forEach(course => {
+      const text = course.textContent.toLowerCase();
+      course.style.display = text.includes(query) ? 'block' : 'none';
     });
   }
 
-  window.onload = function() {
+  // Initialize page by showing featured courses
+  window.onload = function () {
     toggleCoursesDropdown('featuredCourses');
   };
 </script>
