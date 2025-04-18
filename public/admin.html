@@ -147,37 +147,26 @@
   </div>
 
   <!-- Deposit Section -->
-<div id="depositModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('depositModal')">&times;</span>
-    <h2>Deposit Funds</h2>
-    <form id="depositForm">
-      <label for="depositAmount">Amount:</label>
-      <input type="number" id="depositAmount" required>
+  <div id="deposit" class="tab-content active">
+    <h3>Deposit Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="deposit-amount" placeholder="Enter amount" />
 
-      <label for="network">Select Network:</label>
-      <select id="network" required>
-        <option value="TRC20">USDT - TRC20</option>
-        <option value="BEP20">USDT - BEP20</option>
-        <option value="ZM">ZM Wallet / Mobile</option>
-      </select>
+    <label>Payment Method:</label>
+    <select id="deposit-method" onchange="updateAddressAndQR()">
+      <option value="TRC20">USDT - TRC20 (Tron)</option>
+      <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
+    </select>
 
-      <div class="info-box">
-        <p><strong>Payment Instructions:</strong><br>
-        After making payment, please send a screenshot of the transaction to our official support:</p>
-        <ul>
-          <li><strong>WhatsApp:</strong> <a href="https://wa.me/260963612941" target="_blank">+260 963612941</a></li>
-          <li><strong>Telegram:</strong> <a href="https://t.me/Moneyard" target="_blank">@Moneyard</a></li>
-        </ul>
-        <p>Your deposit will be verified manually and reflected shortly.</p>
-      </div>
+    <div id="address-section">
+      <p><strong>Deposit Address:</strong></p>
+      <p id="wallet-address">Please select a network</p>
+      <button onclick="copyAddress()">Copy Address</button>
+      <div><img id="qr-image" src="" alt="QR Code" style="max-width:150px;" /></div>
+    </div>
 
-      <button type="submit">I Have Paid</button>
-    </form>
-  </div>
-</div>
-
-
+    <label>Transaction ID (optional):</label>
+    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
 
     <button onclick="enrollNow()">Enroll Now for $19 ≈ 19 USDT</button>
     <button class="mobile-money-btn" onclick="openMomoModal()">Pay with Mobile Money</button>
@@ -207,10 +196,15 @@
       <div id="paymentInstructions" style="margin-top: 15px;"></div>
 
       <input type="number" id="depositAmount" placeholder="Enter Amount" required />
-      <input type="text" id="txidInput" placeholder="Transaction ID (TxID) / Reference" required />
-      <button onclick="submitDeposit()">Submit Deposit</button>
-    </div>
-  </div>
+      <div class="info-box">
+        <p><strong>Payment Instructions:</strong><br>
+        After making payment, please send a screenshot of the transaction to our official support:</p>
+        <ul>
+          <li><strong>WhatsApp:</strong> <a href="https://wa.me/260963612941" target="_blank">+260 963612941</a></li>
+          <li><strong>Telegram:</strong> <a href="https://t.me/Moneyard" target="_blank">@Moneyard</a></li>
+        </ul>
+        <p>Your deposit will be verified manually and reflected shortly.</p>
+      </div>
 
   <!-- Success Modal -->
   <div id="successModal" class="modal">
