@@ -1128,3 +1128,9 @@ audio {
   top: 15px;
   z-index: 10;
 }
+#enroll-response {
+  margin-top: 10px;
+  font-weight: bold;
+  color: green;
+  transition: opacity 1s;
+}
