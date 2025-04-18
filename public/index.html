@@ -594,6 +594,10 @@ document.querySelectorAll('.yield-toggle').forEach(toggle => {
     toggle.textContent = isOpen ? '+' : '−';
   });
 });
+  // Auto-redirect to dashboard if logged in
+  if (localStorage.getItem('authToken')) {
+    window.location.href = "dashboard.html";
+  }
 </script>
 </body>
 </html>
