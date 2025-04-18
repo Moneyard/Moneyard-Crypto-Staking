@@ -73,25 +73,32 @@
     <button class="tab-button" onclick="showTab('course')">Course Overview</button>
   </div>
 
-  <div id="deposit" class="tab-content active">
-    <h3>Make a Deposit</h3>
-    <label>Amount (USDT):</label>
-    <input type="number" placeholder="Enter amount">
-    
-    <label>Payment Method:</label>
-    <select onchange="updateAddress(this.value)">
-      <option value="">-- Select Method --</option>
-      <option value="TRC20">USDT - TRC20</option>
-      <option value="BEP20">USDT - BEP20</option>
-    </select>
-    
-    <div id="deposit-address" style="margin-top:10px;"></div>
-    
-    <label>Transaction ID (optional):</label>
-    <input type="text" placeholder="Paste TxID">
+  <div id="deposit" class="tab-content">
+  <h3>Deposit Funds</h3>
+  <label>Amount (USDT):</label>
+  <input type="number" id="deposit-amount" placeholder="Enter amount" />
+  
+  <label>Payment Method:</label>
+  <select id="deposit-method" onchange="updateAddressAndQR()">
+    <option value="TRC20">USDT - TRC20 (Tron)</option>
+    <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
+  </select>
 
-    <button onclick="alert('Deposit Submitted')">Submit</button>
+  <div id="address-section" class="qr-section">
+    <p><strong>Deposit Address:</strong></p>
+    <p id="wallet-address" class="wallet-address">Please select a network</p>
+    <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+    <div class="qr-section">
+      <img id="qr-image" src="" alt="QR Code" />
+    </div>
   </div>
+
+  <label>Transaction ID (optional):</label>
+  <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+  
+  <button class="modal-submit" onclick="submitDeposit()">Submit</button>
+  <p id="deposit-response"></p>
+</div>
 
   <div id="course" class="tab-content">
   <h3>Course Overview</h3>
@@ -125,15 +132,34 @@
       event.target.classList.add('active');
     }
 
-    function updateAddress(method) {
-      const addr = {
-        TRC20: "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy",
-        BEP20: "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D"
-      };
-      document.getElementById("deposit-address").innerHTML = method ?
-        `<strong>Deposit Address:</strong><br>${addr[method]}` : "";
+  function updateAddressAndQR() {
+    var method = document.getElementById("deposit-method").value;
+    var address = "";
+    var qrCodeUrl = "";
+    if (method === "TRC20") {
+      address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
+      qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + address;
+    } else if (method === "BEP20") {
+      address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
+      qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + address;
     }
-  </script>
+    document.getElementById("wallet-address").textContent = address;
+    document.getElementById("qr-image").src = qrCodeUrl;
+  }
 
+  function copyAddress() {
+    const address = document.getElementById("wallet-address").textContent;
+    navigator.clipboard.writeText(address).then(() => {
+      alert("Address copied to clipboard");
+    });
+  }
+
+  function submitDeposit() {
+    var amount = document.getElementById("deposit-amount").value;
+    var txid = document.getElementById("deposit-txid").value;
+    var method = document.getElementById("deposit-method").value;
+    document.getElementById("deposit-response").innerText = "Deposit of " + amount + " " + method + " pending.";
+  }
+</script>
 </body>
 </html>
