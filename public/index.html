@@ -316,48 +316,63 @@
  <section id="faq" style="padding: 40px 20px; background-color: #f9f9f9;">
   <h2 style="text-align: center; font-size: 2em; margin-bottom: 30px; color: #0a4e3a;">Frequently Asked Questions</h2>
   <div class="faq-container">
+    <!-- FAQ Item 1 -->
     <div class="faq-item">
-      <div class="faq-question">
+      <div class="faq-question" onclick="toggleAnswer(this)">
         <span>What is Moneyard and how does it work?</span>
         <span class="toggle-plus">+</span>
       </div>
-      <div class="faq-answer">Moneyard is a crypto staking and investing platform where you can deposit, earn daily returns, and track your growth securely.</div>
+      <div class="faq-answer" style="display: none;">
+        Moneyard is a crypto staking and investing platform where you can deposit, earn daily returns, and track your growth securely.
+      </div>
     </div>
+    <!-- FAQ Item 2 -->
     <div class="faq-item">
-      <div class="faq-question">
+      <div class="faq-question" onclick="toggleAnswer(this)">
         <span>Is my money safe on Moneyard?</span>
         <span class="toggle-plus">+</span>
       </div>
-      <div class="faq-answer">Yes. We implement top-level encryption and manual admin approvals to ensure all transactions are verified and protected.</div>
+      <div class="faq-answer" style="display: none;">
+        Yes. We implement top-level encryption and manual admin approvals to ensure all transactions are verified and protected.
+      </div>
     </div>
+    <!-- FAQ Item 3 -->
     <div class="faq-item">
-      <div class="faq-question">
+      <div class="faq-question" onclick="toggleAnswer(this)">
         <span>How do I deposit funds?</span>
         <span class="toggle-plus">+</span>
       </div>
-      <div class="faq-answer">You can deposit via TRC20, BEP20, or local payment methods like mobile money and cards through your dashboard.</div>
+      <div class="faq-answer" style="display: none;">
+        You can deposit via TRC20, BEP20, or local payment methods like mobile money and cards through your dashboard.
+      </div>
     </div>
+    <!-- FAQ Item 4 -->
     <div class="faq-item">
-      <div class="faq-question">
+      <div class="faq-question" onclick="toggleAnswer(this)">
         <span>Can I withdraw my earnings anytime?</span>
         <span class="toggle-plus">+</span>
       </div>
-      <div class="faq-answer">Withdrawals are available 24/7 but may require OTP or email confirmation for security reasons.</div>
+      <div class="faq-answer" style="display: none;">
+        Withdrawals are available 24/7 but may require OTP or email confirmation for security reasons.
+      </div>
     </div>
+    <!-- FAQ Item 5 -->
     <div class="faq-item">
-      <div class="faq-question">
+      <div class="faq-question" onclick="toggleAnswer(this)">
         <span>How long does it take to receive a withdrawal?</span>
         <span class="toggle-plus">+</span>
       </div>
-      <div class="faq-answer">Withdrawals are processed within 1–6 hours, depending on admin approval and network traffic.</div>
+      <div class="faq-answer" style="display: none;">
+        Withdrawals are processed within 1–6 hours, depending on admin approval and network traffic.
+      </div>
     </div>
-  </div>
+    <!-- FAQ Item 6 -->
     <div class="faq-item">
-      <div class="faq-question">
+      <div class="faq-question" onclick="toggleAnswer(this)">
         <span>How do I start earning interest?</span>
         <span class="toggle-plus">+</span>
       </div>
-      <div class="faq-answer">
+      <div class="faq-answer" style="display: none;">
         After you create your account, you need to buy deposit or transfer crypto, opt in for interest earning via Moneyard P2P or other cryptocurrency exchange platforms like Binance, Coinbase, etc. You should maintain an account balance above $15 or 15 USDT worth of digital assets. Once that's done, you'll be earning daily interest on your digital assets with our Staking and Flexible Savings offering.
 
         To start earning interest, clients in certain jurisdictions must proactively opt-in for the service in their Moneyard High-Yield Savings account.
