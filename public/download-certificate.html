@@ -19,6 +19,7 @@
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      flex-direction: column;
     }
 
     .certificate {
@@ -29,7 +30,7 @@
       width: 900px;
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
       position: relative;
-      margin-top: 60px; /* Increased margin-top to bring it further down */
+      margin-top: 60px;
     }
 
     .header-brand {
@@ -127,8 +128,8 @@
 
     .date-issued {
       position: absolute;
-      bottom: 30px; /* Moved date section further from the edge */
-      right: 50px; /* Shifted from the edge to inside */
+      bottom: 30px;
+      right: 50px;
       font-size: 16px;
       font-weight: bold;
     }
@@ -154,7 +155,10 @@
     }
 
     .download-btn {
-      margin-top: 30px;
+      position: absolute;
+      bottom: 30px; /* Positioned at the bottom */
+      left: 50%; /* Centered horizontally */
+      transform: translateX(-50%);
       padding: 14px 28px;
       background: #daa520;
       color: white;
@@ -167,7 +171,7 @@
 
     .download-btn:hover {
       background: #b8860b;
-      transform: scale(1.05);
+      transform: scale(1.05) translateX(-50%);
     }
   </style>
 </head>
@@ -183,13 +187,13 @@
     <h1>CERTIFICATE OF COMPLETION</h1>
     <p>This certificate is proudly presented to</p>
 
-    <input class="input-field" id="learnerName" placeholder="Enter Learner's Full Name" />
+    <input class="input-field" id="learnerName" placeholder="Enter Your Full Name" />
 
     <p>For successfully completing the course</p>
 
     <input class="input-field" id="courseTitle" placeholder="Enter Course Title" />
 
-    <p class="issuer-line">Issued by Moneyard</p>
+    <p class="issuer-line">Issued by MONEYARD</p>
 
     <div class="signature">Mwaba Lewis</div>
     <div class="signature-title">Founder, Moneyard</div>
