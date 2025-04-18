@@ -25,6 +25,12 @@
       border: 10px solid #8b4513;
       background: white;
       box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .certificate img.logo {
+      width: 150px;
+      margin-bottom: 20px;
     }
 
     .certificate h1 {
@@ -75,6 +81,7 @@
 
   <!-- Certificate Container -->
   <div class="certificate" id="certificateContent">
+    <img src="public/20250409_162622.jpg" alt="Moneyard Logo" class="logo">
     <h1>Certificate of Completion</h1>
     <p>This is to certify that</p>
     <h2 class="bold" id="learnerName">[Learner’s Full Name]</h2>
@@ -88,7 +95,7 @@
     // Auto fill today's date
     document.getElementById('dateIssued').textContent = new Date().toLocaleDateString();
 
-    // Optional: Replace with dynamic data if needed
+    // Optional: Set dynamic name and course title here
     document.getElementById('learnerName').textContent = 'John Doe';
     document.getElementById('courseTitle').textContent = 'Introduction to Crypto Staking';
 
