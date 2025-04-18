@@ -228,13 +228,34 @@
       document.getElementById("successModal").style.display = "flex";
     }
 
-    function openMomoModal() {
-      document.getElementById("momoModal").style.display = "flex";
-    }
+    function togglePaymentInstructions() {
+  const method = document.getElementById("paymentMethod").value;
+  const instructions = document.getElementById("paymentInstructions");
 
-    function closeMomoModal() {
-      document.getElementById("momoModal").style.display = "none";
-    }
+  if (method === "mtn") {
+    instructions.innerHTML = `
+      <strong>MTN Mobile Money:</strong><br>
+      Send payment to <b>+256 77X XXX XXX</b><br>
+      Use your phone number or a clear reference.<br>
+      Copy and paste the transaction ID below.`;
+  } else if (method === "airtel") {
+    instructions.innerHTML = `
+      <strong>Airtel Mobile Money:</strong><br>
+      Send payment to <b>+256 75X XXX XXX</b><br>
+      Use your phone number or a clear reference.<br>
+      Copy and paste the transaction ID below.`;
+  } else if (method === "trc20") {
+    instructions.innerHTML = `
+      <strong>TRC20 Wallet Address:</strong><br>
+      <code>TXx12ExampleTronWalletHere</code>`;
+  } else if (method === "bep20") {
+    instructions.innerHTML = `
+      <strong>BEP20 Wallet Address:</strong><br>
+      <code>0xExampleBEP20WalletHere</code>`;
+  } else {
+    instructions.innerHTML = "";
+  }
+}
 
     function openAdminModal() {
       document.getElementById("adminDepositModal").style.display = "flex";
