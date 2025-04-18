@@ -2,118 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Official Moneyard Certificate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moneyard Certificate</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
-      background: url('https://www.transparenttextures.com/patterns/gold-fish-scale.png');
+      background: #fdfbf7;
       font-family: 'Georgia', serif;
       color: black;
       text-align: center;
-      padding: 40px;
+      padding: 20px;
     }
 
     .certificate {
-      background: rgba(255, 255, 240, 0.95);
-      border: 15px solid #d4af37;
-      padding: 50px;
-      width: 1200px;
+      background: white;
+      border: 10px solid #FFD700;
+      border-radius: 20px;
+      padding: 30px;
+      width: 900px;
       margin: auto;
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
       position: relative;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .header-brand {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #1a7f38;
+    }
+
+    .header-brand::before {
+      content: '🎓';
+      font-size: 32px;
+      color: #1a7f38;
     }
 
     .certificate h1 {
-      font-size: 50px;
-      margin-bottom: 20px;
+      font-size: 36px;
+      margin: 10px 0;
     }
 
     .certificate h2 {
-      font-size: 32px;
-      margin: 15px 0;
+      font-size: 26px;
+      margin: 10px 0;
     }
 
     .certificate p {
-      font-size: 22px;
-      margin: 10px 0;
+      font-size: 18px;
+      margin: 8px 0;
     }
 
     .input-field {
       border: none;
       border-bottom: 2px solid black;
-      font-size: 28px;
+      font-size: 24px;
       text-align: center;
       width: 80%;
       background: transparent;
       color: black;
-      margin: 15px auto;
+      margin: 12px auto;
     }
 
-    .header-branding {
+    .seal {
+      position: absolute;
+      bottom: 20px;
+      left: 30px;
+      width: 100px;
+      height: 100px;
+      background: #FFD700;
+      border-radius: 50%;
+      border: 3px solid #8b4513;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-size: 28px;
-      margin-bottom: 30px;
+      color: black;
+      font-size: 16px;
       font-weight: bold;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
     }
 
-    .header-branding span {
-      margin-left: 10px;
+    .seal::before {
+      content: "";
+    }
+
+    .seal::after {
+      content: "VERIFIED";
+      font-size: 14px;
+      margin-top: 5px;
       color: black;
     }
 
-    .header-branding .icon {
-      color: green;
-      font-size: 36px;
-    }
-
-    .issuer-section {
-      margin-top: 50px;
+    .issuer-line {
+      margin-top: 30px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #222;
     }
 
     .signature {
-      margin-top: 30px;
+      margin-top: 20px;
       font-weight: bold;
-    }
-
-    .signature-line {
-      margin-top: 50px;
-      border-top: 1px solid black;
-      width: 250px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .verified-seal {
-      font-style: italic;
-      font-weight: bold;
-      color: #d4af37;
-      position: absolute;
-      bottom: 50px;
-      right: 40px;
       font-size: 18px;
-    }
-
-    .verified-seal span {
-      color: black;
-      font-weight: bold;
-      display: block;
-      font-size: 20px;
     }
 
     .date-issued {
       position: absolute;
-      bottom: 80px;
-      right: 40px;
+      bottom: 20px;
+      right: 30px;
       font-size: 16px;
+      font-weight: bold;
+    }
+
+    .date-issued input {
+      border: none;
+      border-bottom: 1px solid black;
+      background: transparent;
+      text-align: center;
+      font-size: 16px;
+      color: black;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      color: rgba(212, 175, 55, 0.08);
+      pointer-events: none;
+      white-space: nowrap;
     }
 
     .download-btn {
-      margin-top: 40px;
-      padding: 18px 36px;
+      margin-top: 30px;
+      padding: 14px 28px;
       background: #daa520;
       color: white;
       border: 2px solid #8b4513;
@@ -127,17 +155,6 @@
       background: #b8860b;
       transform: scale(1.05);
     }
-
-    .watermark {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 100px;
-      color: rgba(212, 175, 55, 0.07);
-      pointer-events: none;
-      white-space: nowrap;
-    }
   </style>
 </head>
 <body>
@@ -145,10 +162,9 @@
   <div class="certificate" id="certificateContent">
     <div class="watermark">MONEYARD</div>
 
-    <div class="header-branding">
-      <span class="icon">🎓</span>
-      <span>MONEYARD LEARNING</span>
-    </div>
+    <div class="seal"></div>
+
+    <div class="header-brand">MONEYARD LEARNING</div>
 
     <h1>CERTIFICATE OF COMPLETION</h1>
     <p>This certificate is proudly presented to</p>
@@ -159,18 +175,12 @@
 
     <input class="input-field" id="courseTitle" placeholder="Enter Course Title" />
 
-    <div class="issuer-section">
-      <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
-      <div class="signature-line"></div>
-    </div>
+    <p class="issuer-line">Issued by Moneyard</p>
+
+    <p class="signature">Mwaba Lewis<br/>Founder, Moneyard</p>
 
     <div class="date-issued">
-      Date Issued: <span id="issueDate"></span>
-    </div>
-
-    <div class="verified-seal">
-      <span>Verified</span>
-      Golden Seal of Excellence
+      Date Issued: <input type="text" id="issueDate" placeholder="MM/DD/YYYY" />
     </div>
   </div>
 
@@ -180,34 +190,28 @@
     function generatePDF() {
       const name = document.getElementById('learnerName').value;
       const course = document.getElementById('courseTitle').value;
+      const date = document.getElementById('issueDate').value;
 
-      if (!name || !course) {
-        alert('Please enter both name and course title before downloading.');
+      if (!name || !course || !date) {
+        alert('Please enter name, course, and date before downloading.');
         return;
       }
 
       document.getElementById('learnerName').outerHTML = `<h2>${name}</h2>`;
       document.getElementById('courseTitle').outerHTML = `<h2>${course}</h2>`;
+      document.getElementById('issueDate').outerHTML = `<strong>${date}</strong>`;
 
       const element = document.getElementById('certificateContent');
       const opt = {
         margin: 0,
         filename: 'Moneyard_Certificate.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2 },
-        jsPDF: {
-          unit: 'px',
-          format: [1200, 850],
-          orientation: 'landscape'
-        }
+        jsPDF: { unit: 'px', format: [900, 700], orientation: 'landscape' }
       };
 
       html2pdf().set(opt).from(element).save();
     }
-
-    // Set today's date or customize it
-    const customDate = new Date().toLocaleDateString(); // You can set your custom format
-    document.getElementById('issueDate').textContent = customDate;
   </script>
 
 </body>
