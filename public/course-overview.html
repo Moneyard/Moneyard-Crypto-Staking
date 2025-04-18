@@ -57,8 +57,6 @@
       cursor: pointer;
       border: none;
     }
-
-    /* Modal Styling */
     .modal {
       display: none;
       position: fixed;
@@ -93,8 +91,8 @@
     .close-btn {
       margin-top: 15px;
       background: #dc3545;
+      color: white;
     }
-
     .mobile-money-btn {
       background-color: #1db954;
       color: white;
@@ -119,7 +117,7 @@
     <button class="tab-button" onclick="showTab('course')">Course Overview</button>
   </div>
 
-  <!-- Deposit Section -->
+  <!-- Deposit Tab -->
   <div id="deposit" class="tab-content active">
     <h3>Deposit Funds</h3>
     <label>Amount (USDT):</label>
@@ -143,37 +141,10 @@
 
     <button onclick="enrollNow()">Enroll Now for $19 ≈ 19 USDT</button>
 
-    <!-- Mobile Money Payment Option -->
-<div id="mobileMoneyModal" class="modal">
-  <div class="modal-content slide-in">
-    <span class="close-btn" onclick="closeModal('mobileMoneyModal')">&times;</span>
-    <h2>Pay with Mobile Money</h2>
-    <label for="network">Select Network:</label>
-    <select id="network">
-      <option value="mtn">MTN</option>
-      <option value="airtel">Airtel</option>
-    </select>
-
-    <label for="mobileAmount">Amount (USD):</label>
-    <input type="number" id="mobileAmount" placeholder="Enter amount" required>
-
-    <label for="phoneNumber">Phone Number:</label>
-    <input type="tel" id="phoneNumber" placeholder="e.g. 2567XXXXXXXX" required>
-
-    <button onclick="sendMobileMoneyPrompt()">Send Payment Prompt</button>
-  </div>
-</div>
-
-<div id="successModal" class="modal">
-  <div class="modal-content fade-in">
-    <h3>Enrollment Successful!</h3>
-    <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
-    <button class="close-btn" onclick="closeModal('successModal')">Close</button>
-  </div>
-</div>
+    <button class="mobile-money-btn" onclick="openModal('mobileMoneyModal')">Pay with Mobile Money</button>
   </div>
 
-  <!-- Course Section -->
+  <!-- Course Tab -->
   <div id="course" class="tab-content">
     <h3>Course Overview</h3>
     <p>Explore blockchain, Bitcoin, Ethereum, tokenomics, DeFi, smart contracts and more with Prof. Schmalbach.</p>
@@ -216,30 +187,25 @@
   </div>
 
   <script>
-    // Tab switching
     function showTab(tabId) {
       const tabs = document.querySelectorAll(".tab-content");
       const buttons = document.querySelectorAll(".tab-button");
-
       tabs.forEach(tab => tab.classList.remove("active"));
       buttons.forEach(btn => btn.classList.remove("active"));
-
       document.getElementById(tabId).classList.add("active");
       [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
     }
 
     function updateAddressAndQR() {
-      var method = document.getElementById("deposit-method").value;
-      var address = "";
-      var qrCodeUrl = "";
+      const method = document.getElementById("deposit-method").value;
+      let address = "";
       if (method === "TRC20") {
         address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
       } else if (method === "BEP20") {
         address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
       }
-      qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + address;
       document.getElementById("wallet-address").textContent = address;
-      document.getElementById("qr-image").src = qrCodeUrl;
+      document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
     }
 
     function copyAddress() {
@@ -256,45 +222,40 @@
         alert("Please fill in all required fields before enrolling.");
         return;
       }
-
-      // Sound + vibration
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
       const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
       audio.play();
-
-      // Show modal
       document.getElementById("successModal").style.display = "flex";
-
-      // Redirect after 3 sec
       setTimeout(() => {
         window.location.href = "deposit-approval.html";
       }, 3000);
+    }
+
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = "flex";
     }
 
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = "none";
     }
 
-     function sendMobileMoneyPrompt() {
-     const amount = document.getElementById('mobileAmount').value;
-    const phone = document.getElementById('phoneNumber').value;
-    const network = document.getElementById('network').value;
+    function sendMobileMoneyPrompt() {
+      const amount = document.getElementById('mobileAmount').value;
+      const phone = document.getElementById('phoneNumber').value;
+      const network = document.getElementById('network').value;
 
-    if (!amount || !phone) {
-      alert('Please fill out all fields');
-      return;
+      if (!amount || !phone) {
+        alert('Please fill out all fields');
+        return;
+      }
+
+      alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+      closeModal('mobileMoneyModal');
+
+      setTimeout(() => {
+        document.getElementById("successModal").style.display = "flex";
+      }, 1000);
     }
-
-    // Simulate sending prompt
-    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-
-    closeModal('mobileMoneyModal');
-
-    // Optional success feedback
-    setTimeout(() => {
-      document.getElementById("successModal").style.display = "flex";
-    }, 1000);
-  }
-</script>
+  </script>
 </body>
 </html>
