@@ -196,7 +196,7 @@
   <header>
     <div class="logo">Moneyard Learning</div>
     <div class="search-bar-container">
-      <input type="text" placeholder="Search courses..." />
+      <input type="text" id="searchInput" placeholder="Search courses..." onkeyup="filterCourses()" />
       <i class="fas fa-user"></i>
     </div>
     <div class="menu-bar" onclick="toggleMainDropdown()">
@@ -289,6 +289,29 @@
 
     function redirectToLesson(page) {
       window.location.href = page;
+    }
+    function toggleMainDropdown() {
+      const dropdown = document.getElementById('mainDropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function filterCourses() {
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+      const courses = document.querySelectorAll('.course-advert');
+      
+      courses.forEach(course => {
+        const courseName = course.getAttribute('data-course-name').toLowerCase();
+        
+        if (courseName.includes(searchQuery)) {
+          course.style.display = 'block'; // Show the course if it matches
+        } else {
+          course.style.display = 'none'; // Hide the course if it doesn't match
+        }
+      });
+    }
+
+    function redirectToLesson(lessonURL) {
+      window.location.href = lessonURL;
     }
   </script>
 </body>
