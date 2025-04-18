@@ -12,8 +12,13 @@
       background: #fdfbf7;
       font-family: 'Georgia', serif;
       color: black;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
       padding: 20px;
+      box-sizing: border-box;
     }
 
     .certificate {
@@ -21,23 +26,34 @@
       border: 10px solid #FFD700;
       border-radius: 20px;
       padding: 30px;
-      width: 794px;
-      height: 1123px;
-      margin: auto;
+      width: 100%;
+      max-width: 900px;
+      box-sizing: border-box;
       position: relative;
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+      text-align: center;
     }
 
     .header-brand {
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #1a7f38;
+    }
+
+    .header-brand::before {
+      content: '🎓';
+      font-size: 32px;
       color: #1a7f38;
     }
 
     .certificate h1 {
       font-size: 36px;
-      margin: 20px 0 10px;
+      margin: 10px 0;
     }
 
     .certificate h2 {
@@ -63,10 +79,10 @@
 
     .seal {
       position: absolute;
-      top: 30px;
-      right: 30px;
-      width: 110px;
-      height: 110px;
+      bottom: 20px;
+      left: 30px;
+      width: 120px;
+      height: 120px;
       background: linear-gradient(135deg, #FFD700, #FFA500);
       border-radius: 50%;
       display: flex;
@@ -74,16 +90,18 @@
       justify-content: center;
       align-items: center;
       color: black;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
       box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+      text-align: center;
     }
 
     .seal::after {
       content: "VERIFIED";
-      font-size: 12px;
+      font-size: 13px;
       font-weight: bold;
-      margin-top: 3px;
+      color: black;
+      margin-top: 4px;
     }
 
     .issuer-line {
@@ -110,7 +128,9 @@
     }
 
     .date-issued {
-      margin-top: 40px;
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
       font-size: 16px;
       font-weight: bold;
     }
@@ -150,6 +170,13 @@
     .download-btn:hover {
       background: #b8860b;
       transform: scale(1.05);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .certificate {
+        max-width: 90%;
+      }
     }
   </style>
 </head>
@@ -204,7 +231,7 @@
         filename: 'Moneyard_Certificate.pdf',
         image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'px', format: [900, 700], orientation: 'landscape' }
       };
 
       html2pdf().set(opt).from(element).save();
