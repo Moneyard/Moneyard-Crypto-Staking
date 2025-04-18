@@ -213,3 +213,81 @@ function submitDeposit(amount) {
 submitDeposit(100).then(response => {
   console.log(response.message); // Show success message
 });
+function openAdminModal() {
+  document.getElementById("adminDepositModal").style.display = "block";
+  loadDepositsToTable();
+}
+
+function closeAdminModal() {
+  document.getElementById("adminDepositModal").style.display = "none";
+}
+
+function loadDepositsToTable() {
+  const tableBody = document.getElementById("depositTableBody");
+  tableBody.innerHTML = "";
+
+  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+
+  if (savedDeposits.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:15px;">No deposits yet.</td></tr>`;
+    return;
+  }
+
+  savedDeposits.forEach((deposit, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.senderPhone}</td>
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.amount}</td>
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.txid}</td>
+      <td style="padding:10px; border:1px solid #ccc;">${new Date(deposit.timestamp).toLocaleString()}</td>
+      <td style="padding:10px; border:1px solid #ccc; text-align:center;">
+        <input type="checkbox" onchange="toggleApproval(${index})" ${deposit.approved ? 'checked' : ''}>
+      </td>
+      <td style="padding:10px; border:1px solid #ccc;">
+        <button onclick="deleteDeposit(${index})" style="background:red;color:white;border:none;padding:5px 10px;border-radius:4px;">Delete</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function deleteDeposit(index) {
+  let deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+  deposits.splice(index, 1);
+  localStorage.setItem("momoDeposits", JSON.stringify(deposits));
+  loadDepositsToTable();
+}
+
+function toggleApproval(index) {
+  let deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+  deposits[index].approved = !deposits[index].approved;
+  localStorage.setItem("momoDeposits", JSON.stringify(deposits));
+  loadDepositsToTable();
+}
+
+function exportDepositsToCSV() {
+  const deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+
+  if (deposits.length === 0) return alert("No deposits to export.");
+
+  const headers = ["Phone", "Amount", "TxID", "Date", "Approved"];
+  const rows = deposits.map(dep => [
+    dep.senderPhone,
+    dep.amount,
+    dep.txid,
+    new Date(dep.timestamp).toLocaleString(),
+    dep.approved ? "Yes" : "No"
+  ]);
+
+  let csv = headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "momo_deposits.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
