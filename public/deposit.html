@@ -1,0 +1,29 @@
+
+  <!-- DEPOSIT MODAL -->
+  <div id="deposit-modal" class="modal">
+    <div class="modal-content">
+      <h3>Deposit Funds</h3>
+      <label>Amount (USDT):</label>
+      <input type="number" id="deposit-amount" placeholder="Enter amount" />
+      <label>Payment Method:</label>
+      <select id="deposit-method" onchange="updateAddressAndQR()">
+        <option value="TRC20">USDT - TRC20 (Tron)</option>
+        <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
+      </select>
+
+      <div id="address-section" class="qr-section">
+        <p><strong>Deposit Address:</strong></p>
+        <p id="wallet-address" class="wallet-address">Please select a network</p>
+        <button id="copy-btn" class="copy-btn" onclick="copyAddress()">Copy Address</button>
+        <div id="qr-display" class="qr-section">
+          <img id="qr-image" src="" alt="QR Code" />
+        </div>
+      </div>
+
+      <label>Transaction ID (optional):</label>
+      <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+      <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
+      <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
+      <p id="deposit-response" style="margin-top:10px;"></p>
+    </div>
+  </div>
