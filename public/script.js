@@ -194,3 +194,22 @@ function handleLogin(event) {
   // For now, we'll redirect to the dashboard page
   window.location.href = "dashboard.html"; // Update this as per your flow
 }
+// Mock API example in script.js
+
+const mockDepositData = {
+  status: "success",
+  message: "Deposit processed successfully!"
+};
+
+function submitDeposit(amount) {
+  // Simulate server response
+  console.log(`Depositing ${amount}`);
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockDepositData), 1000);
+  });
+}
+
+// Use this mock function in your frontend code
+submitDeposit(100).then(response => {
+  console.log(response.message); // Show success message
+});
