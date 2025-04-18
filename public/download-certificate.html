@@ -1,85 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<style>
-/* Modified PDF-safe styles */
-.certificate {
-  width: 21cm; /* A4 width */
-  height: 29.7cm; /* A4 height */
-  border: 15px double #daa520;
-  background: #ffd700; /* Solid color instead of gradient */
-  padding: 2cm;
-  font-family: 'Times New Roman', serif;
-  margin: 0 auto;
-  position: relative;
-  box-sizing: border-box;
-}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official Moneyard Certificate">
+  <title>Moneyard Certificate</title>
 
-/* Add print-specific styles */
-@media print {
-  body { -webkit-print-color-adjust: exact; }
-  .certificate { background: #ffd700 !important; }
-}
+  <!-- Include html2pdf library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-/* Rest of previous styles... */
-.seal {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 120px;
-  color: #8b451366; /* Use alpha channel instead of opacity */
-}
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
 
-.download-btn {
-  /* ... keep previous button styles ... */
-}
+    .certificate {
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px;
+      border: 10px solid #8b4513;
+      background: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
 
-/* Add PDF-safe positioning */
-.signature-box, .cert-number, .footer {
-  position: relative;
-  z-index: 2;
-}
-</style>
+    .certificate h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      color: #4b2e00;
+    }
+
+    .certificate h2 {
+      font-size: 24px;
+      margin: 20px 0;
+      color: #444;
+    }
+
+    .certificate p {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+
+    .certificate .bold {
+      font-weight: bold;
+    }
+
+    .download-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 30px;
+      background: #daa520;
+      color: white;
+      border: 2px solid #8b4513;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .download-btn:hover {
+      background: #b8860b;
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 <body>
 
-<button class="download-btn" onclick="generatePDF()">Download Certificate</button>
+  <!-- Download Button -->
+  <button class="download-btn" onclick="generatePDF()">Download Certificate</button>
 
-<div class="certificate" id="certificateContent">
-  <!-- Certificate content remains same -->
-</div>
+  <!-- Certificate Container -->
+  <div class="certificate" id="certificateContent">
+    <h1>Certificate of Completion</h1>
+    <p>This is to certify that</p>
+    <h2 class="bold" id="learnerName">[Learner’s Full Name]</h2>
+    <p>has successfully completed the course</p>
+    <h2 class="bold" id="courseTitle">[Course Title]</h2>
+    <p>on this day, <span id="dateIssued"></span></p>
+    <p style="margin-top: 40px;">Signature: __________________________</p>
+  </div>
 
-<script>
-function generatePDF() {
-  // Temporary show alert to verify function is called
-  alert('PDF generation started...');
-  
-  const element = document.getElementById('certificateContent');
-  const opt = {
-    margin:       0,
-    filename:     'Moneyard_Certificate.pdf',
-    image:        { type: 'jpeg', quality: 1 },
-    html2canvas:  {
-      scale: 2,
-      useCORS: true,
-      logging: true, // Enable logging
-      windowWidth: 210 * 10, // 210mm A4 width
-      windowHeight: 297 * 10 // 297mm A4 height
-    },
-    jsPDF:        {
-      unit: 'mm',
-      format: 'a4',
-      orientation: 'portrait'
+  <script>
+    // Auto fill today's date
+    document.getElementById('dateIssued').textContent = new Date().toLocaleDateString();
+
+    // Optional: Replace with dynamic data if needed
+    document.getElementById('learnerName').textContent = 'John Doe';
+    document.getElementById('courseTitle').textContent = 'Introduction to Crypto Staking';
+
+    function generatePDF() {
+      const element = document.getElementById('certificateContent');
+      const opt = {
+        margin: 10,
+        filename: 'Moneyard_Certificate.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
+
+      html2pdf().set(opt).from(element).save();
     }
-  };
+  </script>
 
-  // Add loading state
-  html2pdf().set(opt).from(element).toPdf().get('pdf').then(pdf => {
-    console.log('PDF generated successfully');
-  }).save();
-}
-</script>
 </body>
 </html>
