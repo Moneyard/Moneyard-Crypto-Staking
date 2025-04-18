@@ -1,144 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Moneyard Dashboard</title>
+  <meta charset="UTF-8" />
+  <title>Moneyard - Deposit & Course</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #ffffff;
+      background: #f0f4f8;
+      margin: 0;
       padding: 20px;
     }
-
-    .footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+    .tabs {
       display: flex;
-      justify-content: space-around;
-      background: #f0f0f0;
-      padding: 12px 0;
-      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      justify-content: center;
+      margin-bottom: 20px;
     }
-
-    .footer button {
-      padding: 10px 18px;
+    .tab-button {
+      flex: 1;
+      padding: 15px;
+      background: #e0e0e0;
       border: none;
-      border-radius: 8px;
-      font-size: 15px;
       cursor: pointer;
+      font-weight: bold;
+      color: #333;
+      border-radius: 8px 8px 0 0;
+      transition: background 0.3s;
     }
-
-    .deposit-btn {
+    .tab-button.active {
+      background: #28a745;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    input, select, button {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
       background-color: #28a745;
       color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
     }
 
-    .withdraw-btn {
-      background-color: #006400;
-      color: white;
-    }
-
-    .transfer-btn {
-      background-color: #777;
-      color: white;
-    }
-
+    /* Modal Styling */
     .modal {
       display: none;
       position: fixed;
       z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
       background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
-
     .modal-content {
-      background: white;
-      padding: 25px;
+      background-color: #fff;
+      padding: 30px;
       border-radius: 10px;
+      max-width: 400px;
       width: 90%;
-      max-width: 450px;
-      position: relative;
+      text-align: center;
+      animation: fadeInScale 0.4s ease;
     }
-
-    .modal-content h2 {
-      margin-top: 0;
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
-
-    .modal-content label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-
-    .modal-content input,
-    .modal-content select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .modal-content button {
-      background-color: #007bff;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-    }
-
     .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 22px;
-      cursor: pointer;
-      color: #333;
+      margin-top: 15px;
+      background: #dc3545;
     }
 
-    .deposit-options {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .deposit-options button {
-      background-color: #e9ecef;
-      color: #000;
-      padding: 10px;
+    .mobile-money-btn {
+      background-color: #1db954;
+      color: white;
+      padding: 10px 20px;
       border: none;
-      border-radius: 6px;
-      font-size: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
     }
-
-    .deposit-options button:hover {
-      background-color: #d4edda;
+    .mobile-money-btn:hover {
+      background-color: #14833b;
     }
   </style>
 </head>
-<body>
+<body onload="showTab('deposit')">
 
-  <h2>Welcome to Moneyard Dashboard</h2>
+  <!-- Tab Menu -->
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('deposit')">Deposit</button>
+    <button class="tab-button" onclick="showTab('course')">Course Overview</button>
+  </div>
 
-  <!-- Deposit Modal -->
-  <div id="depositModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('depositModal')">&times;</span>
-      <h2>Choose Deposit Method</h2>
-      <div class="deposit-options">
-        <button onclick="alert('ZM Bank deposit selected')">Pay with ZM (Bank/Mobile)</button>
-        <button onclick="alert('TRC20 selected')">Pay with TRC20</button>
-        <button onclick="alert('BEP20 selected')">Pay with BEP20</button>
-        <button onclick="openModal('mobileMoneyModal')">Pay with Mobile Money</button>
-      </div>
+  <!-- Deposit Section -->
+  <div id="deposit" class="tab-content active">
+    <h3>Deposit Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="deposit-amount" placeholder="Enter amount" />
+
+    <label>Payment Method:</label>
+    <select id="deposit-method" onchange="updateAddressAndQR()">
+      <option value="TRC20">USDT - TRC20 (Tron)</option>
+      <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
+    </select>
+
+    <div id="address-section">
+      <p><strong>Deposit Address:</strong></p>
+      <p id="wallet-address">Please select a network</p>
+      <button onclick="copyAddress()">Copy Address</button>
+      <div><img id="qr-image" src="" alt="QR Code" style="max-width: 150px;" /></div>
     </div>
+
+    <label>Transaction ID (optional):</label>
+    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+
+    <button onclick="enrollNow()">Enroll Now for $19 ≈ 19 USDT</button>
+
+    <!-- Mobile Money Payment Option -->
+<div id="mobileMoneyModal" class="modal">
+  <div class="modal-content slide-in">
+    <span class="close-btn" onclick="closeModal('mobileMoneyModal')">&times;</span>
+    <h2>Pay with Mobile Money</h2>
+    <label for="network">Select Network:</label>
+    <select id="network">
+      <option value="mtn">MTN</option>
+      <option value="airtel">Airtel</option>
+    </select>
+
+    <label for="mobileAmount">Amount (USD):</label>
+    <input type="number" id="mobileAmount" placeholder="Enter amount" required>
+
+    <label for="phoneNumber">Phone Number:</label>
+    <input type="tel" id="phoneNumber" placeholder="e.g. 2567XXXXXXXX" required>
+
+    <button onclick="sendMobileMoneyPrompt()">Send Payment Prompt</button>
+  </div>
+</div>
+
+<div id="successModal" class="modal">
+  <div class="modal-content fade-in">
+    <h3>Enrollment Successful!</h3>
+    <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
+    <button class="close-btn" onclick="closeModal('successModal')">Close</button>
+  </div>
+</div>
+  </div>
+
+  <!-- Course Section -->
+  <div id="course" class="tab-content">
+    <h3>Course Overview</h3>
+    <p>Explore blockchain, Bitcoin, Ethereum, tokenomics, DeFi, smart contracts and more with Prof. Schmalbach.</p>
+    <ul>
+      <li>Bitcoin & crypto origins</li>
+      <li>Blockchain mechanics</li>
+      <li>Regulation & innovation</li>
+      <li>Smart contracts & tokenization</li>
+    </ul>
   </div>
 
   <!-- Mobile Money Modal -->
@@ -162,36 +206,95 @@
     </div>
   </div>
 
-  <!-- Footer Buttons -->
-  <div class="footer">
-    <button class="deposit-btn" onclick="openModal('depositModal')">Deposit</button>
-    <button class="withdraw-btn" onclick="alert('Withdraw Modal Here')">Withdraw</button>
-    <button class="transfer-btn" onclick="alert('Transfer Modal Here')">Transfer</button>
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h3>Enrollment Successful!</h3>
+      <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
+      <button class="close-btn" onclick="closeModal('successModal')">Close</button>
+    </div>
   </div>
 
   <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = "flex";
+    // Tab switching
+    function showTab(tabId) {
+      const tabs = document.querySelectorAll(".tab-content");
+      const buttons = document.querySelectorAll(".tab-button");
+
+      tabs.forEach(tab => tab.classList.remove("active"));
+      buttons.forEach(btn => btn.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
     }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
+    function updateAddressAndQR() {
+      var method = document.getElementById("deposit-method").value;
+      var address = "";
+      var qrCodeUrl = "";
+      if (method === "TRC20") {
+        address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
+      } else if (method === "BEP20") {
+        address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
+      }
+      qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + address;
+      document.getElementById("wallet-address").textContent = address;
+      document.getElementById("qr-image").src = qrCodeUrl;
     }
 
-    function sendMobileMoneyPrompt() {
-      const amount = document.getElementById('mobileAmount').value;
-      const phone = document.getElementById('phoneNumber').value;
-      const network = document.getElementById('network').value;
+    function copyAddress() {
+      const address = document.getElementById("wallet-address").textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        alert("Address copied to clipboard");
+      });
+    }
 
-      if (!amount || !phone) {
-        alert('Please fill out all fields.');
+    function enrollNow() {
+      const amount = document.getElementById("deposit-amount").value;
+      const method = document.getElementById("deposit-method").value;
+      if (!amount || !method) {
+        alert("Please fill in all required fields before enrolling.");
         return;
       }
 
-      alert(`Prompt sent to ${phone} for $${amount} on ${network.toUpperCase()}.`);
-      closeModal('mobileMoneyModal');
-    }
-  </script>
+      // Sound + vibration
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+      audio.play();
 
+      // Show modal
+      document.getElementById("successModal").style.display = "flex";
+
+      // Redirect after 3 sec
+      setTimeout(() => {
+        window.location.href = "deposit-approval.html";
+      }, 3000);
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+     function sendMobileMoneyPrompt() {
+     const amount = document.getElementById('mobileAmount').value;
+    const phone = document.getElementById('phoneNumber').value;
+    const network = document.getElementById('network').value;
+
+    if (!amount || !phone) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    // Simulate sending prompt
+    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+
+    closeModal('mobileMoneyModal');
+
+    // Optional success feedback
+    setTimeout(() => {
+      document.getElementById("successModal").style.display = "flex";
+    }, 1000);
+  }
+</script>
 </body>
 </html>
