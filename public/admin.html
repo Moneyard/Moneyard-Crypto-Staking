@@ -112,12 +112,41 @@
 <button onclick="openMomoModal()" style="background:#1e6b4e;color:white;padding:10px 20px;border:none;border-radius:5px;">Deposit via MoMo</button>
 </head>
 <body onload="showTab('deposit')">
+<button onclick="loadDepositsToTable()" style="margin-top:10px;padding:5px 10px;">Refresh Table</button>
 
   <!-- Tab Menu -->
   <div class="tabs">
     <button class="tab-button active" onclick="showTab('deposit')">Deposit</button>
     <button class="tab-button" onclick="showTab('course')">Course Overview</button>
   </div>
+<!-- Admin Deposit Table -->
+<!-- Admin Modal Trigger Button -->
+<button onclick="openAdminModal()" style="position:fixed; top:20px; right:20px; background:#1b5e20; color:#fff; border:none; padding:10px 20px; border-radius:8px;">View Deposits</button>
+
+<!-- Admin Deposit Modal -->
+<div id="adminDepositModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999;">
+  <div style="background:#fff; width:90%; max-width:800px; margin:50px auto; padding:20px; border-radius:10px; position:relative;">
+    <span onclick="closeAdminModal()" style="position:absolute; top:10px; right:20px; font-size:22px; cursor:pointer;">&times;</span>
+    <h2 style="text-align:center; color:#1e6b4e;">Admin Deposit Table</h2>
+    <button onclick="exportDepositsToCSV()" style="margin-bottom:15px; padding:6px 12px; background:#2e7d32; color:white; border:none; border-radius:5px;">Export to CSV</button>
+    <div style="overflow-x:auto;">
+      <table id="depositTable" style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color:#e0f2f1; color:#004d40;">
+            <th style="padding:10px; border:1px solid #ccc;">Phone</th>
+            <th style="padding:10px; border:1px solid #ccc;">Amount</th>
+            <th style="padding:10px; border:1px solid #ccc;">TxID</th>
+            <th style="padding:10px; border:1px solid #ccc;">Date</th>
+            <th style="padding:10px; border:1px solid #ccc;">Approved</th>
+            <th style="padding:10px; border:1px solid #ccc;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="depositTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 
   <!-- Deposit Tab -->
   <div id="deposit" class="tab-content active">
@@ -276,6 +305,77 @@ document.getElementById("modalDepositForm").addEventListener("submit", function(
     document.getElementById("modalMessage").textContent = "";
   }, 3000);
 });
+function loadDepositsToTable() {
+  const tableBody = document.getElementById("depositTableBody");
+  tableBody.innerHTML = "";
+
+  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+
+  if (savedDeposits.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:15px;">No deposits yet.</td></tr>`;
+    return;
+  }
+
+  savedDeposits.forEach((deposit, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.senderPhone}</td>
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.amount}</td>
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.txid}</td>
+      <td style="padding:10px; border:1px solid #ccc;">${new Date(deposit.timestamp).toLocaleString()}</td>
+      <td style="padding:10px; border:1px solid #ccc; text-align:center;">
+        <input type="checkbox" onchange="toggleApproval(${index})" ${deposit.approved ? 'checked' : ''}>
+      </td>
+      <td style="padding:10px; border:1px solid #ccc;">
+        <button onclick="deleteDeposit(${index})" style="background:red;color:white;border:none;padding:5px 10px;border-radius:4px;">Delete</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function deleteDeposit(index) {
+  let deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+  deposits.splice(index, 1);
+  localStorage.setItem("momoDeposits", JSON.stringify(deposits));
+  loadDepositsToTable();
+}
+
+function toggleApproval(index) {
+  let deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+  deposits[index].approved = !deposits[index].approved;
+  localStorage.setItem("momoDeposits", JSON.stringify(deposits));
+  loadDepositsToTable();
+}
+
+function exportDepositsToCSV() {
+  const deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+
+  if (deposits.length === 0) return alert("No deposits to export.");
+
+  const headers = ["Phone", "Amount", "TxID", "Date", "Approved"];
+  const rows = deposits.map(dep => [
+    dep.senderPhone,
+    dep.amount,
+    dep.txid,
+    new Date(dep.timestamp).toLocaleString(),
+    dep.approved ? "Yes" : "No"
+  ]);
+
+  let csv = headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "momo_deposits.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+window.addEventListener("load", loadDepositsToTable);
  </script>
 </body>
 </html>
