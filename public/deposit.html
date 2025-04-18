@@ -1,5 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
 
-  <!-- DEPOSIT MODAL -->
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #00695c;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .info p {
+      margin: 6px 0;
+    }
+
+    .highlight {
+      color: #1e88e5;
+      font-weight: bold;
+    }
+
+    .cert-note {
+      background: #e8f5e9;
+      padding: 10px;
+      border-left: 4px solid #43a047;
+      margin: 20px 0;
+      font-style: italic;
+    }
+
+    .pay-section {
+      margin-top: 30px;
+    }
+
+    .pay-option {
+      background: #f1f8e9;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-left: 5px solid #689f38;
+      position: relative;
+    }
+
+    code {
+      font-size: 14px;
+      color: #2e7d32;
+      display: inline-block;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 16px;
+    }
+
+    button[type="submit"] {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #388e3c;
+    }
+
+    .footer-note {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Course Overview</h1>
+
+    <div class="info">
+      <p><span class="highlight">Duration:</span> 1 week</p>
+      <p><span class="highlight">Price:</span> $19 USDT</p>
+      <p><span class="highlight">Provider:</span> Moneyard Learning</p>
+    </div>
+
+    <div class="cert-note">
+      You will receive an accredited certificate upon completion of this course.
+    </div>
+
+    <!-- Course Description -->
+    <p>Master blockchain technology and become a certified expert in distributed ledger systems, cryptocurrencies, smart contracts, and more.</p>
+
+    <!-- Enroll Button -->
+    <a href="payment-success.html?course=Blockchain%20Technology%20Mastery">
+      <button style="padding: 12px 24px; background: #00796b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+        Enroll Now - 19 USDT
+      </button>
+    </a>
+    
+    <!-- DEPOSIT MODAL -->
   <div id="deposit-modal" class="modal">
     <div class="modal-content">
       <h3>Deposit Funds</h3>
@@ -27,3 +164,30 @@
       <p id="deposit-response" style="margin-top:10px;"></p>
     </div>
   </div>
+
+    <script>
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Address copied to clipboard!');
+      });
+    }
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        alert('Please enter your email.');
+        return;
+      }
+      // Redirect to success page with course tag
+      window.location.href = 'payment-success.html?course=Blockchain%20Technology%20Mastery';
+    });
+  </script>
+
+</body>
+</html>
+
+
+  
+  
