@@ -10,68 +10,83 @@
     body {
       background: url('https://www.transparenttextures.com/patterns/gold-fish-scale.png');
       font-family: 'Georgia', serif;
-      color: #8b5e3c;
+      color: black;
       text-align: center;
-      padding: 40px;
+      padding: 20px;
     }
 
     .certificate {
       background: rgba(255, 255, 240, 0.95);
-      border: 15px solid #d4af37;
-      padding: 50px;
-      width: 1200px;
+      border: 10px solid #d4af37;
+      padding: 30px;
+      width: 900px;
       margin: auto;
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
       position: relative;
+      color: black;
     }
 
     .certificate h1 {
-      font-size: 50px;
-      color: #b8860b;
-      margin-bottom: 20px;
+      font-size: 40px;
+      margin-bottom: 15px;
     }
 
     .certificate h2 {
-      font-size: 32px;
-      margin: 15px 0;
+      font-size: 26px;
+      margin: 10px 0;
     }
 
     .certificate p {
-      font-size: 22px;
-      margin: 10px 0;
+      font-size: 18px;
+      margin: 8px 0;
     }
 
     .input-field {
       border: none;
-      border-bottom: 2px solid #8b5e3c;
-      font-size: 28px;
+      border-bottom: 2px solid black;
+      font-size: 24px;
       text-align: center;
       width: 80%;
       background: transparent;
-      color: #8b5e3c;
-      margin: 15px auto;
+      color: black;
+      margin: 12px auto;
     }
 
     .verified-seal {
-      font-size: 20px;
-      font-style: italic;
-      color: #b8860b;
-      margin-top: 30px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, #ffd700, #b8860b);
+      border-radius: 50%;
+      box-shadow: 0 0 12px #d4af37;
+      margin: 30px auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: white;
       font-weight: bold;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .verified-seal::before {
+      content: '✔';
+      font-size: 28px;
+      margin-bottom: 5px;
     }
 
     .issuer-section {
-      margin-top: 50px;
+      margin-top: 40px;
     }
 
     .signature {
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
     }
 
     .download-btn {
-      margin-top: 40px;
-      padding: 18px 36px;
+      margin-top: 30px;
+      padding: 14px 28px;
       background: #daa520;
       color: white;
       border: 2px solid #8b4513;
@@ -91,7 +106,7 @@
       top: 45%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 100px;
+      font-size: 80px;
       color: rgba(212, 175, 55, 0.07);
       pointer-events: none;
       white-space: nowrap;
@@ -113,7 +128,7 @@
 
     <input class="input-field" id="courseTitle" placeholder="Enter Course Title" />
 
-    <div class="verified-seal">Verified & Official — Golden Seal of Excellence</div>
+    <div class="verified-seal">Verified</div>
 
     <div class="issuer-section">
       <p>Issued by <strong>Moneyard Learning</strong>, an arm platform of <strong>MONEYARD</strong></p>
@@ -142,11 +157,11 @@
       const opt = {
         margin: 0,
         filename: 'Moneyard_Certificate.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2 },
         jsPDF: {
           unit: 'px',
-          format: [1200, 850], // Custom landscape size
+          format: [900, 700],
           orientation: 'landscape'
         }
       };
