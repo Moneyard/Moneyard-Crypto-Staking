@@ -166,3 +166,31 @@ function toggleSection(sectionId) {
 document.getElementById("earningsButton")?.addEventListener("click", function() {
   toggleSection('earningsSection');
 });
+// Check if there’s a saved email in localStorage on page load and pre-fill the login email
+window.onload = function() {
+  const savedEmail = localStorage.getItem("userEmail");
+  if (savedEmail) {
+    document.getElementById("loginEmail").value = savedEmail;
+    document.getElementById("rememberMe").checked = true; // Pre-check the "Remember Me" checkbox
+  }
+};
+
+// Handle the login form submission
+function handleLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+  const rememberMe = document.getElementById("rememberMe").checked;
+
+  // If "Remember Me" is checked, save the email in localStorage
+  if (rememberMe) {
+    localStorage.setItem("userEmail", email);
+  } else {
+    localStorage.removeItem("userEmail"); // Remove the saved email if "Remember Me" is not checked
+  }
+
+  // Proceed with the login logic (you will likely send the email/password to the backend)
+  // For now, we'll redirect to the dashboard page
+  window.location.href = "dashboard.html"; // Update this as per your flow
+}
