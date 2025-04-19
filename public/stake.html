@@ -121,7 +121,7 @@
   <div class="container">
     <section class="staking-section">
       <h2>Stake Your Crypto</h2>
-      <form class="staking-form">
+      <form class="staking-form" id="staking-form">
         <label for="stake-amount">Amount to Stake (USDT)</label>
         <input type="number" id="stake-amount" placeholder="Enter amount" required />
 
@@ -134,9 +134,54 @@
 
         <button type="submit">Start Staking</button>
       </form>
+      <div id="staking-result"></div>
     </section>
 
+    <!-- Crypto Market Section -->
+    <section class="crypto-market-section">
+      <h2>Crypto Market</h2>
+      <table id="cryptoMarketTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Coin</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>24h Change</th>
+            <th>Market Cap</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
   <script>
+    // Handle Staking Form Submission
+    document.getElementById('staking-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const amount = document.getElementById('stake-amount').value;
+      const plan = document.getElementById('stake-plan').value;
+
+      const response = await fetch('/api/stake', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount, plan })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        document.getElementById('staking-result').innerHTML = `<p style="color: green;">Staking successful! Your estimated reward: $${result.reward}</p>`;
+      } else {
+        document.getElementById('staking-result').innerHTML = `<p style="color: red;">${result.message}</p>`;
+      }
+    });
+
+    // Load Crypto Market Data
     async function loadCryptoMarket() {
       try {
         const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false");
@@ -166,6 +211,5 @@
     loadCryptoMarket();
     setInterval(loadCryptoMarket, 60000); // Refresh every 60s
   </script>
-
 </body>
 </html>
