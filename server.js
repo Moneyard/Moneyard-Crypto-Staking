@@ -270,3 +270,51 @@ app.listen(PORT, () => {
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
+// Required modules
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const sqlite3 = require('sqlite3').verbose();
+const app = express();
+
+// Middleware to parse JSON
+app.use(bodyParser.json());
+
+// Serve static files (public folder)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// SQLite Database Setup (Assuming you already have a database setup for staking)
+const db = new sqlite3.Database('./moneyard.db');
+
+// Route to handle staking
+app.post('/api/stake', (req, res) => {
+  const { amount, plan } = req.body;
+  const userId = 1; // Assume the user ID is available (implement session management for real use)
+
+  if (!amount || !plan) {
+    return res.status(400).json({ success: false, message: 'Amount and plan are required.' });
+  }
+
+  let apy = 0;
+  if (plan === 'flexible') apy = 0.05;
+  if (plan === 'locked') apy = 0.10;
+  if (plan === 'high-yield') apy = 0.15;
+
+  // Calculate reward
+  const reward = (amount * apy).toFixed(2);
+
+  // Insert stake into the database (you can adjust this for your actual structure)
+  db.run(`INSERT INTO stakes (user_id, amount, plan, reward) VALUES (?, ?, ?, ?)`, [userId, amount, plan, reward], function(err) {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Failed to stake.' });
+    }
+
+    res.json({ success: true, reward });
+  });
+});
+
+// Server start
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
