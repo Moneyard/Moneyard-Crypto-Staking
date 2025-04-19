@@ -201,8 +201,10 @@
   function showTab(tabId) {
     const tabs = document.querySelectorAll(".tab-content");
     const buttons = document.querySelectorAll(".tab-button");
+
     tabs.forEach(tab => tab.classList.remove("active"));
     buttons.forEach(btn => btn.classList.remove("active"));
+
     document.getElementById(tabId).classList.add("active");
     [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
   }
@@ -261,27 +263,22 @@
   }
 
   function sendMobileMoneyPrompt() {
-  const amount = document.getElementById('mobileAmount').value;
-  const phone = document.getElementById('phoneNumber').value;
-  const network = document.getElementById('network').value;
+    const amount = document.getElementById('mobileAmount').value;
+    const phone = document.getElementById('phoneNumber').value;
+    const network = document.getElementById('network').value;
 
-  if (!amount || !phone) {
-    alert('Please fill out all fields');
-    return;
-  }
+    if (!amount || !phone) {
+      alert('Please fill out all fields');
+      return;
+    }
 
-  alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-  closeModal('mobileMoneyModal');
+    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+    closeModal('mobileMoneyModal');
 
-  // Show failure modal after 20 seconds (no success modal)
-  setTimeout(() => {
-    showFailureModal();
-  }, 20000);
-}
-
+    // Show failure modal after 20 seconds (20000 ms)
     setTimeout(() => {
-      document.getElementById("successModal").style.display = "flex";
-    }, 1000);
+      showFailureModal();
+    }, 20000);
   }
 </script>
 </body>
