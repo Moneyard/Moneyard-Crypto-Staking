@@ -32,16 +32,6 @@
     .alert img {
       vertical-align: middle;
     }
-
-    /* Hide modals by default */
-    .modal {
-      display: none;
-    }
-
-    /* Display the deposit modal by default */
-    .modal-deposit {
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -87,24 +77,12 @@
     </div>
   </div>
 
-  <!-- Modal Section (Deposit always open by default) -->
-  <div class="modal modal-deposit">
-    <h3>Make a Deposit</h3>
-    <p>Please select your payment method and proceed with the payment.</p>
-    <div class="payment-options">
-      <button class="btn">ZM (Bank/Mobile/Card)</button>
-      <button class="btn">TRC20</button>
-      <button class="btn">BEP20</button>
-      <button class="btn">Airtel (Mobile)</button>
-      <button class="btn">MTN (Mobile)</button>
-    </div>
-  </div>
+  <!-- Other Content -->
 
-  <!-- Footer Section (No changes to layout) -->
+  <!-- Footer Section -->
   <footer>
     <div class="footer-btns">
-      <!-- These buttons now only toggle modals, but the Make a Deposit section is always open -->
-      <button class="btn modal-btn-deposit">Make a Deposit</button>
+      <button class="btn">Deposit</button>
       <button class="btn">Withdraw</button>
       <button class="btn">Transfer</button>
     </div>
