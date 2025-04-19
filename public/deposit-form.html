@@ -167,7 +167,7 @@
     </a>
   </strong> and 
   <strong>
-    <a href="https://t.me/MoneyardSupport" target="_blank" style="color: #155724; text-decoration: underline;">
+    <a href="https://t.me/Moneyardservices" target="_blank" style="color: #155724; text-decoration: underline;">
       <img src="https://img.icons8.com/color/20/000000/telegram-app.png" style="vertical-align: middle;"/> Telegram
     </a>
   </strong>.<br>
@@ -239,6 +239,26 @@
     return;
   }
 
+  const now = new Date();
+  const timestamp = now.toLocaleString(); // Adds date/time
+
+  const deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+
+  const newDeposit = {
+    id: Date.now(),
+    method,
+    amount,
+    txid,
+    date: timestamp,
+    status: "Pending"
+  };
+
+  deposits.push(newDeposit);
+  localStorage.setItem("depositRequests", JSON.stringify(deposits));
+
+  alert("Submitted successfully! Your deposit is being verified...");
+  window.location.href = "payment-approval.html";
+}
   // Simulate success and redirect
   alert("Submitted successfully ! your deposit is being verified and redirecting you to Admin approval...!");
   window.location.href = "deposit-approval.html";
