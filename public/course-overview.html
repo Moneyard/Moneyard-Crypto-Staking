@@ -185,6 +185,17 @@
       <button class="close-btn" onclick="closeModal('successModal')">Close</button>
     </div>
   </div>
+<!-- Failure Modal -->
+<div id="failureModal" class="modal">
+  <div class="modal-content">
+    <h3>Payment Prompt System Failed!</h3>
+    <p>Your deposit could not be processed.<br>
+    Kindly click the button below to send it manually via the Admin Deposit Form.</p>
+    <a href="deposit-form.html">
+      <button class="close-btn">Close</button>
+    </a>
+  </div>
+</div>
 
   <script>
     function showTab(tabId) {
@@ -250,9 +261,16 @@
       }
 
       alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-      closeModal('mobileMoneyModal');
+closeModal('mobileMoneyModal');
 
-      setTimeout(() => {
+// Show failure modal after 40 seconds (40000 ms)
+setTimeout(() => {
+  showFailureModal();
+}, 40000);
+
+function showFailureModal() {
+  document.getElementById("failureModal").style.display = "flex";
+}
         document.getElementById("successModal").style.display = "flex";
       }, 1000);
     }
