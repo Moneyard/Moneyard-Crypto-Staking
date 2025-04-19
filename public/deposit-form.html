@@ -230,31 +230,30 @@
     }
 
     function submitDeposit() {
-      const method = document.getElementById("deposit-method").value;
-      const amount = document.getElementById("deposit-amount").value;
-      const txid = document.getElementById("deposit-txid").value;
+  const method = document.getElementById("deposit-method").value;
+  const amount = document.getElementById("deposit-amount").value;
+  const txid = document.getElementById("deposit-txid").value;
 
-      if (!amount || !txid) {
-        alert("Please fill in all fields.");
-        return;
-      }
+  if (!amount || !txid) {
+    alert("Please fill in all fields.");
+    return;
+  }
 
-      fetch('/deposit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ method, amount, txid })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message || "Deposit submitted successfully!");
-        closeModal('deposit-modal');
-      })
-      .catch(err => {
-        alert("Error submitting deposit.");
-        console.error(err);
-      });
-    }
-  </script>
-
+  fetch('/deposit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ method, amount, txid })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || "Deposit submitted successfully!");
+    closeModal('deposit-modal');
+  })
+  .catch(err => {
+    alert("Error submitting deposit.");
+    console.error(err);
+  });
+}
+ </script>
 </body>
 </html>
