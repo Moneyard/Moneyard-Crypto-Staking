@@ -6,39 +6,40 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
+      background: #ffffff;
       margin: 0;
-      background-color: #ffffff;
       color: #333;
     }
 
     .open-btn {
       background-color: #28a745;
       color: white;
-      padding: 10px 20px;
+      padding: 12px 20px;
       margin: 20px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 16px;
       cursor: pointer;
     }
 
     .modal {
       display: none;
       position: fixed;
-      z-index: 999;
+      z-index: 9999;
       left: 0; top: 0;
       width: 100%; height: 100%;
       overflow: auto;
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0, 0, 0, 0.6);
     }
 
     .modal-content {
       background-color: #f9f9f9;
-      margin: 10% auto;
+      margin: 5% auto;
       padding: 20px;
-      border-radius: 10px;
       width: 90%;
       max-width: 500px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border-radius: 12px;
+      position: relative;
     }
 
     .modal-content h2 {
@@ -47,15 +48,15 @@
     }
 
     label {
-      font-weight: bold;
       display: block;
       margin-top: 10px;
+      font-weight: 600;
     }
 
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
+      margin-top: 6px;
       margin-bottom: 15px;
       border-radius: 5px;
       border: 1px solid #ccc;
@@ -67,21 +68,17 @@
       padding: 12px;
       border: none;
       width: 100%;
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
     }
 
     .close {
-      color: #aaa;
-      float: right;
+      position: absolute;
+      top: 10px;
+      right: 20px;
       font-size: 28px;
-      font-weight: bold;
       cursor: pointer;
-    }
-
-    .close:hover {
-      color: black;
     }
 
     .copy-container {
@@ -94,11 +91,35 @@
       background-color: #28a745;
       border: none;
       color: white;
-      padding: 5px 10px;
+      padding: 6px 10px;
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
       margin-left: 10px;
+    }
+
+    .contact-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .contact-buttons a {
+      flex: 1;
+      text-align: center;
+      margin: 0 5px;
+      text-decoration: none;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .whatsapp {
+      background-color: #25d366;
+    }
+
+    .telegram {
+      background-color: #0088cc;
     }
   </style>
 </head>
@@ -119,7 +140,7 @@
       </select>
 
       <div id="wallet-address">
-        <!-- Bank details default -->
+        <!-- Default bank info -->
         <div class="copy-container">
           <p style="margin: 0;">Account Number: <strong id="account-number">0152502166700</strong></p>
           <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
@@ -135,6 +156,11 @@
       <input type="text" id="deposit-txid" placeholder="E.g., AIRTEL-REF-12345" required>
 
       <button onclick="submitDeposit()">Submit Deposit</button>
+
+      <div class="contact-buttons">
+        <a class="whatsapp" href="https://wa.me/260971234567" target="_blank">WhatsApp</a>
+        <a class="telegram" href="https://t.me/MoneyardSupport" target="_blank">Telegram</a>
+      </div>
     </div>
   </div>
 
@@ -194,7 +220,7 @@
       const txid = document.getElementById("deposit-txid").value;
 
       if (!amount || !txid) {
-        alert("Please complete all fields.");
+        alert("Please fill in all fields.");
         return;
       }
 
@@ -209,7 +235,7 @@
         closeModal('deposit-modal');
       })
       .catch(err => {
-        alert("Deposit failed. Please try again.");
+        alert("Error submitting deposit.");
         console.error(err);
       });
     }
