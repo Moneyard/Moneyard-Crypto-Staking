@@ -239,20 +239,9 @@
     return;
   }
 
-  fetch('/deposit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ method, amount, txid })
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert(data.message || "Deposit submitted successfully!");
-    closeModal('deposit-modal');
-  })
-  .catch(err => {
-    alert("Error submitting deposit.");
-    console.error(err);
-  });
+  // Simulate success and redirect
+  alert("Deposit submitted successfully!");
+  window.location.href = "deposit-approval.html";
 }
  </script>
 </body>
