@@ -36,3 +36,7 @@
   "author": "Moneyard",
   "license": "MIT"
 }
+"scripts": {
+  "build": "cp -r public/ build/",
+  "heroku-postbuild": "npm run build"
+}
