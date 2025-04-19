@@ -1,34 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Moneyard Admin Panel</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+    h1 {
+      color: #006400;
+      text-align: center;
+    }
+    .deposit-list {
+      margin-top: 30px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .deposit-item {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 5px solid #28a745;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .deposit-item h3 {
+      margin: 0;
+    }
+    .deposit-item p {
+      margin: 4px 0;
+    }
+    button {
+      padding: 6px 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:disabled {
+      background-color: #aaa;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Admin Panel - Deposit Approval</h1>
-    </header>
+  <h1>Admin Panel - Deposit Approvals</h1>
+  <div class="deposit-list" id="depositList">
+    <p>Loading pending deposits...</p>
+  </div>
 
-    <section id="deposit-approval">
-        <h2>Pending Deposits</h2>
-        <table id="deposit-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Amount</th>
-                    <th>Transaction ID</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dynamic deposit rows will be inserted here -->
-            </tbody>
-        </table>
-    </section>
+  <script>
+    async function fetchPendingDeposits() {
+      const response = await fetch('/api/admin/deposits');
+      const deposits = await response.json();
+      const list = document.getElementById('depositList');
+      list.innerHTML = '';
 
-    <script src="admin.js"></script>
+      if (deposits.length === 0) {
+        list.innerHTML = '<p>No pending deposits found.</p>';
+        return;
+      }
+
+      deposits.forEach(deposit => {
+        const item = document.createElement('div');
+        item.className = 'deposit-item';
+        item.innerHTML = `
+          <h3>Deposit #${deposit.id}</h3>
+          <p><strong>User ID:</strong> ${deposit.user_id}</p>
+          <p><strong>Amount:</strong> $${deposit.amount}</p>
+          <p><strong>Network:</strong> ${deposit.network}</p>
+          <p><strong>TX ID:</strong> ${deposit.tx_id}</p>
+          <p><strong>Date:</strong> ${deposit.date}</p>
+          <p><strong>Status:</strong> ${deposit.status}</p>
+          <button onclick="approveDeposit(${deposit.id}, this)">Approve</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    async function approveDeposit(depositId, btn) {
+      btn.disabled = true;
+      btn.innerText = 'Approving...';
+      const res = await fetch('/api/admin/approve-deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionId: depositId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        btn.innerText = 'Approved';
+        setTimeout(fetchPendingDeposits, 1000);
+      } else {
+        btn.innerText = 'Failed';
+        btn.disabled = false;
+      }
+    }
+
+    fetchPendingDeposits();
+  </script>
 </body>
 </html>
