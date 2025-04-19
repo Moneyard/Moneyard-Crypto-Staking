@@ -291,3 +291,78 @@ function exportDepositsToCSV() {
 
   URL.revokeObjectURL(url);
 }
+// Load deposits from localStorage on page load
+window.addEventListener("load", () => {
+  loadPendingDeposits();
+});
+
+// Handle deposit submission
+document.getElementById("depositForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const amount = document.getElementById("depositAmount").value;
+  const method = document.getElementById("depositMethod").value;
+
+  const deposit = {
+    id: Date.now(),
+    amount,
+    method,
+    status: "Pending"
+  };
+
+  const deposits = JSON.parse(localStorage.getItem("deposits")) || [];
+  deposits.push(deposit);
+  localStorage.setItem("deposits", JSON.stringify(deposits));
+
+  document.getElementById("depositForm").reset();
+  loadPendingDeposits();
+});
+
+// Load and display all pending deposits
+function loadPendingDeposits() {
+  const container = document.getElementById("pendingDeposits");
+  container.innerHTML = "";
+
+  const deposits = JSON.parse(localStorage.getItem("deposits")) || [];
+
+  if (deposits.length === 0) {
+    container.innerHTML = "<p>No pending deposits.</p>";
+    return;
+  }
+
+  deposits.forEach(deposit => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <p>
+        <strong>Amount:</strong> $${deposit.amount} |
+        <strong>Method:</strong> ${deposit.method} |
+        <strong>Status:</strong> ${deposit.status}
+        <br>
+        ${deposit.status === "Pending" ? `
+          <button onclick="approveDeposit(${deposit.id})">Approve</button>
+          <button onclick="rejectDeposit(${deposit.id})">Reject</button>
+        ` : `<em>Action Completed</em>`}
+      </p>
+      <hr>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Approve deposit
+function approveDeposit(id) {
+  updateDepositStatus(id, "Approved");
+}
+
+// Reject deposit
+function rejectDeposit(id) {
+  updateDepositStatus(id, "Rejected");
+}
+
+// Update deposit status and refresh display
+function updateDepositStatus(id, newStatus) {
+  let deposits = JSON.parse(localStorage.getItem("deposits")) || [];
+  deposits = deposits.map(dep => dep.id === id ? { ...dep, status: newStatus } : dep);
+  localStorage.setItem("deposits", JSON.stringify(deposits));
+  loadPendingDeposits();
+}
