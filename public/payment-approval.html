@@ -3,176 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deposit Approval</title>
+  <title>Deposit Approval - Admin</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      color: #333;
     }
-
-    h2 {
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
       text-align: center;
+      color: #007b8f;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 20px;
     }
-
-    .deposit-container {
-      width: 80%;
-      margin: 20px auto;
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .deposit-item {
-      padding: 10px;
-      margin-bottom: 15px;
+    table, th, td {
       border: 1px solid #ddd;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
-
-    .deposit-item.pending {
-      border-color: orange;
+    th, td {
+      padding: 12px;
+      text-align: center;
     }
-
-    .deposit-item.approved {
-      border-color: green;
+    th {
+      background-color: #007b8f;
+      color: white;
     }
-
-    .deposit-item.rejected {
-      border-color: red;
-    }
-
-    .deposit-item h3 {
-      margin: 0;
-    }
-
-    .deposit-item p {
-      margin: 5px 0;
-      color: #555;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    button {
-      padding: 8px 15px;
-      font-size: 14px;
-      cursor: pointer;
+    .approve, .reject {
+      background-color: #28a745;
+      color: white;
+      padding: 8px 16px;
       border: none;
       border-radius: 5px;
+      cursor: pointer;
     }
-
-    .approve {
-      background-color: green;
-      color: white;
-    }
-
     .reject {
-      background-color: red;
+      background-color: #dc3545;
+    }
+    .status {
+      font-weight: bold;
+    }
+    .alert {
+      display: none;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
       color: white;
     }
-
-    .no-deposits {
-      text-align: center;
-      color: gray;
-      margin-top: 20px;
+    .alert.success {
+      background-color: #28a745;
+    }
+    .alert.error {
+      background-color: #dc3545;
     }
   </style>
 </head>
 <body>
 
-  <h2>Deposit Approval System</h2>
+  <div class="container">
+    <h1>Deposit Approval</h1>
 
-  <div class="deposit-container">
+    <!-- Success or error alert -->
+    <div class="alert success" id="alert-success">Deposit action successful!</div>
+    <div class="alert error" id="alert-error">An error occurred, please try again.</div>
+
     <h3>Pending Deposits</h3>
-    <div id="depositList"></div>
-    <div id="noDepositsMessage" class="no-deposits">No pending deposits available.</div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Amount (USD)</th>
+          <th>Method</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="pendingDeposits">
+        <!-- Pending deposits will be displayed here -->
+      </tbody>
+    </table>
   </div>
 
   <script>
-    // Function to load the deposits from localStorage
-    function loadDeposits() {
-      const deposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
+    // Sample deposit data for demonstration (replace this with real data from backend)
+    const pendingDeposits = [
+      { id: 1, amount: 100, method: 'TRC20', txid: 'TX123', status: 'Pending' },
+      { id: 2, amount: 200, method: 'BEP20', txid: 'TX456', status: 'Pending' },
+      { id: 3, amount: 50, method: 'Mobile Money', txid: 'TX789', status: 'Pending' }
+    ];
 
-      // Display message if no pending deposits
-      const noDepositsMessage = document.getElementById('noDepositsMessage');
-      if (deposits.length === 0) {
-        noDepositsMessage.style.display = 'block';
-      } else {
-        noDepositsMessage.style.display = 'none';
-      }
+    // Render the list of pending deposits
+    function renderPendingDeposits() {
+      const pendingDepositsTable = document.getElementById('pendingDeposits');
+      pendingDepositsTable.innerHTML = '';
 
-      const depositList = document.getElementById('depositList');
-      depositList.innerHTML = '';  // Clear previous list
-
-      deposits.forEach((deposit, index) => {
-        const depositDiv = document.createElement('div');
-        depositDiv.classList.add('deposit-item', deposit.status);
-
-        // Deposit Details
-        depositDiv.innerHTML = `
-          <div>
-            <h3>Amount: $${deposit.amount}</h3>
-            <p>Method: ${deposit.method}</p>
-            <p>Status: <span style="font-weight: bold">${deposit.status}</span></p>
-          </div>
-          <div class="action-buttons">
-            ${deposit.status === 'pending' ? `
-              <button class="approve" onclick="approveDeposit(${index})">Approve</button>
-              <button class="reject" onclick="rejectDeposit(${index})">Reject</button>
-            ` : ''}
-          </div>
+      pendingDeposits.forEach(deposit => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${deposit.id}</td>
+          <td>${deposit.amount}</td>
+          <td>${deposit.method}</td>
+          <td>${deposit.txid}</td>
+          <td class="status">${deposit.status}</td>
+          <td>
+            <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
+            <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
+          </td>
         `;
-        depositList.appendChild(depositDiv);
+        pendingDepositsTable.appendChild(row);
       });
     }
 
-    // Function to approve a deposit
-    function approveDeposit(index) {
-      const deposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
-      deposits[index].status = 'approved';
-      localStorage.setItem('pendingDeposits', JSON.stringify(deposits));
-
-      // Reload the page to reflect changes
-      loadDeposits();
+    // Function to approve deposit
+    function approveDeposit(id) {
+      const deposit = pendingDeposits.find(deposit => deposit.id === id);
+      if (deposit) {
+        deposit.status = 'Approved';
+        renderPendingDeposits();
+        showAlert('success', 'Deposit approved successfully!');
+      }
     }
 
-    // Function to reject a deposit
-    function rejectDeposit(index) {
-      const deposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
-      deposits[index].status = 'rejected';
-      localStorage.setItem('pendingDeposits', JSON.stringify(deposits));
-
-      // Reload the page to reflect changes
-      loadDeposits();
+    // Function to reject deposit
+    function rejectDeposit(id) {
+      const deposit = pendingDeposits.find(deposit => deposit.id === id);
+      if (deposit) {
+        deposit.status = 'Rejected';
+        renderPendingDeposits();
+        showAlert('error', 'Deposit rejected.');
+      }
     }
 
-    // Function to initialize with mock deposits (only for testing purposes)
-    function initMockDeposits() {
-      const deposits = [
-        { amount: 100, method: 'TRC20', status: 'pending' },
-        { amount: 200, method: 'BEP20', status: 'pending' },
-        { amount: 150, method: 'Mobile Money', status: 'pending' }
-      ];
-      localStorage.setItem('pendingDeposits', JSON.stringify(deposits));
-      loadDeposits();
+    // Function to show alert
+    function showAlert(type, message) {
+      const successAlert = document.getElementById('alert-success');
+      const errorAlert = document.getElementById('alert-error');
+
+      if (type === 'success') {
+        successAlert.style.display = 'block';
+        errorAlert.style.display = 'none';
+      } else {
+        successAlert.style.display = 'none';
+        errorAlert.style.display = 'block';
+      }
+
+      setTimeout(() => {
+        successAlert.style.display = 'none';
+        errorAlert.style.display = 'none';
+      }, 3000);
     }
 
-    // Uncomment this line to initialize mock deposits for testing (remove for production)
-    // initMockDeposits();
-
-    // On page load, load the deposits
-    window.onload = function() {
-      loadDeposits();
-    };
+    // Initial rendering of pending deposits
+    renderPendingDeposits();
   </script>
 
 </body>
