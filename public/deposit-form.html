@@ -121,6 +121,18 @@
     .telegram {
       background-color: #0088cc;
     }
+
+    /* Pending status section */
+    .pending-status {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #ffcc00;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -158,35 +170,43 @@
       <button onclick="submitDeposit()">Submit Deposit</button>
 
       <div id="paymentAlert" style="position: relative; margin-top: 16px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px 16px; border-radius: 6px; font-size: 14px;">
-  <span onclick="document.getElementById('paymentAlert').style.display='none'" style="position: absolute; top: 8px; right: 12px; cursor: pointer; font-weight: bold;">&times;</span>
-  <strong>Payment Instructions:</strong><br>
-  After making payment, please send a screenshot of the transaction to our official support: 
-  <strong>
-    <a href="https://wa.me/+260 963612941" target="_blank" style="color: #155724; text-decoration: underline;">
-      <img src="https://img.icons8.com/color/20/000000/whatsapp.png" style="vertical-align: middle;"/> WhatsApp
-    </a>
-  </strong> and 
-  <strong>
-    <a href="https://t.me/Moneyardservices" target="_blank" style="color: #155724; text-decoration: underline;">
-      <img src="https://img.icons8.com/color/20/000000/telegram-app.png" style="vertical-align: middle;"/> Telegram
-    </a>
-  </strong>.<br>
-  Your deposit will be verified manually and reflected shortly.
-</div>
+        <span onclick="document.getElementById('paymentAlert').style.display='none'" style="position: absolute; top: 8px; right: 12px; cursor: pointer; font-weight: bold;">&times;</span>
+        <strong>Payment Instructions:</strong><br>
+        After making payment, please send a screenshot of the transaction to our official support: 
+        <strong>
+          <a href="https://wa.me/+260963612941" target="_blank" style="color: #155724; text-decoration: underline;">
+            <img src="https://img.icons8.com/color/20/000000/whatsapp.png" style="vertical-align: middle;"/> WhatsApp
+          </a>
+        </strong> and 
+        <strong>
+          <a href="https://t.me/Moneyardservices" target="_blank" style="color: #155724; text-decoration: underline;">
+            <img src="https://img.icons8.com/color/20/000000/telegram-app.png" style="vertical-align: middle;"/> Telegram
+          </a>
+        </strong>.<br>
+        Your deposit will be verified manually and reflected shortly.
+      </div>
+
+      <!-- Pending status section -->
+      <div class="pending-status">
+        Status: Pending
+      </div>
+
+    </div>
+  </div>
 
   <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = 'block';
-    }
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
+    }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
 
-    // Automatically open the deposit modal when the page loads
-    window.onload = function() {
-      openModal('deposit-modal');
-    };
+    // Automatically open the deposit modal when the page loads
+    window.onload = function() {
+      openModal('deposit-modal');
+    };
 
     function updateAddress() {
       const method = document.getElementById("deposit-method").value;
@@ -230,39 +250,35 @@
     }
 
     function submitDeposit() {
-  const method = document.getElementById("deposit-method").value;
-  const amount = document.getElementById("deposit-amount").value;
-  const txid = document.getElementById("deposit-txid").value;
+      const method = document.getElementById("deposit-method").value;
+      const amount = document.getElementById("deposit-amount").value;
+      const txid = document.getElementById("deposit-txid").value;
 
-  if (!amount || !txid) {
-    alert("Please fill in all fields.");
-    return;
-  }
+      if (!amount || !txid) {
+        alert("Please fill in all fields.");
+        return;
+      }
 
-  const now = new Date();
-  const timestamp = now.toLocaleString(); // Adds date/time
+      const now = new Date();
+      const timestamp = now.toLocaleString(); // Adds date/time
 
-  const deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+      const deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
 
-  const newDeposit = {
-    id: Date.now(),
-    method,
-    amount,
-    txid,
-    date: timestamp,
-    status: "Pending"
-  };
+      const newDeposit = {
+        id: Date.now(),
+        method,
+        amount,
+        txid,
+        date: timestamp,
+        status: "Pending"
+      };
 
-  deposits.push(newDeposit);
-  localStorage.setItem("depositRequests", JSON.stringify(deposits));
+      deposits.push(newDeposit);
+      localStorage.setItem("depositRequests", JSON.stringify(deposits));
 
-  alert("Submitted successfully! Your deposit is being verified...");
-  window.location.href = "payment-approval.html";
-}
-  // Simulate success and redirect
-  alert("Submitted successfully ! your deposit is being verified and redirecting you to Admin approval...!");
-  window.location.href = "deposit-approval.html";
-}
- </script>
+      alert("Submitted successfully! Your deposit is being verified...");
+      window.location.href = "payment-approval.html";
+    }
+  </script>
 </body>
 </html>
