@@ -1,304 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Moneyard - Deposit & Course</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Moneyard Deposit</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 20px;
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .tab-button {
-      flex: 1;
-      padding: 15px;
-      background: #e0e0e0;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
+      background-color: #ffffff;
       color: #333;
-      border-radius: 8px 8px 0 0;
-      transition: background 0.3s;
     }
 
-    .tab-button.active {
-      background: #28a745;
-      color: white;
-    }
-
-    .tab-content {
-      display: none;
-      background: white;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    input, select, button {
-      display: block;
-      width: 100%;
-      margin: 12px 0;
-      padding: 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button {
+    .open-btn {
       background-color: #28a745;
       color: white;
-      font-weight: bold;
-      cursor: pointer;
+      padding: 10px 20px;
+      margin: 20px;
       border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     .modal {
       display: none;
       position: fixed;
       z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.5);
-      align-items: center;
-      justify-content: center;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
     }
 
     .modal-content {
-      background-color: #fff;
-      padding: 30px;
+      background-color: #f9f9f9;
+      margin: 10% auto;
+      padding: 20px;
       border-radius: 10px;
-      max-width: 400px;
       width: 90%;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .modal-content h2 {
       text-align: center;
-      animation: fadeInScale 0.4s ease;
-      position: relative;
+      color: #007b8f;
     }
 
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .close-btn {
-      margin-top: 15px;
-      background: #dc3545;
-      color: white;
-    }
-
-    .mobile-money-btn {
-      background-color: #1db954;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      margin-top: 15px;
+    label {
       font-weight: bold;
-      transition: 0.3s;
+      display: block;
+      margin-top: 10px;
     }
 
-    .mobile-money-btn:hover {
-      background-color: #14833b;
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007b8f;
+      color: white;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .copy-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .copy-btn {
+      background-color: #28a745;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 10px;
     }
   </style>
 </head>
-<body onload="showTab('deposit')">
+<body>
 
-  <button onclick="openMomoModal()" style="background:#1e6b4e;color:white;padding:10px 20px;border:none;border-radius:5px;">Deposit via MoMo</button>
-  <button onclick="loadDepositsToTable()" style="margin-top:10px;padding:5px 10px;">Refresh Table</button>
+  <button class="open-btn" onclick="openModal('deposit-modal')">Make a Deposit</button>
 
-  <div class="tabs">
-    <button class="tab-button active" onclick="showTab('deposit')">Deposit</button>
-    <button class="tab-button" onclick="showTab('course')">Course Overview</button>
-  </div>
-
-  <button onclick="openAdminModal()" style="position:fixed; top:20px; right:20px; background:#1b5e20; color:#fff; border:none; padding:10px 20px; border-radius:8px;">View Deposits</button>
-
-  <!-- Admin Deposit Modal -->
-  <div id="adminDepositModal" class="modal">
-    <div class="modal-content" style="max-width:800px;">
-      <span onclick="closeAdminModal()" style="position:absolute; top:10px; right:20px; font-size:22px; cursor:pointer;">&times;</span>
-      <h2 style="color:#1e6b4e;">Admin Deposit Table</h2>
-      <button onclick="exportDepositsToCSV()" style="margin-bottom:15px;">Export to CSV</button>
-      <div style="overflow-x:auto;">
-        <table id="depositTable" style="width:100%; border-collapse: collapse;">
-          <thead>
-            <tr style="background-color:#e0f2f1; color:#004d40;">
-              <th>Phone</th><th>Amount</th><th>TxID</th><th>Date</th><th>Approved</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="depositTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Deposit Section -->
-  <div id="deposit" class="tab-content active">
-    <h3>Deposit Funds</h3>
-    <label>Amount (USDT):</label>
-    <input type="number" id="deposit-amount" placeholder="Enter amount" />
-
-    <label>Payment Method:</label>
-    <select id="deposit-method" onchange="updateAddressAndQR()">
-      <option value="TRC20">USDT - TRC20 (Tron)</option>
-      <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
-    </select>
-
-    <div id="address-section">
-      <p><strong>Deposit Address:</strong></p>
-      <p id="wallet-address">Please select a network</p>
-      <button onclick="copyAddress()">Copy Address</button>
-      <div><img id="qr-image" src="" alt="QR Code" style="max-width:150px;" /></div>
-    </div>
-
-    <label>Transaction ID (optional):</label>
-    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-
-    <button onclick="enrollNow()">Enroll Now for $19 ≈ 19 USDT</button>
-    <button class="mobile-money-btn" onclick="openMomoModal()">Pay with Mobile Money</button>
-  </div>
-
-  <!-- Course Overview Tab -->
-  <div id="course" class="tab-content">
-    <h3>Course Overview</h3>
-    <p>Learn all about staking, crypto security, and financial growth with our expert-led content!</p>
-  </div>
-
-  <!-- MoMo Deposit Modal -->
-  <div id="depositModal" class="modal">
+  <div id="deposit-modal" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeModal('depositModal')">&times;</span>
+      <span class="close" onclick="closeModal('deposit-modal')">&times;</span>
       <h2>Deposit Funds</h2>
 
-      <label>Select Payment Method:</label>
-      <select id="paymentMethod" onchange="togglePaymentInstructions()">
-        <option value="">-- Select --</option>
-        <option value="mtn">Mobile Money - MTN</option>
-        <option value="airtel">Mobile Money - Airtel</option>
-        <option value="trc20">Crypto - TRC20</option>
-        <option value="bep20">Crypto - BEP20</option>
+      <label>Payment Method:</label>
+      <select id="deposit-method" onchange="updateAddress()">
+        <option value="BANK" selected>Bank Transfer</option>
       </select>
 
-      <div id="paymentInstructions" style="margin-top: 15px;"></div>
-
-      <input type="number" id="depositAmount" placeholder="Enter Amount" required />
-      <div class="info-box">
-        <p><strong>Payment Instructions:</strong><br>
-        After making payment, please send a screenshot of the transaction to our official support:</p>
-        <ul>
-          <li><strong>WhatsApp:</strong> <a href="https://wa.me/260963612941" target="_blank">+260 963612941</a></li>
-          <li><strong>Telegram:</strong> <a href="https://t.me/Moneyardservices" target="_blank">@Moneyardservices</a></li>
-        </ul>
-        <p>Your deposit will be verified manually and reflected shortly.</p>
+      <div id="wallet-address">
+        <div class="copy-container">
+          <p style="margin: 0;">Account Number: <strong id="account-number">0152502166700</strong></p>
+          <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
+        </div>
+        <p>Bank Name: <strong>Standard Chartered Bank</strong></p>
+        <p>Account Name: <strong>Mwaba Lewis</strong></p>
       </div>
 
-  <!-- Success Modal -->
-  <div id="successModal" class="modal">
-    <div class="modal-content">
-      <h3>Enrollment Successful!</h3>
-      <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
-      <button class="close-btn" onclick="closeModal('successModal')">Close</button>
+      <label for="amount">Amount (ZMW):</label>
+      <input type="number" id="deposit-amount" placeholder="Enter amount" required>
+
+      <label for="txid">Bank Reference Number:</label>
+      <input type="text" id="deposit-txid" placeholder="E.g., BANK-REF-12345" required>
+
+      <button onclick="submitDeposit()">Submit Deposit</button>
     </div>
   </div>
 
   <script>
-    function showTab(tabId) {
-      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-      document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      [...document.querySelectorAll(".tab-button")].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
     }
 
-    function updateAddressAndQR() {
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function updateAddress() {
       const method = document.getElementById("deposit-method").value;
-      const address = method === "TRC20"
-        ? "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy"
-        : method === "BEP20"
-        ? "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D"
-        : "";
-
-      const qrSrc = method === "TRC20" ? "trc20-qr.png" : method === "BEP20" ? "bep20-qr.png" : "";
-
-      document.getElementById("wallet-address").textContent = address;
-      document.getElementById("qr-image").src = qrSrc;
-    }
-
-    function copyAddress() {
-      navigator.clipboard.writeText(document.getElementById("wallet-address").textContent)
-        .then(() => alert("Address copied!"));
-    }
-
-    function enrollNow() {
-      document.getElementById("successModal").style.display = "flex";
-    }
-
-    function togglePaymentInstructions() {
-      const method = document.getElementById("paymentMethod").value;
-      const instructions = document.getElementById("paymentInstructions");
-
-      if (method === "mtn") {
-        instructions.innerHTML = `<strong>MTN Mobile Money:</strong><br>
-        Send payment to <b>+260 768526191(LEWIS)</b><br>
-        Use your phone number or a clear reference.<br>
-        Copy and paste the transaction ID below.`;
-      } else if (method === "airtel") {
-        instructions.innerHTML = `<strong>Airtel Mobile Money:</strong><br>
-        Send payment to <b>+260 771196634(LEWIS)</b><br>
-        Use your phone number or a clear reference.<br>
-        Copy and paste the transaction ID below.`;
-      } else if (method === "trc20") {
-        instructions.innerHTML = `<strong>TRC20 Wallet Address:</strong><br><code>TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy</code>`;
-      } else if (method === "bep20") {
-        instructions.innerHTML = `<strong>BEP20 Wallet Address:</strong><br><code>0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D</code>`;
-      } else {
-        instructions.innerHTML = "";
+      if (method === "BANK") {
+        document.getElementById("wallet-address").innerHTML = `
+          <div class="copy-container">
+            <p style="margin: 0;">Account Number: <strong id="account-number">0152502166700</strong></p>
+            <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
+          </div>
+          <p>Bank Name: <strong>Standard Chartered Bank</strong></p>
+          <p>Account Name: <strong>Mwaba Lewis</strong></p>
+        `;
       }
     }
 
-    function openMomoModal() {
-      document.getElementById("depositModal").style.display = "flex";
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = "none";
-    }
-
-    function openAdminModal() {
-      document.getElementById("adminDepositModal").style.display = "flex";
-    }
-
-    function closeAdminModal() {
-      document.getElementById("adminDepositModal").style.display = "none";
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Account number copied to clipboard!");
+      }).catch(err => {
+        console.error("Copy failed: ", err);
+      });
     }
 
     function submitDeposit() {
-      // Add backend submission logic here
-      enrollNow();
-    }
+      const method = document.getElementById("deposit-method").value;
+      const amount = document.getElementById("deposit-amount").value;
+      const txid = document.getElementById("deposit-txid").value;
 
-    function loadDepositsToTable() {
-      // Backend logic to reload deposits
-      alert("Table refreshed (connect backend).");
-    }
+      if (!amount || !txid) {
+        alert("Please complete all fields.");
+        return;
+      }
 
-    function exportDepositsToCSV() {
-      // Add export logic here
-      alert("Exported (connect backend).");
+      fetch('/deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ method, amount, txid })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || "Deposit submitted successfully!");
+        closeModal('deposit-modal');
+      })
+      .catch(err => {
+        alert("Deposit failed. Please try again.");
+        console.error(err);
+      });
     }
   </script>
+
 </body>
 </html>
