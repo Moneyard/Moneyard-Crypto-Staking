@@ -4,41 +4,67 @@
   <meta charset="UTF-8">
   <title>Deposit Approval</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #fff; }
-    .box { border: 1px solid #ccc; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
+    body { font-family: Arial, sans-serif; background: #fff; padding: 20px; }
+    .box { border: 1px solid #ccc; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; margin-bottom: 20px; }
     h2 { color: #007b8f; }
-    .status { margin-top: 20px; font-weight: bold; }
-    button { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+    .status { font-weight: bold; margin-top: 10px; }
+    button { background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+    .reset-btn { background: #dc3545; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>Deposit Request</h2>
-    <p><strong>Payment Method:</strong> <span id="method"></span></p>
-    <p><strong>Amount:</strong> ZMW <span id="amount"></span></p>
-    <p><strong>Transaction ID:</strong> <span id="txid"></span></p>
-    <p class="status" id="status">Status: Pending</p>
-    <button onclick="approveDeposit()">Approve Deposit</button>
+
+  <h2 style="text-align:center;">All Deposit Requests</h2>
+  <div id="history"></div>
+
+  <div style="text-align:center;">
+    <button class="reset-btn" onclick="resetHistory()">Reset All Deposits</button>
   </div>
 
   <script>
-    const deposit = JSON.parse(localStorage.getItem("depositRequest"));
+    let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
 
-    if (deposit) {
-      document.getElementById("method").innerText = deposit.method;
-      document.getElementById("amount").innerText = deposit.amount;
-      document.getElementById("txid").innerText = deposit.txid;
-      document.getElementById("status").innerText = "Status: " + deposit.status;
+    const historyDiv = document.getElementById("history");
+
+    if (deposits.length === 0) {
+      historyDiv.innerHTML = "<p style='text-align:center;'>No deposit records found.</p>";
     } else {
-      document.querySelector(".box").innerHTML = "<p>No deposit found.</p>";
-    }
+      deposits.forEach((deposit, index) => {
+  const box = document.createElement("div");
+  box.className = "box";
+  box.innerHTML = `
+    <p><strong>Payment Method:</strong> ${deposit.method}</p>
+    <p><strong>Amount:</strong> ZMW ${deposit.amount}</p>
+    <p><strong>Transaction ID:</strong> ${deposit.txid}</p>
+    <p><strong>Date:</strong> ${deposit.date}</p>
+    <p class="status" id="status-${deposit.id}">Status: ${deposit.status}</p>
+    ${deposit.status === "Pending" ? `<button onclick="approveDeposit(${deposit.id})">Approve</button>` : ""}
+  `;
+  historyDiv.appendChild(box);
+});
+    function approveDeposit(id) {
+  const password = prompt("Enter approval password:");
+  const correctPassword = "admin123"; // Set your frontend-only password
 
-    function approveDeposit() {
-      if (deposit) {
-        deposit.status = "Approved";
-        localStorage.setItem("depositRequest", JSON.stringify(deposit));
-        document.getElementById("status").innerText = "Status: Approved";
-        alert("Deposit has been manually approved!");
+  if (password !== correctPassword) {
+    alert("Incorrect password. Approval denied.");
+    return;
+  }
+
+  const depositIndex = deposits.findIndex(d => d.id === id);
+  if (depositIndex !== -1) {
+    deposits[depositIndex].status = "Approved";
+    localStorage.setItem("depositRequests", JSON.stringify(deposits));
+    document.getElementById(`status-${id}`).innerText = "Status: Approved";
+    alert("Deposit approved!");
+    location.reload();
+  }
+}
+    function resetHistory() {
+      if (confirm("Are you sure you want to clear all deposit history?")) {
+        localStorage.removeItem("depositRequests");
+        alert("All deposits cleared.");
+        location.reload();
       }
     }
   </script>
