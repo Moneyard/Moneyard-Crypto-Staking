@@ -1,70 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Moneyard Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deposit Approval - Admin</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-    h2 { color: #222; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 12px; border: 1px solid #ccc; text-align: left; }
-    button { padding: 6px 12px; background: green; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: darkgreen; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .deposit-box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px auto;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .deposit-box p {
+      margin: 5px 0;
+    }
+    .btn-group {
+      margin-top: 10px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+      cursor: pointer;
+      color: white;
+    }
+    .approve-btn {
+      background-color: #28a745;
+    }
+    .reject-btn {
+      background-color: #dc3545;
+    }
   </style>
 </head>
 <body>
   <h2>Pending Deposit Approvals</h2>
-  <table id="depositTable">
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Amount</th>
-        <th>Network</th>
-        <th>TxID</th>
-        <th>Date</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="depositList">Loading...</div>
 
   <script>
-    async function loadPendingDeposits() {
-      const res = await fetch('/admin/pending-deposits');
-      const deposits = await res.json();
-      const tbody = document.querySelector('#depositTable tbody');
-      tbody.innerHTML = '';
+    async function fetchPendingDeposits() {
+      try {
+        const res = await fetch('/api/deposits/pending');
+        const deposits = await res.json();
 
-      deposits.forEach(deposit => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${deposit.email}</td>
-          <td>${deposit.amount}</td>
-          <td>${deposit.network}</td>
-          <td>${deposit.tx_id}</td>
-          <td>${new Date(deposit.date).toLocaleString()}</td>
-          <td><button onclick="approveDeposit(${deposit.id})">Approve</button></td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+        const container = document.getElementById('depositList');
+        container.innerHTML = '';
 
-    async function approveDeposit(id) {
-      const res = await fetch('/admin/approve-deposit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transactionId: id })
-      });
+        if (deposits.length === 0) {
+          container.innerHTML = '<p>No pending deposits found.</p>';
+          return;
+        }
 
-      const result = await res.json();
-      if (result.success) {
-        alert('Deposit approved');
-        loadPendingDeposits();
-      } else {
-        alert('Error: ' + result.error);
+        deposits.forEach(deposit => {
+          const box = document.createElement('div');
+          box.className = 'deposit-box';
+          box.innerHTML = `
+            <p><strong>User ID:</strong> ${deposit.user_id}</p>
+            <p><strong>Amount:</strong> $${deposit.amount}</p>
+            <p><strong>Method:</strong> ${deposit.method}</p>
+            <p><strong>Status:</strong> ${deposit.status}</p>
+            <div class="btn-group">
+              <button class="btn approve-btn" onclick="handleAction(${deposit.id}, 'approved')">Approve</button>
+              <button class="btn reject-btn" onclick="handleAction(${deposit.id}, 'rejected')">Reject</button>
+            </div>
+          `;
+          container.appendChild(box);
+        });
+      } catch (error) {
+        document.getElementById('depositList').innerHTML = '<p style="color:red;">Failed to load deposits.</p>';
       }
     }
 
-    loadPendingDeposits();
+    async function handleAction(depositId, action) {
+      try {
+        const res = await fetch('/api/deposits/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ depositId, action })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          alert(`Deposit ${action} successfully`);
+          fetchPendingDeposits(); // reload list
+        } else {
+          alert('Action failed: ' + (result.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Request failed');
+      }
+    }
+
+    fetchPendingDeposits();
   </script>
 </body>
 </html>
