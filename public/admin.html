@@ -175,13 +175,18 @@
 </div>
 
   <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = 'block';
-    }
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
+    }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Automatically open the deposit modal when the page loads
+    window.onload = function() {
+      openModal('deposit-modal');
+    };
 
     function updateAddress() {
       const method = document.getElementById("deposit-method").value;
