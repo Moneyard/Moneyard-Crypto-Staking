@@ -4,6 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,8 +14,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(bodyParser.json());
 
-// SQLite DB
+// SQLite DB Setup
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) fs.closeSync(fs.openSync(dbPath, 'w'));
 
@@ -83,30 +85,25 @@ db.serialize(() => {
 // Signup
 app.post('/api/signup', async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ error: 'Missing fields' });
+  if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
   const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
 
-  if (!emailRegex.test(email))
-    return res.status(400).json({ error: 'Invalid email format' });
-  if (!passwordRegex.test(password))
-    return res.status(400).json({
-      error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters'
-    });
+  if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
+  if (!passwordRegex.test(password)) return res.status(400).json({
+    error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters'
+  });
 
   db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (user) return res.status(400).json({ error: 'Email already in use' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    db.run("INSERT INTO users (email, password) VALUES (?, ?)",
-      [email, hashedPassword],
-      function (err) {
-        if (err) return res.status(500).json({ error: 'Failed to register user' });
-        res.json({ success: true, userId: this.lastID });
-      });
+    db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword], function (err) {
+      if (err) return res.status(500).json({ error: 'Failed to register user' });
+      res.json({ success: true, userId: this.lastID });
+    });
   });
 });
 
@@ -125,8 +122,7 @@ app.post('/api/login', (req, res) => {
 // Deposit
 app.post('/api/deposit', (req, res) => {
   const { userId, amount, network, txId } = req.body;
-  if (!userId || !amount || !network || !txId)
-    return res.status(400).json({ error: 'All fields are required' });
+  if (!userId || !amount || !network || !txId) return res.status(400).json({ error: 'All fields are required' });
 
   const now = new Date().toISOString();
   db.run(`INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
@@ -184,8 +180,7 @@ app.post('/api/stake', (req, res) => {
     'Liquidity Mining': 22
   };
   const apy = plans[plan];
-  if (!userId || !amount || !plan || !lockPeriod || !apy)
-    return res.status(400).json({ error: 'Missing or invalid data' });
+  if (!userId || !amount || !plan || !lockPeriod || !apy) return res.status(400).json({ error: 'Missing or invalid data' });
 
   const now = new Date().toISOString();
   db.run(`INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
@@ -254,67 +249,17 @@ app.post('/api/lesson-progress', (req, res) => {
 // Get Lesson Progress
 app.get('/api/lesson-progress', (req, res) => {
   const userId = req.query.userId;
-  if (!userId) return res.status(400).json({ error: 'Missing userId' });
+  const lessonId = req.query.lessonId;
 
-  db.all("SELECT * FROM lesson_progress WHERE user_id = ?", [userId], (err, rows) => {
-    if (err) return res.status(500).json({ error: 'Failed to fetch progress' });
-    res.json(rows);
+  if (!userId || !lessonId) return res.status(400).json({ error: 'Missing userId or lessonId' });
+
+  db.get("SELECT * FROM lesson_progress WHERE user_id = ? AND lesson_id = ?", [userId, lessonId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to retrieve progress' });
+    res.json(row || {});
   });
 });
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Moneyard server running on port ${PORT}`);
-});
-// Serve dashboard.html when user visits /dashboard
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
-});
-// Required modules
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
-const app = express();
-
-// Middleware to parse JSON
-app.use(bodyParser.json());
-
-// Serve static files (public folder)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// SQLite Database Setup (Assuming you already have a database setup for staking)
-const db = new sqlite3.Database('./moneyard.db');
-
-// Route to handle staking
-app.post('/api/stake', (req, res) => {
-  const { amount, plan } = req.body;
-  const userId = 1; // Assume the user ID is available (implement session management for real use)
-
-  if (!amount || !plan) {
-    return res.status(400).json({ success: false, message: 'Amount and plan are required.' });
-  }
-
-  let apy = 0;
-  if (plan === 'flexible') apy = 0.05;
-  if (plan === 'locked') apy = 0.10;
-  if (plan === 'high-yield') apy = 0.15;
-
-  // Calculate reward
-  const reward = (amount * apy).toFixed(2);
-
-  // Insert stake into the database (you can adjust this for your actual structure)
-  db.run(`INSERT INTO stakes (user_id, amount, plan, reward) VALUES (?, ?, ?, ?)`, [userId, amount, plan, reward], function(err) {
-    if (err) {
-      return res.status(500).json({ success: false, message: 'Failed to stake.' });
-    }
-
-    res.json({ success: true, reward });
-  });
-});
-
-// Server start
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on port ${PORT}`);
 });
