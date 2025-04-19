@@ -1,260 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Moneyard Deposit</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #ffffff;
-      margin: 0;
-      color: #333;
-    }
-
-    .open-btn {
-      background-color: #28a745;
-      color: white;
-      padding: 12px 20px;
-      margin: 20px;
-      border: none;
-      border-radius: 6px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-content {
-      background-color: #f9f9f9;
-      margin: 5% auto;
-      padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 12px;
-      position: relative;
-    }
-
-    .modal-content h2 {
-      text-align: center;
-      color: #007b8f;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: 600;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #007b8f;
-      color: white;
-      padding: 12px;
-      border: none;
-      width: 100%;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 28px;
-      cursor: pointer;
-    }
-
-    .copy-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .copy-btn {
-      background-color: #28a745;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-left: 10px;
-    }
-
-    .contact-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .contact-buttons a {
-      flex: 1;
-      text-align: center;
-      margin: 0 5px;
-      text-decoration: none;
-      color: white;
-      padding: 10px;
-      border-radius: 6px;
-    }
-
-    .whatsapp {
-      background-color: #25d366;
-    }
-
-    .telegram {
-      background-color: #0088cc;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <h1>Admin Panel - Deposit Approval</h1>
+    </header>
 
-  <button class="open-btn" onclick="openModal('deposit-modal')">Make a Deposit</button>
+    <section id="deposit-approval">
+        <h2>Pending Deposits</h2>
+        <table id="deposit-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Amount</th>
+                    <th>Transaction ID</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic deposit rows will be inserted here -->
+            </tbody>
+        </table>
+    </section>
 
-  <div id="deposit-modal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('deposit-modal')">&times;</span>
-      <h2>Deposit Funds</h2>
-
-      <label>Payment Method:</label>
-      <select id="deposit-method" onchange="updateAddress()">
-        <option value="BANK" selected>Bank Transfer</option>
-        <option value="AIRTEL">Airtel Money</option>
-        <option value="MTN">MTN Mobile Money</option>
-      </select>
-
-      <div id="wallet-address">
-        <!-- Default bank info -->
-        <div class="copy-container">
-          <p style="margin: 0;">Account Number: <strong id="account-number">0152502166700</strong></p>
-          <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
-        </div>
-        <p>Bank Name: <strong>Standard Chartered Bank</strong></p>
-        <p>Account Name: <strong>Mwaba Lewis</strong></p>
-      </div>
-
-      <label for="amount">Amount (ZMW):</label>
-      <input type="number" id="deposit-amount" placeholder="Enter amount" required>
-
-      <label for="txid">Transaction/Reference ID:</label>
-      <input type="text" id="deposit-txid" placeholder="E.g., AIRTEL-REF-12345" required>
-
-      <button onclick="submitDeposit()">Submit Deposit</button>
-
-      <div id="paymentAlert" style="position: relative; margin-top: 16px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px 16px; border-radius: 6px; font-size: 14px;">
-  <span onclick="document.getElementById('paymentAlert').style.display='none'" style="position: absolute; top: 8px; right: 12px; cursor: pointer; font-weight: bold;">&times;</span>
-  <strong>Payment Instructions:</strong><br>
-  After making payment, please send a screenshot of the transaction to our official support: 
-  <strong>
-    <a href="https://wa.me/260971234567" target="_blank" style="color: #155724; text-decoration: underline;">
-      <img src="https://img.icons8.com/color/20/000000/whatsapp.png" style="vertical-align: middle;"/> WhatsApp
-    </a>
-  </strong> and 
-  <strong>
-    <a href="https://t.me/MoneyardSupport" target="_blank" style="color: #155724; text-decoration: underline;">
-      <img src="https://img.icons8.com/color/20/000000/telegram-app.png" style="vertical-align: middle;"/> Telegram
-    </a>
-  </strong>.<br>
-  Your deposit will be verified manually and reflected shortly.
-</div>
-
-  <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = 'block';
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
-
-    // Automatically open the deposit modal when the page loads
-    window.onload = function() {
-      openModal('deposit-modal');
-    };
-
-    function updateAddress() {
-      const method = document.getElementById("deposit-method").value;
-      const walletDiv = document.getElementById("wallet-address");
-
-      if (method === "BANK") {
-        walletDiv.innerHTML = `
-          <div class="copy-container">
-            <p style="margin: 0;">Account Number: <strong id="account-number">0152502166700</strong></p>
-            <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
-          </div>
-          <p>Bank Name: <strong>Standard Chartered Bank</strong></p>
-          <p>Account Name: <strong>Mwaba Lewis</strong></p>
-        `;
-      } else if (method === "AIRTEL") {
-        walletDiv.innerHTML = `
-          <div class="copy-container">
-            <p style="margin: 0;">Airtel Number: <strong id="account-number">0971123456</strong></p>
-            <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
-          </div>
-          <p>Account Name: <strong>Mwaba Lewis</strong></p>
-        `;
-      } else if (method === "MTN") {
-        walletDiv.innerHTML = `
-          <div class="copy-container">
-            <p style="margin: 0;">MTN Number: <strong id="account-number">0967123456</strong></p>
-            <button class="copy-btn" onclick="copyToClipboard('account-number')">Copy</button>
-          </div>
-          <p>Account Name: <strong>Mwaba Lewis</strong></p>
-        `;
-      }
-    }
-
-    function copyToClipboard(elementId) {
-      const text = document.getElementById(elementId).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Copied to clipboard!");
-      }).catch(err => {
-        console.error("Copy failed: ", err);
-      });
-    }
-
-    function submitDeposit() {
-      const method = document.getElementById("deposit-method").value;
-      const amount = document.getElementById("deposit-amount").value;
-      const txid = document.getElementById("deposit-txid").value;
-
-      if (!amount || !txid) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      fetch('/deposit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ method, amount, txid })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message || "Deposit submitted successfully!");
-        closeModal('deposit-modal');
-      })
-      .catch(err => {
-        alert("Error submitting deposit.");
-        console.error(err);
-      });
-    }
-  </script>
-
+    <script src="admin.js"></script>
 </body>
 </html>
