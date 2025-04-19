@@ -14,6 +14,25 @@
 </head>
 <body>
 <button onclick="changePassword()">Change Password</button>
+<section id="deposit-section" style="margin: 20px;">
+  <h2>Make a Deposit</h2>
+  <form id="depositForm">
+    <label>Amount (USD):</label><br>
+    <input type="number" id="depositAmount" required><br><br>
+
+    <label>Method:</label><br>
+    <select id="depositMethod">
+      <option value="TRC20">TRC20</option>
+      <option value="BEP20">BEP20</option>
+      <option value="Mobile Money">Mobile Money</option>
+    </select><br><br>
+
+    <button type="submit">Submit Deposit</button>
+  </form>
+
+  <h3>Pending Deposits</h3>
+  <div id="pendingDeposits"></div>
+</section>
 
   <h2 style="text-align:center;">All Deposit Requests</h2>
   <div id="history"></div>
