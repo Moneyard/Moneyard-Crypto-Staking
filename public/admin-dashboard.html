@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Moneyard Admin</title>
+  <style>
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Pending Deposits</h1>
+  <table id="deposits">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadDeposits() {
+      const res = await fetch('/api/admin/pending-deposits');
+      const deposits = await res.json();
+      
+      deposits.forEach(deposit => {
+        document.querySelector('#deposits tbody').innerHTML += `
+          <tr>
+            <td>${deposit.id}</td>
+            <td>${deposit.email}</td>
+            <td>$${deposit.amount}</td>
+            <td>${new Date(deposit.date).toLocaleString()}</td>
+            <td>
+              <button onclick="approve(${deposit.id})">Approve</button>
+              <button onclick="reject(${deposit.id})">Reject</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function approve(id) {
+      await fetch('/api/admin/approve-deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionId: id })
+      });
+      alert('Deposit approved!');
+      location.reload();
+    }
+
+    loadDeposits();
+  </script>
+</body>
+</html>
