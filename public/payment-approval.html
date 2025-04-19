@@ -22,70 +22,77 @@
   </div>
 
   <script>
-    // Set password if not already set
-if (!localStorage.getItem("approvalPassword")) {
-  const newPassword = prompt("Set a new approval password:");
-  if (newPassword) {
-    localStorage.setItem("approvalPassword", newPassword);
-    alert("Password set!");
-  } else {
-    alert("You must set a password to proceed.");
-  }
-}
-let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
-
-    const historyDiv = document.getElementById("history");
-
-    if (deposits.length === 0) {
-      historyDiv.innerHTML = "<p style='text-align:center;'>No deposit records found.</p>";
+  // Prompt to set approval password if not set
+  if (!localStorage.getItem("approvalPassword")) {
+    const newPassword = prompt("Set a new approval password:");
+    if (newPassword) {
+      localStorage.setItem("approvalPassword", newPassword);
+      alert("Password set!");
     } else {
-      deposits.forEach((deposit) => {
-  const box = document.createElement("div");
-  box.className = "box";
-
-  const statusColor = deposit.status === "Approved" ? "green" : "orange";
-
-  box.innerHTML = `
-    <p><strong>Payment Method:</strong> ${deposit.method}</p>
-    <p><strong>Amount:</strong> ZMW ${deposit.amount}</p>
-    <p><strong>Transaction ID:</strong> ${deposit.txid}</p>
-    <p><strong>Date:</strong> ${deposit.date}</p>
-    <p style="color:${statusColor}; font-weight:bold;">Status: ${deposit.status}</p>
-    ${deposit.approvedBy ? `<p><strong>Approved By:</strong> ${deposit.approvedBy}</p>` : ""}
-    ${deposit.status === "Pending" ? `<button onclick="approveDeposit(${deposit.id})">Approve</button>` : ""}
-  `;
-  historyDiv.appendChild(box);
-});
-    function approveDeposit(id) {
-  const storedPassword = localStorage.getItem("approvalPassword");
-  const password = prompt("Enter approval password:");
-  if (password !== storedPassword) {
-    alert("Incorrect password. Approval denied.");
-    return;
-  }
-
-  const approver = prompt("Enter your name:");
-  if (!approver) {
-    alert("Approval name required.");
-    return;
-  }
-
-  const depositIndex = deposits.findIndex(d => d.id === id);
-  if (depositIndex !== -1) {
-    deposits[depositIndex].status = "Approved";
-    deposits[depositIndex].approvedBy = approver;
-    localStorage.setItem("depositRequests", JSON.stringify(deposits));
-    alert("Deposit approved!");
-    location.reload();
-  }
-}
-    function resetHistory() {
-      if (confirm("Are you sure you want to clear all deposit history?")) {
-        localStorage.removeItem("depositRequests");
-        alert("All deposits cleared.");
-        location.reload();
-      }
+      alert("You must set a password to proceed.");
     }
-  </script>
+  }
+
+  // Load deposits from localStorage
+  let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+  const historyDiv = document.getElementById("history");
+
+  // Display deposit history or a message if none found
+  if (deposits.length === 0) {
+    historyDiv.innerHTML = "<p style='text-align:center;'>No deposit records found.</p>";
+  } else {
+    deposits.forEach((deposit) => {
+      const box = document.createElement("div");
+      box.className = "box";
+
+      const statusColor = deposit.status === "Approved" ? "green" : "orange";
+
+      box.innerHTML = `
+        <p><strong>Payment Method:</strong> ${deposit.method}</p>
+        <p><strong>Amount:</strong> ZMW ${deposit.amount}</p>
+        <p><strong>Transaction ID:</strong> ${deposit.txid}</p>
+        <p><strong>Date:</strong> ${deposit.date}</p>
+        <p style="color:${statusColor}; font-weight:bold;">Status: ${deposit.status}</p>
+        ${deposit.approvedBy ? `<p><strong>Approved By:</strong> ${deposit.approvedBy}</p>` : ""}
+        ${deposit.status === "Pending" ? `<button onclick="approveDeposit(${deposit.id})">Approve</button>` : ""}
+      `;
+      historyDiv.appendChild(box);
+    });
+  }
+
+  // Approve a deposit with password and approver name
+  function approveDeposit(id) {
+    const storedPassword = localStorage.getItem("approvalPassword");
+    const password = prompt("Enter approval password:");
+    if (password !== storedPassword) {
+      alert("Incorrect password. Approval denied.");
+      return;
+    }
+
+    const approver = prompt("Enter your name:");
+    if (!approver) {
+      alert("Approval name required.");
+      return;
+    }
+
+    const depositIndex = deposits.findIndex(d => d.id === id);
+    if (depositIndex !== -1) {
+      deposits[depositIndex].status = "Approved";
+      deposits[depositIndex].approvedBy = approver;
+      localStorage.setItem("depositRequests", JSON.stringify(deposits));
+      alert("Deposit approved!");
+      location.reload();
+    }
+  }
+
+  // Clear all deposit history
+  function resetHistory() {
+    if (confirm("Are you sure you want to clear all deposit history?")) {
+      localStorage.removeItem("depositRequests");
+      alert("All deposits cleared.");
+      location.reload();
+    }
+  }
+</script>
 </body>
 </html>
