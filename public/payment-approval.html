@@ -22,40 +22,59 @@
   </div>
 
   <script>
-    let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+    // Set password if not already set
+if (!localStorage.getItem("approvalPassword")) {
+  const newPassword = prompt("Set a new approval password:");
+  if (newPassword) {
+    localStorage.setItem("approvalPassword", newPassword);
+    alert("Password set!");
+  } else {
+    alert("You must set a password to proceed.");
+  }
+}
+let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
 
     const historyDiv = document.getElementById("history");
 
     if (deposits.length === 0) {
       historyDiv.innerHTML = "<p style='text-align:center;'>No deposit records found.</p>";
     } else {
-      deposits.forEach((deposit, index) => {
+      deposits.forEach((deposit) => {
   const box = document.createElement("div");
   box.className = "box";
+
+  const statusColor = deposit.status === "Approved" ? "green" : "orange";
+
   box.innerHTML = `
     <p><strong>Payment Method:</strong> ${deposit.method}</p>
     <p><strong>Amount:</strong> ZMW ${deposit.amount}</p>
     <p><strong>Transaction ID:</strong> ${deposit.txid}</p>
     <p><strong>Date:</strong> ${deposit.date}</p>
-    <p class="status" id="status-${deposit.id}">Status: ${deposit.status}</p>
+    <p style="color:${statusColor}; font-weight:bold;">Status: ${deposit.status}</p>
+    ${deposit.approvedBy ? `<p><strong>Approved By:</strong> ${deposit.approvedBy}</p>` : ""}
     ${deposit.status === "Pending" ? `<button onclick="approveDeposit(${deposit.id})">Approve</button>` : ""}
   `;
   historyDiv.appendChild(box);
 });
     function approveDeposit(id) {
+  const storedPassword = localStorage.getItem("approvalPassword");
   const password = prompt("Enter approval password:");
-  const correctPassword = "admin123"; // Set your frontend-only password
-
-  if (password !== correctPassword) {
+  if (password !== storedPassword) {
     alert("Incorrect password. Approval denied.");
+    return;
+  }
+
+  const approver = prompt("Enter your name:");
+  if (!approver) {
+    alert("Approval name required.");
     return;
   }
 
   const depositIndex = deposits.findIndex(d => d.id === id);
   if (depositIndex !== -1) {
     deposits[depositIndex].status = "Approved";
+    deposits[depositIndex].approvedBy = approver;
     localStorage.setItem("depositRequests", JSON.stringify(deposits));
-    document.getElementById(`status-${id}`).innerText = "Status: Approved";
     alert("Deposit approved!");
     location.reload();
   }
