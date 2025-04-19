@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Deposit Approval</title>
+  <title>Payment Approval</title>
   <style>
     body { font-family: Arial, sans-serif; background: #fff; padding: 20px; }
     .box { border: 1px solid #ccc; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; margin-bottom: 20px; }
@@ -13,6 +13,7 @@
   </style>
 </head>
 <body>
+<button onclick="changePassword()">Change Password</button>
 
   <h2 style="text-align:center;">All Deposit Requests</h2>
   <div id="history"></div>
@@ -93,6 +94,24 @@
       location.reload();
     }
   }
+function changePassword() {
+  const currentPassword = localStorage.getItem("approvalPassword");
+  const enteredOld = prompt("Enter current approval password:");
+  
+  if (enteredOld !== currentPassword) {
+    alert("Incorrect current password.");
+    return;
+  }
+
+  const newPass = prompt("Enter new password:");
+  if (!newPass) {
+    alert("New password cannot be empty.");
+    return;
+  }
+
+  localStorage.setItem("approvalPassword", newPass);
+  alert("Approval password updated successfully!");
+}
 </script>
 </body>
 </html>
