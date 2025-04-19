@@ -137,3 +137,7 @@ dist
 
 # SQLite database file
 moneyard.db
+.env
+node_modules/
+moneyard.db
+*.pdf
