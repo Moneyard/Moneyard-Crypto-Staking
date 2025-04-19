@@ -95,19 +95,15 @@
   </div>
 
   <script>
-    // Sample deposit data for demonstration (replace this with real data from backend)
-    const pendingDeposits = [
-      { id: 1, amount: 100, method: 'TRC20', txid: 'TX123', status: 'Pending' },
-      { id: 2, amount: 200, method: 'BEP20', txid: 'TX456', status: 'Pending' },
-      { id: 3, amount: 50, method: 'Mobile Money', txid: 'TX789', status: 'Pending' }
-    ];
+    // Fetch pending deposits from the backend
+    async function getPendingDeposits() {
+      const response = await fetch('/api/pending-deposits');
+      const deposits = await response.json();
 
-    // Render the list of pending deposits
-    function renderPendingDeposits() {
       const pendingDepositsTable = document.getElementById('pendingDeposits');
       pendingDepositsTable.innerHTML = '';
 
-      pendingDeposits.forEach(deposit => {
+      deposits.forEach(deposit => {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${deposit.id}</td>
@@ -124,37 +120,57 @@
       });
     }
 
-    // Function to approve deposit
-    function approveDeposit(id) {
-      const deposit = pendingDeposits.find(deposit => deposit.id === id);
-      if (deposit) {
-        deposit.status = 'Approved';
-        renderPendingDeposits();
-        showAlert('success', 'Deposit approved successfully!');
+    // Approve a deposit
+    async function approveDeposit(depositId) {
+      const response = await fetch('/api/approve-deposit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ depositId })
+      });
+
+      const result = await response.json();
+      if (result.message) {
+        showAlert('success', result.message);
+        getPendingDeposits(); // Refresh the list
+      } else {
+        showAlert('error', result.error || 'An error occurred.');
       }
     }
 
-    // Function to reject deposit
-    function rejectDeposit(id) {
-      const deposit = pendingDeposits.find(deposit => deposit.id === id);
-      if (deposit) {
-        deposit.status = 'Rejected';
-        renderPendingDeposits();
-        showAlert('error', 'Deposit rejected.');
+    // Reject a deposit
+    async function rejectDeposit(depositId) {
+      const response = await fetch('/api/reject-deposit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ depositId })
+      });
+
+      const result = await response.json();
+      if (result.message) {
+        showAlert('success', result.message);
+        getPendingDeposits(); // Refresh the list
+      } else {
+        showAlert('error', result.error || 'An error occurred.');
       }
     }
 
-    // Function to show alert
+    // Show alert message
     function showAlert(type, message) {
       const successAlert = document.getElementById('alert-success');
       const errorAlert = document.getElementById('alert-error');
 
       if (type === 'success') {
+        successAlert.textContent = message;
         successAlert.style.display = 'block';
         errorAlert.style.display = 'none';
       } else {
-        successAlert.style.display = 'none';
+        errorAlert.textContent = message;
         errorAlert.style.display = 'block';
+        successAlert.style.display = 'none';
       }
 
       setTimeout(() => {
@@ -163,8 +179,8 @@
       }, 3000);
     }
 
-    // Initial rendering of pending deposits
-    renderPendingDeposits();
+    // Initial fetch of pending deposits
+    getPendingDeposits();
   </script>
 
 </body>
