@@ -382,3 +382,23 @@ function refreshBalance() {
 // Call this every 15 seconds
 setInterval(refreshBalance, 15000);
 refreshBalance();
+document.addEventListener('DOMContentLoaded', () => {
+  // Menu toggle functionality
+  document.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const path = e.target.getAttribute('data-path');
+      
+      try {
+        const response = await fetch(path);
+        if (response.ok) {
+          window.location.href = path;
+        } else {
+          console.error('Menu navigation failed');
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+      }
+    });
+  });
+});
