@@ -266,3 +266,7 @@ app.get('/api/lesson-progress', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Moneyard server running on port ${PORT}`);
 });
+// Serve dashboard.html when user visits /dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
