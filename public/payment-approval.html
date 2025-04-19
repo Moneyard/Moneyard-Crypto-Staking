@@ -2,85 +2,177 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Deposit Approvals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deposit Approval</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
     }
+
     h2 {
-      color: #2c7a7b;
+      text-align: center;
+      margin-top: 20px;
     }
-    .deposit {
-      background: white;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-left: 5px solid orange;
+
+    .deposit-container {
+      width: 80%;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #fff;
       border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .deposit.approved {
-      border-left-color: green;
+
+    .deposit-item {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .deposit.rejected {
-      border-left-color: red;
+
+    .deposit-item.pending {
+      border-color: orange;
     }
-    .actions button {
-      margin-right: 10px;
-      padding: 5px 10px;
+
+    .deposit-item.approved {
+      border-color: green;
+    }
+
+    .deposit-item.rejected {
+      border-color: red;
+    }
+
+    .deposit-item h3 {
+      margin: 0;
+    }
+
+    .deposit-item p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .approve {
+      background-color: green;
+      color: white;
+    }
+
+    .reject {
+      background-color: red;
+      color: white;
+    }
+
+    .no-deposits {
+      text-align: center;
+      color: gray;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h2>Pending Deposit Approvals</h2>
-  <div id="depositList"></div>
+  <h2>Deposit Approval System</h2>
+
+  <div class="deposit-container">
+    <h3>Pending Deposits</h3>
+    <div id="depositList"></div>
+    <div id="noDepositsMessage" class="no-deposits">No pending deposits available.</div>
+  </div>
 
   <script>
-    const depositList = document.getElementById('depositList');
+    // Function to load the deposits from localStorage
+    function loadDeposits() {
+      const deposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
 
-    // Load deposits from localStorage
-    let deposits = JSON.parse(localStorage.getItem('deposits')) || [];
+      // Display message if no pending deposits
+      const noDepositsMessage = document.getElementById('noDepositsMessage');
+      if (deposits.length === 0) {
+        noDepositsMessage.style.display = 'block';
+      } else {
+        noDepositsMessage.style.display = 'none';
+      }
 
-    function renderDeposits() {
-      depositList.innerHTML = '';
+      const depositList = document.getElementById('depositList');
+      depositList.innerHTML = '';  // Clear previous list
+
       deposits.forEach((deposit, index) => {
-        const div = document.createElement('div');
-        div.className = `deposit ${deposit.status}`;
+        const depositDiv = document.createElement('div');
+        depositDiv.classList.add('deposit-item', deposit.status);
 
-        div.innerHTML = `
-          <p><strong>Amount:</strong> $${deposit.amount}</p>
-          <p><strong>Method:</strong> ${deposit.method}</p>
-          <p><strong>Status:</strong> ${deposit.status}</p>
-          <div class="actions">
+        // Deposit Details
+        depositDiv.innerHTML = `
+          <div>
+            <h3>Amount: $${deposit.amount}</h3>
+            <p>Method: ${deposit.method}</p>
+            <p>Status: <span style="font-weight: bold">${deposit.status}</span></p>
+          </div>
+          <div class="action-buttons">
             ${deposit.status === 'pending' ? `
-              <button onclick="approveDeposit(${index})">Approve</button>
-              <button onclick="rejectDeposit(${index})">Reject</button>
+              <button class="approve" onclick="approveDeposit(${index})">Approve</button>
+              <button class="reject" onclick="rejectDeposit(${index})">Reject</button>
             ` : ''}
           </div>
         `;
-        depositList.appendChild(div);
+        depositList.appendChild(depositDiv);
       });
     }
 
+    // Function to approve a deposit
     function approveDeposit(index) {
+      const deposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
       deposits[index].status = 'approved';
-      saveAndRender();
+      localStorage.setItem('pendingDeposits', JSON.stringify(deposits));
+
+      // Reload the page to reflect changes
+      loadDeposits();
     }
 
+    // Function to reject a deposit
     function rejectDeposit(index) {
+      const deposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
       deposits[index].status = 'rejected';
-      saveAndRender();
+      localStorage.setItem('pendingDeposits', JSON.stringify(deposits));
+
+      // Reload the page to reflect changes
+      loadDeposits();
     }
 
-    function saveAndRender() {
-      localStorage.setItem('deposits', JSON.stringify(deposits));
-      renderDeposits();
+    // Function to initialize with mock deposits (only for testing purposes)
+    function initMockDeposits() {
+      const deposits = [
+        { amount: 100, method: 'TRC20', status: 'pending' },
+        { amount: 200, method: 'BEP20', status: 'pending' },
+        { amount: 150, method: 'Mobile Money', status: 'pending' }
+      ];
+      localStorage.setItem('pendingDeposits', JSON.stringify(deposits));
+      loadDeposits();
     }
 
-    // Initialize
-    renderDeposits();
+    // Uncomment this line to initialize mock deposits for testing (remove for production)
+    // initMockDeposits();
+
+    // On page load, load the deposits
+    window.onload = function() {
+      loadDeposits();
+    };
   </script>
 
 </body>
