@@ -366,3 +366,19 @@ function updateDepositStatus(id, newStatus) {
   localStorage.setItem("deposits", JSON.stringify(deposits));
   loadPendingDeposits();
 }
+function refreshBalance() {
+  const email = localStorage.getItem('userEmail');
+  if (!email) return;
+
+  fetch(`/api/balance/${email}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.balance !== undefined) {
+        document.getElementById('userBalance').textContent = `$${data.balance.toFixed(2)}`;
+      }
+    });
+}
+
+// Call this every 15 seconds
+setInterval(refreshBalance, 15000);
+refreshBalance();
