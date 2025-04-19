@@ -198,82 +198,89 @@
 </div>
 
   <script>
-    function showTab(tabId) {
-      const tabs = document.querySelectorAll(".tab-content");
-      const buttons = document.querySelectorAll(".tab-button");
-      tabs.forEach(tab => tab.classList.remove("active"));
-      buttons.forEach(btn => btn.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
+  function showTab(tabId) {
+    const tabs = document.querySelectorAll(".tab-content");
+    const buttons = document.querySelectorAll(".tab-button");
+    tabs.forEach(tab => tab.classList.remove("active"));
+    buttons.forEach(btn => btn.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
+  }
+
+  function updateAddressAndQR() {
+    const method = document.getElementById("deposit-method").value;
+    let address = "";
+
+    if (method === "TRC20") {
+      address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
+    } else if (method === "BEP20") {
+      address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
     }
 
-    function updateAddressAndQR() {
-      const method = document.getElementById("deposit-method").value;
-      let address = "";
-      if (method === "TRC20") {
-        address = "TJREgZTuTnvRrwkzBbRApXxe5TLZPQyHxy";
-      } else if (method === "BEP20") {
-        address = "0x3fB7E7cD13c31B38836E63bbfaD0c9ea5aFbF56D";
-      }
-      document.getElementById("wallet-address").textContent = address;
-      document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
+    document.getElementById("wallet-address").textContent = address;
+    document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
+  }
+
+  function copyAddress() {
+    const address = document.getElementById("wallet-address").textContent;
+    navigator.clipboard.writeText(address).then(() => {
+      alert("Address copied to clipboard");
+    });
+  }
+
+  function enrollNow() {
+    const amount = document.getElementById("deposit-amount").value;
+    const method = document.getElementById("deposit-method").value;
+
+    if (!amount || !method) {
+      alert("Please fill in all required fields before enrolling.");
+      return;
     }
 
-    function copyAddress() {
-      const address = document.getElementById("wallet-address").textContent;
-      navigator.clipboard.writeText(address).then(() => {
-        alert("Address copied to clipboard");
-      });
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+    audio.play();
+
+    document.getElementById("successModal").style.display = "flex";
+
+    setTimeout(() => {
+      window.location.href = "deposit-approval.html";
+    }, 3000);
+  }
+
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = "flex";
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+  }
+
+  function showFailureModal() {
+    document.getElementById("failureModal").style.display = "flex";
+  }
+
+  function sendMobileMoneyPrompt() {
+    const amount = document.getElementById('mobileAmount').value;
+    const phone = document.getElementById('phoneNumber').value;
+    const network = document.getElementById('network').value;
+
+    if (!amount || !phone) {
+      alert('Please fill out all fields');
+      return;
     }
 
-    function enrollNow() {
-      const amount = document.getElementById("deposit-amount").value;
-      const method = document.getElementById("deposit-method").value;
-      if (!amount || !method) {
-        alert("Please fill in all required fields before enrolling.");
-        return;
-      }
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-      audio.play();
+    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+    closeModal('mobileMoneyModal');
+
+    setTimeout(() => {
+      showFailureModal();
+    }, 40000); // Show failure modal after 40 seconds
+
+    setTimeout(() => {
       document.getElementById("successModal").style.display = "flex";
-      setTimeout(() => {
-        window.location.href = "deposit-approval.html";
-      }, 3000);
-    }
-
-    function openModal(modalId) {
-      document.getElementById(modalId).style.display = "flex";
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = "none";
-    }
-
-    function sendMobileMoneyPrompt() {
-      const amount = document.getElementById('mobileAmount').value;
-      const phone = document.getElementById('phoneNumber').value;
-      const network = document.getElementById('network').value;
-
-      if (!amount || !phone) {
-        alert('Please fill out all fields');
-        return;
-      }
-
-      alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-closeModal('mobileMoneyModal');
-
-// Show failure modal after 40 seconds (40000 ms)
-setTimeout(() => {
-  showFailureModal();
-}, 40000);
-
-function showFailureModal() {
-  document.getElementById("failureModal").style.display = "flex";
-}
-        document.getElementById("successModal").style.display = "flex";
-      }, 1000);
-    }
-  </script>
+    }, 1000);
+  }
+</script>
 </body>
 </html>
