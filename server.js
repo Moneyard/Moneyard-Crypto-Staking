@@ -267,3 +267,49 @@ app.get('/dashboard', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+// Admin: Get All Pending Deposits
+app.get('/api/admin/pending-deposits', (req, res) => {
+  db.all(`SELECT transactions.*, users.email FROM transactions
+          JOIN users ON transactions.user_id = users.id
+          WHERE transactions.type = 'deposit' AND transactions.status = 'pending'
+          ORDER BY transactions.date DESC`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load pending deposits' });
+    res.json(rows);
+  });
+});
+
+// Admin: Approve Deposit
+app.post('/api/admin/approve-deposit', (req, res) => {
+  const { transactionId } = req.body;
+  if (!transactionId) return res.status(400).json({ error: 'Missing transactionId' });
+
+  db.get("SELECT * FROM transactions WHERE id = ?", [transactionId], (err, tx) => {
+    if (err || !tx) return res.status(404).json({ error: 'Transaction not found' });
+    if (tx.status !== 'pending') return res.status(400).json({ error: 'Already processed' });
+
+    db.run("UPDATE transactions SET status = 'confirmed' WHERE id = ?", [transactionId], (err) => {
+      if (err) return res.status(500).json({ error: 'Failed to update transaction status' });
+
+      db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [tx.amount, tx.user_id], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to credit user balance' });
+        res.json({ success: true, message: 'Deposit approved and balance updated' });
+      });
+    });
+  });
+});
+
+// Admin: Reject Deposit
+app.post('/api/admin/reject-deposit', (req, res) => {
+  const { transactionId } = req.body;
+  if (!transactionId) return res.status(400).json({ error: 'Missing transactionId' });
+
+  db.get("SELECT * FROM transactions WHERE id = ?", [transactionId], (err, tx) => {
+    if (err || !tx) return res.status(404).json({ error: 'Transaction not found' });
+    if (tx.status !== 'pending') return res.status(400).json({ error: 'Already processed' });
+
+    db.run("UPDATE transactions SET status = 'rejected' WHERE id = ?", [transactionId], (err) => {
+      if (err) return res.status(500).json({ error: 'Failed to reject transaction' });
+      res.json({ success: true, message: 'Deposit rejected' });
+    });
+  });
+});
