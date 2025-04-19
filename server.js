@@ -258,6 +258,10 @@ app.get('/api/lesson-progress', (req, res) => {
     res.json(row || {});
   });
 });
+// Serve the dashboard.html page when accessing /dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
 
 // Start Server
 app.listen(PORT, () => {
