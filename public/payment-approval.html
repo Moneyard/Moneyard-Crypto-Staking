@@ -2,135 +2,86 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Payment Approval</title>
+  <title>Deposit Approvals</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #fff; padding: 20px; }
-    .box { border: 1px solid #ccc; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; margin-bottom: 20px; }
-    h2 { color: #007b8f; }
-    .status { font-weight: bold; margin-top: 10px; }
-    button { background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-    .reset-btn { background: #dc3545; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    h2 {
+      color: #2c7a7b;
+    }
+    .deposit {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 5px solid orange;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .deposit.approved {
+      border-left-color: green;
+    }
+    .deposit.rejected {
+      border-left-color: red;
+    }
+    .actions button {
+      margin-right: 10px;
+      padding: 5px 10px;
+    }
   </style>
 </head>
 <body>
-<button onclick="changePassword()">Change Password</button>
-<section id="deposit-section" style="margin: 20px;">
-  <h2>Make a Deposit</h2>
-  <form id="depositForm">
-    <label>Amount (USD):</label><br>
-    <input type="number" id="depositAmount" required><br><br>
 
-    <label>Method:</label><br>
-    <select id="depositMethod">
-      <option value="TRC20">TRC20</option>
-      <option value="BEP20">BEP20</option>
-      <option value="Mobile Money">Mobile Money</option>
-    </select><br><br>
-
-    <button type="submit">Submit Deposit</button>
-  </form>
-
-  <h3>Pending Deposits</h3>
-  <div id="pendingDeposits"></div>
-</section>
-
-  <h2 style="text-align:center;">All Deposit Requests</h2>
-  <div id="history"></div>
-
-  <div style="text-align:center;">
-    <button class="reset-btn" onclick="resetHistory()">Reset All Deposits</button>
-  </div>
+  <h2>Pending Deposit Approvals</h2>
+  <div id="depositList"></div>
 
   <script>
-  // Prompt to set approval password if not set
-  if (!localStorage.getItem("approvalPassword")) {
-    const newPassword = prompt("Set a new approval password:");
-    if (newPassword) {
-      localStorage.setItem("approvalPassword", newPassword);
-      alert("Password set!");
-    } else {
-      alert("You must set a password to proceed.");
-    }
-  }
+    const depositList = document.getElementById('depositList');
 
-  // Load deposits from localStorage
-  let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
-  const historyDiv = document.getElementById("history");
+    // Load deposits from localStorage
+    let deposits = JSON.parse(localStorage.getItem('deposits')) || [];
 
-  // Display deposit history or a message if none found
-  if (deposits.length === 0) {
-    historyDiv.innerHTML = "<p style='text-align:center;'>No deposit records found.</p>";
-  } else {
-    deposits.forEach((deposit) => {
-      const box = document.createElement("div");
-      box.className = "box";
+    function renderDeposits() {
+      depositList.innerHTML = '';
+      deposits.forEach((deposit, index) => {
+        const div = document.createElement('div');
+        div.className = `deposit ${deposit.status}`;
 
-      const statusColor = deposit.status === "Approved" ? "green" : "orange";
-
-      box.innerHTML = `
-        <p><strong>Payment Method:</strong> ${deposit.method}</p>
-        <p><strong>Amount:</strong> ZMW ${deposit.amount}</p>
-        <p><strong>Transaction ID:</strong> ${deposit.txid}</p>
-        <p><strong>Date:</strong> ${deposit.date}</p>
-        <p style="color:${statusColor}; font-weight:bold;">Status: ${deposit.status}</p>
-        ${deposit.approvedBy ? `<p><strong>Approved By:</strong> ${deposit.approvedBy}</p>` : ""}
-        ${deposit.status === "Pending" ? `<button onclick="approveDeposit(${deposit.id})">Approve</button>` : ""}
-      `;
-      historyDiv.appendChild(box);
-    });
-  }
-
-  // Approve a deposit with password and approver name
-  function approveDeposit(id) {
-    const storedPassword = localStorage.getItem("approvalPassword");
-    const password = prompt("Enter approval password:");
-    if (password !== storedPassword) {
-      alert("Incorrect password. Approval denied.");
-      return;
+        div.innerHTML = `
+          <p><strong>Amount:</strong> $${deposit.amount}</p>
+          <p><strong>Method:</strong> ${deposit.method}</p>
+          <p><strong>Status:</strong> ${deposit.status}</p>
+          <div class="actions">
+            ${deposit.status === 'pending' ? `
+              <button onclick="approveDeposit(${index})">Approve</button>
+              <button onclick="rejectDeposit(${index})">Reject</button>
+            ` : ''}
+          </div>
+        `;
+        depositList.appendChild(div);
+      });
     }
 
-    const approver = prompt("Enter your name:");
-    if (!approver) {
-      alert("Approval name required.");
-      return;
+    function approveDeposit(index) {
+      deposits[index].status = 'approved';
+      saveAndRender();
     }
 
-    const depositIndex = deposits.findIndex(d => d.id === id);
-    if (depositIndex !== -1) {
-      deposits[depositIndex].status = "Approved";
-      deposits[depositIndex].approvedBy = approver;
-      localStorage.setItem("depositRequests", JSON.stringify(deposits));
-      alert("Deposit approved!");
-      location.reload();
+    function rejectDeposit(index) {
+      deposits[index].status = 'rejected';
+      saveAndRender();
     }
-  }
 
-  // Clear all deposit history
-  function resetHistory() {
-    if (confirm("Are you sure you want to clear all deposit history?")) {
-      localStorage.removeItem("depositRequests");
-      alert("All deposits cleared.");
-      location.reload();
+    function saveAndRender() {
+      localStorage.setItem('deposits', JSON.stringify(deposits));
+      renderDeposits();
     }
-  }
-function changePassword() {
-  const currentPassword = localStorage.getItem("approvalPassword");
-  const enteredOld = prompt("Enter current approval password:");
-  
-  if (enteredOld !== currentPassword) {
-    alert("Incorrect current password.");
-    return;
-  }
 
-  const newPass = prompt("Enter new password:");
-  if (!newPass) {
-    alert("New password cannot be empty.");
-    return;
-  }
+    // Initialize
+    renderDeposits();
+  </script>
 
-  localStorage.setItem("approvalPassword", newPass);
-  alert("Approval password updated successfully!");
-}
-</script>
 </body>
 </html>
