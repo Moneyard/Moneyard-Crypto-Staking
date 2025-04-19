@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deposit Approval</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #fff; }
+    .box { border: 1px solid #ccc; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
+    h2 { color: #007b8f; }
+    .status { margin-top: 20px; font-weight: bold; }
+    button { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Deposit Request</h2>
+    <p><strong>Payment Method:</strong> <span id="method"></span></p>
+    <p><strong>Amount:</strong> ZMW <span id="amount"></span></p>
+    <p><strong>Transaction ID:</strong> <span id="txid"></span></p>
+    <p class="status" id="status">Status: Pending</p>
+    <button onclick="approveDeposit()">Approve Deposit</button>
+  </div>
+
+  <script>
+    const deposit = JSON.parse(localStorage.getItem("depositRequest"));
+
+    if (deposit) {
+      document.getElementById("method").innerText = deposit.method;
+      document.getElementById("amount").innerText = deposit.amount;
+      document.getElementById("txid").innerText = deposit.txid;
+      document.getElementById("status").innerText = "Status: " + deposit.status;
+    } else {
+      document.querySelector(".box").innerHTML = "<p>No deposit found.</p>";
+    }
+
+    function approveDeposit() {
+      if (deposit) {
+        deposit.status = "Approved";
+        localStorage.setItem("depositRequest", JSON.stringify(deposit));
+        document.getElementById("status").innerText = "Status: Approved";
+        alert("Deposit has been manually approved!");
+      }
+    }
+  </script>
+</body>
+</html>
