@@ -221,3 +221,6 @@ app.post('/api/unstake', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+app.get('/dashboard.html', (req, res) => {
+  res.sendFile(__dirname + '/Public/dashboard.html');
+});
