@@ -461,6 +461,9 @@ document.addEventListener("DOMContentLoaded", function () {
     calculateEarnings();
   }
 });
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
 </script>
 </body>
 </html>
