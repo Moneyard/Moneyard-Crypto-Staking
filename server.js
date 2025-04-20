@@ -79,7 +79,15 @@ db.serialize(() => {
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
 });
+// Serve frontend (if you have a public/index.html)
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Basic root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html')); 
+  // OR simple response:
+  // res.json({ status: 'Moneyard API Running', version: '1.0.0' });
+});
 // ======= ROUTES =======
 
 // Signup
@@ -220,7 +228,4 @@ app.post('/api/unstake', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
-app.get('/dashboard.html', (req, res) => {
-  res.sendFile(__dirname + '/Public/dashboard.html');
 });
