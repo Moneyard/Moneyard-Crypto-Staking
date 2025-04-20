@@ -16,6 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
+// ====== ROOT ROUTE ======
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Public', 'index.html'));
+});
+
 // ====== DASHBOARD ROUTE ======
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'dashboard.html'));
