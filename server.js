@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
-// SQLite Setup
+// SQLite DB Setup
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) fs.closeSync(fs.openSync(dbPath, 'w'));
 
@@ -25,7 +25,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   console.log('Connected to SQLite at', dbPath);
 });
 
-// Tables
+// Create Tables
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -80,12 +80,7 @@ db.serialize(() => {
   )`);
 });
 
-// Serve frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// ===== Routes =====
+// ======= ROUTES =======
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -96,11 +91,9 @@ app.post('/api/signup', async (req, res) => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
 
   if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
-  if (!passwordRegex.test(password)) {
-    return res.status(400).json({
-      error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters'
-    });
-  }
+  if (!passwordRegex.test(password)) return res.status(400).json({
+    error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters'
+  });
 
   db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
     if (err) return res.status(500).json({ error: 'Database error' });
@@ -129,8 +122,7 @@ app.post('/api/login', (req, res) => {
 // Deposit
 app.post('/api/deposit', (req, res) => {
   const { userId, amount, network, txId } = req.body;
-  if (!userId || !amount || !network || !txId)
-    return res.status(400).json({ error: 'All fields are required' });
+  if (!userId || !amount || !network || !txId) return res.status(400).json({ error: 'All fields are required' });
 
   const now = new Date().toISOString();
   db.run(`INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
@@ -138,7 +130,6 @@ app.post('/api/deposit', (req, res) => {
     [userId, amount, network, txId, now],
     function (err) {
       if (err) return res.status(500).json({ error: 'Deposit failed' });
-
       db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
         if (err) return res.status(500).json({ error: 'Failed to update balance' });
         res.json({ success: true, message: 'Deposit confirmed' });
@@ -146,7 +137,7 @@ app.post('/api/deposit', (req, res) => {
     });
 });
 
-// Get Deposits
+// View Deposits
 app.get('/api/deposits', (req, res) => {
   const userId = req.query.userId;
   if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -183,15 +174,13 @@ app.get('/api/stake-plans', (req, res) => {
 // Stake
 app.post('/api/stake', (req, res) => {
   const { userId, amount, plan, lockPeriod } = req.body;
-  const apyMap = {
+  const plans = {
     'Stable Growth': 8,
     'Yield Farming': 15,
     'Liquidity Mining': 22
   };
-  const apy = apyMap[plan];
-
-  if (!userId || !amount || !plan || !lockPeriod || !apy)
-    return res.status(400).json({ error: 'Missing or invalid data' });
+  const apy = plans[plan];
+  if (!userId || !amount || !plan || !lockPeriod || !apy) return res.status(400).json({ error: 'Missing or invalid data' });
 
   const now = new Date().toISOString();
   db.run(`INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
@@ -199,7 +188,6 @@ app.post('/api/stake', (req, res) => {
     [userId, plan, amount, apy, lockPeriod, now],
     function (err) {
       if (err) return res.status(500).json({ error: 'Staking failed' });
-
       db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId], (err) => {
         if (err) return res.status(500).json({ error: 'Failed to update balance' });
         res.json({ success: true, message: 'Stake successful' });
@@ -229,8 +217,193 @@ app.post('/api/unstake', (req, res) => {
     res.json({ success: true, message: 'Unstaked successfully' });
   });
 });
+// ---------- ADMIN ROUTES ----------
 
-// Start server
+// View all users
+app.get('/api/admin/users', (req, res) => {
+  db.all("SELECT id, email, balance FROM users", (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch users' });
+    res.json(rows);
+  });
+});
+
+// View all deposits
+app.get('/api/admin/deposits', (req, res) => {
+  db.all("SELECT * FROM transactions WHERE type = 'deposit' ORDER BY date DESC", (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch deposits' });
+    res.json(rows);
+  });
+});
+// Get Pending Deposits
+app.get('/admin/deposits/pending', (req, res) => {
+  const sql = 'SELECT * FROM deposits WHERE status = "pending"';
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ pendingDeposits: rows });
+  });
+});
+
+// Get Processed Deposits (Approved/Rejected)
+app.get('/admin/deposits/processed', (req, res) => {
+  const sql = 'SELECT * FROM deposits WHERE status IN ("approved", "rejected")';
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ processedDeposits: rows });
+  });
+});
+
+// Approve Deposit
+app.post('/admin/deposits/approve/:id', (req, res) => {
+  const depositId = req.params.id;
+  const sql = 'UPDATE deposits SET status = "approved" WHERE id = ?';
+  db.run(sql, [depositId], function (err) {
+    if (err) {
+      res.status(500).json({ message: 'Error updating deposit status.' });
+      return;
+    }
+    res.json({ message: 'Deposit approved successfully.' });
+  });
+});
+
+// Reject Deposit
+app.post('/admin/deposits/reject/:id', (req, res) => {
+  const depositId = req.params.id;
+  const sql = 'UPDATE deposits SET status = "rejected" WHERE id = ?';
+  db.run(sql, [depositId], function (err) {
+    if (err) {
+      res.status(500).json({ message: 'Error updating deposit status.' });
+      return;
+    }
+    res.json({ message: 'Deposit rejected successfully.' });
+  });
+});
+// View all withdrawals
+app.get('/api/admin/withdrawals', (req, res) => {
+  db.all("SELECT * FROM withdrawals ORDER BY date DESC", (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch withdrawals' });
+    res.json(rows);
+  });
+});
+
+// Approve a withdrawal
+app.post('/api/admin/approve-withdrawal', (req, res) => {
+  const { withdrawalId } = req.body;
+  if (!withdrawalId) return res.status(400).json({ error: 'Missing withdrawalId' });
+
+  db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to approve withdrawal' });
+    res.json({ success: true, message: 'Withdrawal approved' });
+  });
+});
+
+// Reject a withdrawal
+app.post('/api/admin/reject-withdrawal', (req, res) => {
+  const { withdrawalId } = req.body;
+  if (!withdrawalId) return res.status(400).json({ error: 'Missing withdrawalId' });
+
+  db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to reject withdrawal' });
+    res.json({ success: true, message: 'Withdrawal rejected' });
+  });
+});
+// Save Lesson Progress
+app.post('/api/lesson-progress', (req, res) => {
+  const { userId, lessonId, progress, completed } = req.body;
+  const now = new Date().toISOString();
+
+  db.get("SELECT * FROM lesson_progress WHERE user_id = ? AND lesson_id = ?", [userId, lessonId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+
+    if (row) {
+      db.run(`UPDATE lesson_progress SET progress = ?, completed = ?, last_updated = ?
+              WHERE user_id = ? AND lesson_id = ?`,
+        [progress, completed, now, userId, lessonId],
+        (err) => {
+          if (err) return res.status(500).json({ error: 'Failed to update progress' });
+          res.json({ success: true, updated: true });
+        });
+    } else {
+      db.run(`INSERT INTO lesson_progress (user_id, lesson_id, progress, completed, last_updated)
+              VALUES (?, ?, ?, ?, ?)`,
+        [userId, lessonId, progress, completed, now],
+        (err) => {
+          if (err) return res.status(500).json({ error: 'Failed to insert progress' });
+          res.json({ success: true, inserted: true });
+        });
+    }
+  });
+});
+
+// Get Lesson Progress
+app.get('/api/lesson-progress', (req, res) => {
+  const userId = req.query.userId;
+  const lessonId = req.query.lessonId;
+
+  if (!userId || !lessonId) return res.status(400).json({ error: 'Missing userId or lessonId' });
+
+  db.get("SELECT * FROM lesson_progress WHERE user_id = ? AND lesson_id = ?", [userId, lessonId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to retrieve progress' });
+    res.json(row || {});
+  });
+});
+// Serve the dashboard.html page when accessing /dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Start Server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+// Admin: Get All Pending Deposits
+app.get('/api/admin/pending-deposits', (req, res) => {
+  db.all(`SELECT transactions.*, users.email FROM transactions
+          JOIN users ON transactions.user_id = users.id
+          WHERE transactions.type = 'deposit' AND transactions.status = 'pending'
+          ORDER BY transactions.date DESC`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load pending deposits' });
+    res.json(rows);
+  });
+});
+
+// Admin: Approve Deposit
+app.post('/api/admin/approve-deposit', (req, res) => {
+  const { transactionId } = req.body;
+  if (!transactionId) return res.status(400).json({ error: 'Missing transactionId' });
+
+  db.get("SELECT * FROM transactions WHERE id = ?", [transactionId], (err, tx) => {
+    if (err || !tx) return res.status(404).json({ error: 'Transaction not found' });
+    if (tx.status !== 'pending') return res.status(400).json({ error: 'Already processed' });
+
+    db.run("UPDATE transactions SET status = 'confirmed' WHERE id = ?", [transactionId], (err) => {
+      if (err) return res.status(500).json({ error: 'Failed to update transaction status' });
+
+      db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [tx.amount, tx.user_id], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to credit user balance' });
+        res.json({ success: true, message: 'Deposit approved and balance updated' });
+      });
+    });
+  });
+});
+
+// Admin: Reject Deposit
+app.post('/api/admin/reject-deposit', (req, res) => {
+  const { transactionId } = req.body;
+  if (!transactionId) return res.status(400).json({ error: 'Missing transactionId' });
+
+  db.get("SELECT * FROM transactions WHERE id = ?", [transactionId], (err, tx) => {
+    if (err || !tx) return res.status(404).json({ error: 'Transaction not found' });
+    if (tx.status !== 'pending') return res.status(400).json({ error: 'Already processed' });
+
+    db.run("UPDATE transactions SET status = 'rejected' WHERE id = ?", [transactionId], (err) => {
+      if (err) return res.status(500).json({ error: 'Failed to reject transaction' });
+      res.json({ success: true, message: 'Deposit rejected' });
+    });
+  });
 });
