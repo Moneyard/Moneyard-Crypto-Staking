@@ -251,7 +251,59 @@
                 <button class="nav-btn" onclick="navigateLesson('beginner', 2)">Next →</button>
             </div>
         </div>
-
+<div class="lesson beginner" id="beginner-2">
+    <span class="badge beginner-badge">BEGINNER</span>
+    <span class="lesson-counter">Lesson 2/12</span>
+    <h2>Mastering Order Types</h2>
+    
+    <div class="key-concept">
+        <h4>Core Concept</h4>
+        <p>Different order types allow control over trade execution price and timing, each with distinct advantages.</p>
+    </div>
+    
+    <div class="diagram">
+        ORDER TYPE DECISION TREE
+        │
+        ├── Need immediate execution?
+        │   ├── Yes → MARKET ORDER
+        │   └── No → Continue
+        │
+        ├── Want price protection?
+        │   ├── Yes → LIMIT ORDER
+        │   │   ├── Buy: Set max price
+        │   │   └── Sell: Set min price
+        │   └── No → Continue
+        │
+        └── Need activation trigger?
+            ├── Yes → STOP ORDER
+            │   ├── Stop-loss: Limit losses
+            │   └── Stop-buy: Catch breakouts
+            └── No → Use market/limit
+    </div>
+    
+    <h3>Real-World Scenarios</h3>
+    <p><strong>Day Trading:</strong> Market orders for fast entries/exits</p>
+    <p><strong>Value Investing:</strong> Limit orders to buy at target prices</p>
+    <p><strong>Risk Management:</strong> Stop-orders to protect positions</p>
+    
+    <div class="quiz">
+        <h3>Order Selection</h3>
+        <p>Which order type should you use to buy a stock only if it drops to $50?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Market Order</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">Buy Limit Order @ $50</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Stop-Market Order</div>
+        
+        <p style="margin-top: 20px;">What's the main risk of market orders during volatility?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">Slippage (unexpected fill price)</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Order might not execute</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Higher commission fees</div>
+    </div>
+    
+    <div class="lesson-nav">
+        <button class="nav-btn" onclick="navigateLesson('beginner', 1)">← Previous</button>
+        <button class="nav-btn" onclick="navigateLesson('beginner', 3)">Next →</button>
+    </div>
+</div>
         <!-- Lesson 2 -->
         <div class="lesson beginner hidden" id="beginner-2">
             <span class="badge beginner-badge">BEGINNER</span>
@@ -305,7 +357,69 @@
                 <button class="nav-btn" onclick="navigateLesson('beginner', 3)">Next →</button>
             </div>
         </div>
-
+<div class="lesson intermediate" id="intermediate-2">
+    <span class="badge intermediate-badge">INTERMEDIATE</span>
+    <span class="lesson-counter">Lesson 2/12</span>
+    <h2>Options Spread Strategies</h2>
+    
+    <div class="key-concept">
+        <h4>Core Concept</h4>
+        <p>Spreads combine multiple options to create defined risk/reward profiles for directional or volatility trades.</p>
+    </div>
+    
+    <div class="diagram">
+        COMMON SPREAD TYPES
+        │
+        ├── VERTICAL SPREADS
+        │   ├── Call Spread: Bullish
+        │   │   ├── Buy low strike call
+        │   │   └── Sell high strike call
+        │   └── Put Spread: Bearish
+        │       ├── Buy high strike put
+        │       └── Sell low strike put
+        │
+        └── HORIZONTAL SPREADS
+            ├── Calendar: Sell near-term
+            └── Buy longer-term
+    </div>
+    
+    <h3>Risk/Reward Profiles</h3>
+    <table style="width:100%; border-collapse: collapse;">
+        <tr style="background:#f5f5f5;">
+            <th style="padding:10px;">Spread Type</th>
+            <th style="padding:10px;">Max Profit</th>
+            <th style="padding:10px;">Max Loss</th>
+        </tr>
+        <tr>
+            <td style="padding:10px; border-bottom:1px solid #eee;">Bull Call Spread</td>
+            <td style="padding:10px; border-bottom:1px solid #eee;">Strike difference - net premium</td>
+            <td style="padding:10px; border-bottom:1px solid #eee;">Net premium paid</td>
+        </tr>
+        <tr style="background:#f9f9f9;">
+            <td style="padding:10px; border-bottom:1px solid #eee;">Bear Put Spread</td>
+            <td style="padding:10px; border-bottom:1px solid #eee;">Strike difference - net premium</td>
+            <td style="padding:10px; border-bottom:1px solid #eee;">Net premium paid</td>
+        </tr>
+    </table>
+    
+    <div class="quiz">
+        <h3>Spread Analysis</h3>
+        <p>What's the purpose of selling an option in a spread?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">To increase potential profit</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">To reduce net cost</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">To avoid assignment</div>
+        
+        <p style="margin-top: 20px;">When would a bull call spread reach max profit?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">When both options expire OTM</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">When both options expire ITM</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">At any time before expiration</div>
+    </div>
+    
+    <div class="lesson-nav">
+        <button class="nav-btn" onclick="navigateLesson('intermediate', 1)">← Previous</button>
+        <button class="nav-btn" onclick="navigateLesson('intermediate', 3)">Next →</button>
+    </div>
+</div>
         <!-- Lesson 3 -->
         <div class="lesson beginner hidden" id="beginner-3">
             <span class="badge beginner-badge">BEGINNER</span>
@@ -375,7 +489,56 @@
                 <button class="nav-btn" onclick="navigateLesson('beginner', 4)">Next →</button>
             </div>
         </div>
-
+<div class="lesson advanced" id="advanced-2">
+    <span class="badge advanced-badge">ADVANCED</span>
+    <span class="lesson-counter">Lesson 2/8</span>
+    <h2>HFT Market Making Algorithms</h2>
+    
+    <div class="key-concept">
+        <h4>Core Concept</h4>
+        <p>High-frequency traders provide liquidity through algorithmic quoting strategies that adapt in microseconds.</p>
+    </div>
+    
+    <div class="diagram">
+        HFT ORDER BOOK MANAGEMENT
+        │
+        ├── QUOTE GENERATION
+        │   ├── Bid: E[fair value] - spread/2
+        │   └── Ask: E[fair value] + spread/2
+        │
+        ├── ADJUSTMENT TRIGGERS
+        │   ├── Large market orders
+        │   ├── News events
+        │   └── Volatility spikes
+        │
+        └── RISK CONTROLS
+            ├── Position limits
+            └── Fat-finger filters
+    </div>
+    
+    <h3>Latency Arbitrage Example</h3>
+    <p><strong>Scenario:</strong> HFT detects large buy order on Exchange A</p>
+    <p><strong>Action:</strong> Instantly raises quotes on Exchange B</p>
+    <p><strong>Result:</strong> Captures spread before market adjusts</p>
+    
+    <div class="quiz">
+        <h3>HFT Mechanics</h3>
+        <p>How do HFTs typically profit?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Long-term investments</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">Bid-ask spread capture</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Dividend arbitrage</div>
+        
+        <p style="margin-top: 20px;">What's the key technological requirement?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">Sub-millisecond latency</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">High-frequency news scanning</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Blockchain integration</div>
+    </div>
+    
+    <div class="lesson-nav">
+        <button class="nav-btn" onclick="navigateLesson('advanced', 1)">← Previous</button>
+        <button class="nav-btn" onclick="navigateLesson('advanced', 3)">Next →</button>
+    </div>
+</div>
         <!-- Lessons 4-12 would follow the same pattern -->
         <!-- Actual implementation would include all 12 beginner lessons -->
         
