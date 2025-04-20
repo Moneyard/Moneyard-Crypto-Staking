@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Approve Deposits</title>
+</head>
+<body>
+  <h2>Course Deposit Approvals</h2>
+  <div id="depositList"></div>
+
+  <script>
+    async function fetchDeposits() {
+      const res = await fetch('/api/admin/deposits');
+      const deposits = await res.json();
+      const list = document.getElementById('depositList');
+      list.innerHTML = '';
+
+      deposits.forEach(d => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <p><b>${d.email}</b> - ${d.course} - $${d.amount} - ${d.txid} - Status: ${d.status}</p>
+          ${d.status === 'Pending' ? `
+            <button onclick="updateStatus(${d.id}, 'Approved')">Approve</button>
+            <button onclick="updateStatus(${d.id}, 'Rejected')">Reject</button>
+          ` : ''}
+          <hr>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    async function updateStatus(id, status) {
+      await fetch('/api/admin/deposit/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      });
+      fetchDeposits();
+    }
+
+    fetchDeposits();
+  </script>
+</body>
+</html>
