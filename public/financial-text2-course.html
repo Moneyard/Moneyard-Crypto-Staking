@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Markets Master Course</title>
+    <style>
+        :root {
+            --beginner: #4a89dc;
+            --intermediate: #3bafda;
+            --advanced: #967adc;
+            --correct: #48cfad;
+            --incorrect: #ed5565;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            margin: 30px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid;
+        }
+        .beginner-btn.active { border-color: var(--beginner); }
+        .intermediate-btn.active { border-color: var(--intermediate); }
+        .advanced-btn.active { border-color: var(--advanced); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .lesson {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+        .beginner { border-color: var(--beginner); }
+        .intermediate { border-color: var(--intermediate); }
+        .advanced { border-color: var(--advanced); }
+        .diagram {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .quiz {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover {
+            background: #eef;
+        }
+        .quiz-option.correct {
+            background: #e6ffed;
+            border-color: var(--correct);
+        }
+        .quiz-option.incorrect {
+            background: #ffebee;
+            border-color: var(--incorrect);
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .beginner-badge { background: var(--beginner); color: white; }
+        .intermediate-badge { background: var(--intermediate); color: white; }
+        .advanced-badge { background: var(--advanced); color: white; }
+        h2 { margin-top: 0; }
+        h3 { color: #444; }
+    </style>
+</head>
+<body>
+    <h1>📊 Financial Markets Master Course</h1>
+    <p>Comprehensive text-based learning with interactive quizzes</p>
+
+    <div class="tabs">
+        <button class="tab-btn beginner-btn active" onclick="openTab('beginner')">Beginner (12 Lessons)</button>
+        <button class="tab-btn intermediate-btn" onclick="openTab('intermediate')">Intermediate (10 Lessons)</button>
+        <button class="tab-btn advanced-btn" onclick="openTab('advanced')">Advanced (8 Lessons)</button>
+    </div>
+
+    <!-- BEGINNER LEVEL -->
+    <div id="beginner" class="tab-content active">
+        <!-- Lesson 1 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <h2>1. Market Participants</h2>
+            <h3>Who Moves the Markets?</h3>
+            <div class="diagram">
+                MARKET ECOSYSTEM
+                │
+                ├── Retail Investors (Individuals)
+                │
+                ├── Institutional Investors
+                │   ├── Mutual Funds
+                │   ├── Pension Funds
+                │   └── Hedge Funds
+                │
+                └── Market Makers (Liquidity Providers)
+            </div>
+            <p><strong>Key Concept:</strong> Institutional investors account for ~75% of daily trading volume.</p>
+            
+            <div class="quiz">
+                <h3>Knowledge Check</h3>
+                <p>Which participant primarily provides liquidity?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Retail Investors</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Market Makers</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Pension Funds</div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <h2>2. Order Types Explained</h2>
+            
+            <div class="diagram">
+                COMMON ORDER TYPES
+                │
+                ├── Market Order: Execute NOW at best price
+                │
+                ├── Limit Order: Set price boundary
+                │   ├── Buy Limit: ≤ Target
+                │   └── Sell Limit: ≥ Target
+                │
+                └── Stop Order: Trigger at price level
+                    ├── Stop-Loss: Limit losses
+                    └── Stop-Buy: Enter positions
+            </div>
+            
+            <div class="quiz">
+                <h3>Scenario Question</h3>
+                <p>You want to buy AAPL but only if it drops to $150. Which order type?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Market Order</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Buy Limit Order</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Stop-Loss Order</div>
+            </div>
+        </div>
+
+        <!-- Lesson 3-12 would follow similar structure -->
+    </div>
+
+    <!-- INTERMEDIATE LEVEL -->
+    <div id="intermediate" class="tab-content">
+        <!-- Lesson 1 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <h2>1. Candlestick Patterns</h2>
+            
+            <div class="diagram">
+                BULLISH ENGULFING         DOJI
+                  □                        │
+                ┌─────┐                  ┌──┼──┐
+                │     │                  │  │  │
+                └─────┘                  └──┼──┘
+                ┌─────┐                    │
+                │█████│                 Indecision
+                │█████│
+                └─────┘
+            </div>
+            <p><strong>Engulfing Pattern:</strong> When a small bearish candle is followed by a larger bullish candle.</p>
+            
+            <div class="quiz">
+                <h3>Pattern Recognition</h3>
+                <p>What does a Doji candle typically indicate?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Strong uptrend</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Market indecision</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Imminent crash</div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <h2>2. Options Strategies</h2>
+            
+            <div class="diagram">
+                VERTICAL SPREAD
+                Buy Call @ $100           Sell Call @ $110
+                │                        │
+                Profit                    │
+                │     /\                │
+                │    /  \              │
+                └───/────\────────────┘
+                         $100 $110
+            </div>
+            <p><strong>Bull Call Spread:</strong> Limits both potential profit and loss.</p>
+            
+            <div class="quiz">
+                <h3>Strategy Analysis</h3>
+                <p>What's the maximum loss in this spread?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Unlimited</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Net premium paid</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Strike difference</div>
+            </div>
+        </div>
+        <!-- Additional intermediate lessons... -->
+    </div>
+
+    <!-- ADVANCED LEVEL -->
+    <div id="advanced" class="tab-content">
+        <!-- Lesson 1 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <h2>1. Arbitrage Strategies</h2>
+            
+            <div class="diagram">
+                TRIANGULAR ARBITRAGE (Forex)
+                USD → EUR → GBP → USD
+                │      │      │
+                $1.00  €0.85  £0.75
+                │      │      │
+                └──────┴──────┘
+                Profit if: $1 → €0.85 → £0.75 → $1.02
+            </div>
+            <p><strong>Execution Requirements:</strong> Sub-millisecond latency, large capital.</p>
+            
+            <div class="quiz">
+                <h3>Arbitrage Logic</h3>
+                <p>Why does arbitrage require fast execution?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Markets quickly correct imbalances</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Brokers prohibit slow trades</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Regulators monitor slow trades</div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <h2>2. HFT Market Making</h2>
+            
+            <div class="diagram">
+                HFT ORDER BOOK DYNAMICS
+                Bid: $100.00 (10,000 shares)  ← HFT
+                Ask: $100.05 (8,000 shares)   ← HFT
+                │
+                Market Order to Buy 15,000 shares
+                │
+                HFT Adjusts:
+                New Bid: $99.98
+                New Ask: $100.08
+            </div>
+            <p><strong>Latency Arbitrage:</strong> HFTs detect large orders and adjust prices in microseconds.</p>
+            
+            <div class="quiz">
+                <h3>Market Impact</h3>
+                <p>How do HFTs profit from this activity?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">By holding long-term positions</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Capturing bid-ask spreads</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Selling client data</div>
+            </div>
+        </div>
+        <!-- Additional advanced lessons... -->
+    </div>
+
+    <script>
+        // Tab Functions
+        function openTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Quiz Functions
+        function checkAnswer(selectedOption, isCorrect) {
+            // Remove any existing classes from siblings
+            const options = selectedOption.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark the selected option
+            selectedOption.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            // If wrong, mark correct answer (after 1sec delay)
+            if (!isCorrect) {
+                setTimeout(() => {
+                    options.forEach(option => {
+                        if (option.getAttribute('onclick').includes('true)')) {
+                            option.classList.add('correct');
+                        }
+                    });
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
