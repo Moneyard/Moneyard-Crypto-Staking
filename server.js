@@ -234,7 +234,55 @@ app.get('/api/admin/deposits', (req, res) => {
     res.json(rows);
   });
 });
+// Get Pending Deposits
+app.get('/admin/deposits/pending', (req, res) => {
+  const sql = 'SELECT * FROM deposits WHERE status = "pending"';
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ pendingDeposits: rows });
+  });
+});
 
+// Get Processed Deposits (Approved/Rejected)
+app.get('/admin/deposits/processed', (req, res) => {
+  const sql = 'SELECT * FROM deposits WHERE status IN ("approved", "rejected")';
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ processedDeposits: rows });
+  });
+});
+
+// Approve Deposit
+app.post('/admin/deposits/approve/:id', (req, res) => {
+  const depositId = req.params.id;
+  const sql = 'UPDATE deposits SET status = "approved" WHERE id = ?';
+  db.run(sql, [depositId], function (err) {
+    if (err) {
+      res.status(500).json({ message: 'Error updating deposit status.' });
+      return;
+    }
+    res.json({ message: 'Deposit approved successfully.' });
+  });
+});
+
+// Reject Deposit
+app.post('/admin/deposits/reject/:id', (req, res) => {
+  const depositId = req.params.id;
+  const sql = 'UPDATE deposits SET status = "rejected" WHERE id = ?';
+  db.run(sql, [depositId], function (err) {
+    if (err) {
+      res.status(500).json({ message: 'Error updating deposit status.' });
+      return;
+    }
+    res.json({ message: 'Deposit rejected successfully.' });
+  });
+});
 // View all withdrawals
 app.get('/api/admin/withdrawals', (req, res) => {
   db.all("SELECT * FROM withdrawals ORDER BY date DESC", (err, rows) => {
