@@ -64,40 +64,37 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Email</th>
           <th>Amount</th>
           <th>Method</th>
-          <th>TxID</th>
+          <th>Transaction ID</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody id="pendingDeposits">
-        <!-- Real data will load here -->
+        <!-- Real data will be inserted here -->
       </tbody>
     </table>
   </div>
 
   <script>
-    async function loadPendingDeposits() {
+    async function fetchPendingDeposits() {
       const table = document.getElementById('pendingDeposits');
-      table.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
-
+      table.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
       try {
-        const response = await fetch('/api/deposits/pending');
-        const deposits = await response.json();
+        const res = await fetch('/api/deposits/pending');
+        const data = await res.json();
 
-        if (deposits.length === 0) {
-          table.innerHTML = '<tr><td colspan="7">No pending deposits.</td></tr>';
+        if (!Array.isArray(data) || data.length === 0) {
+          table.innerHTML = '<tr><td colspan="6">No pending deposits.</td></tr>';
           return;
         }
 
         table.innerHTML = '';
-        deposits.forEach(deposit => {
+        data.forEach(deposit => {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${deposit.id}</td>
-            <td>${deposit.email}</td>
             <td>${deposit.amount}</td>
             <td>${deposit.method}</td>
             <td>${deposit.txid}</td>
@@ -109,44 +106,34 @@
           `;
           table.appendChild(row);
         });
-      } catch (err) {
-        table.innerHTML = `<tr><td colspan="7">Error loading deposits</td></tr>`;
-        console.error(err);
+      } catch (error) {
+        console.error('Error:', error);
+        table.innerHTML = '<tr><td colspan="6">Failed to load deposits.</td></tr>';
       }
     }
 
     async function approveDeposit(id) {
-      try {
-        const res = await fetch(`/api/deposits/approve/${id}`, { method: 'POST' });
-        if (res.ok) {
-          alert('Deposit approved!');
-          loadPendingDeposits();
-        } else {
-          alert('Error approving deposit.');
-        }
-      } catch (err) {
-        alert('Server error.');
-        console.error(err);
+      const res = await fetch(`/api/deposits/approve/${id}`, { method: 'POST' });
+      if (res.ok) {
+        alert('Deposit approved!');
+        fetchPendingDeposits();
+      } else {
+        alert('Failed to approve deposit.');
       }
     }
 
     async function rejectDeposit(id) {
-      try {
-        const res = await fetch(`/api/deposits/reject/${id}`, { method: 'POST' });
-        if (res.ok) {
-          alert('Deposit rejected!');
-          loadPendingDeposits();
-        } else {
-          alert('Error rejecting deposit.');
-        }
-      } catch (err) {
-        alert('Server error.');
-        console.error(err);
+      const res = await fetch(`/api/deposits/reject/${id}`, { method: 'POST' });
+      if (res.ok) {
+        alert('Deposit rejected!');
+        fetchPendingDeposits();
+      } else {
+        alert('Failed to reject deposit.');
       }
     }
 
     // Initial load
-    loadPendingDeposits();
+    fetchPendingDeposits();
   </script>
 
 </body>
