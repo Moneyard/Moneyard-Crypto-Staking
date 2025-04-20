@@ -187,6 +187,8 @@
       </div>
 
       <!-- Pending status section -->
+<h3>Deposit History</h3>
+<div id="depositHistory">Loading...</div>
       <div class="pending-status">
         Status: Pending
       </div>
@@ -277,7 +279,7 @@
       localStorage.setItem("depositRequests", JSON.stringify(deposits));
 
       alert("Submitted successfully! Your deposit is being verified...");
-      window.location.href = "payment-approval.html";
+      window.location.href = "dashboard.html";
     }
   </script>
 </body>
