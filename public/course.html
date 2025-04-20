@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Course Deposit</title>
+</head>
+<body>
+  <h2>Course Deposit Form</h2>
+  <form id="depositForm">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <select id="course" required>
+      <option value="">Select Course</option>
+      <option value="Web Dev">Web Development</option>
+      <option value="Blockchain">Blockchain Basics</option>
+    </select><br>
+    <input type="number" id="amount" placeholder="Amount" required><br>
+    <input type="text" id="txid" placeholder="Payment TxID" required><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById('depositForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        email: document.getElementById('email').value,
+        course: document.getElementById('course').value,
+        amount: parseFloat(document.getElementById('amount').value),
+        txid: document.getElementById('txid').value
+      };
+
+      const res = await fetch('/api/deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      alert(result.success ? 'Deposit submitted!' : 'Error submitting deposit.');
+    });
+  </script>
+</body>
+</html>
