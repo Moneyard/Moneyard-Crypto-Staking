@@ -5,37 +5,41 @@
   <title>Course Deposit</title>
 </head>
 <body>
-  <h2>Course Deposit Form</h2>
-  <form id="depositForm">
-    <input type="email" id="email" placeholder="Email" required><br>
-    <select id="course" required>
+  <h2>Submit Course Deposit</h2>
+  <form id="depositForm" enctype="multipart/form-data">
+    <input type="email" name="email" placeholder="Email" required><br>
+
+    <select name="course" required>
       <option value="">Select Course</option>
       <option value="Web Dev">Web Development</option>
       <option value="Blockchain">Blockchain Basics</option>
     </select><br>
-    <input type="number" id="amount" placeholder="Amount" required><br>
-    <input type="text" id="txid" placeholder="Payment TxID" required><br>
+
+    <input name="amount" type="number" placeholder="Amount" required><br>
+    <input name="txid" type="text" placeholder="Payment TxID" required><br>
+    <input name="proof" type="file" accept="image/*"><br>
+
     <button type="submit">Submit</button>
   </form>
 
   <script>
     document.getElementById('depositForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const data = {
-        email: document.getElementById('email').value,
-        course: document.getElementById('course').value,
-        amount: parseFloat(document.getElementById('amount').value),
-        txid: document.getElementById('txid').value
-      };
+      const formData = new FormData(e.target);
+      const token = localStorage.getItem('token');
 
-      const res = await fetch('/api/deposit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      const result = await res.json();
-      alert(result.success ? 'Deposit submitted!' : 'Error submitting deposit.');
+      try {
+        const res = await fetch('/api/deposit', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token }, // optional
+          body: formData
+        });
+        const result = await res.json();
+        alert(result.success ? 'Deposit submitted!' : (result.message || 'Error submitting deposit.'));
+      } catch (err) {
+        console.error(err);
+        alert('Network error.');
+      }
     });
   </script>
 </body>
