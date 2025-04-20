@@ -43,7 +43,24 @@ document.getElementById('depositForm')?.addEventListener('submit', (e) => {
   // Simulating deposit success
   alert('Deposit successful! Balance will be updated.');
   closeDepositModal();
+  submitDeposit(amount);  // Call mock API function for deposit
 });
+
+// ========== DEPOSIT HANDLING (Mock API Example) ==========
+const mockDepositData = {
+  status: "success",
+  message: "Deposit processed successfully!"
+};
+
+function submitDeposit(amount) {
+  console.log(`Depositing ${amount}`);
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockDepositData), 1000);
+  }).then(response => {
+    console.log(response.message); // Show success message
+    refreshBalance();  // Refresh the balance display
+  });
+}
 
 // ========== STAKE PLANS HANDLING ==========
 const stakePlansContainer = document.getElementById("stake-plans");
@@ -166,7 +183,8 @@ function toggleSection(sectionId) {
 document.getElementById("earningsButton")?.addEventListener("click", function() {
   toggleSection('earningsSection');
 });
-// Check if there’s a saved email in localStorage on page load and pre-fill the login email
+
+// ========== USER EMAIL STORAGE AND LOGIN FLOW ==========
 window.onload = function() {
   const savedEmail = localStorage.getItem("userEmail");
   if (savedEmail) {
@@ -194,25 +212,8 @@ function handleLogin(event) {
   // For now, we'll redirect to the dashboard page
   window.location.href = "dashboard.html"; // Update this as per your flow
 }
-// Mock API example in script.js
 
-const mockDepositData = {
-  status: "success",
-  message: "Deposit processed successfully!"
-};
-
-function submitDeposit(amount) {
-  // Simulate server response
-  console.log(`Depositing ${amount}`);
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(mockDepositData), 1000);
-  });
-}
-
-// Use this mock function in your frontend code
-submitDeposit(100).then(response => {
-  console.log(response.message); // Show success message
-});
+// ========== DEPOSIT MANAGEMENT (Admin Panel) ==========
 function openAdminModal() {
   document.getElementById("adminDepositModal").style.display = "block";
   loadDepositsToTable();
@@ -238,239 +239,26 @@ function loadDepositsToTable() {
     row.innerHTML = `
       <td style="padding:10px; border:1px solid #ccc;">${deposit.senderPhone}</td>
       <td style="padding:10px; border:1px solid #ccc;">${deposit.amount}</td>
-      <td style="padding:10px; border:1px solid #ccc;">${deposit.txid}</td>
-      <td style="padding:10px; border:1px solid #ccc;">${new Date(deposit.timestamp).toLocaleString()}</td>
-      <td style="padding:10px; border:1px solid #ccc; text-align:center;">
-        <input type="checkbox" onchange="toggleApproval(${index})" ${deposit.approved ? 'checked' : ''}>
-      </td>
+      <td style="padding:10px; border:1px solid #ccc;">${deposit.time}</td>
       <td style="padding:10px; border:1px solid #ccc;">
-        <button onclick="deleteDeposit(${index})" style="background:red;color:white;border:none;padding:5px 10px;border-radius:4px;">Delete</button>
+        <button class="approve-btn" onclick="approveDeposit(${index})">Approve</button>
+        <button class="reject-btn" onclick="rejectDeposit(${index})">Reject</button>
       </td>
     `;
     tableBody.appendChild(row);
   });
 }
 
-function deleteDeposit(index) {
-  let deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
-  deposits.splice(index, 1);
-  localStorage.setItem("momoDeposits", JSON.stringify(deposits));
-  loadDepositsToTable();
+function approveDeposit(index) {
+  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+  savedDeposits[index].status = "approved";
+  localStorage.setItem("momoDeposits", JSON.stringify(savedDeposits));
+  loadDepositsToTable(); // Refresh the table
 }
 
-function toggleApproval(index) {
-  let deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
-  deposits[index].approved = !deposits[index].approved;
-  localStorage.setItem("momoDeposits", JSON.stringify(deposits));
-  loadDepositsToTable();
+function rejectDeposit(index) {
+  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
+  savedDeposits[index].status = "rejected";
+  localStorage.setItem("momoDeposits", JSON.stringify(savedDeposits));
+  loadDepositsToTable(); // Refresh the table
 }
-
-function exportDepositsToCSV() {
-  const deposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
-
-  if (deposits.length === 0) return alert("No deposits to export.");
-
-  const headers = ["Phone", "Amount", "TxID", "Date", "Approved"];
-  const rows = deposits.map(dep => [
-    dep.senderPhone,
-    dep.amount,
-    dep.txid,
-    new Date(dep.timestamp).toLocaleString(),
-    dep.approved ? "Yes" : "No"
-  ]);
-
-  let csv = headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "momo_deposits.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-// Load deposits from localStorage on page load
-window.addEventListener("load", () => {
-  loadPendingDeposits();
-});
-
-// Handle deposit submission
-document.getElementById("depositForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const amount = document.getElementById("depositAmount").value;
-  const method = document.getElementById("depositMethod").value;
-
-  const deposit = {
-    id: Date.now(),
-    amount,
-    method,
-    status: "Pending"
-  };
-
-  const deposits = JSON.parse(localStorage.getItem("deposits")) || [];
-  deposits.push(deposit);
-  localStorage.setItem("deposits", JSON.stringify(deposits));
-
-  document.getElementById("depositForm").reset();
-  loadPendingDeposits();
-});
-
-// Load and display all pending deposits
-function loadPendingDeposits() {
-  const container = document.getElementById("pendingDeposits");
-  container.innerHTML = "";
-
-  const deposits = JSON.parse(localStorage.getItem("deposits")) || [];
-
-  if (deposits.length === 0) {
-    container.innerHTML = "<p>No pending deposits.</p>";
-    return;
-  }
-
-  deposits.forEach(deposit => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <p>
-        <strong>Amount:</strong> $${deposit.amount} |
-        <strong>Method:</strong> ${deposit.method} |
-        <strong>Status:</strong> ${deposit.status}
-        <br>
-        ${deposit.status === "Pending" ? `
-          <button onclick="approveDeposit(${deposit.id})">Approve</button>
-          <button onclick="rejectDeposit(${deposit.id})">Reject</button>
-        ` : `<em>Action Completed</em>`}
-      </p>
-      <hr>
-    `;
-    container.appendChild(div);
-  });
-}
-
-// Approve deposit
-function approveDeposit(id) {
-  updateDepositStatus(id, "Approved");
-}
-
-// Reject deposit
-function rejectDeposit(id) {
-  updateDepositStatus(id, "Rejected");
-}
-
-// Update deposit status and refresh display
-function updateDepositStatus(id, newStatus) {
-  let deposits = JSON.parse(localStorage.getItem("deposits")) || [];
-  deposits = deposits.map(dep => dep.id === id ? { ...dep, status: newStatus } : dep);
-  localStorage.setItem("deposits", JSON.stringify(deposits));
-  loadPendingDeposits();
-}
-function refreshBalance() {
-  const email = localStorage.getItem('userEmail');
-  if (!email) return;
-
-  fetch(`/api/balance/${email}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.balance !== undefined) {
-        document.getElementById('userBalance').textContent = `$${data.balance.toFixed(2)}`;
-      }
-    });
-}
-
-// Call this every 15 seconds
-setInterval(refreshBalance, 15000);
-refreshBalance();
-document.addEventListener('DOMContentLoaded', () => {
-  // Menu toggle functionality
-  document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const path = e.target.getAttribute('data-path');
-      
-      try {
-        const response = await fetch(path);
-        if (response.ok) {
-          window.location.href = path;
-        } else {
-          console.error('Menu navigation failed');
-        }
-      } catch (error) {
-        console.error('Network error:', error);
-      }
-    });
-  });
-});
-document.addEventListener("DOMContentLoaded", () => {
-  loadDeposits();
-
-  function loadDeposits() {
-    fetch("/api/admin/deposits", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        const pendingBody = document.querySelector("#pendingDepositsTable tbody");
-        const approvedBody = document.querySelector("#approvedDepositsTable tbody");
-        pendingBody.innerHTML = "";
-        approvedBody.innerHTML = "";
-
-        data.forEach(deposit => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${deposit.id}</td>
-            <td>${deposit.user_id}</td>
-            <td>${deposit.amount}</td>
-            <td>${deposit.method}</td>
-            <td>${deposit.transaction_id}</td>
-            <td>${deposit.status}</td>
-          `;
-
-          if (deposit.status === "pending") {
-            const actionsCell = document.createElement("td");
-            const approveBtn = document.createElement("button");
-            approveBtn.textContent = "Approve";
-            approveBtn.className = "approved";
-            approveBtn.onclick = () => updateStatus(deposit.id, "approved");
-
-            const rejectBtn = document.createElement("button");
-            rejectBtn.textContent = "Reject";
-            rejectBtn.className = "rejected";
-            rejectBtn.onclick = () => updateStatus(deposit.id, "rejected");
-
-            actionsCell.appendChild(approveBtn);
-            actionsCell.appendChild(rejectBtn);
-            row.appendChild(actionsCell);
-            pendingBody.appendChild(row);
-          } else {
-            approvedBody.appendChild(row);
-          }
-        });
-      })
-      .catch(err => {
-        document.querySelector("#pendingDepositsTable tbody").innerHTML = "<tr><td colspan='7'>Failed to load.</td></tr>";
-        document.querySelector("#approvedDepositsTable tbody").innerHTML = "<tr><td colspan='6'>Failed to load.</td></tr>";
-      });
-  }
-
-  function updateStatus(depositId, newStatus) {
-    fetch(`/api/admin/deposits/${depositId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ status: newStatus })
-    })
-    .then(res => {
-      if (res.ok) {
-        loadDeposits();
-      } else {
-        alert("Failed to update status");
-      }
-    });
-  }
-});
