@@ -15,11 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 const path = require('path');
-
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'dashboard.html'));
 });
-
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) fs.closeSync(fs.openSync(dbPath, 'w'));
 
