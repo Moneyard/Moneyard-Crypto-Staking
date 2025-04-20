@@ -1,188 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Intermediate Financial Markets Course</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f9fc;
-      margin: 0;
-      padding: 20px;
-    }
-    .course-container {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      color: #2e86c1;
-      text-align: center;
-    }
-    iframe {
-      width: 100%;
-      height: 400px;
-      margin: 20px 0;
-      border: none;
-    }
-    .quiz {
-      background: #f0f0f0;
-      padding: 15px;
-      margin: 10px 0 30px;
-      border-radius: 6px;
-    }
-    .quiz p {
-      margin-bottom: 10px;
-    }
-    .quiz label {
-      display: block;
-      margin-bottom: 6px;
-    }
-    .btn {
-      background-color: #2e86c1;
-      color: white;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .btn:hover {
-      background-color: #1a669a;
-    }
-    .result {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    #certificateMessage {
-      display: none;
-      text-align: center;
-      padding: 20px;
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      border-radius: 10px;
-      margin-top: 30px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Markets Academy</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #28a745;
+            --light: #f5f7fa;
+            --dark: #333;
+            --danger: #dc3545;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        /* Difficulty Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .course-thumbnail {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .play-button::after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid var(--primary);
+            margin-left: 5px;
+        }
+        
+        .course-content {
+            padding: 20px;
+        }
+        
+        .course-content h3 {
+            color: var(--primary);
+        }
+        
+        .course-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .badge.beginner {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge.intermediate {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .badge.advanced {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Quiz Section */
+        .quiz-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .quiz-options {
+            margin-top: 10px;
+        }
+        
+        .quiz-option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            background: #f0f4ff;
+            border-color: var(--primary);
+        }
+        
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: var(--accent);
+        }
+        
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: var(--danger);
+        }
+        
+        .submit-quiz {
+            margin-top: 15px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .submit-quiz:hover {
+            background: #218838;
+        }
+        
+        /* Resource Links */
+        .resources {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 5px;
+        }
+        
+        .resources h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .resources ul {
+            padding-left: 20px;
+        }
+        
+        .resources li {
+            margin-bottom: 8px;
+        }
+        
+        .resources a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .resources a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Hide inactive tabs */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-  <div class="course-container">
-    <h2>Intermediate Financial Markets Course</h2>
-
-    <!-- Lesson 1 -->
-    <h3>Lesson 1: Derivatives Explained</h3>
-    <iframe src="https://www.youtube.com/embed/SKj-pMK1_tM" allowfullscreen></iframe>
-    <div class="quiz">
-      <p>Which is a type of derivative?</p>
-      <label><input type="radio" name="q1" value="a"> Bond</label>
-      <label><input type="radio" name="q1" value="b"> Option</label>
-      <label><input type="radio" name="q1" value="c"> Stock</label>
-      <button class="btn" onclick="checkAnswer('q1', 'b', 'r1')">Submit</button>
-      <div class="result" id="r1"></div>
+    <header>
+        <div class="container">
+            <h1>Financial Markets Academy</h1>
+            <p>Master trading, investing, and market analysis with interactive courses</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Difficulty Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('beginner')">Beginner</button>
+            <button class="tab-btn" onclick="openTab('intermediate')">Intermediate</button>
+            <button class="tab-btn" onclick="openTab('advanced')">Advanced</button>
+        </div>
+        
+        <!-- Beginner Courses -->
+        <div id="beginner" class="tab-content active">
+            <h2>Beginner Courses</h2>
+            <p>Learn the fundamentals of financial markets, investing, and personal finance.</p>
+            
+            <div class="course-grid">
+                <!-- Course 1: Financial Markets (Yale) -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Financial Markets">
+                        <div class="play-button" onclick="openModal('financial-markets')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge beginner">Beginner</span>
+                        <h3>Financial Markets (Yale)</h3>
+                        <p>Learn risk management, behavioral finance, and how securities, insurance, and banking industries function.</p>
+                        <a href="#" class="btn" onclick="openModal('financial-markets')">Start Learning</a>
+                    </div>
+                </div>
+                
+                <!-- Course 2: Stock Market Fundamentals -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Stock Market">
+                        <div class="play-button" onclick="openModal('stock-market')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge beginner">Beginner</span>
+                        <h3>Stock Market Fundamentals</h3>
+                        <p>Learn how stocks are traded, how to analyze companies, and build a diversified portfolio.</p>
+                        <a href="#" class="btn" onclick="openModal('stock-market')">Start Learning</a>
+                    </div>
+                </div>
+                
+                <!-- Course 3: Personal Finance -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Personal Finance">
+                        <div class="play-button" onclick="openModal('personal-finance')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge beginner">Beginner</span>
+                        <h3>Essentials of Personal Finance</h3>
+                        <p>Key financial concepts through the lens of personal financial decisions, including student loans.</p>
+                        <a href="#" class="btn" onclick="openModal('personal-finance')">Start Learning</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Intermediate Courses -->
+        <div id="intermediate" class="tab-content">
+            <h2>Intermediate Courses</h2>
+            <p>Dive deeper into technical analysis, derivatives, and portfolio management.</p>
+            
+            <div class="course-grid">
+                <!-- Course 1: Investment Management -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1535320903710-d993d3d77d29?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Investment Management">
+                        <div class="play-button" onclick="openModal('investment-management')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge intermediate">Intermediate</span>
+                        <h3>Investment Management</h3>
+                        <p>Study diversification, asset allocation, portfolio optimization, and factor models.</p>
+                        <a href="#" class="btn" onclick="openModal('investment-management')">Start Learning</a>
+                    </div>
+                </div>
+                
+                <!-- Course 2: Derivatives -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1642790554071-8b5d8a1ccee3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Derivatives">
+                        <div class="play-button" onclick="openModal('derivatives')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge intermediate">Intermediate</span>
+                        <h3>Financial Derivatives</h3>
+                        <p>Learn pricing models (Black-Scholes), hedging strategies, and applications in risk management.</p>
+                        <a href="#" class="btn" onclick="openModal('derivatives')">Start Learning</a>
+                    </div>
+                </div>
+                
+                <!-- Course 3: Forex Trading -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Forex Trading">
+                        <div class="play-button" onclick="openModal('forex-trading')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge intermediate">Intermediate</span>
+                        <h3>Forex Trading Strategies</h3>
+                        <p>Master currency pairs, pip calculations, and technical analysis in foreign exchange markets.</p>
+                        <a href="#" class="btn" onclick="openModal('forex-trading')">Start Learning</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advanced Courses -->
+        <div id="advanced" class="tab-content">
+            <h2>Advanced Courses</h2>
+            <p>Master quantitative finance, structured products, and global macro trading.</p>
+            
+            <div class="course-grid">
+                <!-- Course 1: Quantitative Finance -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1642790554071-8b5d8a1ccee3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Quantitative Finance">
+                        <div class="play-button" onclick="openModal('quantitative-finance')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge advanced">Advanced</span>
+                        <h3>Quantitative Finance</h3>
+                        <p>Algorithmic trading, arbitrage strategies, and the Black-Scholes model.</p>
+                        <a href="#" class="btn" onclick="openModal('quantitative-finance')">Start Learning</a>
+                    </div>
+                </div>
+                
+                <!-- Course 2: Structured Products -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Structured Products">
+                        <div class="play-button" onclick="openModal('structured-products')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge advanced">Advanced</span>
+                        <h3>Structured Products</h3>
+                        <p>Mortgage-backed securities (MBS), collateralized debt obligations (CDOs), and credit default swaps.</p>
+                        <a href="#" class="btn" onclick="openModal('structured-products')">Start Learning</a>
+                    </div>
+                </div>
+                
+                <!-- Course 3: Global Macro Trading -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1535320903710-d993d3d77d29?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Global Macro">
+                        <div class="play-button" onclick="openModal('global-macro')"></div>
+                    </div>
+                    <div class="course-content">
+                        <span class="badge advanced">Advanced</span>
+                        <h3>Global Macro Trading</h3>
+                        <p>Impact of geopolitical events, central bank policies, and macroeconomic indicators.</p>
+                        <a href="#" class="btn" onclick="openModal('global-macro')">Start Learning</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Resources -->
+        <div class="resources">
+            <h4>Recommended Resources</h4>
+            <ul>
+                <li><a href="https://www.coursera.org/learn/financial-markets-global" target="_blank">Financial Markets (Yale University on Coursera)</a> - Beginner-friendly with videos and quizzes [citation:1]</li>
+                <li><a href="https://www.udemy.com/course/financial-markets-a-to-z-for-beginners/" target="_blank">Comprehensive Guide to Financial Markets (Udemy)</a> - Covers stocks, bonds, forex, and derivatives [citation:9]</li>
+                <li><a href="https://www.imf.org/en/Capacity-Development/Training/ICDTC/Courses/FMAx" target="_blank">Financial Market Analysis (IMF)</a> - Advanced pricing models and risk management [citation:10]</li>
+            </ul>
+        </div>
     </div>
-
-    <!-- Lesson 2 -->
-    <h3>Lesson 2: Hedging Strategies</h3>
-    <iframe src="https://www.youtube.com/embed/CrjI_0jzV6E" allowfullscreen></iframe>
-    <div class="quiz">
-      <p>What is the purpose of hedging?</p>
-      <label><input type="radio" name="q2" value="a"> Increase risk</label>
-      <label><input type="radio" name="q2" value="b"> Eliminate taxes</label>
-      <label><input type="radio" name="q2" value="c"> Reduce risk</label>
-      <button class="btn" onclick="checkAnswer('q2', 'c', 'r2')">Submit</button>
-      <div class="result" id="r2"></div>
+    
+    <!-- Modals for Each Course -->
+    <!-- Beginner Modals -->
+    <div class="modal" id="financial-markets-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Financial Markets (Yale University)</h3>
+                <button class="close-modal" onclick="closeModal('financial-markets-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/3UF0ymVdYLA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>This Yale University course covers risk management, behavioral finance, and the functioning of securities, insurance, and banking industries. Includes 23 videos and 25 assignments [citation:1].</p>
+                
+                <div class="quiz-container">
+                    <h4>Test Your Knowledge</h4>
+                    <div class="quiz-question">
+                        <p>1. What is the primary goal of financial markets?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">To allocate capital efficiently</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">To guarantee profits for investors</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">To eliminate all investment risks</div>
+                        </div>
+                    </div>
+                    
+                    <button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Lesson 3 -->
-    <h3>Lesson 3: Margin Trading and Leverage</h3>
-    <iframe src="https://www.youtube.com/embed/PSfHeR7FocA" allowfullscreen></iframe>
-    <div class="quiz">
-      <p>Leverage allows you to:</p>
-      <label><input type="radio" name="q3" value="a"> Reduce your capital</label>
-      <label><input type="radio" name="q3" value="b"> Increase exposure with less capital</label>
-      <label><input type="radio" name="q3" value="c"> Avoid losses</label>
-      <button class="btn" onclick="checkAnswer('q3', 'b', 'r3')">Submit</button>
-      <div class="result" id="r3"></div>
+    
+    <!-- Intermediate Modals -->
+    <div class="modal" id="investment-management-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Investment Management</h3>
+                <button class="close-modal" onclick="closeModal('investment-management-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/mrLk361k1Z8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>Learn portfolio optimization, factor models, and the relationship between risk and return. Course includes practical exercises in asset allocation [citation:3].</p>
+                
+                <div class="quiz-container">
+                    <h4>Test Your Knowledge</h4>
+                    <div class="quiz-question">
+                        <p>1. What is the main benefit of diversification?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Reduces unsystematic risk</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Guarantees higher returns</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Eliminates all investment risk</div>
+                        </div>
+                    </div>
+                    
+                    <button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Lesson 4 -->
-    <h3>Lesson 4: Market Sentiment & Volatility</h3>
-    <iframe src="https://www.youtube.com/embed/6Yf5vTPDGuM" allowfullscreen></iframe>
-    <div class="quiz">
-      <p>Market sentiment is often measured by:</p>
-      <label><input type="radio" name="q4" value="a"> VIX</label>
-      <label><input type="radio" name="q4" value="b"> GDP</label>
-      <label><input type="radio" name="q4" value="c"> Interest rate</label>
-      <button class="btn" onclick="checkAnswer('q4', 'a', 'r4')">Submit</button>
-      <div class="result" id="r4"></div>
+    
+    <!-- Advanced Modals -->
+    <div class="modal" id="quantitative-finance-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quantitative Finance</h3>
+                <button class="close-modal" onclick="closeModal('quantitative-finance-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/bBC-nXj3Ng4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>Advanced course covering algorithmic trading strategies, arbitrage opportunities, and the Black-Scholes option pricing model [citation:3][citation:9].</p>
+                
+                <div class="quiz-container">
+                    <h4>Test Your Knowledge</h4>
+                    <div class="quiz-question">
+                        <p>1. What does the Black-Scholes model primarily calculate?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Theoretical price of European options</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Future stock prices with 100% accuracy</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Optimal portfolio allocation</div>
+                        </div>
+                    </div>
+                    
+                    <button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Lesson 5 -->
-    <h3>Lesson 5: Advanced Technical Indicators</h3>
-    <iframe src="https://www.youtube.com/embed/nUtL3g8WECk" allowfullscreen></iframe>
-    <div class="quiz">
-      <p>Which of these is a momentum indicator?</p>
-      <label><input type="radio" name="q5" value="a"> RSI</label>
-      <label><input type="radio" name="q5" value="b"> P/E Ratio</label>
-      <label><input type="radio" name="q5" value="c"> Volume</label>
-      <button class="btn" onclick="checkAnswer('q5', 'a', 'r5')">Submit</button>
-      <div class="result" id="r5"></div>
-    </div>
-
-    <!-- Lesson 6 -->
-    <h3>Lesson 6: Global Economic Indicators</h3>
-    <iframe src="https://www.youtube.com/embed/75yqXFxCnMM" allowfullscreen></iframe>
-    <div class="quiz">
-      <p>What is a leading economic indicator?</p>
-      <label><input type="radio" name="q6" value="a"> Unemployment rate</label>
-      <label><input type="radio" name="q6" value="b"> Consumer confidence index</label>
-      <label><input type="radio" name="q6" value="c"> Inflation rate</label>
-      <button class="btn" onclick="checkAnswer('q6', 'b', 'r6')">Submit</button>
-      <div class="result" id="r6"></div>
-    </div>
-
-    <div id="certificateMessage">
-      <h2>Great Job!</h2>
-      <p>You’ve completed the <strong>Intermediate Financial Markets</strong> course.</p>
-      <a href="certificate-intermediate.html" class="btn">View Intermediate Certificate</a>
-      <a href="advanced.html" class="btn" style="background-color:#28a745;">Continue to Advanced Course</a>
-    </div>
-  </div>
-
-  <script>
-    let passed = new Set();
-    function checkAnswer(qid, correct, rid) {
-      const opts = document.getElementsByName(qid);
-      let chosen = null;
-      for (let opt of opts) {
-        if (opt.checked) {
-          chosen = opt.value;
+    
+    <!-- Add more modals for other courses following the same structure -->
+    
+    <script>
+        // Tab Functions
+        function openTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
-      }
-      const result = document.getElementById(rid);
-      if (!chosen) {
-        result.innerText = "Please select an answer.";
-        result.style.color = "red";
-        return;
-      }
-      if (chosen === correct) {
-        passed.add(qid);
-        result.innerText = "Correct!";
-        result.style.color = "green";
-      } else {
-        result.innerText = "Incorrect. Try again.";
-        result.style.color = "red";
-      }
-
-      if (passed.size === 6) {
-        document.getElementById("certificateMessage").style.display = "block";
-      }
-    }
-  </script>
+        
+        // Modal Functions
+        function openModal(course) {
+            document.getElementById(`${course}-modal`).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(courseId) {
+            document.getElementById(courseId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Reset quiz answers
+            const options = document.querySelectorAll(`#${courseId} .quiz-option`);
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+        }
+        
+        // Quiz Functions
+        function checkAnswer(selectedOption, isCorrect) {
+            // Remove any existing classes from siblings
+            const options = selectedOption.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark the selected option
+            if (isCorrect) {
+                selectedOption.classList.add('correct');
+            } else {
+                selectedOption.classList.add('incorrect');
+                
+                // Find and mark the correct answer
+                options.forEach(option => {
+                    if (option.getAttribute('onclick').includes('true)')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        function submitQuiz() {
+            alert('Quiz submitted! Check your answers above.');
+        }
+        
+        // Close modal when clicking outside content
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
 </body>
 </html>
