@@ -7,6 +7,7 @@
 <body>
   <h2>Course Deposit Approvals</h2>
   <div id="depositList"></div>
+<p>Proof: ${d.proof ? `<img src="/uploads/${d.proof}" width="100">` : 'None'}</p>
 
   <script>
     async function fetchDeposits() {
