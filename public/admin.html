@@ -78,55 +78,73 @@
   </div>
 
   <script>
-    // Simulating deposits for the sake of frontend demonstration (No Backend)
-    const pendingDeposits = [
-      { id: 1, amount: 100, method: 'TRC20', txid: 'TX123', status: 'Pending' },
-      { id: 2, amount: 200, method: 'BEP20', txid: 'TX456', status: 'Pending' },
-      { id: 3, amount: 50, method: 'Mobile Money', txid: 'TX789', status: 'Pending' }
-    ];
+  async function fetchPendingDeposits() {
+    try {
+      const response = await fetch('/api/pending-deposits');
+      const data = await response.json();
+      renderPendingDeposits(data);
+    } catch (error) {
+      console.error('Error fetching deposits:', error);
+    }
+  }
 
-    function renderPendingDeposits() {
-      const pendingDepositsTable = document.getElementById('pendingDeposits');
-      pendingDepositsTable.innerHTML = '';
+  function renderPendingDeposits(deposits) {
+    const pendingDepositsTable = document.getElementById('pendingDeposits');
+    pendingDepositsTable.innerHTML = '';
 
-      pendingDeposits.forEach(deposit => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${deposit.id}</td>
-          <td>${deposit.amount}</td>
-          <td>${deposit.method}</td>
-          <td>${deposit.txid}</td>
-          <td class="status">${deposit.status}</td>
-          <td>
-            <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
-            <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
-          </td>
-        `;
-        pendingDepositsTable.appendChild(row);
+    deposits.forEach(deposit => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${deposit.id}</td>
+        <td>${deposit.amount}</td>
+        <td>${deposit.method}</td>
+        <td>${deposit.txid}</td>
+        <td class="status">${deposit.status}</td>
+        <td>
+          <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
+          <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
+        </td>
+      `;
+      pendingDepositsTable.appendChild(row);
+    });
+  }
+
+  async function approveDeposit(id) {
+    try {
+      const response = await fetch('/api/approve-deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
       });
-    }
-
-    function approveDeposit(id) {
-      const deposit = pendingDeposits.find(deposit => deposit.id === id);
-      if (deposit) {
-        deposit.status = 'Approved';
-        renderPendingDeposits();
+      const result = await response.json();
+      if (result.success) {
         alert('Deposit approved!');
+        fetchPendingDeposits();
       }
+    } catch (error) {
+      console.error('Error approving deposit:', error);
     }
+  }
 
-    function rejectDeposit(id) {
-      const deposit = pendingDeposits.find(deposit => deposit.id === id);
-      if (deposit) {
-        deposit.status = 'Rejected';
-        renderPendingDeposits();
+  async function rejectDeposit(id) {
+    try {
+      const response = await fetch('/api/reject-deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const result = await response.json();
+      if (result.success) {
         alert('Deposit rejected!');
+        fetchPendingDeposits();
       }
+    } catch (error) {
+      console.error('Error rejecting deposit:', error);
     }
+  }
 
-    // Initial render of pending deposits
-    renderPendingDeposits();
-  </script>
+  fetchPendingDeposits();
+</script>
 
 </body>
 </html>
