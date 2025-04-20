@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
-// SQLite DB Setup
+// SQLite Setup
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) fs.closeSync(fs.openSync(dbPath, 'w'));
 
@@ -25,7 +25,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   console.log('Connected to SQLite at', dbPath);
 });
 
-// Create Tables
+// Tables
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -79,16 +79,13 @@ db.serialize(() => {
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
 });
-// Serve frontend (if you have a public/index.html)
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Basic root route
+// Serve frontend
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html')); 
-  // OR simple response:
-  // res.json({ status: 'Moneyard API Running', version: '1.0.0' });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-// ======= ROUTES =======
+
+// ===== Routes =====
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -99,9 +96,11 @@ app.post('/api/signup', async (req, res) => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
 
   if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
-  if (!passwordRegex.test(password)) return res.status(400).json({
-    error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters'
-  });
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters'
+    });
+  }
 
   db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
     if (err) return res.status(500).json({ error: 'Database error' });
@@ -130,7 +129,8 @@ app.post('/api/login', (req, res) => {
 // Deposit
 app.post('/api/deposit', (req, res) => {
   const { userId, amount, network, txId } = req.body;
-  if (!userId || !amount || !network || !txId) return res.status(400).json({ error: 'All fields are required' });
+  if (!userId || !amount || !network || !txId)
+    return res.status(400).json({ error: 'All fields are required' });
 
   const now = new Date().toISOString();
   db.run(`INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
@@ -138,6 +138,7 @@ app.post('/api/deposit', (req, res) => {
     [userId, amount, network, txId, now],
     function (err) {
       if (err) return res.status(500).json({ error: 'Deposit failed' });
+
       db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
         if (err) return res.status(500).json({ error: 'Failed to update balance' });
         res.json({ success: true, message: 'Deposit confirmed' });
@@ -145,7 +146,7 @@ app.post('/api/deposit', (req, res) => {
     });
 });
 
-// View Deposits
+// Get Deposits
 app.get('/api/deposits', (req, res) => {
   const userId = req.query.userId;
   if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -182,13 +183,15 @@ app.get('/api/stake-plans', (req, res) => {
 // Stake
 app.post('/api/stake', (req, res) => {
   const { userId, amount, plan, lockPeriod } = req.body;
-  const plans = {
+  const apyMap = {
     'Stable Growth': 8,
     'Yield Farming': 15,
     'Liquidity Mining': 22
   };
-  const apy = plans[plan];
-  if (!userId || !amount || !plan || !lockPeriod || !apy) return res.status(400).json({ error: 'Missing or invalid data' });
+  const apy = apyMap[plan];
+
+  if (!userId || !amount || !plan || !lockPeriod || !apy)
+    return res.status(400).json({ error: 'Missing or invalid data' });
 
   const now = new Date().toISOString();
   db.run(`INSERT INTO stakes (user_id, plan, amount, apy, lock_period, start_date)
@@ -196,6 +199,7 @@ app.post('/api/stake', (req, res) => {
     [userId, plan, amount, apy, lockPeriod, now],
     function (err) {
       if (err) return res.status(500).json({ error: 'Staking failed' });
+
       db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId], (err) => {
         if (err) return res.status(500).json({ error: 'Failed to update balance' });
         res.json({ success: true, message: 'Stake successful' });
@@ -226,6 +230,7 @@ app.post('/api/unstake', (req, res) => {
   });
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
