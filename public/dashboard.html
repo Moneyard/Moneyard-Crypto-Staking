@@ -215,33 +215,73 @@
   </div>
 
   <!-- DEPOSIT MODAL -->
-  <div id="deposit-modal" class="modal">
+<div id="deposit-modal" class="modal">
+    <h3>Deposit Funds</h3>
+    <label>Amount (USDT):</label>
+    <input type="number" id="deposit-amount" placeholder="Enter amount" />
+
+    <label>Payment Method:</label>
+    <select id="deposit-method" onchange="updateAddressAndQR()">
+      <option value="TRC20">USDT - TRC20 (Tron)</option>
+      <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
+    </select>
+
+    <div id="address-section">
+      <p><strong>Deposit Address:</strong></p>
+      <p id="wallet-address">Please select a network</p>
+      <button onclick="copyAddress()">Copy Address</button>
+      <div><img id="qr-image" src="" alt="QR Code" style="max-width: 150px;" /></div>
+    </div>
+
+    <label>Transaction ID (optional):</label>
+    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
+
+    <button onclick="enrollNow()">Deposit Crypto to Enroll Now for $19 ≈ 19 USDT</button>
+
+    <button class="mobile-money-btn" onclick="openModal('mobileMoneyModal')">Or Pay with Mobile Money</button>
+  </div>
+
+  <!-- Mobile Money Modal -->
+  <div id="mobileMoneyModal" class="modal">
     <div class="modal-content">
-      <h3>Deposit Funds</h3>
-      <label>Amount (USDT):</label>
-      <input type="number" id="deposit-amount" placeholder="Enter amount" />
-      <label>Payment Method:</label>
-      <select id="deposit-method" onchange="updateAddressAndQR()">
-        <option value="TRC20">USDT - TRC20 (Tron)</option>
-        <option value="BEP20">USDT - BEP20 (BNB Smart Chain)</option>
+      <span class="close-btn" onclick="closeModal('mobileMoneyModal')">&times;</span>
+      <h2>Pay with Mobile Money</h2>
+      <label for="network">Select Network:</label>
+      <select id="network">
+        <option value="mtn">MTN</option>
+        <option value="airtel">Airtel</option>
       </select>
 
-      <div id="address-section" class="qr-section">
-        <p><strong>Deposit Address:</strong></p>
-        <p id="wallet-address" class="wallet-address">Please select a network</p>
-        <button id="copy-btn" class="copy-btn" onclick="copyAddress()">Copy Address</button>
-        <div id="qr-display" class="qr-section">
-          <img id="qr-image" src="" alt="QR Code" />
-        </div>
-      </div>
+      <label for="mobileAmount">Amount (USD):</label>
+      <input type="number" id="mobileAmount" placeholder="Enter amount" required>
 
-      <label>Transaction ID (optional):</label>
-      <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-      <button style="background:#28a745; color:white;" onclick="submitDeposit()">Submit</button>
-      <button style="background:#ccc; margin-left:10px;" onclick="closeDeposit()">Cancel</button>
-      <p id="deposit-response" style="margin-top:10px;"></p>
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="tel" id="phoneNumber" placeholder="e.g. 2607XXXXXXXX" required>
+
+      <button onclick="sendMobileMoneyPrompt()">Send Payment Prompt</button>
     </div>
   </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h3>Enrollment Successful!</h3>
+      <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
+      <button class="close-btn" onclick="closeModal('successModal')">Close</button>
+    </div>
+  </div>
+<!-- Failure Modal -->
+<div id="failureModal" class="modal">
+  <div class="modal-content">
+    <h3>Payment Prompt System Failed!</h3>
+    <p>Your deposit could not be processed.<br>
+    Kindly click the button below to send it manually via the Admin Deposit Form.</p>
+    <a href="deposit-form.html">
+      <button class="send-btn">Send Manually</button>
+    </a>
+  </div>
+</div>
+    
 
 <!-- GREETING -->
 <section class="form">
@@ -292,41 +332,7 @@
       document.getElementById("deposit-response").textContent = "";
     }
 
-    function updateAddressAndQR() {
-      var method = document.getElementById("deposit-method").value;
-      var address = "";
-      var qrCodeUrl = "";
-
-      if (method === "TRC20") {
-        address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
-        qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
-      } else if (method === "BEP20") {
-        address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
-        qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(address);
-      }
-
-      document.getElementById("wallet-address").textContent = address;
-      document.getElementById("qr-image").src = qrCodeUrl;
-    }
-
-    function copyAddress() {
-      var address = document.getElementById("wallet-address").textContent;
-      navigator.clipboard.writeText(address);
-      alert("Address copied to clipboard");
-    }
-
-    function submitDeposit() {
-      var amount = document.getElementById("deposit-amount").value;
-      var txid = document.getElementById("deposit-txid").value;
-
-      if (amount <= 0) {
-        alert("Please enter a valid deposit amount.");
-        return;
-      }
-
-      document.getElementById("deposit-response").textContent = `Deposit of ${amount} USDT submitted. TxID: ${txid || "Not provided"}.`;
-      closeDeposit();
-    }
+    
 
     function logout() {
       alert("Logged out.");
@@ -388,47 +394,6 @@
       document.getElementById("deposit-response").textContent = "";
     }
 
-    function submitDeposit() {
-      const amount = document.getElementById("deposit-amount").value;
-      const method = document.getElementById("deposit-method").value;
-      const txid = document.getElementById("deposit-txid").value;
-      const response = document.getElementById("deposit-response");
-
-      if (!amount || amount <= 0) {
-        response.textContent = "Please enter a valid amount.";
-        return;
-      }
-
-      response.textContent = "Processing deposit...";
-      // Simulate backend request
-      setTimeout(() => {
-        response.textContent = `Deposit request for ${amount} USDT via ${method} submitted.`;
-      }, 1000);
-    }
-      const txid = document.getElementById("deposit-txid").value;
-
-      if (!amount || amount <= 0) {
-        document.getElementById("deposit-response").textContent = "Please enter a valid amount.";
-        return;
-      }
-
-      fetch("/api/deposit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ amount, method, txid }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          document.getElementById("deposit-response").textContent = data.message || "Deposit submitted!";
-        })
-        .catch(() => {
-          document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
-        });
-    }
-
     <script>
 document.addEventListener("DOMContentLoaded", function () {
   const depositAmountInput = document.getElementById("depositAmount");
@@ -464,6 +429,77 @@ document.addEventListener("DOMContentLoaded", function () {
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
+function updateAddressAndQR() {
+    const method = document.getElementById("deposit-method").value;
+    let address = "";
+
+    if (method === "TRC20") {
+      address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
+    } else if (method === "BEP20") {
+      address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+    }
+
+    document.getElementById("wallet-address").textContent = address;
+    document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
+  }
+
+  function copyAddress() {
+    const address = document.getElementById("wallet-address").textContent;
+    navigator.clipboard.writeText(address).then(() => {
+      alert("Address copied to clipboard");
+    });
+  }
+
+  function enrollNow() {
+    const amount = document.getElementById("deposit-amount").value;
+    const method = document.getElementById("deposit-method").value;
+
+    if (!amount || !method) {
+      alert("Please fill in all required fields before enrolling.");
+      return;
+    }
+
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+    audio.play();
+
+    document.getElementById("successModal").style.display = "flex";
+
+    setTimeout(() => {
+      window.location.href = "deposit-approval.html";
+    }, 3000);
+  }
+
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = "flex";
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+  }
+
+  function showFailureModal() {
+    document.getElementById("failureModal").style.display = "flex";
+  }
+
+  function sendMobileMoneyPrompt() {
+    const amount = document.getElementById('mobileAmount').value;
+    const phone = document.getElementById('phoneNumber').value;
+    const network = document.getElementById('network').value;
+
+    if (!amount || !phone) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+    closeModal('mobileMoneyModal');
+
+    // Show failure modal after 10 seconds (10000 ms)
+    setTimeout(() => {
+      showFailureModal();
+    }, 10000);
+  }
 </script>
 </body>
 </html>
