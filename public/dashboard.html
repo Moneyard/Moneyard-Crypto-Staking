@@ -215,9 +215,10 @@
   </div>
 
   <!-- DEPOSIT MODAL -->
-<div id="deposit-modal" class="modal">
-    <div class="modal-content">
-<h3>Deposit Funds</h3>
+<div id="deposit-modal" class="modal" style="display: none; justify-content: center; align-items: center;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('deposit-modal')" style="position: absolute; top: 10px; right: 15px; font-size: 18px; cursor: pointer;">&times;</span>
+    <h3>Deposit Funds</h3>
 <span class="close-btn" onclick="closeModal('deposit-modal')" style="position:absolute;top:10px;right:15px;font-size:20px;cursor:pointer;">&times;</span>
     <label>Amount (USDT):</label>
     <input type="number" id="deposit-amount" placeholder="Enter amount" />
@@ -476,22 +477,23 @@
       }
     }
   });
+  // Show deposit modal
   function openDeposit() {
     document.getElementById('deposit-modal').style.display = 'flex';
   }
 
   // Close any modal by ID
-  function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
   }
 
-  // Optional: Click outside the modal to close
-  window.onclick = function(event) {
+  // Close deposit modal when clicking outside modal-content
+  window.addEventListener('click', function(event) {
     const depositModal = document.getElementById('deposit-modal');
     if (event.target === depositModal) {
-      depositModal.style.display = "none";
+      depositModal.style.display = 'none';
     }
-  }
+  });
 </script>
 
 </body>
