@@ -313,3 +313,58 @@ app.post('/api/admin/reject-deposit', (req, res) => {
     });
   });
 });
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const bodyParser = require('body-parser');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+app.use(express.static('Public'));
+
+// Create SQLite DB
+const db = new sqlite3.Database('./course_deposits.db');
+
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS course_deposits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT,
+    course TEXT,
+    amount REAL,
+    txid TEXT,
+    status TEXT DEFAULT 'Pending',
+    date TEXT DEFAULT CURRENT_TIMESTAMP
+  )`);
+});
+
+// Submit deposit
+app.post('/api/deposit', (req, res) => {
+  const { email, course, amount, txid } = req.body;
+  db.run(`INSERT INTO course_deposits (email, course, amount, txid) VALUES (?, ?, ?, ?)`,
+    [email, course, amount, txid],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true, id: this.lastID });
+    });
+});
+
+// Get all deposits (admin)
+app.get('/api/admin/deposits', (req, res) => {
+  db.all(`SELECT * FROM course_deposits ORDER BY date DESC`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// Approve or Reject deposit (admin)
+app.post('/api/admin/deposit/status', (req, res) => {
+  const { id, status } = req.body;
+  db.run(`UPDATE course_deposits SET status = ? WHERE id = ?`, [status, id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
