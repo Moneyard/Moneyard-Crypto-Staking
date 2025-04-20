@@ -321,25 +321,6 @@
 <div style="height: 60px;"></div>
 
 <!-- SCRIPT -->
-  <script>
-    function openDeposit() {
-      document.getElementById("deposit-modal").style.display = "flex";
-    }
-
-    function closeDeposit() {
-      document.getElementById("deposit-modal").style.display = "none";
-      document.getElementById("deposit-response").textContent = "";
-    }
-
-    
-
-    function logout() {
-      alert("Logged out.");
-      // Add logout functionality here
-    }
-  </script>
-
-
   <!-- FOOTER -->
 <div class="footer">
   <button class="footer-btn" onclick="location.href='dashboard.html'">
@@ -359,84 +340,48 @@
   </button>
 </div>
 
-  <!-- SCRIPT -->
-  <script src="script.js"></script>
-  <script>
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    }
+<!-- SCRIPT -->
+<script src="script.js"></script>
+<script>
+  function logout() {
+    localStorage.removeItem("token");
+    alert("Logged out.");
+    window.location.href = "/";
+  }
 
-    function calculateEarnings() {
-      const input = parseFloat(document.getElementById('deposit-input').value);
-      const output = document.getElementById('calculated-earnings');
-      if (!isNaN(input) && input > 0) {
-        const earnings = (input * 0.08).toFixed(2);
-        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
-        output.classList.add("highlight-animate");
-      }
-    }
+  function openDeposit() {
+    document.getElementById("deposit-modal").style.display = "flex";
+  }
 
-    function copyReferralLink() {
-      const code = document.getElementById("referral-code");
-      navigator.clipboard.writeText(code.value).then(() => {
-        alert("Referral link copied!");
-      });
-    }
-
-    function openDeposit() {
-      document.getElementById("deposit-modal").style.display = "flex";
-    }
-
-    function closeDeposit() {
-      document.getElementById("deposit-modal").style.display = "none";
-      document.getElementById("deposit-response").textContent = "";
-    }
-
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const depositAmountInput = document.getElementById("depositAmount");
-  const apySelect = document.getElementById("apySelect");
-  const estimatedEarningsEl = document.getElementById("estimatedEarnings");
-  const earnContent = document.getElementById("earnContent");
+  function closeDeposit() {
+    document.getElementById("deposit-modal").style.display = "none";
+    document.getElementById("deposit-response").textContent = "";
+  }
 
   function calculateEarnings() {
-    const amount = parseFloat(depositAmountInput.value) || 0;
-    const apy = parseFloat(apySelect.value) || 0;
-
-    const estimated = amount * (apy / 100);
-    estimatedEarningsEl.textContent = `Est. Earnings: $${estimated.toFixed(2)}`;
-  }
-
-  // Show earnContent when either input is focused or changed
-  depositAmountInput.addEventListener("input", function () {
-    earnContent.style.display = "block";
-    calculateEarnings();
-  });
-
-  apySelect.addEventListener("change", function () {
-    earnContent.style.display = "block";
-    calculateEarnings();
-  });
-
-  // In case someone clicks outside, keep the earnings visible if already entered
-  if (depositAmountInput.value || apySelect.value) {
-    earnContent.style.display = "block";
-    calculateEarnings();
-  }
-});
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
-});
-function updateAddressAndQR() {
-    const method = document.getElementById("deposit-method").value;
-    let address = "";
-
-    if (method === "TRC20") {
-      address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
-    } else if (method === "BEP20") {
-      address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+    const input = parseFloat(document.getElementById('deposit-input')?.value || 0);
+    const output = document.getElementById('calculated-earnings');
+    if (!isNaN(input) && input > 0 && output) {
+      const earnings = (input * 0.08).toFixed(2);
+      output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
+      output.classList.add("highlight-animate");
     }
+  }
+
+  function copyReferralLink() {
+    const code = document.getElementById("referral-code");
+    navigator.clipboard.writeText(code.value).then(() => {
+      alert("Referral link copied!");
+    });
+  }
+
+  function updateAddressAndQR() {
+    const method = document.getElementById("deposit-method").value;
+    const address = method === "TRC20" 
+      ? "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f" 
+      : method === "BEP20" 
+      ? "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01" 
+      : "";
 
     document.getElementById("wallet-address").textContent = address;
     document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
@@ -459,8 +404,7 @@ function updateAddressAndQR() {
     }
 
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-    audio.play();
+    new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
 
     document.getElementById("successModal").style.display = "flex";
 
@@ -494,11 +438,42 @@ function updateAddressAndQR() {
     alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
     closeModal('mobileMoneyModal');
 
-    // Show failure modal after 10 seconds (10000 ms)
     setTimeout(() => {
       showFailureModal();
     }, 10000);
   }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const depositAmountInput = document.getElementById("depositAmount");
+    const apySelect = document.getElementById("apySelect");
+    const estimatedEarningsEl = document.getElementById("estimatedEarnings");
+    const earnContent = document.getElementById("earnContent");
+
+    function updateEstimate() {
+      const amount = parseFloat(depositAmountInput.value) || 0;
+      const apy = parseFloat(apySelect.value) || 0;
+      const estimated = amount * (apy / 100);
+      estimatedEarningsEl.textContent = `Est. Earnings: $${estimated.toFixed(2)}`;
+    }
+
+    if (depositAmountInput && apySelect && estimatedEarningsEl && earnContent) {
+      depositAmountInput.addEventListener("input", function () {
+        earnContent.style.display = "block";
+        updateEstimate();
+      });
+
+      apySelect.addEventListener("change", function () {
+        earnContent.style.display = "block";
+        updateEstimate();
+      });
+
+      if (depositAmountInput.value || apySelect.value) {
+        earnContent.style.display = "block";
+        updateEstimate();
+      }
+    }
+  });
 </script>
+
 </body>
 </html>
