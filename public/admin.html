@@ -1,175 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deposit Approval - Admin</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f5f5;
-      color: #333;
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #007b8f;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-    th, td {
-      padding: 12px;
-      text-align: center;
-    }
-    th {
-      background-color: #007b8f;
-      color: white;
-    }
-    .approve, .reject {
-      background-color: #28a745;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .reject {
-      background-color: #dc3545;
-    }
-    .status {
-      font-weight: bold;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Deposit Approval - Moneyard Admin</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+    th { background: #00695c; color: white; }
+    button { padding: 5px 10px; margin: 2px; }
+    .approved { background: #4caf50; color: white; }
+    .rejected { background: #f44336; color: white; }
+  </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Deposit Approval</h1>
+  <h2>Deposit Approval Panel</h2>
 
-    <h3>Pending Deposits</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Amount</th>
-          <th>Method</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="pendingDeposits">
-        <tr><td colspan="6">Loading...</td></tr>
-      </tbody>
-    </table>
+  <h3>Pending Deposits</h3>
+  <table id="pendingDepositsTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>User ID</th><th>Amount</th><th>Method</th><th>Transaction ID</th><th>Status</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h3>Approved / Rejected Deposits</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Amount</th>
-          <th>Method</th>
-          <th>Transaction ID</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="processedDeposits">
-        <tr><td colspan="5">Loading...</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <h3>Approved / Rejected Deposits</h3>
+  <table id="approvedDepositsTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>User ID</th><th>Amount</th><th>Method</th><th>Transaction ID</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+document.addEventListener("DOMContentLoaded", () => {
+  loadDeposits();
 
-  <script>
-    async function fetchDeposits() {
-      const pendingTable = document.getElementById('pendingDeposits');
-      const processedTable = document.getElementById('processedDeposits');
+  function loadDeposits() {
+    fetch("/api/admin/deposits", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const pendingBody = document.querySelector("#pendingDepositsTable tbody");
+        const approvedBody = document.querySelector("#approvedDepositsTable tbody");
+        pendingBody.innerHTML = "";
+        approvedBody.innerHTML = "";
 
-      try {
-        const res = await fetch('/api/deposits/all');
-        const deposits = await res.json();
+        data.forEach(deposit => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${deposit.id}</td>
+            <td>${deposit.user_id}</td>
+            <td>${deposit.amount}</td>
+            <td>${deposit.method}</td>
+            <td>${deposit.transaction_id}</td>
+            <td>${deposit.status}</td>
+          `;
 
-        // Clear previous content
-        pendingTable.innerHTML = '';
-        processedTable.innerHTML = '';
+          if (deposit.status === "pending") {
+            const actionsCell = document.createElement("td");
+            const approveBtn = document.createElement("button");
+            approveBtn.textContent = "Approve";
+            approveBtn.className = "approved";
+            approveBtn.onclick = () => updateStatus(deposit.id, "approved");
 
-        let hasPending = false;
-        let hasProcessed = false;
+            const rejectBtn = document.createElement("button");
+            rejectBtn.textContent = "Reject";
+            rejectBtn.className = "rejected";
+            rejectBtn.onclick = () => updateStatus(deposit.id, "rejected");
 
-        deposits.forEach(deposit => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${deposit.id}</td>
-            <td>${deposit.amount}</td>
-            <td>${deposit.method}</td>
-            <td>${deposit.txid}</td>
-            <td class="status">${deposit.status}</td>
-          `;
+            actionsCell.appendChild(approveBtn);
+            actionsCell.appendChild(rejectBtn);
+            row.appendChild(actionsCell);
+            pendingBody.appendChild(row);
+          } else {
+            approvedBody.appendChild(row);
+          }
+        });
+      })
+      .catch(err => {
+        document.querySelector("#pendingDepositsTable tbody").innerHTML = "<tr><td colspan='7'>Failed to load.</td></tr>";
+        document.querySelector("#approvedDepositsTable tbody").innerHTML = "<tr><td colspan='6'>Failed to load.</td></tr>";
+      });
+  }
 
-          if (deposit.status === 'Pending') {
-            row.innerHTML += `
-              <td>
-                <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
-                <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
-              </td>`;
-            pendingTable.appendChild(row);
-            hasPending = true;
-          } else {
-            processedTable.appendChild(row);
-            hasProcessed = true;
-          }
-        });
-
-        if (!hasPending) {
-          pendingTable.innerHTML = '<tr><td colspan="6">No pending deposits.</td></tr>';
-        }
-        if (!hasProcessed) {
-          processedTable.innerHTML = '<tr><td colspan="5">No approved or rejected deposits.</td></tr>';
-        }
-
-      } catch (err) {
-        console.error(err);
-        pendingTable.innerHTML = '<tr><td colspan="6">Failed to load.</td></tr>';
-        processedTable.innerHTML = '<tr><td colspan="5">Failed to load.</td></tr>';
-      }
-    }
-
-    async function approveDeposit(id) {
-      const res = await fetch(`/api/deposits/approve/${id}`, { method: 'POST' });
-      if (res.ok) {
-        alert('Deposit approved!');
-        fetchDeposits();
-      } else {
-        alert('Approval failed.');
-      }
-    }
-
-    async function rejectDeposit(id) {
-      const res = await fetch(`/api/deposits/reject/${id}`, { method: 'POST' });
-      if (res.ok) {
-        alert('Deposit rejected!');
-        fetchDeposits();
-      } else {
-        alert('Rejection failed.');
-      }
-    }
-
-    // Initial load
-    fetchDeposits();
-  </script>
-
+  function updateStatus(depositId, newStatus) {
+    fetch(`/api/admin/deposits/${depositId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ status: newStatus })
+    })
+    .then(res => {
+      if (res.ok) {
+        loadDeposits();
+      } else {
+        alert("Failed to update status");
+      }
+    });
+  }
+});
+  <script src="admin-script.js"></script>
 </body>
 </html>
