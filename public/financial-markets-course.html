@@ -1,151 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Moneyard Course: Financial Markets</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f9ff;
-      color: #333;
-    }
-    header {
-      background-color: #0f6;
-      padding: 20px;
-      text-align: center;
-      color: white;
-    }
-    .lesson-container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .lesson-title {
-      color: #0a5;
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-    .lesson-summary {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .lesson-body {
-      line-height: 1.6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Markets Academy</title>
+    <style>
+        /* Main Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .course-thumbnail {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .play-button::after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid #2a5298;
+            margin-left: 5px;
+        }
+        
+        .course-content {
+            padding: 20px;
+        }
+        
+        .course-content h3 {
+            margin-top: 0;
+            color: #1e3c72;
+        }
+        
+        .course-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #1e3c72;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2a5298;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+            background: #1e3c72;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Quiz Section */
+        .quiz-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .quiz-options {
+            margin-top: 10px;
+        }
+        
+        .quiz-option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            background: #f0f4ff;
+            border-color: #1e3c72;
+        }
+        
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .submit-quiz {
+            margin-top: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .submit-quiz:hover {
+            background: #218838;
+        }
+    </style>
 </head>
 <body>
-
-<header>
-  <h1>Moneyard Academy: Financial Markets Course</h1>
-  <p>10-Part Beginner-Friendly Series</p>
-</header>
-
-<!-- Lesson 1 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 1: Introduction to Financial Markets</div>
-  <div class="lesson-summary">What are financial markets and why are they important?</div>
-  <div class="lesson-body">
-    Financial markets are platforms where buyers and sellers trade financial instruments like stocks, bonds, and currencies.
-    They enable efficient capital allocation, liquidity, and price discovery.
-  </div>
-</div>
-
-<!-- Lesson 2 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 2: Types of Financial Markets</div>
-  <div class="lesson-summary">Different categories and their functions.</div>
-  <div class="lesson-body">
-    <strong>Capital Markets:</strong> Long-term securities (stocks, bonds).<br>
-    <strong>Money Markets:</strong> Short-term debt instruments.<br>
-    <strong>Derivatives Markets:</strong> Futures, options based on underlying assets.<br>
-    <strong>Forex Market:</strong> Currency trading.<br>
-    <strong>Crypto Markets:</strong> Decentralized digital asset trading.
-  </div>
-</div>
-
-<!-- Lesson 3 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 3: Participants in Financial Markets</div>
-  <div class="lesson-summary">Who plays a role in financial transactions?</div>
-  <div class="lesson-body">
-    Includes retail investors, institutions, governments, brokers, dealers, and market makers. Each has a specific role in providing liquidity and stability.
-  </div>
-</div>
-
-<!-- Lesson 4 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 4: Primary vs Secondary Markets</div>
-  <div class="lesson-summary">How new and existing securities are traded.</div>
-  <div class="lesson-body">
-    <strong>Primary Market:</strong> New issues like IPOs.<br>
-    <strong>Secondary Market:</strong> Resale of existing securities on exchanges.
-  </div>
-</div>
-
-<!-- Lesson 5 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 5: Stocks, Bonds, and Derivatives</div>
-  <div class="lesson-summary">Understanding core financial instruments.</div>
-  <div class="lesson-body">
-    <strong>Stocks:</strong> Equity ownership with potential dividends.<br>
-    <strong>Bonds:</strong> Debt instruments with interest payments.<br>
-    <strong>Derivatives:</strong> Contracts based on the value of underlying assets.
-  </div>
-</div>
-
-<!-- Lesson 6 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 6: Risk and Return</div>
-  <div class="lesson-summary">The tradeoff every investor must consider.</div>
-  <div class="lesson-body">
-    Higher returns usually involve higher risk. Understand market, credit, and interest rate risk. Diversification helps manage risk.
-  </div>
-</div>
-
-<!-- Lesson 7 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 7: Market Regulation</div>
-  <div class="lesson-summary">Maintaining fairness and transparency.</div>
-  <div class="lesson-body">
-    Regulated by bodies like SEC, FCA, and IOSCO to prevent fraud, protect investors, and ensure orderly markets.
-  </div>
-</div>
-
-<!-- Lesson 8 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 8: Behavioral Finance Basics</div>
-  <div class="lesson-summary">Why investors aren't always rational.</div>
-  <div class="lesson-body">
-    Common biases include overconfidence, herd behavior, and loss aversion. Behavioral finance helps explain anomalies in markets.
-  </div>
-</div>
-
-<!-- Lesson 9 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 9: Modern Trading & Crypto</div>
-  <div class="lesson-summary">Digital disruption in financial markets.</div>
-  <div class="lesson-body">
-    Mobile trading apps, algorithmic strategies, and decentralized exchanges like Uniswap and Binance Smart Chain are changing how markets function.
-  </div>
-</div>
-
-<!-- Lesson 10 -->
-<div class="lesson-container">
-  <div class="lesson-title">Lesson 10: Real-World Case Studies</div>
-  <div class="lesson-summary">Learning from past market events.</div>
-  <div class="lesson-body">
-    <strong>Dotcom Bubble:</strong> 1999-2001 tech crash.<br>
-    <strong>2008 Crisis:</strong> Subprime mortgage collapse.<br>
-    <strong>GameStop 2021:</strong> Retail investor-driven short squeeze.
-  </div>
-</div>
-
+    <header>
+        <div class="container">
+            <h1>Financial Markets Academy</h1>
+            <p>Master trading, investing, and market analysis with interactive courses</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h2>Featured Courses</h2>
+        <div class="course-grid">
+            <!-- Course 1 -->
+            <div class="course-card">
+                <div class="course-thumbnail">
+                    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Stock Market">
+                    <div class="play-button" onclick="openModal('stock-market')"></div>
+                </div>
+                <div class="course-content">
+                    <h3>Stock Market Fundamentals</h3>
+                    <p>Learn how stocks are traded, how to analyze companies, and build a diversified portfolio.</p>
+                    <a href="#" class="btn" onclick="openModal('stock-market')">Start Learning</a>
+                </div>
+            </div>
+            
+            <!-- Course 2 -->
+            <div class="course-card">
+                <div class="course-thumbnail">
+                    <img src="https://images.unsplash.com/photo-1535320903710-d993d3d77d29?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Forex Trading">
+                    <div class="play-button" onclick="openModal('forex-trading')"></div>
+                </div>
+                <div class="course-content">
+                    <h3>Forex Trading Strategies</h3>
+                    <p>Master currency pairs, leverage, and technical analysis in the foreign exchange market.</p>
+                    <a href="#" class="btn" onclick="openModal('forex-trading')">Start Learning</a>
+                </div>
+            </div>
+            
+            <!-- Course 3 -->
+            <div class="course-card">
+                <div class="course-thumbnail">
+                    <img src="https://images.unsplash.com/photo-1642790554071-8b5d8a1ccee3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Cryptocurrency">
+                    <div class="play-button" onclick="openModal('crypto')"></div>
+                </div>
+                <div class="course-content">
+                    <h3>Crypto & Blockchain</h3>
+                    <p>Understand Bitcoin, Ethereum, DeFi, and how blockchain technology is changing finance.</p>
+                    <a href="#" class="btn" onclick="openModal('crypto')">Start Learning</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stock Market Modal -->
+    <div class="modal" id="stock-market-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Stock Market Fundamentals</h3>
+                <button class="close-modal" onclick="closeModal('stock-market-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/3UF0ymVdYLA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <div class="quiz-container">
+                    <h4>Test Your Knowledge</h4>
+                    <div class="quiz-question">
+                        <p>1. What does P/E ratio stand for?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Price-to-Earnings ratio</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Profit-to-Equity ratio</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Purchase-to-Expense ratio</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <p>2. Which of these is a type of stock order?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Reverse order</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Limit order</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Circular order</div>
+                        </div>
+                    </div>
+                    
+                    <button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Forex Trading Modal -->
+    <div class="modal" id="forex-trading-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Forex Trading Strategies</h3>
+                <button class="close-modal" onclick="closeModal('forex-trading-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/mrLk361k1Z8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <div class="quiz-container">
+                    <h4>Test Your Knowledge</h4>
+                    <div class="quiz-question">
+                        <p>1. What is the most traded currency pair?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">GBP/USD</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">EUR/USD</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">USD/JPY</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <p>2. What does a pip measure?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Trade volume</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Price movement</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Market liquidity</div>
+                        </div>
+                    </div>
+                    
+                    <button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Crypto Modal -->
+    <div class="modal" id="crypto-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crypto & Blockchain</h3>
+                <button class="close-modal" onclick="closeModal('crypto-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/bBC-nXj3Ng4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <div class="quiz-container">
+                    <h4>Test Your Knowledge</h4>
+                    <div class="quiz-question">
+                        <p>1. What is the process of verifying transactions on blockchain called?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Mining</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Trading</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Hashing</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <p>2. What does DeFi stand for?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Digital Finance</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Decentralized Finance</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Direct Finance</div>
+                        </div>
+                    </div>
+                    
+                    <button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Modal Functions
+        function openModal(course) {
+            document.getElementById(`${course}-modal`).style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+        
+        function closeModal(courseId) {
+            document.getElementById(courseId).style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+            
+            // Reset quiz answers
+            const options = document.querySelectorAll(`#${courseId} .quiz-option`);
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+        }
+        
+        // Quiz Functions
+        function checkAnswer(selectedOption, isCorrect) {
+            // Remove any existing classes
+            const options = selectedOption.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark the selected option
+            if (isCorrect) {
+                selectedOption.classList.add('correct');
+            } else {
+                selectedOption.classList.add('incorrect');
+                
+                // Find and mark the correct answer
+                options.forEach(option => {
+                    if (option.getAttribute('onclick').includes('true)')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        function submitQuiz() {
+            alert('Quiz submitted! Check your answers above.');
+        }
+        
+        // Close modal when clicking outside content
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
 </body>
 </html>
