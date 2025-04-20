@@ -262,3 +262,20 @@ function rejectDeposit(index) {
   localStorage.setItem("momoDeposits", JSON.stringify(savedDeposits));
   loadDepositsToTable(); // Refresh the table
 }
+function loadDeposits(userId) {
+  fetch(`/api/deposits/${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('depositHistory');
+      container.innerHTML = '';
+      data.forEach(dep => {
+        const row = document.createElement('div');
+        row.textContent = `Amount: $${dep.amount} - Method: ${dep.method} - Status: ${dep.status}`;
+        container.appendChild(row);
+      });
+    })
+    .catch(err => {
+      console.error('Failed to load deposits:', err);
+      alert('Failed to load deposits.');
+    });
+}
