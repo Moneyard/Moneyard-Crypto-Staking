@@ -216,6 +216,13 @@
     </div>
   </div>
 </div>
+<div id="certificateMessage" style="display:none; text-align:center; padding:30px; background:#d4edda; color:#155724; border:1px solid #c3e6cb; border-radius:10px; margin-top:20px;">
+  <h2>Congratulations!</h2>
+  <p>You've successfully completed the *Beginner Financial Markets* course.</p>
+  <p><strong>Your Certificate of Completion is now available.</strong></p>
+  <a href="certificate.html" class="btn">View Certificate</a>
+<a href="intermediate.html" class="btn" style="margin-top:10px;">Start Intermediate Course</a>
+</div>
 
 <script>
   function openModal(id) {
@@ -248,7 +255,36 @@
       result.style.color = "red";
     }
   }
-</script>
+  let correctAnswers = new Set();
 
+  function checkAnswer(quizId, correctOption, resultId) {
+    const options = document.getElementsByName(quizId);
+    let selected = null;
+    for (let opt of options) {
+      if (opt.checked) {
+        selected = opt.value;
+        break;
+      }
+    }
+
+    if (!selected) {
+      document.getElementById(resultId).innerText = "Please select an answer.";
+      return;
+    }
+
+    if (selected === correctOption) {
+      correctAnswers.add(quizId);
+      document.getElementById(resultId).innerText = "Correct!";
+      document.getElementById(resultId).style.color = "green";
+    } else {
+      document.getElementById(resultId).innerText = "Incorrect. Try again.";
+      document.getElementById(resultId).style.color = "red";
+    }
+
+    if (correctAnswers.size === 6) {
+      document.getElementById("certificateMessage").style.display = "block";
+    }
+  }
+</script>
 </body>
 </html>
