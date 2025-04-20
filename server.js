@@ -217,7 +217,53 @@ app.post('/api/unstake', (req, res) => {
     res.json({ success: true, message: 'Unstaked successfully' });
   });
 });
+// ---------- ADMIN ROUTES ----------
 
+// View all users
+app.get('/api/admin/users', (req, res) => {
+  db.all("SELECT id, email, balance FROM users", (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch users' });
+    res.json(rows);
+  });
+});
+
+// View all deposits
+app.get('/api/admin/deposits', (req, res) => {
+  db.all("SELECT * FROM transactions WHERE type = 'deposit' ORDER BY date DESC", (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch deposits' });
+    res.json(rows);
+  });
+});
+
+// View all withdrawals
+app.get('/api/admin/withdrawals', (req, res) => {
+  db.all("SELECT * FROM withdrawals ORDER BY date DESC", (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch withdrawals' });
+    res.json(rows);
+  });
+});
+
+// Approve a withdrawal
+app.post('/api/admin/approve-withdrawal', (req, res) => {
+  const { withdrawalId } = req.body;
+  if (!withdrawalId) return res.status(400).json({ error: 'Missing withdrawalId' });
+
+  db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to approve withdrawal' });
+    res.json({ success: true, message: 'Withdrawal approved' });
+  });
+});
+
+// Reject a withdrawal
+app.post('/api/admin/reject-withdrawal', (req, res) => {
+  const { withdrawalId } = req.body;
+  if (!withdrawalId) return res.status(400).json({ error: 'Missing withdrawalId' });
+
+  db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to reject withdrawal' });
+    res.json({ success: true, message: 'Withdrawal rejected' });
+  });
+});
 // Save Lesson Progress
 app.post('/api/lesson-progress', (req, res) => {
   const { userId, lessonId, progress, completed } = req.body;
