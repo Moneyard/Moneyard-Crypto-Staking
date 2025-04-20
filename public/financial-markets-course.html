@@ -101,8 +101,17 @@
 </div>
 
 <!-- Modals -->
-<div id="modal1" class="modal">
-  <div class="modal-content">
+<!-- Beginner Course Video Embed -->
+<div class="course-card">
+  <h2>Beginner Financial Markets</h2>
+  <div class="status" id="status-beginner">Status: <span class="not-started">Not Started</span></div>
+
+  <!-- Video Embed -->
+  <iframe width="100%" height="400" src="https://www.youtube.com/embed/SSo_EIwHSd4" allowfullscreen></iframe>
+
+  <button class="btn" onclick="startCourse('beginner')">Continue Course</button>
+  <a id="cert-beginner" class="certificate-link" style="display:none;" href="certificate-beginner.html">View Certificate</a>
+</div>
     <span class="close" onclick="closeModal('modal1')">&times;</span>
     <h3>Lesson 1: Introduction to Financial Markets</h3>
     <p>This lesson covers how markets work, types of assets, and the role of institutions.</p>
@@ -157,72 +166,8 @@
     </div>
   </div>
 </div>
-<!-- Lesson 4 -->
-<div id="modal4" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('modal4')">&times;</span>
-    <h3>Lesson 4: Central Banks and Monetary Policy</h3>
-    <p>Explore how interest rates, inflation targets, and central bank actions impact the markets.</p>
-    <iframe src="https://www.youtube.com/embed/iFDe5kUUyT0" allowfullscreen></iframe>
 
-    <div class="quiz">
-      <h4>Quiz:</h4>
-      <p>What happens when a central bank raises interest rates?</p>
-      <label><input type="radio" name="q4" value="a"> Inflation usually increases</label>
-      <label><input type="radio" name="q4" value="b"> Borrowing becomes more expensive</label>
-      <label><input type="radio" name="q4" value="c"> The stock market always rises</label>
-      <button class="btn" onclick="checkAnswer('q4', 'b', 'result4')">Submit Answer</button>
-      <div class="result" id="result4"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Lesson 5 -->
-<div id="modal5" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('modal5')">&times;</span>
-    <h3>Lesson 5: Technical vs Fundamental Analysis</h3>
-    <p>Learn how traders analyze market data, charts, news, and company performance to make decisions.</p>
-    <iframe src="https://www.youtube.com/embed/YdQVDMGqPXY" allowfullscreen></iframe>
-
-    <div class="quiz">
-      <h4>Quiz:</h4>
-      <p>What does technical analysis mainly focus on?</p>
-      <label><input type="radio" name="q5" value="a"> Company financials</label>
-      <label><input type="radio" name="q5" value="b"> Market psychology and price trends</label>
-      <label><input type="radio" name="q5" value="c"> Government policies</label>
-      <button class="btn" onclick="checkAnswer('q5', 'b', 'result5')">Submit Answer</button>
-      <div class="result" id="result5"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Lesson 6 -->
-<div id="modal6" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('modal6')">&times;</span>
-    <h3>Lesson 6: Cryptocurrency and Digital Assets</h3>
-    <p>An introduction to Bitcoin, Ethereum, and the evolving landscape of digital finance.</p>
-    <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
-
-    <div class="quiz">
-      <h4>Quiz:</h4>
-      <p>Which of the following is true about cryptocurrency?</p>
-      <label><input type="radio" name="q6" value="a"> It is always backed by gold</label>
-      <label><input type="radio" name="q6" value="b"> It operates on decentralized blockchain networks</label>
-      <label><input type="radio" name="q6" value="c"> It is issued by central banks</label>
-      <button class="btn" onclick="checkAnswer('q6', 'b', 'result6')">Submit Answer</button>
-      <div class="result" id="result6"></div>
-    </div>
-  </div>
-</div>
-<div id="certificateMessage" style="display:none; text-align:center; padding:30px; background:#d4edda; color:#155724; border:1px solid #c3e6cb; border-radius:10px; margin-top:20px;">
-  <h2>Congratulations!</h2>
-  <p>You've successfully completed the *Beginner Financial Markets* course.</p>
-  <p><strong>Your Certificate of Completion is now available.</strong></p>
-  <a href="certificate.html" class="btn">View Certificate</a>
-<a href="intermediate.html" class="btn" style="margin-top:10px;">Start Intermediate Course</a>
-</div>
+<!-- Add other modals as needed -->
 
 <script>
   function openModal(id) {
@@ -253,36 +198,6 @@
     } else {
       result.innerText = "Incorrect. Try again!";
       result.style.color = "red";
-    }
-  }
-  let correctAnswers = new Set();
-
-  function checkAnswer(quizId, correctOption, resultId) {
-    const options = document.getElementsByName(quizId);
-    let selected = null;
-    for (let opt of options) {
-      if (opt.checked) {
-        selected = opt.value;
-        break;
-      }
-    }
-
-    if (!selected) {
-      document.getElementById(resultId).innerText = "Please select an answer.";
-      return;
-    }
-
-    if (selected === correctOption) {
-      correctAnswers.add(quizId);
-      document.getElementById(resultId).innerText = "Correct!";
-      document.getElementById(resultId).style.color = "green";
-    } else {
-      document.getElementById(resultId).innerText = "Incorrect. Try again.";
-      document.getElementById(resultId).style.color = "red";
-    }
-
-    if (correctAnswers.size === 6) {
-      document.getElementById("certificateMessage").style.display = "block";
     }
   }
 </script>
