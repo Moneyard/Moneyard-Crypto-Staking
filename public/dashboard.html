@@ -214,56 +214,31 @@
     </div>
   </div>
 
-  <!-- DEPOSIT MODAL -->
-<div id="deposit-modal" class="modal" style="display: none; justify-content: center; align-items: center;">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('deposit-modal')" style="position: absolute; top: 10px; right: 15px; font-size: 18px; cursor: pointer;">&times;</span>
-    <h3>Deposit Funds</h3>
-<span class="close-btn" onclick="closeModal('deposit-modal')" style="position:absolute;top:10px;right:15px;font-size:20px;cursor:pointer;">&times;</span>
-    <label>Amount (USDT):</label>
-    <input type="number" id="deposit-amount" placeholder="Enter amount" />
+  <!-- Deposit Modal -->
+<div id="depositModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:400px; box-shadow: 0 0 15px rgba(0,0,0,0.2); position:relative;">
+    <h3 style="margin-top:0;">Deposit Funds</h3>
+    <form id="depositForm">
+      <label for="amount">Amount:</label>
+      <input type="number" id="depositAmount" required style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:4px;"><br>
+      
+      <label for="network">Network:</label>
+      <select id="depositNetwork" required style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:4px;">
+        <option value="TRC20">TRC20</option>
+        <option value="BEP20">BEP20</option>
+        <option value="ZM">ZM</option>
+        <option value="Airtel">Airtel</option>
+        <option value="MTN">MTN</option>
+      </select><br>
 
-    <label>Payment Method:</label>
-    <select id="deposit-method" onchange="updateAddressAndQR()">
-      <option value="TRC20">USDT - TRC20 (Tron)</option>
-      <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
-    </select>
+      <label for="txid">Transaction ID:</label>
+      <input type="text" id="depositTxId" required style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:4px;"><br>
 
-    <div id="address-section">
-      <p><strong>Deposit Address:</strong></p>
-      <p id="wallet-address">Please select a network</p>
-      <button onclick="copyAddress()">Copy Address</button>
-      <div><img id="qr-image" src="" alt="QR Code" style="max-width: 150px;" /></div>
-    </div>
-
-    <label>Transaction ID (optional):</label>
-    <input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-
-    <button onclick="enrollNow()">Deposit Crypto to Enroll Now for $19 ≈ 19 USDT</button>
-
-    <button class="mobile-money-btn" onclick="openModal('mobileMoneyModal')">Or Pay with Mobile Money</button>
+      <button type="submit" style="width:100%; background-color:green; color:white; border:none; padding:10px; border-radius:4px;">Submit Deposit</button>
+    </form>
+    <button onclick="closeDepositModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:18px;">×</button>
   </div>
-
-  <!-- Mobile Money Modal -->
-  <div id="mobileMoneyModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('mobileMoneyModal')">&times;</span>
-      <h2>Pay with Mobile Money</h2>
-      <label for="network">Select Network:</label>
-      <select id="network">
-        <option value="mtn">MTN</option>
-        <option value="airtel">Airtel</option>
-      </select>
-
-      <label for="mobileAmount">Amount (USD):</label>
-      <input type="number" id="mobileAmount" placeholder="Enter amount" required>
-
-      <label for="phoneNumber">Phone Number:</label>
-      <input type="tel" id="phoneNumber" placeholder="e.g. 2607XXXXXXXX" required>
-
-      <button onclick="sendMobileMoneyPrompt()">Send Payment Prompt</button>
-    </div>
-  </div>
+</div>
 
   <!-- Success Modal -->
   <div id="successModal" class="modal">
@@ -344,22 +319,12 @@
   </button>
 </div>
 
-<!-- SCRIPT -->
 <script src="script.js"></script>
 <script>
   function logout() {
     localStorage.removeItem("token");
     alert("Logged out.");
     window.location.href = "/";
-  }
-
-  function openDeposit() {
-    document.getElementById("deposit-modal").style.display = "flex";
-  }
-
-  function closeDeposit() {
-    document.getElementById("deposit-modal").style.display = "none";
-    document.getElementById("deposit-response").textContent = "";
   }
 
   function calculateEarnings() {
@@ -454,8 +419,8 @@
     const earnContent = document.getElementById("earnContent");
 
     function updateEstimate() {
-      const amount = parseFloat(depositAmountInput.value) || 0;
-      const apy = parseFloat(apySelect.value) || 0;
+      const amount = parseFloat(depositAmountInput?.value) || 0;
+      const apy = parseFloat(apySelect?.value) || 0;
       const estimated = amount * (apy / 100);
       estimatedEarningsEl.textContent = `Est. Earnings: $${estimated.toFixed(2)}`;
     }
@@ -477,23 +442,49 @@
       }
     }
   });
-  // Show deposit modal
-  function openDeposit() {
-    document.getElementById('deposit-modal').style.display = 'flex';
-  }
 
-  // Close any modal by ID
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
+  // Deposit Modal Logic
+  const depositModal = document.getElementById('depositModal');
 
-  // Close deposit modal when clicking outside modal-content
-  window.addEventListener('click', function(event) {
-    const depositModal = document.getElementById('deposit-modal');
-    if (event.target === depositModal) {
-      depositModal.style.display = 'none';
-    }
-  });
+  function openDepositModal() {
+    depositModal.style.display = 'flex';
+  }
+
+  function closeDepositModal() {
+    depositModal.style.display = 'none';
+  }
+
+  document.getElementById('openDepositModalBtn')?.addEventListener('click', openDepositModal);
+
+  document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const amount = document.getElementById('depositAmount').value;
+    const network = document.getElementById('depositNetwork').value;
+    const txid = document.getElementById('depositTxId').value;
+
+    try {
+      const res = await fetch('/api/deposit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ amount, network, txid })
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (res.ok) {
+        closeDepositModal();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to process deposit.");
+    }
+  });
+
+  // Close modal if click outside
+  window.addEventListener('click', function (event) {
+    if (event.target === depositModal) {
+      closeDepositModal();
+    }
+  });
 </script>
 
 </body>
