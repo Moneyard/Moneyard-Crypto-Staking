@@ -17,7 +17,6 @@ app.use(bodyParser.json());
 
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) fs.closeSync(fs.openSync(dbPath, 'w'));
-
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) return console.error('SQLite connection failed:', err.message);
   console.log('Connected to SQLite at', dbPath);
