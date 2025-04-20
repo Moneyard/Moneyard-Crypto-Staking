@@ -38,78 +38,7 @@
     </thead>
     <tbody></tbody>
   </table>
-document.addEventListener("DOMContentLoaded", () => {
-  loadDeposits();
 
-  function loadDeposits() {
-    fetch("/api/admin/deposits", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        const pendingBody = document.querySelector("#pendingDepositsTable tbody");
-        const approvedBody = document.querySelector("#approvedDepositsTable tbody");
-        pendingBody.innerHTML = "";
-        approvedBody.innerHTML = "";
-
-        data.forEach(deposit => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${deposit.id}</td>
-            <td>${deposit.user_id}</td>
-            <td>${deposit.amount}</td>
-            <td>${deposit.method}</td>
-            <td>${deposit.transaction_id}</td>
-            <td>${deposit.status}</td>
-          `;
-
-          if (deposit.status === "pending") {
-            const actionsCell = document.createElement("td");
-            const approveBtn = document.createElement("button");
-            approveBtn.textContent = "Approve";
-            approveBtn.className = "approved";
-            approveBtn.onclick = () => updateStatus(deposit.id, "approved");
-
-            const rejectBtn = document.createElement("button");
-            rejectBtn.textContent = "Reject";
-            rejectBtn.className = "rejected";
-            rejectBtn.onclick = () => updateStatus(deposit.id, "rejected");
-
-            actionsCell.appendChild(approveBtn);
-            actionsCell.appendChild(rejectBtn);
-            row.appendChild(actionsCell);
-            pendingBody.appendChild(row);
-          } else {
-            approvedBody.appendChild(row);
-          }
-        });
-      })
-      .catch(err => {
-        document.querySelector("#pendingDepositsTable tbody").innerHTML = "<tr><td colspan='7'>Failed to load.</td></tr>";
-        document.querySelector("#approvedDepositsTable tbody").innerHTML = "<tr><td colspan='6'>Failed to load.</td></tr>";
-      });
-  }
-
-  function updateStatus(depositId, newStatus) {
-    fetch(`/api/admin/deposits/${depositId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ status: newStatus })
-    })
-    .then(res => {
-      if (res.ok) {
-        loadDeposits();
-      } else {
-        alert("Failed to update status");
-      }
-    });
-  }
-});
   <script src="admin-script.js"></script>
 </body>
 </html>
