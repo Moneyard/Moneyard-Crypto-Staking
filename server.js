@@ -246,18 +246,33 @@ app.get('/admin/deposits/processed', (req, res) => {
   });
 });
 
-app.post('/admin/deposits/approve/:id', (req, res) => {
-  const depositId = req.params.id;
+// ====== ADMIN WITHDRAWAL APPROVAL ======
+app.post('/admin/withdrawals/approve/:id', (req, res) => {
+  const withdrawalId = req.params.id;
 
-  db.get("SELECT * FROM deposits WHERE id = ?", [depositId], (err, deposit) => {
-    if (err || !deposit) return res.status(404).json({ error: 'Deposit not found' });
+  db.get("SELECT * FROM withdrawals WHERE id = ?", [withdrawalId], (err, withdrawal) => {
+    if (err || !withdrawal) return res.status(404).json({ error: 'Withdrawal not found' });
 
-    db.run("UPDATE deposits SET status = 'approved' WHERE id = ?", [depositId], function (err) {
+    db.run("UPDATE withdrawals SET status = 'approved' WHERE id = ?", [withdrawalId], function (err) {
       if (err) return res.status(500).json({ error: 'Approval failed' });
+      res.json({ success: true, message: 'Withdrawal approved' });
+    });
+  });
+});
 
-      db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [deposit.amount, deposit.user_id], (err) => {
-        if (err) return res.status(500).json({ error: 'Balance update failed' });
-        res.json({ success: true, message: 'Deposit approved and balance updated' });
+app.post('/admin/withdrawals/reject/:id', (req, res) => {
+  const withdrawalId = req.params.id;
+
+  db.get("SELECT * FROM withdrawals WHERE id = ?", [withdrawalId], (err, withdrawal) => {
+    if (err || !withdrawal) return res.status(404).json({ error: 'Withdrawal not found' });
+
+    db.run("UPDATE withdrawals SET status = 'rejected' WHERE id = ?", [withdrawalId], function (err) {
+      if (err) return res.status(500).json({ error: 'Rejection failed' });
+
+      // Refund balance
+      db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [withdrawal.amount, withdrawal.user_id], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to refund user balance' });
+        res.json({ success: true, message: 'Withdrawal rejected and balance refunded' });
       });
     });
   });
