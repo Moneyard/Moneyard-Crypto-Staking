@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Markets Course</title>
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #28a745;
+            --light: #f5f7fa;
+            --dark: #333;
+            --danger: #dc3545;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 5px;
+        }
+        
+        .tab-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid var(--primary);
+            cursor: pointer;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .lesson {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .diagram {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px dashed #aaa;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .quiz {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 5px;
+        }
+        
+        .quiz-option {
+            display: block;
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: var(--accent);
+        }
+        
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: var(--danger);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📈 Financial Markets Text Academy</h1>
+            <p>Master markets through detailed text lessons and ASCII visualizations</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('beginner')">Beginner</button>
+            <button class="tab-btn" onclick="openTab('intermediate')">Intermediate</button>
+            <button class="tab-btn" onclick="openTab('advanced')">Advanced</button>
+        </div>
+        
+        <!-- BEGINNER LEVEL -->
+        <div id="beginner" class="tab-content active">
+            <!-- Lesson 1 -->
+            <div class="lesson">
+                <span class="badge">BEGINNER</span>
+                <h2>1. Market Structure Basics</h2>
+                
+                <h3>Primary vs Secondary Markets</h3>
+                <p><strong>Primary Market:</strong> Where new securities are issued (IPOs, bond offerings)</p>
+                <p><strong>Secondary Market:</strong> Where existing securities are traded (NYSE, Nasdaq)</p>
+                
+                <div class="diagram">
+                    PRIMARY MARKET
+                    │
+                    ├── Companies → Underwriters → Investors
+                    │
+                    SECONDARY MARKET
+                    │
+                    ├── Investors ↔ Broker ↔ Exchange ↔ Broker ↔ Investors
+                </div>
+                
+                <h3>Key Participants</h3>
+                <ul>
+                    <li><strong>Retail Investors:</strong> Individuals trading through brokers</li>
+                    <li><strong>Institutional Investors:</strong> Pension funds, mutual funds</li>
+                    <li><strong>Market Makers:</strong> Provide liquidity by quoting buy/sell prices</li>
+                </ul>
+                
+                <div class="quiz">
+                    <h3>Quick Quiz</h3>
+                    <p>Where do IPOs occur?</p>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Primary Market</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Secondary Market</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">OTC Market</div>
+                </div>
+            </div>
+            
+            <!-- Lesson 2 -->
+            <div class="lesson">
+                <span class="badge">BEGINNER</span>
+                <h2>2. Understanding Stock Quotes</h2>
+                
+                <p>A typical stock quote contains:</p>
+                <div class="diagram">
+                    AAPL   | 172.50 ▲ 1.20 (0.70%) | Volume: 25.3M
+                    Bid: 172.45 x 500 | Ask: 172.55 x 1200
+                </div>
+                
+                <h3>Key Elements:</h3>
+                <ul>
+                    <li><strong>Bid:</strong> Highest price buyers will pay (172.45)</li>
+                    <li><strong>Ask:</strong> Lowest price sellers will accept (172.55)</li>
+                    <li><strong>Spread:</strong> Difference between bid-ask (0.10 in this case)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- INTERMEDIATE LEVEL -->
+        <div id="intermediate" class="tab-content">
+            <!-- Lesson 1 -->
+            <div class="lesson">
+                <span class="badge">INTERMEDIATE</span>
+                <h2>1. Technical Analysis Patterns</h2>
+                
+                <h3>Head and Shoulders</h3>
+                <div class="diagram">
+                         /\
+                        /  \      /\
+                       /    \    /  \
+                  ____/      \__/    \____
+                (Left shoulder) (Right shoulder)
+                </div>
+                <p><strong>Interpretation:</strong> Reversal pattern signaling a trend change from bullish to bearish</p>
+                
+                <h3>Support and Resistance</h3>
+                <div class="diagram">
+                    Resistance ────────────────∙∙∙∙∙
+                                   /\
+                                  /  \
+                                 /    \
+                    Support ─────∙∙∙∙∙∙∙∙∙∙∙∙∙∙
+                </div>
+            </div>
+            
+            <!-- Lesson 2 -->
+            <div class="lesson">
+                <span class="badge">INTERMEDIATE</span>
+                <h2>2. Options Basics</h2>
+                
+                <div class="diagram">
+                    CALL OPTION (Right to BUY)
+                    │
+                    Profit │     /
+                         │    /
+                         │   /
+                         │__/ Strike
+                         │
+                    PUT OPTION (Right to SELL)
+                         │
+                         │   __
+                         │  /
+                         │ /
+                         │/  Strike
+                </div>
+                
+                <p><strong>Key Greeks:</strong></p>
+                <ul>
+                    <li><strong>Delta (Δ):</strong> Price change relative to underlying</li>
+                    <li><strong>Gamma (Γ):</strong> Rate of delta change</li>
+                    <li><strong>Theta (Θ):</strong> Time decay effect</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- ADVANCED LEVEL -->
+        <div id="advanced" class="tab-content">
+            <!-- Lesson 1 -->
+            <div class="lesson">
+                <span class="badge">ADVANCED</span>
+                <h2>1. Black-Scholes Model</h2>
+                
+                <p>The formula for European call option pricing:</p>
+                <div class="diagram">
+                    C = S₀N(d₁) - Ke^(-rt)N(d₂)
+                    
+                    Where:
+                    d₁ = [ln(S₀/K) + (r + σ²/2)t] / (σ√t)
+                    d₂ = d₁ - σ√t
+                </div>
+                
+                <h3>Variables:</h3>
+                <ul>
+                    <li><strong>S₀:</strong> Current stock price</li>
+                    <li><strong>K:</strong> Strike price</li>
+                    <li><strong>σ:</strong> Volatility (standard deviation)</li>
+                    <li><strong>N():</strong> Cumulative normal distribution</li>
+                </ul>
+            </div>
+            
+            <!-- Lesson 2 -->
+            <div class="lesson">
+                <span class="badge">ADVANCED</span>
+                <h2>2. CDO Waterfall Structure</h2>
+                
+                <div class="diagram">
+                    CASH FLOW WATERFALL
+                    │
+                    ├── Senior Tranche (AAA) ← First paid
+                    │
+                    ├── Mezzanine Tranche (BBB)
+                    │
+                    └── Equity Tranche (Unrated) ← Last paid
+                    
+                    Losses flow upward from Equity
+                </div>
+                
+                <p><strong>Key Risk:</strong> Correlation between underlying assets dramatically impacts junior tranches</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Functions
+        function openTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Quiz Functions
+        function checkAnswer(selectedOption, isCorrect) {
+            // Remove any existing classes from siblings
+            const options = selectedOption.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark the selected option
+            selectedOption.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            // If wrong, mark correct answer
+            if (!isCorrect) {
+                options.forEach(option => {
+                    if (option.getAttribute('onclick').includes('true)')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        // Initialize first tab as active
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('beginner').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
