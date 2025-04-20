@@ -298,24 +298,6 @@
 <!-- Spacer to add gap above script -->
 <div style="height: 60px;"></div>
 
-<!-- FOOTER -->
-<div class="footer">
-  <button class="footer-btn" onclick="location.href='dashboard.html'">
-    <i class="fas fa-home"></i><br />Home
-  </button>
-  <button class="footer-btn" onclick="location.href='stake.html'">
-    <i class="fas fa-coins"></i><br />Stake
-  </button>
-  <button class="footer-btn" onclick="location.href='market.html'">
-    <i class="fas fa-chart-line"></i><br /><strong>Market</strong>
-  </button>
-  <button class="footer-btn" onclick="location.href='referral.html'">
-    <i class="fas fa-users"></i><br />Referral
-  </button>
-  <button class="footer-btn" onclick="location.href='assets.html'">
-    <i class="fas fa-wallet"></i><br />Assets
-  </button>
-</div>
 <script src="script.js"></script>
 <script>
   function logout() {
@@ -343,12 +325,12 @@
 
   function updateAddressAndQR() {
     const method = document.getElementById("deposit-method").value;
-    let address = "";
-    if (method === "TRC20") {
-      address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
-    } else if (method === "BEP20") {
-      address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
-    }
+    const address = method === "TRC20" 
+      ? "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f" 
+      : method === "BEP20" 
+      ? "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01" 
+      : "";
+
     document.getElementById("wallet-address").textContent = address;
     document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
   }
@@ -363,14 +345,17 @@
   function enrollNow() {
     const amount = document.getElementById("deposit-amount").value;
     const method = document.getElementById("deposit-method").value;
+
     if (!amount || !method) {
       alert("Please fill in all required fields before enrolling.");
       return;
     }
+
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-    audio.play();
+    new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
+
     document.getElementById("successModal").style.display = "flex";
+
     setTimeout(() => {
       window.location.href = "deposit-approval.html";
     }, 3000);
@@ -378,6 +363,10 @@
 
   function openModal(modalId) {
     document.getElementById(modalId).style.display = "flex";
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
   }
 
   function showFailureModal() {
@@ -388,17 +377,20 @@
     const amount = document.getElementById('mobileAmount').value;
     const phone = document.getElementById('phoneNumber').value;
     const network = document.getElementById('network').value;
+
     if (!amount || !phone) {
       alert('Please fill out all fields');
       return;
     }
+
     alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+    closeModal('mobileMoneyModal');
+
     setTimeout(() => {
       showFailureModal();
     }, 10000);
   }
 
-  // Calculate estimated earnings when input fields change
   document.addEventListener("DOMContentLoaded", function () {
     const depositAmountInput = document.getElementById("depositAmount");
     const apySelect = document.getElementById("apySelect");
@@ -473,7 +465,6 @@
     }
   });
 
-  // Open Deposit Modal
   function openDeposit() {
     const modal = document.getElementById('depositModal');
     if (modal) {
@@ -481,7 +472,6 @@
     }
   }
 
-  // Close Deposit Modal
   function closeDepositModal() {
     const modal = document.getElementById('depositModal');
     if (modal) {
@@ -489,7 +479,7 @@
     }
   }
 
-  // Optional: Close modal when clicking outside the box
+  // Optional: close modal when clicking outside the box
   window.addEventListener('click', function(event) {
     const modal = document.getElementById('depositModal');
     if (event.target === modal) {
@@ -497,5 +487,6 @@
     }
   });
 </script>
+
 </body>
 </html>
