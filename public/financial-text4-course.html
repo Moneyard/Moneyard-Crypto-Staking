@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Financial Markets Course</title>
+    <style>
+        :root {
+            --beginner: #4a89dc;
+            --intermediate: #3bafda;
+            --advanced: #967adc;
+            --correct: #48cfad;
+            --incorrect: #ed5565;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            margin: 30px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid;
+        }
+        .beginner-btn.active { border-color: var(--beginner); }
+        .intermediate-btn.active { border-color: var(--intermediate); }
+        .advanced-btn.active { border-color: var(--advanced); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .lesson {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+        .beginner { border-color: var(--beginner); }
+        .intermediate { border-color: var(--intermediate); }
+        .advanced { border-color: var(--advanced); }
+        .diagram {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .quiz {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover {
+            background: #eef;
+        }
+        .quiz-option.correct {
+            background: #e6ffed;
+            border-color: var(--correct);
+        }
+        .quiz-option.incorrect {
+            background: #ffebee;
+            border-color: var(--incorrect);
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .beginner-badge { background: var(--beginner); color: white; }
+        .intermediate-badge { background: var(--intermediate); color: white; }
+        .advanced-badge { background: var(--advanced); color: white; }
+        h2 { margin-top: 0; }
+        h3 { color: #444; }
+        .lesson-counter {
+            float: right;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        .hidden { display: none; }
+        .show-more {
+            background: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Complete Financial Markets Course</h1>
+    <p>32 structured lessons with interactive quizzes</p>
+
+    <div class="tabs">
+        <button class="tab-btn beginner-btn active" onclick="openTab('beginner')">Beginner (12)</button>
+        <button class="tab-btn intermediate-btn" onclick="openTab('intermediate')">Intermediate (12)</button>
+        <button class="tab-btn advanced-btn" onclick="openTab('advanced')">Advanced (8)</button>
+    </div>
+
+    <!-- BEGINNER LEVEL (12 COMPLETE LESSONS) -->
+    <div id="beginner" class="tab-content active">
+        <!-- Lesson 1 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 1/12</span>
+            <h2>Market Participants</h2>
+            <div class="diagram">
+                MARKET ECOSYSTEM
+                │
+                ├── Retail Investors
+                ├── Institutional Investors
+                │   ├── Mutual/Pension Funds
+                │   └── Hedge Funds
+                └── Market Makers
+            </div>
+            <p><strong>Key Insight:</strong> Institutional traders execute ~75% of daily volume.</p>
+            <div class="quiz">
+                <p>Who provides liquidity by continuously quoting prices?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Retail Traders</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Market Makers</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Regulators</div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 2/12</span>
+            <h2>Order Types</h2>
+            <div class="diagram">
+                ORDER HIERARCHY
+                │
+                ├── Market (Immediate execution)
+                ├── Limit (Price threshold)
+                └── Stop (Triggered orders)
+            </div>
+            <p><strong>Example:</strong> Buy limit orders only execute at/below target price.</p>
+            <div class="quiz">
+                <p>Which order guarantees execution but not price?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Market Order</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Limit Order</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Stop Order</div>
+            </div>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 3/12</span>
+            <h2>Stocks vs Bonds</h2>
+            <div class="diagram">
+                EQUITY VS DEBT
+                │
+                ├── Stocks: Ownership, dividends
+                └── Bonds: Loans, fixed coupons
+            </div>
+            <p><strong>Key Difference:</strong> Bonds have maturity dates, stocks don't.</p>
+            <div class="quiz">
+                <p>Which security has priority in bankruptcy?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Common Stock</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Corporate Bonds</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Preferred Stock</div>
+            </div>
+        </div>
+
+        <!-- Lesson 4 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 4/12</span>
+            <h2>Financial Statements</h2>
+            <div class="diagram">
+                STATEMENT TRIO
+                │
+                ├── Income Statement (Revenue/Profit)
+                ├── Balance Sheet (Assets/Liabilities)
+                └── Cash Flow (Operational liquidity)
+            </div>
+            <p><strong>Golden Rule:</strong> Revenue ≠ Cash (accrual accounting).</p>
+            <div class="quiz">
+                <p>Which statement shows inventory levels?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Income Statement</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Balance Sheet</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Cash Flow</div>
+            </div>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 5/12</span>
+            <h2>ETFs vs Mutual Funds</h2>
+            <div class="diagram">
+                KEY DIFFERENCES
+                │
+                ├── ETFs: Trade like stocks
+                │   ├── Lower fees
+                │   └── Intraday pricing
+                │
+                └── Mutual Funds: EOD pricing
+                    ├── Active management
+                    └── Higher minimums
+            </div>
+            <div class="quiz">
+                <p>What's the main advantage of ETFs?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Lower expense ratios</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Guaranteed returns</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">No volatility</div>
+            </div>
+        </div>
+
+        <!-- Lesson 6 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 6/12</span>
+            <h2>Risk-Return Tradeoff</h2>
+            <div class="diagram">
+                RISK SPECTRUM
+                │
+                ├── Cash: 0-2% return
+                ├── Bonds: 3-5%
+                ├── Stocks: 7-10%
+                └── Crypto: 20%+ (Highly volatile)
+            </div>
+            <p><strong>Rule:</strong> Higher potential returns require accepting more risk.</p>
+            <div class="quiz">
+                <p>Which asset class has historically highest returns?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Bonds</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Stocks</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Savings Accounts</div>
+            </div>
+        </div>
+
+        <!-- Lesson 7 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 7/12</span>
+            <h2>Dollar-Cost Averaging</h2>
+            <div class="diagram">
+                DCA EXAMPLE
+                Month 1: $100 @ $10/share → 10 shares
+                Month 2: $100 @ $8/share → 12.5 shares
+                Month 3: $100 @ $12/share → 8.33 shares
+                Avg Price = $9.68/share
+            </div>
+            <p><strong>Benefit:</strong> Reduces impact of market timing.</p>
+            <div class="quiz">
+                <p>DCA works best in what type of market?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Only bull markets</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Volatile markets</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Only bear markets</div>
+            </div>
+        </div>
+
+        <!-- Lesson 8 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 8/12</span>
+            <h2>Dividend Mechanics</h2>
+            <div class="diagram">
+                DIVIDEND TIMELINE
+                Declaration → Ex-Date → Record → Payment
+                │
+                Key: Price drops by dividend amount on Ex-Date
+            </div>
+            <div class="quiz">
+                <p>When must you own stock to receive dividend?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Payment Date</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Before Ex-Date</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Record Date</div>
+            </div>
+        </div>
+
+        <!-- Lesson 9 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 9/12</span>
+            <h2>Brokerage Accounts</h2>
+            <div class="diagram">
+                ACCOUNT TYPES
+                │
+                ├── Cash: No leverage
+                └── Margin: Borrowing power
+                    ├── 2:1 leverage typical
+                    └── Interest charges apply
+            </div>
+            <div class="quiz">
+                <p>What's the main risk of margin accounts?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Margin calls</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Higher taxes</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Slower execution</div>
+            </div>
+        </div>
+
+        <!-- Lesson 10 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 10/12</span>
+            <h2>Tax Implications</h2>
+            <div class="diagram">
+                CAPITAL GAINS
+                │
+                ├── Short-term (<1yr): Ordinary income tax
+                └── Long-term (>1yr): Preferential rates
+                    ├── 0-20% based on income
+                    └── +3.8% NIIT if applicable
+            </div>
+            <div class="quiz">
+                <p>What's the maximum long-term capital gains rate?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">10%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">20%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">37%</div>
+            </div>
+        </div>
+
+        <!-- Lesson 11 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 11/12</span>
+            <h2>Market Indexes</h2>
+            <div class="diagram">
+                MAJOR INDEXES
+                │
+                ├── S&P 500: 500 large-cap US stocks
+                ├── DJIA: 30 blue-chip stocks
+                └── Nasdaq: Tech-heavy
+            </div>
+            <div class="quiz">
+                <p>Which index is market-cap weighted?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">S&P 500</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">DJIA</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Neither</div>
+            </div>
+        </div>
+
+        <!-- Lesson 12 -->
+        <div class="lesson beginner">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 12/12</span>
+            <h2>Behavioral Finance</h2>
+            <div class="diagram">
+                COMMON BIASES
+                │
+                ├── Loss Aversion: Pain > Gain
+                ├── Herding: Following crowds
+                └── Anchoring: Fixating on prices
+            </div>
+            <div class="quiz">
+                <p>What causes investors to hold losers too long?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Loss Aversion</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Overconfidence</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Recency Bias</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERMEDIATE LEVEL (12 COMPLETE LESSONS) -->
+    <div id="intermediate" class="tab-content">
+        <!-- Lesson 1 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 1/12</span>
+            <h2>Candlestick Patterns</h2>
+            <div class="diagram">
+                BULLISH PATTERNS
+                │
+                ├── Hammer: Reversal after decline
+                └── Engulfing: Larger bullish candle
+            </div>
+            <div class="quiz">
+                <p>What does a Doji candle indicate?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Indecision</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Strong uptrend</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Imminent crash</div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 2/12</span>
+            <h2>Options Strategies</h2>
+            <div class="diagram">
+                VERTICAL SPREADS
+                │
+                ├── Bull Call: Buy low strike, sell high
+                └── Bear Put: Buy high strike, sell low
+            </div>
+            <div class="quiz">
+                <p>What limits risk in a vertical spread?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Selling premium</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Unlimited margin</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Time decay</div>
+            </div>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 3/12</span>
+            <h2>Futures Contracts</h2>
+            <div class="diagram">
+                FUTURES MECHANICS
+                │
+                ├── Standardized terms
+                ├── Daily settlement
+                └── Physical/cash delivery
+            </div>
+            <div class="quiz">
+                <p>What triggers a margin call?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Account equity decline</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Volatility increase</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Time decay</div>
+            </div>
+        </div>
+
+        <!-- Lesson 4 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 4/12</span>
+            <h2>Forex Trading</h2>
+            <div class="diagram">
+                PIP CALCULATION
+                EUR/USD moves from 1.1050 → 1.1055
+                = 5 pips (0.0005)
+            </div>
+            <div class="quiz">
+                <p>What's the most traded currency pair?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">EUR/USD</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">USD/JPY</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">GBP/USD</div>
+            </div>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 5/12</span>
+            <h2>Portfolio Beta</h2>
+            <div class="diagram">
+                BETA VALUES
+                │
+                ├── 1.0: Moves with market
+                ├── >1.0: More volatile
+                └── <1.0: Less volatile
+            </div>
+            <div class="quiz">
+                <p>What does beta measure?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Systematic risk</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Total risk</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Liquidity risk</div>
+            </div>
+        </div>
+
+        <!-- Lesson 6 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 6/12</span>
+            <h2>Technical Indicators</h2>
+            <div class="diagram">
+                COMMON TOOLS
+                │
+                ├── RSI: Overbought/oversold
+                ├── MACD: Trend momentum
+                └── Bollinger: Volatility bands
+            </div>
+            <div class="quiz">
+                <p>RSI above 70 indicates what?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Overbought</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Oversold</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Neutral</div>
+            </div>
+        </div>
+
+        <!-- Lesson 7 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 7/12</span>
+            <h2>Earnings Season</h2>
+            <div class="diagram">
+                EARNINGS REACTION
+                │
+                ├── Beat & Raise: Best case
+                ├── Miss & Lower: Worst case
+                └── "Whisper numbers"
+            </div>
+            <div class="quiz">
+                <p>When do most companies report earnings?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Random dates</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Quarterly</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Annually</div>
+            </div>
+        </div>
+
+        <!-- Lesson 8 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 8/12</span>
+            <h2>Fixed Income Duration</h2>
+            <div class="diagram">
+                DURATION RISK
+                │
+                ├── 5yr bond: ~4.5 duration
+                └── 10yr bond: ~8 duration
+            </div>
+            <div class="quiz">
+                <p>What does duration measure?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Interest rate sensitivity</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Credit risk</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Liquidity</div>
+            </div>
+        </div>
+
+        <!-- Lesson 9 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 9/12</span>
+            <h2>Correlation Analysis</h2>
+            <div class="diagram">
+                CORRELATION RANGES
+                │
+                ├── +1.0: Perfect positive
+                ├── 0: No relationship
+                └── -1.0: Perfect inverse
+            </div>
+            <div class="quiz">
+                <p>What correlation reduces portfolio risk?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">+1.0</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Negative</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Zero</div>
+            </div>
+        </div>
+
+        <!-- Lesson 10 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 10/12</span>
+            <h2>Value at Risk (VaR)</h2>
+            <div class="diagram">
+                VaR EXAMPLE
+                "95% 1-day VaR = $1M"
+                = 5% chance of losing >$1M tomorrow
+            </div>
+            <div class="quiz">
+                <p>What's VaR's main limitation?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Underestimates tail risk</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Too conservative</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Hard to calculate</div>
+            </div>
+        </div>
+
+        <!-- Lesson 11 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 11/12</span>
+            <h2>Economic Indicators</h2>
+            <div class="diagram">
+                KEY REPORTS
+                │
+                ├── CPI: Inflation
+                ├── NFP: Employment
+                └── GDP: Growth
+            </div>
+            <div class="quiz">
+                <p>Which report most impacts Fed rates?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">CPI</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">GDP</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Retail Sales</div>
+            </div>
+        </div>
+
+        <!-- Lesson 12 -->
+        <div class="lesson intermediate">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 12/12</span>
+            <h2>Sector Rotation</h2>
+            <div class="diagram">
+                ECONOMIC CYCLES
+                │
+                ├── Early: Financials, Tech
+                └── Late: Utilities, Staples
+            </div>
+            <div class="quiz">
+                <p>Which sector performs best in recessions?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Consumer Staples</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Technology</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Financials</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADVANCED LEVEL (8 COMPLETE LESSONS) -->
+    <div id="advanced" class="tab-content">
+        <!-- Lesson 1 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 1/8</span>
+            <h2>Arbitrage Strategies</h2>
+            <div class="diagram">
+                TRIANGULAR ARB
+                USD → EUR → GBP → USD
+                Profit if loop returns > initial USD
+            </div>
+            <div class="quiz">
+                <p>What's required for successful arbitrage?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Instant execution</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Regulatory approval</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Large spreads</div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 2/8</span>
+            <h2>HFT Market Making</h2>
+            <div class="diagram">
+                HFT STRATEGY
+                Quote bid/ask → Capture spread → Adjust in μs
+            </div>
+            <div class="quiz">
+                <p>How do HFTs profit?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Spread capture</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Long-term holds</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Dividends</div>
+            </div>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 3/8</span>
+            <h2>Volatility Smiles</h2>
+            <div class="diagram">
+                IMPLIED VOL CURVE
+                      /\
+                     /  \
+                    /    \
+                ___/      \___
+                ITM      ATM      OTM
+            </div>
+            <div class="quiz">
+                <p>What causes volatility smiles?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Fat tails</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Interest rates</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Dividends</div>
+            </div>
+        </div>
+
+        <!-- Lesson 4 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 4/8</span>
+            <h2>Exotic Options</h2>
+            <div class="diagram">
+                EXOTIC TYPES
+                │
+                ├── Barrier: Knock-in/out
+                └── Asian: Average price
+            </div>
+            <div class="quiz">
+                <p>Why use Asian options?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Smoother pricing</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Higher leverage</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Lower taxes</div>
+            </div>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 5/8</span>
+            <h2>CDO Tranche Math</h2>
+            <div class="diagram">
+                WATERFLOW
+                Senior → Mezzanine → Equity
+                (First loss → Last loss)
+            </div>
+            <div class="quiz">
+                <p>Which tranche has highest yield?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Equity</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Mezzanine</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Senior</div>
+            </div>
+        </div>
+
+        <!-- Lesson 6 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 6/8</span>
+            <h2>Monte Carlo Simulations</h2>
+            <div class="diagram">
+                PROCESS
+                1. Define parameters
+                2. Run 10,000+ scenarios
+                3. Analyze distribution
+            </div>
+            <div class="quiz">
+                <p>What's the main advantage?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Handles complexity</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Faster than formulas</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Always accurate</div>
+            </div>
+        </div>
+
+        <!-- Lesson 7 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 7/8</span>
+            <h2>VIX Derivatives</h2>
+            <div class="diagram">
+                VIX PRODUCTS
+                │
+                ├── Futures: Monthly expirations
+                └── Options: On VIX futures
+            </div>
+            <div class="quiz">
+                <p>What does VIX measure?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">30-day implied vol</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Historical vol</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Interest rates</div>
+            </div>
+        </div>
+
+        <!-- Lesson 8 -->
+        <div class="lesson advanced">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 8/8</span>
+            <h2>Blockchain Settlement</h2>
+            <div class="diagram">
+                DLT ADVANTAGES
+                │
+                ├── Near-instant settlement
+                └── Reduced counterparty risk
+            </div>
+            <div class="quiz">
+                <p>What's the key innovation?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Distributed ledger</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Higher fees</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Central control</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Functions
+        function openTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Quiz Functions
+        function checkAnswer(selectedOption, isCorrect) {
+            // Remove any existing classes from siblings
+            const options = selectedOption.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark the selected option
+            selectedOption.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            // If wrong, mark correct answer
+            if (!isCorrect) {
+                setTimeout(() => {
+                    options.forEach(option => {
+                        if (option.getAttribute('onclick').includes('true)')) {
+                            option.classList.add('correct');
+                        }
+                    });
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
