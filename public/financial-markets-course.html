@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Financial Markets Course + Quizzes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 30px;
+    }
+    .course-container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    .lesson {
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #eaf2f8;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .lesson:hover {
+      background: #d6eaf8;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 700px;
+    }
+    .close {
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      color: #c0392b;
+      cursor: pointer;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+    .quiz {
+      margin-top: 20px;
+    }
+    .quiz h4 {
+      margin-bottom: 10px;
+    }
+    .quiz label {
+      display: block;
+      margin: 5px 0;
+    }
+    .btn {
+      background-color: #2ecc71;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="course-container">
+  <h2>Financial Markets: Beginner to Pro</h2>
+
+  <div class="lesson" onclick="openModal('modal1')">Lesson 1: Introduction to Financial Markets</div>
+  <div class="lesson" onclick="openModal('modal2')">Lesson 2: Stocks, Bonds & Commodities</div>
+  <div class="lesson" onclick="openModal('modal3')">Lesson 3: Risk Management and Trading Psychology</div>
+</div>
+
+<!-- Modals -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal1')">&times;</span>
+    <h3>Lesson 1: Introduction to Financial Markets</h3>
+    <p>This lesson covers how markets work, types of assets, and the role of institutions.</p>
+    <iframe src="https://www.youtube.com/embed/vQWlgd7hV4A" allowfullscreen></iframe>
+
+    <div class="quiz">
+      <h4>Quiz:</h4>
+      <p>What is the primary function of a financial market?</p>
+      <label><input type="radio" name="q1" value="a"> To store money for banks</label>
+      <label><input type="radio" name="q1" value="b"> To facilitate the exchange of assets</label>
+      <label><input type="radio" name="q1" value="c"> To print government bonds</label>
+      <button class="btn" onclick="checkAnswer('q1', 'b', 'result1')">Submit Answer</button>
+      <div class="result" id="result1"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal2" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal2')">&times;</span>
+    <h3>Lesson 2: Stocks, Bonds & Commodities</h3>
+    <p>Understand key instruments, how they're traded, and how to interpret price movements.</p>
+    <iframe src="https://www.youtube.com/embed/dj8Pfm0A2Ck" allowfullscreen></iframe>
+
+    <div class="quiz">
+      <h4>Quiz:</h4>
+      <p>Which of the following is considered a commodity?</p>
+      <label><input type="radio" name="q2" value="a"> Apple Inc. shares</label>
+      <label><input type="radio" name="q2" value="b"> U.S. Treasury Bond</label>
+      <label><input type="radio" name="q2" value="c"> Crude oil</label>
+      <button class="btn" onclick="checkAnswer('q2', 'c', 'result2')">Submit Answer</button>
+      <div class="result" id="result2"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal3" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal3')">&times;</span>
+    <h3>Lesson 3: Risk Management & Trading Psychology</h3>
+    <p>Learn how to manage risk, avoid common traps, and build discipline.</p>
+    <iframe src="https://www.youtube.com/embed/4oZsHx3SnNQ" allowfullscreen></iframe>
+
+    <div class="quiz">
+      <h4>Quiz:</h4>
+      <p>Why is emotional control important in trading?</p>
+      <label><input type="radio" name="q3" value="a"> It guarantees profits</label>
+      <label><input type="radio" name="q3" value="b"> It helps avoid impulsive decisions</label>
+      <label><input type="radio" name="q3" value="c"> It makes you a licensed trader</label>
+      <button class="btn" onclick="checkAnswer('q3', 'b', 'result3')">Submit Answer</button>
+      <div class="result" id="result3"></div>
+    </div>
+  </div>
+</div>
+<!-- Lesson 4 -->
+<div id="modal4" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal4')">&times;</span>
+    <h3>Lesson 4: Central Banks and Monetary Policy</h3>
+    <p>Explore how interest rates, inflation targets, and central bank actions impact the markets.</p>
+    <iframe src="https://www.youtube.com/embed/iFDe5kUUyT0" allowfullscreen></iframe>
+
+    <div class="quiz">
+      <h4>Quiz:</h4>
+      <p>What happens when a central bank raises interest rates?</p>
+      <label><input type="radio" name="q4" value="a"> Inflation usually increases</label>
+      <label><input type="radio" name="q4" value="b"> Borrowing becomes more expensive</label>
+      <label><input type="radio" name="q4" value="c"> The stock market always rises</label>
+      <button class="btn" onclick="checkAnswer('q4', 'b', 'result4')">Submit Answer</button>
+      <div class="result" id="result4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Lesson 5 -->
+<div id="modal5" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal5')">&times;</span>
+    <h3>Lesson 5: Technical vs Fundamental Analysis</h3>
+    <p>Learn how traders analyze market data, charts, news, and company performance to make decisions.</p>
+    <iframe src="https://www.youtube.com/embed/YdQVDMGqPXY" allowfullscreen></iframe>
+
+    <div class="quiz">
+      <h4>Quiz:</h4>
+      <p>What does technical analysis mainly focus on?</p>
+      <label><input type="radio" name="q5" value="a"> Company financials</label>
+      <label><input type="radio" name="q5" value="b"> Market psychology and price trends</label>
+      <label><input type="radio" name="q5" value="c"> Government policies</label>
+      <button class="btn" onclick="checkAnswer('q5', 'b', 'result5')">Submit Answer</button>
+      <div class="result" id="result5"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Lesson 6 -->
+<div id="modal6" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal6')">&times;</span>
+    <h3>Lesson 6: Cryptocurrency and Digital Assets</h3>
+    <p>An introduction to Bitcoin, Ethereum, and the evolving landscape of digital finance.</p>
+    <iframe src="https://www.youtube.com/embed/6Gu2QMTAkEU" allowfullscreen></iframe>
+
+    <div class="quiz">
+      <h4>Quiz:</h4>
+      <p>Which of the following is true about cryptocurrency?</p>
+      <label><input type="radio" name="q6" value="a"> It is always backed by gold</label>
+      <label><input type="radio" name="q6" value="b"> It operates on decentralized blockchain networks</label>
+      <label><input type="radio" name="q6" value="c"> It is issued by central banks</label>
+      <button class="btn" onclick="checkAnswer('q6', 'b', 'result6')">Submit Answer</button>
+      <div class="result" id="result6"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(id) {
+    document.getElementById(id).style.display = 'block';
+  }
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  window.onclick = function(e) {
+    document.querySelectorAll(".modal").forEach(modal => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+  }
+
+  function checkAnswer(questionName, correctAnswer, resultId) {
+    const radios = document.getElementsByName(questionName);
+    let selected = "";
+    for (let i = 0; i < radios.length; i++) {
+      if (radios[i].checked) selected = radios[i].value;
+    }
+    const result = document.getElementById(resultId);
+    if (!selected) {
+      result.innerText = "Please select an answer.";
+      result.style.color = "orange";
+    } else if (selected === correctAnswer) {
+      result.innerText = "Correct!";
+      result.style.color = "green";
+    } else {
+      result.innerText = "Incorrect. Try again!";
+      result.style.color = "red";
+    }
+  }
+</script>
+
+</body>
+</html>
