@@ -875,7 +875,56 @@
                 <button class="nav-btn" onclick="navigateLesson('advanced', 2)">Next →</button>
             </div>
         </div>
-
+<div class="lesson advanced" id="advanced-3">
+    <span class="badge advanced-badge">ADVANCED</span>
+    <span class="lesson-counter">Lesson 3/8</span>
+    <h2>Volatility Smiles & Surfaces</h2>
+    
+    <div class="key-concept">
+        <h4>Core Concept</h4>
+        <p>The volatility smile shows how implied volatility varies with strike price, revealing market expectations and arbitrage opportunities.</p>
+    </div>
+    
+    <div class="diagram">
+        VOLATILITY SURFACE
+                      /\
+                     /  \       ↗ Term structure
+                    /    \    /
+                ___/      \__/
+                ITM      ATM      OTM
+                
+        SPX Options Typical Pattern:
+        │
+        ├── OTM puts: High vol (crash fear)
+        ├── ATM: Normal vol
+        └── OTM calls: Moderate vol
+    </div>
+    
+    <h3>Quantitative Implications</h3>
+    <ol>
+        <li><strong>Black-Scholes Failure:</strong> Assumes constant vol across strikes</li>
+        <li><strong>Skew Trading:</strong> Buy cheap wings vs. sell expensive ATM</li>
+        <li><strong>VIX Calculation:</strong> Weighted average of near-term options</li>
+    </ol>
+    
+    <div class="quiz">
+        <h3>Volatility Analysis</h3>
+        <p>What does a steep volatility smile indicate?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">Market expects tail events</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Interest rates will rise</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Liquidity is abundant</div>
+        
+        <p style="margin-top:20px;">How does the volatility surface change pre-earnings?</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">Flattens completely</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">ATM vol increases sharply</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">OTM vol decreases</div>
+    </div>
+    
+    <div class="lesson-nav">
+        <button class="nav-btn" onclick="navigateLesson('advanced', 2)">← Previous</button>
+        <button class="nav-btn" onclick="navigateLesson('advanced', 4)">Next →</button>
+    </div>
+</div>
         <!-- Lessons 2-8 would follow similar structure -->
         <!-- Actual implementation would include all 8 advanced lessons -->
     </div>
