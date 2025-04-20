@@ -192,7 +192,8 @@
       <h2>MONEYARD DASHBOARD</h2>
     </div>
     <div class="header-right">
-      <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
+      <a href="deposit-funds.html" class="deposit-btn">Deposit</a>
+
       <div class="dropdown">
         <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
         <div class="dropdown-content">
@@ -201,8 +202,7 @@
             <p><strong>Available to Withdraw:</strong> <span id="dd-available">0.00 USDT</span></p>
           </div>
           <hr />
-          <button class="dropdown-action-btn" onclick="openDeposit()">Deposit</button>
-          <button class="dropdown-action-btn" onclick="openBonuses()">Bonuses</button>
+          <a href="deposit-funds.html" class="dropdown-action-btn">Deposit</a> onclick="openBonuses()">Bonuses</button>
           <button class="dropdown-action-btn" onclick="openNotifications()">Notifications</button>
           <button class="dropdown-action-btn" onclick="openReferral()">Referral</button>
           <button class="dropdown-action-btn" onclick="openSettings()">Account Settings</button>
@@ -214,58 +214,10 @@
     </div>
   </div>
 
-  <!-- Deposit Modal -->
-<div id="depositModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
-  <div style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:400px; box-shadow: 0 0 15px rgba(0,0,0,0.2); position:relative;">
-    <h3 style="margin-top:0;">Deposit Funds</h3>
-    <h3>Deposit Funds</h3>
-<label>Amount (USDT):</label>
-<input type="number" id="deposit-amount" placeholder="Enter amount" />
-<label>Payment Method:</label>
-<select id="deposit-method" onchange="updateAddressAndQR()">
-  <option value="TRC20">USDT - TRC20 (Tron)</option>
-  <option value="BEP20">USDT - BEP20 (BNB Chain)</option>
-</select>
-
-<div id="address-section">
-  <p><strong>Deposit Address:</strong></p>
-  <p id="wallet-address">Please select a network</p>
-  <button onclick="copyAddress()">Copy Address</button>
-  <div><img id="qr-image" src="" alt="QR Code" style="max-width: 150px;" /></div>
-</div>
-
-<label>Transaction ID (optional):</label>
-<input type="text" id="deposit-txid" placeholder="Paste TxID or reference" />
-<button onclick="enrollNow()">Deposit Crypto to Enroll Now for $19 ≈ 19 USDT</button>
-<button class="mobile-money-btn" onclick="openModal('mobileMoneyModal')">Or Pay with Mobile Money</button>
-
-  <!-- Success Modal -->
-  <div id="successModal" class="modal">
-    <div class="modal-content">
-      <h3>Enrollment Successful!</h3>
-      <p>Your deposit is being verified. Redirecting you to Admin approval...</p>
-      <button class="close-btn" onclick="closeModal('successModal')">Close</button>
-    </div>
-  </div>
-<!-- Failure Modal -->
-<div id="failureModal" class="modal">
-  <div class="modal-content">
-    <h3>Payment Prompt System Failed!</h3>
-    <p>Your deposit could not be processed.<br>
-    Kindly click the button below to send it manually via the Admin Deposit Form.</p>
-    <a href="deposit-form.html">
-      <button class="send-btn">Send Manually</button>
-    </a>
-  </div>
-</div>
-    
-
 <!-- GREETING -->
 <section class="form">
   <p id="greeting">Welcome, <span id="userFullName"></span>!</p>
 </section>
-
-<div>Balance: <span id="userBalance">$0.00</span></div>
 
 
   <!-- EARNINGS CALCULATOR -->
@@ -298,195 +250,110 @@
 <!-- Spacer to add gap above script -->
 <div style="height: 60px;"></div>
 
-<script src="script.js"></script>
-<script>
-  function logout() {
-    localStorage.removeItem("token");
-    alert("Logged out.");
-    window.location.href = "/";
-  }
+<!-- SCRIPT -->
+  <script>
+    
+
+    function logout() {
+      alert("Logged out.");
+      // Add logout functionality here
+    }
+  </script>
+
+
+  <!-- FOOTER -->
+<button class="footer-btn" onclick="location.href='market.html'">
+  <i class="fas fa-chart-line"></i><br />Live Market
+</button>
+  <div class="footer">
+    <button class="footer-btn" onclick="location.href='dashboard.html'">
+      <i class="fas fa-home"></i><br />Home
+    </button>
+    <button class="footer-btn" onclick="location.href='stake.html'">
+      <i class="fas fa-coins"></i><br />Stake
+    </button>
+    <button class="footer-btn" onclick="location.href='referral.html'">
+      <i class="fas fa-users"></i><br />Referral
+    </button>
+    <button class="footer-btn" onclick="location.href='assets.html'">
+      <i class="fas fa-wallet"></i><br />Assets
+    </button>
+  </div>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+
+    function calculateEarnings() {
+      const input = parseFloat(document.getElementById('deposit-input').value);
+      const output = document.getElementById('calculated-earnings');
+      if (!isNaN(input) && input > 0) {
+        const earnings = (input * 0.08).toFixed(2);
+        output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
+        output.classList.add("highlight-animate");
+      }
+    }
+
+    function copyReferralLink() {
+      const code = document.getElementById("referral-code");
+      navigator.clipboard.writeText(code.value).then(() => {
+        alert("Referral link copied!");
+      });
+    }
+
+      fetch("/api/deposit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ amount, method, txid }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("deposit-response").textContent = data.message || "Deposit submitted!";
+        })
+        .catch(() => {
+          document.getElementById("deposit-response").textContent = "Something went wrong. Try again.";
+        });
+    }
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const depositAmountInput = document.getElementById("depositAmount");
+  const apySelect = document.getElementById("apySelect");
+  const estimatedEarningsEl = document.getElementById("estimatedEarnings");
+  const earnContent = document.getElementById("earnContent");
 
   function calculateEarnings() {
-    const input = parseFloat(document.getElementById('deposit-input')?.value || 0);
-    const output = document.getElementById('calculated-earnings');
-    if (!isNaN(input) && input > 0 && output) {
-      const earnings = (input * 0.08).toFixed(2);
-      output.textContent = `Est. Daily Earnings: ${earnings} USDT`;
-      output.classList.add("highlight-animate");
-    }
+    const amount = parseFloat(depositAmountInput.value) || 0;
+    const apy = parseFloat(apySelect.value) || 0;
+
+    const estimated = amount * (apy / 100);
+    estimatedEarningsEl.textContent = `Est. Earnings: $${estimated.toFixed(2)}`;
   }
 
-  function copyReferralLink() {
-    const code = document.getElementById("referral-code");
-    navigator.clipboard.writeText(code.value).then(() => {
-      alert("Referral link copied!");
-    });
-  }
-
-  function updateAddressAndQR() {
-    const method = document.getElementById("deposit-method").value;
-    const address = method === "TRC20" 
-      ? "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f" 
-      : method === "BEP20" 
-      ? "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01" 
-      : "";
-
-    document.getElementById("wallet-address").textContent = address;
-    document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
-  }
-
-  function copyAddress() {
-    const address = document.getElementById("wallet-address").textContent;
-    navigator.clipboard.writeText(address).then(() => {
-      alert("Address copied to clipboard");
-    });
-  }
-
-  function enrollNow() {
-    const amount = document.getElementById("deposit-amount").value;
-    const method = document.getElementById("deposit-method").value;
-
-    if (!amount || !method) {
-      alert("Please fill in all required fields before enrolling.");
-      return;
-    }
-
-    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
-
-    document.getElementById("successModal").style.display = "flex";
-
-    setTimeout(() => {
-      window.location.href = "deposit-approval.html";
-    }, 3000);
-  }
-
-  function openModal(modalId) {
-    document.getElementById(modalId).style.display = "flex";
-  }
-
-  function closeModal(modalId) {
-    document.getElementById(modalId).style.display = "none";
-  }
-
-  function showFailureModal() {
-    document.getElementById("failureModal").style.display = "flex";
-  }
-
-  function sendMobileMoneyPrompt() {
-    const amount = document.getElementById('mobileAmount').value;
-    const phone = document.getElementById('phoneNumber').value;
-    const network = document.getElementById('network').value;
-
-    if (!amount || !phone) {
-      alert('Please fill out all fields');
-      return;
-    }
-
-    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-    closeModal('mobileMoneyModal');
-
-    setTimeout(() => {
-      showFailureModal();
-    }, 10000);
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const depositAmountInput = document.getElementById("depositAmount");
-    const apySelect = document.getElementById("apySelect");
-    const estimatedEarningsEl = document.getElementById("estimatedEarnings");
-    const earnContent = document.getElementById("earnContent");
-
-    function updateEstimate() {
-      const amount = parseFloat(depositAmountInput?.value) || 0;
-      const apy = parseFloat(apySelect?.value) || 0;
-      const estimated = amount * (apy / 100);
-      estimatedEarningsEl.textContent = `Est. Earnings: $${estimated.toFixed(2)}`;
-    }
-
-    if (depositAmountInput && apySelect && estimatedEarningsEl && earnContent) {
-      depositAmountInput.addEventListener("input", function () {
-        earnContent.style.display = "block";
-        updateEstimate();
-      });
-
-      apySelect.addEventListener("change", function () {
-        earnContent.style.display = "block";
-        updateEstimate();
-      });
-
-      if (depositAmountInput.value || apySelect.value) {
-        earnContent.style.display = "block";
-        updateEstimate();
-      }
-    }
+  // Show earnContent when either input is focused or changed
+  depositAmountInput.addEventListener("input", function () {
+    earnContent.style.display = "block";
+    calculateEarnings();
   });
 
-  // Deposit Modal Logic
-  const depositModal = document.getElementById('depositModal');
-
-  function openDepositModal() {
-    depositModal.style.display = 'flex';
-  }
-
-  function closeDepositModal() {
-    depositModal.style.display = 'none';
-  }
-
-  document.getElementById('openDepositModalBtn')?.addEventListener('click', openDepositModal);
-
-  document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const amount = document.getElementById('depositAmount').value;
-    const network = document.getElementById('depositNetwork').value;
-    const txid = document.getElementById('depositTxId').value;
-
-    try {
-      const res = await fetch('/api/deposit', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ amount, network, txid })
-      });
-      const data = await res.json();
-      alert(data.message);
-      if (res.ok) {
-        closeDepositModal();
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Failed to process deposit.");
-    }
+  apySelect.addEventListener("change", function () {
+    earnContent.style.display = "block";
+    calculateEarnings();
   });
 
-  // Close modal if click outside
-  window.addEventListener('click', function (event) {
-    if (event.target === depositModal) {
-      closeDepositModal();
-    }
-  });
-
-  function openDeposit() {
-    const modal = document.getElementById('depositModal');
-    if (modal) {
-      modal.style.display = 'flex';
-    }
+  // In case someone clicks outside, keep the earnings visible if already entered
+  if (depositAmountInput.value || apySelect.value) {
+    earnContent.style.display = "block";
+    calculateEarnings();
   }
-
-  function closeDepositModal() {
-    const modal = document.getElementById('depositModal');
-    if (modal) {
-      modal.style.display = 'none';
-    }
-  }
-
-  // Optional: close modal when clicking outside the box
-  window.addEventListener('click', function(event) {
-    const modal = document.getElementById('depositModal');
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
+});
 </script>
-
 </body>
 </html>
