@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Intermediate Financial Markets Course</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f9fc;
+      margin: 0;
+      padding: 20px;
+    }
+    .course-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2e86c1;
+      text-align: center;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin: 20px 0;
+      border: none;
+    }
+    .quiz {
+      background: #f0f0f0;
+      padding: 15px;
+      margin: 10px 0 30px;
+      border-radius: 6px;
+    }
+    .quiz p {
+      margin-bottom: 10px;
+    }
+    .quiz label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .btn {
+      background-color: #2e86c1;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1a669a;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #certificateMessage {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 10px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="course-container">
+    <h2>Intermediate Financial Markets Course</h2>
+
+    <!-- Lesson 1 -->
+    <h3>Lesson 1: Derivatives Explained</h3>
+    <iframe src="https://www.youtube.com/embed/SKj-pMK1_tM" allowfullscreen></iframe>
+    <div class="quiz">
+      <p>Which is a type of derivative?</p>
+      <label><input type="radio" name="q1" value="a"> Bond</label>
+      <label><input type="radio" name="q1" value="b"> Option</label>
+      <label><input type="radio" name="q1" value="c"> Stock</label>
+      <button class="btn" onclick="checkAnswer('q1', 'b', 'r1')">Submit</button>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Lesson 2 -->
+    <h3>Lesson 2: Hedging Strategies</h3>
+    <iframe src="https://www.youtube.com/embed/CrjI_0jzV6E" allowfullscreen></iframe>
+    <div class="quiz">
+      <p>What is the purpose of hedging?</p>
+      <label><input type="radio" name="q2" value="a"> Increase risk</label>
+      <label><input type="radio" name="q2" value="b"> Eliminate taxes</label>
+      <label><input type="radio" name="q2" value="c"> Reduce risk</label>
+      <button class="btn" onclick="checkAnswer('q2', 'c', 'r2')">Submit</button>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Lesson 3 -->
+    <h3>Lesson 3: Margin Trading and Leverage</h3>
+    <iframe src="https://www.youtube.com/embed/PSfHeR7FocA" allowfullscreen></iframe>
+    <div class="quiz">
+      <p>Leverage allows you to:</p>
+      <label><input type="radio" name="q3" value="a"> Reduce your capital</label>
+      <label><input type="radio" name="q3" value="b"> Increase exposure with less capital</label>
+      <label><input type="radio" name="q3" value="c"> Avoid losses</label>
+      <button class="btn" onclick="checkAnswer('q3', 'b', 'r3')">Submit</button>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Lesson 4 -->
+    <h3>Lesson 4: Market Sentiment & Volatility</h3>
+    <iframe src="https://www.youtube.com/embed/6Yf5vTPDGuM" allowfullscreen></iframe>
+    <div class="quiz">
+      <p>Market sentiment is often measured by:</p>
+      <label><input type="radio" name="q4" value="a"> VIX</label>
+      <label><input type="radio" name="q4" value="b"> GDP</label>
+      <label><input type="radio" name="q4" value="c"> Interest rate</label>
+      <button class="btn" onclick="checkAnswer('q4', 'a', 'r4')">Submit</button>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Lesson 5 -->
+    <h3>Lesson 5: Advanced Technical Indicators</h3>
+    <iframe src="https://www.youtube.com/embed/nUtL3g8WECk" allowfullscreen></iframe>
+    <div class="quiz">
+      <p>Which of these is a momentum indicator?</p>
+      <label><input type="radio" name="q5" value="a"> RSI</label>
+      <label><input type="radio" name="q5" value="b"> P/E Ratio</label>
+      <label><input type="radio" name="q5" value="c"> Volume</label>
+      <button class="btn" onclick="checkAnswer('q5', 'a', 'r5')">Submit</button>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <!-- Lesson 6 -->
+    <h3>Lesson 6: Global Economic Indicators</h3>
+    <iframe src="https://www.youtube.com/embed/75yqXFxCnMM" allowfullscreen></iframe>
+    <div class="quiz">
+      <p>What is a leading economic indicator?</p>
+      <label><input type="radio" name="q6" value="a"> Unemployment rate</label>
+      <label><input type="radio" name="q6" value="b"> Consumer confidence index</label>
+      <label><input type="radio" name="q6" value="c"> Inflation rate</label>
+      <button class="btn" onclick="checkAnswer('q6', 'b', 'r6')">Submit</button>
+      <div class="result" id="r6"></div>
+    </div>
+
+    <div id="certificateMessage">
+      <h2>Great Job!</h2>
+      <p>You’ve completed the <strong>Intermediate Financial Markets</strong> course.</p>
+      <a href="certificate-intermediate.html" class="btn">View Intermediate Certificate</a>
+      <a href="advanced.html" class="btn" style="background-color:#28a745;">Continue to Advanced Course</a>
+    </div>
+  </div>
+
+  <script>
+    let passed = new Set();
+    function checkAnswer(qid, correct, rid) {
+      const opts = document.getElementsByName(qid);
+      let chosen = null;
+      for (let opt of opts) {
+        if (opt.checked) {
+          chosen = opt.value;
+        }
+      }
+      const result = document.getElementById(rid);
+      if (!chosen) {
+        result.innerText = "Please select an answer.";
+        result.style.color = "red";
+        return;
+      }
+      if (chosen === correct) {
+        passed.add(qid);
+        result.innerText = "Correct!";
+        result.style.color = "green";
+      } else {
+        result.innerText = "Incorrect. Try again.";
+        result.style.color = "red";
+      }
+
+      if (passed.size === 6) {
+        document.getElementById("certificateMessage").style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
