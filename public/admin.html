@@ -72,26 +72,44 @@
         </tr>
       </thead>
       <tbody id="pendingDeposits">
-        <!-- Real data will be inserted here -->
+        <tr><td colspan="6">Loading...</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Approved / Rejected Deposits</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="processedDeposits">
+        <tr><td colspan="5">Loading...</td></tr>
       </tbody>
     </table>
   </div>
 
   <script>
-    async function fetchPendingDeposits() {
-      const table = document.getElementById('pendingDeposits');
-      table.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+    async function fetchDeposits() {
+      const pendingTable = document.getElementById('pendingDeposits');
+      const processedTable = document.getElementById('processedDeposits');
+
       try {
-        const res = await fetch('/api/deposits/pending');
-        const data = await res.json();
+        const res = await fetch('/api/deposits/all');
+        const deposits = await res.json();
 
-        if (!Array.isArray(data) || data.length === 0) {
-          table.innerHTML = '<tr><td colspan="6">No pending deposits.</td></tr>';
-          return;
-        }
+        // Clear previous content
+        pendingTable.innerHTML = '';
+        processedTable.innerHTML = '';
 
-        table.innerHTML = '';
-        data.forEach(deposit => {
+        let hasPending = false;
+        let hasProcessed = false;
+
+        deposits.forEach(deposit => {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${deposit.id}</td>
@@ -99,16 +117,33 @@
             <td>${deposit.method}</td>
             <td>${deposit.txid}</td>
             <td class="status">${deposit.status}</td>
-            <td>
-              <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
-              <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
-            </td>
           `;
-          table.appendChild(row);
+
+          if (deposit.status === 'Pending') {
+            row.innerHTML += `
+              <td>
+                <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
+                <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
+              </td>`;
+            pendingTable.appendChild(row);
+            hasPending = true;
+          } else {
+            processedTable.appendChild(row);
+            hasProcessed = true;
+          }
         });
-      } catch (error) {
-        console.error('Error:', error);
-        table.innerHTML = '<tr><td colspan="6">Failed to load deposits.</td></tr>';
+
+        if (!hasPending) {
+          pendingTable.innerHTML = '<tr><td colspan="6">No pending deposits.</td></tr>';
+        }
+        if (!hasProcessed) {
+          processedTable.innerHTML = '<tr><td colspan="5">No approved or rejected deposits.</td></tr>';
+        }
+
+      } catch (err) {
+        console.error(err);
+        pendingTable.innerHTML = '<tr><td colspan="6">Failed to load.</td></tr>';
+        processedTable.innerHTML = '<tr><td colspan="5">Failed to load.</td></tr>';
       }
     }
 
@@ -116,9 +151,9 @@
       const res = await fetch(`/api/deposits/approve/${id}`, { method: 'POST' });
       if (res.ok) {
         alert('Deposit approved!');
-        fetchPendingDeposits();
+        fetchDeposits();
       } else {
-        alert('Failed to approve deposit.');
+        alert('Approval failed.');
       }
     }
 
@@ -126,14 +161,14 @@
       const res = await fetch(`/api/deposits/reject/${id}`, { method: 'POST' });
       if (res.ok) {
         alert('Deposit rejected!');
-        fetchPendingDeposits();
+        fetchDeposits();
       } else {
-        alert('Failed to reject deposit.');
+        alert('Rejection failed.');
       }
     }
 
     // Initial load
-    fetchPendingDeposits();
+    fetchDeposits();
   </script>
 
 </body>
