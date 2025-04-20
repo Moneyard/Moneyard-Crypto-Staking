@@ -297,6 +297,7 @@
 
 <!-- Spacer to add gap above script -->
 <div style="height: 60px;"></div>
+
 <!-- FOOTER -->
 <div class="footer">
   <button class="footer-btn" onclick="location.href='dashboard.html'">
@@ -315,7 +316,6 @@
     <i class="fas fa-wallet"></i><br />Assets
   </button>
 </div>
-
 <script src="script.js"></script>
 <script>
   function logout() {
@@ -393,9 +393,12 @@
       return;
     }
     alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-    setTimeout(showFailureModal, 10000);
+    setTimeout(() => {
+      showFailureModal();
+    }, 10000);
   }
 
+  // Calculate estimated earnings when input fields change
   document.addEventListener("DOMContentLoaded", function () {
     const depositAmountInput = document.getElementById("depositAmount");
     const apySelect = document.getElementById("apySelect");
@@ -410,12 +413,12 @@
     }
 
     if (depositAmountInput && apySelect && estimatedEarningsEl && earnContent) {
-      depositAmountInput.addEventListener("input", () => {
+      depositAmountInput.addEventListener("input", function () {
         earnContent.style.display = "block";
         updateEstimate();
       });
 
-      apySelect.addEventListener("change", () => {
+      apySelect.addEventListener("change", function () {
         earnContent.style.display = "block";
         updateEstimate();
       });
@@ -425,45 +428,73 @@
         updateEstimate();
       }
     }
+  });
 
-    const depositModal = document.getElementById('depositModal');
+  // Deposit Modal Logic
+  const depositModal = document.getElementById('depositModal');
 
-    function closeDepositModal() {
-      depositModal.style.display = 'none';
-    }
+  function openDepositModal() {
+    depositModal.style.display = 'flex';
+  }
 
-    function openDepositModal() {
-      depositModal.style.display = 'flex';
-    }
+  function closeDepositModal() {
+    depositModal.style.display = 'none';
+  }
 
-    document.getElementById('openDepositModalBtn')?.addEventListener('click', openDepositModal);
+  document.getElementById('openDepositModalBtn')?.addEventListener('click', openDepositModal);
 
-    document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const amount = document.getElementById('depositAmount').value;
-      const network = document.getElementById('depositNetwork').value;
-      const txid = document.getElementById('depositTxId').value;
+  document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const amount = document.getElementById('depositAmount').value;
+    const network = document.getElementById('depositNetwork').value;
+    const txid = document.getElementById('depositTxId').value;
 
-      try {
-        const res = await fetch('/api/deposit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount, network, txid })
-        });
-        const data = await res.json();
-        alert(data.message);
-        if (res.ok) closeDepositModal();
-      } catch (err) {
-        console.error(err);
-        alert("Failed to process deposit.");
-      }
-    });
-
-    window.addEventListener('click', function (event) {
-      if (event.target === depositModal) {
+    try {
+      const res = await fetch('/api/deposit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ amount, network, txid })
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (res.ok) {
         closeDepositModal();
       }
-    });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to process deposit.");
+    }
+  });
+
+  // Close modal if click outside
+  window.addEventListener('click', function (event) {
+    if (event.target === depositModal) {
+      closeDepositModal();
+    }
+  });
+
+  // Open Deposit Modal
+  function openDeposit() {
+    const modal = document.getElementById('depositModal');
+    if (modal) {
+      modal.style.display = 'flex';
+    }
+  }
+
+  // Close Deposit Modal
+  function closeDepositModal() {
+    const modal = document.getElementById('depositModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  // Optional: Close modal when clicking outside the box
+  window.addEventListener('click', function(event) {
+    const modal = document.getElementById('depositModal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
   });
 </script>
 </body>
