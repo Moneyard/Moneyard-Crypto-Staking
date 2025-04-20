@@ -1,110 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deposit Approval - Admin</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f7f7f7;
-    }
-    h2 {
-      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
       color: #333;
     }
-    .deposit-box {
-      background: white;
-      border: 1px solid #ddd;
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
       border-radius: 10px;
-      padding: 15px;
-      margin: 15px auto;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
-    .deposit-box p {
-      margin: 5px 0;
+    h1 {
+      text-align: center;
+      color: #007b8f;
     }
-    .btn-group {
-      margin-top: 10px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
-    .btn {
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #007b8f;
+      color: white;
+    }
+    .approve, .reject {
+      background-color: #28a745;
+      color: white;
       padding: 8px 16px;
       border: none;
       border-radius: 5px;
-      margin-right: 10px;
       cursor: pointer;
-      color: white;
     }
-    .approve-btn {
-      background-color: #28a745;
-    }
-    .reject-btn {
+    .reject {
       background-color: #dc3545;
+    }
+    .status {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>Pending Deposit Approvals</h2>
-  <div id="depositList">Loading...</div>
+
+  <div class="container">
+    <h1>Deposit Approval</h1>
+
+    <h3>Pending Deposits</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="pendingDeposits">
+        <!-- Pending deposits will be displayed here -->
+      </tbody>
+    </table>
+  </div>
 
   <script>
-    async function fetchPendingDeposits() {
-      try {
-        const res = await fetch('/api/deposits/pending');
-        const deposits = await res.json();
+    // Simulating deposits for the sake of frontend demonstration (No Backend)
+    const pendingDeposits = [
+      { id: 1, amount: 100, method: 'TRC20', txid: 'TX123', status: 'Pending' },
+      { id: 2, amount: 200, method: 'BEP20', txid: 'TX456', status: 'Pending' },
+      { id: 3, amount: 50, method: 'Mobile Money', txid: 'TX789', status: 'Pending' }
+    ];
 
-        const container = document.getElementById('depositList');
-        container.innerHTML = '';
+    function renderPendingDeposits() {
+      const pendingDepositsTable = document.getElementById('pendingDeposits');
+      pendingDepositsTable.innerHTML = '';
 
-        if (deposits.length === 0) {
-          container.innerHTML = '<p>No pending deposits found.</p>';
-          return;
-        }
+      pendingDeposits.forEach(deposit => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${deposit.id}</td>
+          <td>${deposit.amount}</td>
+          <td>${deposit.method}</td>
+          <td>${deposit.txid}</td>
+          <td class="status">${deposit.status}</td>
+          <td>
+            <button class="approve" onclick="approveDeposit(${deposit.id})">Approve</button>
+            <button class="reject" onclick="rejectDeposit(${deposit.id})">Reject</button>
+          </td>
+        `;
+        pendingDepositsTable.appendChild(row);
+      });
+    }
 
-        deposits.forEach(deposit => {
-          const box = document.createElement('div');
-          box.className = 'deposit-box';
-          box.innerHTML = `
-            <p><strong>User ID:</strong> ${deposit.user_id}</p>
-            <p><strong>Amount:</strong> $${deposit.amount}</p>
-            <p><strong>Method:</strong> ${deposit.method}</p>
-            <p><strong>Status:</strong> ${deposit.status}</p>
-            <div class="btn-group">
-              <button class="btn approve-btn" onclick="handleAction(${deposit.id}, 'approved')">Approve</button>
-              <button class="btn reject-btn" onclick="handleAction(${deposit.id}, 'rejected')">Reject</button>
-            </div>
-          `;
-          container.appendChild(box);
-        });
-      } catch (error) {
-        document.getElementById('depositList').innerHTML = '<p style="color:red;">Failed to load deposits.</p>';
+    function approveDeposit(id) {
+      const deposit = pendingDeposits.find(deposit => deposit.id === id);
+      if (deposit) {
+        deposit.status = 'Approved';
+        renderPendingDeposits();
+        alert('Deposit approved!');
       }
     }
 
-    async function handleAction(depositId, action) {
-      try {
-        const res = await fetch('/api/deposits/approve', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ depositId, action })
-        });
-
-        const result = await res.json();
-        if (result.success) {
-          alert(`Deposit ${action} successfully`);
-          fetchPendingDeposits(); // reload list
-        } else {
-          alert('Action failed: ' + (result.error || 'Unknown error'));
-        }
-      } catch (err) {
-        alert('Request failed');
+    function rejectDeposit(id) {
+      const deposit = pendingDeposits.find(deposit => deposit.id === id);
+      if (deposit) {
+        deposit.status = 'Rejected';
+        renderPendingDeposits();
+        alert('Deposit rejected!');
       }
     }
 
-    fetchPendingDeposits();
+    // Initial render of pending deposits
+    renderPendingDeposits();
   </script>
+
 </body>
 </html>
