@@ -189,132 +189,124 @@
   </div>
 
   <script>
-    function showTab(tabId) {
-      const tabs = document.querySelectorAll(".tab-content");
-      const buttons = document.querySelectorAll(".tab-button");
-      tabs.forEach(tab => tab.classList.remove("active"));
-      buttons.forEach(btn => btn.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
+  function showTab(tabId) {
+    const tabs = document.querySelectorAll(".tab-content");
+    const buttons = document.querySelectorAll(".tab-button");
+    tabs.forEach(tab => tab.classList.remove("active"));
+    buttons.forEach(btn => btn.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    [...buttons].find(btn => btn.textContent.toLowerCase().includes(tabId)).classList.add("active");
+  }
+
+  function updateAddressAndQR() {
+    const method = document.getElementById("deposit-method").value;
+    let address = "";
+    if (method === "TRC20") {
+      address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
+    } else if (method === "BEP20") {
+      address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
+    }
+    document.getElementById("wallet-address").textContent = address;
+    document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
+  }
+
+  function copyAddress() {
+    const address = document.getElementById("wallet-address").textContent;
+    navigator.clipboard.writeText(address).then(() => {
+      alert("Address copied to clipboard");
+    });
+  }
+
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = "flex";
+  }
+
+  function showFailureModal() {
+    document.getElementById("failureModal").style.display = "flex";
+  }
+
+  function sendMobileMoneyPrompt() {
+    const amount = document.getElementById('mobileAmount').value;
+    const phone = document.getElementById('phoneNumber').value;
+    const network = document.getElementById('network').value;
+    if (!amount || !phone) {
+      alert('Please fill out all fields');
+      return;
+    }
+    alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
+    setTimeout(() => {
+      showFailureModal();
+    }, 10000);
+  }
+
+  async function enrollNow() {
+    const amount = document.getElementById("deposit-amount").value;
+    const method = document.getElementById("deposit-method").value;
+    const txid = document.getElementById("deposit-txid").value || "";
+    const email = localStorage.getItem("userEmail");
+
+    if (!amount || !method || !email) {
+      alert("Fill in all required fields.");
+      return;
     }
 
-    function updateAddressAndQR() {
-      const method = document.getElementById("deposit-method").value;
-      let address = "";
-      if (method === "TRC20") {
-        address = "TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f";
-      } else if (method === "BEP20") {
-        address = "0x2837db956aba84eb2670d00aeea5c0d8a9e20a01";
-      }
-      document.getElementById("wallet-address").textContent = address;
-      document.getElementById("qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
-    }
-
-    function copyAddress() {
-      const address = document.getElementById("wallet-address").textContent;
-      navigator.clipboard.writeText(address).then(() => {
-        alert("Address copied to clipboard");
+    try {
+      const res = await fetch("/api/deposit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, amount, method, txid })
       });
-    }
+      const data = await res.json();
 
+      if (data.success) {
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+        audio.play();
+        document.getElementById("successModal").style.display = "flex";
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 3000);
+      } else {
+        alert(data.message || "Deposit failed");
       }
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-      audio.play();
-      document.getElementById("successModal").style.display = "flex";
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 3000);
+    } catch (err) {
+      console.error("Deposit Error:", err);
+      alert("Server error.");
+    }
+  }
+
+  async function submitWithdraw() {
+    const amount = document.getElementById("withdraw-amount").value;
+    const address = document.getElementById("withdraw-address").value;
+    const password = document.getElementById("withdraw-password").value;
+    const email = localStorage.getItem("userEmail");
+
+    if (!amount || !address || !password || !email) {
+      alert("Fill in all fields");
+      return;
     }
 
-    function openModal(modalId) {
-      document.getElementById(modalId).style.display = "flex";
-    }
+    try {
+      const res = await fetch("/api/withdraw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, amount, address, password })
+      });
+      const data = await res.json();
 
-    function showFailureModal() {
-      document.getElementById("failureModal").style.display = "flex";
-    }
-
-    function sendMobileMoneyPrompt() {
-      const amount = document.getElementById('mobileAmount').value;
-      const phone = document.getElementById('phoneNumber').value;
-      const network = document.getElementById('network').value;
-      if (!amount || !phone) {
-        alert('Please fill out all fields');
-        return;
+      const responseEl = document.getElementById("withdraw-response");
+      if (data.success) {
+        responseEl.style.color = "green";
+        responseEl.textContent = "Withdrawal request submitted!";
+      } else {
+        responseEl.style.color = "red";
+        responseEl.textContent = data.message || "Withdrawal failed.";
       }
-      alert(`Prompt sent to ${phone} on ${network.toUpperCase()} network for $${amount}`);
-      setTimeout(() => {
-        showFailureModal();
-      }, 10000);
+    } catch (err) {
+      console.error("Withdraw Error:", err);
+      alert("Server error.");
     }
-
-    async function enrollNow() {
-  const amount = document.getElementById("deposit-amount").value;
-  const method = document.getElementById("deposit-method").value;
-  const txid = document.getElementById("deposit-txid").value || "";
-  const email = localStorage.getItem("userEmail"); // get stored email from login
-
-  if (!amount || !method || !email) {
-    alert("Fill in all required fields.");
-    return;
   }
-
-  try {
-    const res = await fetch("/api/deposit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, amount, method, txid })
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      document.getElementById("successModal").style.display = "flex";
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 3000);
-    } else {
-      alert(data.message || "Deposit failed");
-    }
-  } catch (err) {
-    console.error("Deposit Error:", err);
-    alert("Server error.");
-  }
-}
-
-async function submitWithdraw() {
-  const amount = document.getElementById("withdraw-amount").value;
-  const address = document.getElementById("withdraw-address").value;
-  const password = document.getElementById("withdraw-password").value;
-  const email = localStorage.getItem("userEmail");
-  const responseEl = document.getElementById("withdraw-response");
-
-  if (!amount || !address || !password || !email) {
-    responseEl.textContent = "All fields are required.";
-    responseEl.style.color = "red";
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/withdraw", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, amount, address, password })
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      responseEl.textContent = "Withdrawal request submitted!";
-      responseEl.style.color = "green";
-    } else {
-      responseEl.textContent = data.message || "Withdrawal failed.";
-      responseEl.style.color = "red";
-    }
-  } catch (err) {
-    responseEl.textContent = "Server error.";
-    responseEl.style.color = "red";
-  }
-}
-  </script>
+</script>
 </body>
 </html>
