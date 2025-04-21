@@ -11,11 +11,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// DB Initialization
 const dbPath = './moneyard.db';
 if (!fs.existsSync(dbPath)) {
     fs.closeSync(fs.openSync(dbPath, 'w'));
 }
-
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) return console.error('DB Error:', err);
     console.log('Connected to SQLite:', dbPath);
@@ -75,9 +75,11 @@ app.post('/api/signup', async (req, res) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
 
     if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
-    if (!passwordRegex.test(password)) return res.status(400).json({ 
-        error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters' 
-    });
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ 
+            error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters' 
+        });
+    }
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
         if (err) return res.status(500).json({ error: 'Database error' });
@@ -129,7 +131,6 @@ app.post('/api/deposit', (req, res) => {
         function (err) {
             if (err) return res.status(500).json({ error: 'Deposit failed' });
 
-            // Auto-update user balance
             db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
                 if (err) return res.status(500).json({ error: 'Failed to update balance' });
                 res.json({ success: true, message: 'Deposit confirmed and balance updated' });
@@ -162,6 +163,52 @@ app.get('/api/balance', (req, res) => {
         if (!row) return res.status(404).json({ error: 'User not found' });
 
         res.json({ balance: row.balance });
+    });
+});
+
+// Withdraw Funds
+app.post('/api/withdraw', (req, res) => {
+    const { userId, amount, walletAddress, password } = req.body;
+    if (!userId || !amount || !walletAddress || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    db.get("SELECT * FROM users WHERE id = ?", [userId], async (err, user) => {
+        if (err || !user) return res.status(404).json({ error: 'User not found' });
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) return res.status(401).json({ error: 'Invalid password' });
+
+        if (user.balance < amount) return res.status(400).json({ error: 'Insufficient balance' });
+
+        const now = new Date().toISOString();
+
+        db.run(`INSERT INTO withdrawals (user_id, amount, wallet_address, password, date) 
+                VALUES (?, ?, ?, ?, ?)`, 
+            [userId, amount, walletAddress, password, now], 
+            function(err) {
+                if (err) return res.status(500).json({ error: 'Withdrawal request failed' });
+
+                db.run(`UPDATE users SET balance = balance - ? WHERE id = ?`, 
+                    [amount, userId], 
+                    (err) => {
+                        if (err) return res.status(500).json({ error: 'Balance deduction failed' });
+                        res.json({ success: true, message: 'Withdrawal request submitted' });
+                    }
+                );
+            }
+        );
+    });
+});
+
+// Get withdrawal history
+app.get('/api/withdrawals', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+    db.all(`SELECT * FROM withdrawals WHERE user_id = ? ORDER BY date DESC`, [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Failed to fetch withdrawals' });
+        res.json(rows);
     });
 });
 
