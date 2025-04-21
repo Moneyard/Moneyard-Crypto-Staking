@@ -212,6 +212,15 @@ function handleLogin(event) {
   // For now, we'll redirect to the dashboard page
   window.location.href = "dashboard.html"; // Update this as per your flow
 }
+.then(data => {
+  if (data.success) {
+    localStorage.setItem("userEmail", data.email); // Store user email
+    localStorage.setItem("token", data.token); // Store auth token if needed
+    window.location.href = "dashboard.html";
+  } else {
+    alert(data.message);
+  }
+});
 
 // ========== DEPOSIT MANAGEMENT (Admin Panel) ==========
 function openAdminModal() {
@@ -279,3 +288,73 @@ function loadDeposits(userId) {
       alert('Failed to load deposits.');
     });
 }
+const handleSignup = async (event) => {
+  event.preventDefault();
+
+  const signupBtn = document.getElementById("signup-btn");
+  signupBtn.disabled = true;
+  signupBtn.innerText = "Creating Account...";
+
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  const confirmPassword = document.getElementById("confirm-password").value;
+  const referralCode = document.getElementById("referral-code")?.value || "";
+
+  if (!email || !password || !confirmPassword) {
+    alert("All fields are required.");
+    signupBtn.disabled = false;
+    signupBtn.innerText = "Sign Up";
+    return;
+  }
+
+  if (password.length < 6) {
+    alert("Password must be at least 6 characters.");
+    signupBtn.disabled = false;
+    signupBtn.innerText = "Sign Up";
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    signupBtn.disabled = false;
+    signupBtn.innerText = "Sign Up";
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, referralCode })
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      alert("Account created! Please log in.");
+      document.getElementById("signup-form").reset();
+      // Switch to login form or redirect
+      toggleForms("login");
+    } else {
+      alert(result.message || "Signup failed. Try again.");
+    }
+  } catch (error) {
+    console.error("Signup error:", error);
+    alert("Server error. Please try again later.");
+  }
+
+  signupBtn.disabled = false;
+  signupBtn.innerText = "Sign Up";
+};
+
+// Attach the event listener
+document.getElementById("signup-form").addEventListener("submit", handleSignup);
+.then(data => {
+  if (data.success) {
+    localStorage.setItem("userEmail", data.email); // Store user email
+    localStorage.setItem("token", data.token);
+    showLoginForm(); // Switch to login form
+  } else {
+    alert(data.message);
+  }
+});
