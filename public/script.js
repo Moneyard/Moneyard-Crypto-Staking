@@ -28,7 +28,7 @@ window.addEventListener('click', (event) => {
 });
 
 // ========== DEPOSIT FORM VALIDATION ==========
-document.getElementById('depositForm')?.addEventListener('submit', (e) => {
+document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const amount = parseFloat(document.getElementById('depositAmount').value);
@@ -40,27 +40,36 @@ document.getElementById('depositForm')?.addEventListener('submit', (e) => {
     return;
   }
 
-  // Simulating deposit success
-  alert('Deposit successful! Balance will be updated.');
-  closeDepositModal();
-  submitDeposit(amount);  // Call mock API function for deposit
+  try {
+    const token = localStorage.getItem('token'); // Assuming login stores token
+
+    const response = await fetch('/api/deposit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        amount,
+        method: network,
+        txId
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert('Deposit successful! Balance will be updated.');
+      closeDepositModal();
+      refreshBalance(); // Optional: add this function to refresh balance on dashboard
+    } else {
+      alert(data.message || 'Deposit failed.');
+    }
+  } catch (error) {
+    console.error('Deposit error:', error);
+    alert('An error occurred while processing your deposit.');
+  }
 });
-
-// ========== DEPOSIT HANDLING (Mock API Example) ==========
-const mockDepositData = {
-  status: "success",
-  message: "Deposit processed successfully!"
-};
-
-function submitDeposit(amount) {
-  console.log(`Depositing ${amount}`);
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(mockDepositData), 1000);
-  }).then(response => {
-    console.log(response.message); // Show success message
-    refreshBalance();  // Refresh the balance display
-  });
-}
 
 // ========== STAKE PLANS HANDLING ==========
 const stakePlansContainer = document.getElementById("stake-plans");
