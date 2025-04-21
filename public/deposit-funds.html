@@ -245,35 +245,37 @@
     const txid = document.getElementById("deposit-txid").value || "";
     const email = localStorage.getItem("userEmail");
 
+    // Check if the amount, method, and email are not empty
     if (!amount || !method || !email) {
-      alert("Fill in all required fields.");
-      return;
+        alert("Fill in all required fields.");
+        return;
     }
 
+    // Proceed to send the deposit request
     try {
-      const res = await fetch("/api/deposit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, amount, method, txid })
-      });
-      const data = await res.json();
+        const res = await fetch("/api/deposit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, amount, method, txid })
+        });
+        const data = await res.json();
 
-      if (data.success) {
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-        const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-        audio.play();
-        document.getElementById("successModal").style.display = "flex";
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 3000);
-      } else {
-        alert(data.message || "Deposit failed");
-      }
+        if (data.success) {
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+            audio.play();
+            document.getElementById("successModal").style.display = "flex";
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 3000);
+        } else {
+            alert(data.message || "Deposit failed");
+        }
     } catch (err) {
-      console.error("Deposit Error:", err);
-      alert("Server error.");
+        console.error("Deposit Error:", err);
+        alert("Server error.");
     }
-  }
+}
 
   async function submitWithdraw() {
     const amount = document.getElementById("withdraw-amount").value;
