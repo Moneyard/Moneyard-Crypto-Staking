@@ -70,6 +70,10 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
     alert('An error occurred while processing your deposit.');
   }
 });
+document.addEventListener('DOMContentLoaded', () => {
+  // ... existing code ...
+  refreshBalance(); // Load balance when dashboard loads
+});
 
 // ========== STAKE PLANS HANDLING ==========
 const stakePlansContainer = document.getElementById("stake-plans");
@@ -367,3 +371,24 @@ document.getElementById("signup-form").addEventListener("submit", handleSignup);
     alert(data.message);
   }
 });
+async function refreshBalance() {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch('/api/user/balance', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+    if (data.success && data.balance !== undefined) {
+      const balanceElement = document.getElementById('userBalance');
+      if (balanceElement) {
+        balanceElement.textContent = `${data.balance.toFixed(2)} USDT`;
+      }
+    } else {
+      console.warn('Unable to fetch balance:', data.message);
+    }
+  } catch (error) {
+    console.error('Error fetching balance:', error);
+  }
+}
