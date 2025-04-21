@@ -217,12 +217,6 @@
       });
     }
 
-    function enrollNow() {
-      const amount = document.getElementById("deposit-amount").value;
-      const method = document.getElementById("deposit-method").value;
-      if (!amount || !method) {
-        alert("Please fill in all required fields before enrolling.");
-        return;
       }
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
       const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
@@ -255,21 +249,72 @@
       }, 10000);
     }
 
-    function submitWithdraw() {
-      const amount = document.getElementById("withdraw-amount").value;
-      const address = document.getElementById("withdraw-address").value;
-      const password = document.getElementById("withdraw-password").value;
-      const responseEl = document.getElementById("withdraw-response");
+    async function enrollNow() {
+  const amount = document.getElementById("deposit-amount").value;
+  const method = document.getElementById("deposit-method").value;
+  const txid = document.getElementById("deposit-txid").value || "";
+  const email = localStorage.getItem("userEmail"); // get stored email from login
 
-      if (!amount || !address || !password) {
-        responseEl.textContent = "Please fill in all fields.";
-        responseEl.style.color = "red";
-        return;
-      }
+  if (!amount || !method || !email) {
+    alert("Fill in all required fields.");
+    return;
+  }
 
-      responseEl.textContent = "Withdrawal request submitted successfully.";
-      responseEl.style.color = "green";
+  try {
+    const res = await fetch("/api/deposit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, amount, method, txid })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("successModal").style.display = "flex";
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 3000);
+    } else {
+      alert(data.message || "Deposit failed");
     }
+  } catch (err) {
+    console.error("Deposit Error:", err);
+    alert("Server error.");
+  }
+}
+
+async function submitWithdraw() {
+  const amount = document.getElementById("withdraw-amount").value;
+  const address = document.getElementById("withdraw-address").value;
+  const password = document.getElementById("withdraw-password").value;
+  const email = localStorage.getItem("userEmail");
+  const responseEl = document.getElementById("withdraw-response");
+
+  if (!amount || !address || !password || !email) {
+    responseEl.textContent = "All fields are required.";
+    responseEl.style.color = "red";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/withdraw", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, amount, address, password })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      responseEl.textContent = "Withdrawal request submitted!";
+      responseEl.style.color = "green";
+    } else {
+      responseEl.textContent = data.message || "Withdrawal failed.";
+      responseEl.style.color = "red";
+    }
+  } catch (err) {
+    responseEl.textContent = "Server error.";
+    responseEl.style.color = "red";
+  }
+}
   </script>
 </body>
 </html>
