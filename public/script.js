@@ -70,6 +70,7 @@ document.getElementById('depositForm')?.addEventListener('submit', async (e) => 
     alert('An error occurred while processing your deposit.');
   }
 });
+
 document.addEventListener('DOMContentLoaded', () => {
   // ... existing code ...
   refreshBalance(); // Load balance when dashboard loads
@@ -259,136 +260,23 @@ function loadDepositsToTable() {
   savedDeposits.forEach((deposit, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td style="padding:10px; border:1px solid #ccc;">${deposit.senderPhone}</td>
-      <td style="padding:10px; border:1px solid #ccc;">${deposit.amount}</td>
-      <td style="padding:10px; border:1px solid #ccc;">${deposit.time}</td>
-      <td style="padding:10px; border:1px solid #ccc;">
-        <button class="approve-btn" onclick="approveDeposit(${index})">Approve</button>
-        <button class="reject-btn" onclick="rejectDeposit(${index})">Reject</button>
-      </td>
+      <td>${deposit.amount}</td>
+      <td>${deposit.method}</td>
+      <td>${deposit.txId}</td>
+      <td><span class="status">${deposit.status}</span></td>
+      <td><button onclick="approveDeposit(${index})">Approve</button></td>
+      <td><button onclick="rejectDeposit(${index})">Reject</button></td>
     `;
     tableBody.appendChild(row);
   });
 }
 
 function approveDeposit(index) {
-  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
-  savedDeposits[index].status = "approved";
-  localStorage.setItem("momoDeposits", JSON.stringify(savedDeposits));
-  loadDepositsToTable(); // Refresh the table
+  alert("Deposit approved!");
+  // Handle deposit approval logic
 }
 
 function rejectDeposit(index) {
-  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
-  savedDeposits[index].status = "rejected";
-  localStorage.setItem("momoDeposits", JSON.stringify(savedDeposits));
-  loadDepositsToTable(); // Refresh the table
-}
-function loadDeposits(userId) {
-  fetch(`/api/deposits/${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById('depositHistory');
-      container.innerHTML = '';
-      data.forEach(dep => {
-        const row = document.createElement('div');
-        row.textContent = `Amount: $${dep.amount} - Method: ${dep.method} - Status: ${dep.status}`;
-        container.appendChild(row);
-      });
-    })
-    .catch(err => {
-      console.error('Failed to load deposits:', err);
-      alert('Failed to load deposits.');
-    });
-}
-const handleSignup = async (event) => {
-  event.preventDefault();
-
-  const signupBtn = document.getElementById("signup-btn");
-  signupBtn.disabled = true;
-  signupBtn.innerText = "Creating Account...";
-
-  const email = document.getElementById("signup-email").value.trim();
-  const password = document.getElementById("signup-password").value;
-  const confirmPassword = document.getElementById("confirm-password").value;
-  const referralCode = document.getElementById("referral-code")?.value || "";
-
-  if (!email || !password || !confirmPassword) {
-    alert("All fields are required.");
-    signupBtn.disabled = false;
-    signupBtn.innerText = "Sign Up";
-    return;
-  }
-
-  if (password.length < 6) {
-    alert("Password must be at least 6 characters.");
-    signupBtn.disabled = false;
-    signupBtn.innerText = "Sign Up";
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    alert("Passwords do not match.");
-    signupBtn.disabled = false;
-    signupBtn.innerText = "Sign Up";
-    return;
-  }
-
-  try {
-    const response = await fetch('/api/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, referralCode })
-    });
-
-    const result = await response.json();
-
-    if (response.ok && result.success) {
-      alert("Account created! Please log in.");
-      document.getElementById("signup-form").reset();
-      // Switch to login form or redirect
-      toggleForms("login");
-    } else {
-      alert(result.message || "Signup failed. Try again.");
-    }
-  } catch (error) {
-    console.error("Signup error:", error);
-    alert("Server error. Please try again later.");
-  }
-
-  signupBtn.disabled = false;
-  signupBtn.innerText = "Sign Up";
-};
-
-// Attach the event listener
-document.getElementById("signup-form").addEventListener("submit", handleSignup);
-.then(data => {
-  if (data.success) {
-    localStorage.setItem("userEmail", data.email); // Store user email
-    localStorage.setItem("token", data.token);
-    showLoginForm(); // Switch to login form
-  } else {
-    alert(data.message);
-  }
-});
-async function refreshBalance() {
-  const token = localStorage.getItem('token');
-  try {
-    const response = await fetch('/api/user/balance', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    const data = await response.json();
-    if (data.success && data.balance !== undefined) {
-      const balanceElement = document.getElementById('userBalance');
-      if (balanceElement) {
-        balanceElement.textContent = `${data.balance.toFixed(2)} USDT`;
-      }
-    } else {
-      console.warn('Unable to fetch balance:', data.message);
-    }
-  } catch (error) {
-    console.error('Error fetching balance:', error);
-  }
+  alert("Deposit rejected!");
+  // Handle deposit rejection logic
 }
