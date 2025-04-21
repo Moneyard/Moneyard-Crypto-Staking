@@ -3,15 +3,14 @@ const bcrypt = require('bcrypt');
 
 const User = {
   /**
-   * Create a new user with email, password, and optional referral code
+   * Create a new user
    * @param {string} email - User's email
    * @param {string} password - Plain text password
-   * @param {string|null} referralCode - Optional referral code from another user
-   * @returns {Promise<Object>} Created user data (without password)
+   * @param {string|null} referralCode - Optional referral code
+   * @returns {Promise<Object>} Created user data
    */
   create: async (email, password, referralCode = null) => {
     try {
-      // Validate inputs
       if (!email || !password) {
         throw new Error('Email and password are required');
       }
@@ -22,8 +21,8 @@ const User = {
       return new Promise((resolve, reject) => {
         db.run(
           `INSERT INTO users 
-          (email, password, referral_code, created_at) 
-          VALUES (?, ?, ?, datetime('now'))`,
+          (email, password, referral_code) 
+          VALUES (?, ?, ?)`,
           [normalizedEmail, hashedPassword, referralCode],
           function(err) {
             if (err) {
@@ -36,6 +35,7 @@ const User = {
               resolve({
                 id: this.lastID,
                 email: normalizedEmail,
+                balance: 0, // Default value matches your schema
                 referralCode
               });
             }
@@ -50,14 +50,15 @@ const User = {
   /**
    * Find user by email
    * @param {string} email - User's email
-   * @returns {Promise<Object|null>} User object or null if not found
+   * @returns {Promise<Object|null>} User object or null
    */
   findByEmail: async (email) => {
     if (!email) throw new Error('Email is required');
 
     return new Promise((resolve, reject) => {
       db.get(
-        'SELECT id, email, password, referral_code FROM users WHERE email = ?',
+        `SELECT id, email, password, balance, referral_code 
+         FROM users WHERE email = ?`,
         [email.toLowerCase().trim()],
         (err, row) => {
           if (err) reject(err);
@@ -70,13 +71,32 @@ const User = {
   /**
    * Verify user password
    * @param {string} email - User email
-   * @param {string} password - Plain text password to verify
+   * @param {string} password - Plain text password
    * @returns {Promise<boolean>} True if password matches
    */
   verifyPassword: async (email, password) => {
     const user = await User.findByEmail(email);
     if (!user) return false;
     return bcrypt.compare(password, user.password);
+  },
+
+  /**
+   * Update user balance
+   * @param {number} userId - User ID
+   * @param {number} amount - Amount to add/subtract
+   * @returns {Promise<boolean>} True if update succeeded
+   */
+  updateBalance: async (userId, amount) => {
+    return new Promise((resolve, reject) => {
+      db.run(
+        'UPDATE users SET balance = balance + ? WHERE id = ?',
+        [amount, userId],
+        function(err) {
+          if (err) reject(err);
+          else resolve(this.changes > 0);
+        }
+      );
+    });
   }
 };
 
