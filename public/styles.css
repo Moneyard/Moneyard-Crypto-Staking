@@ -1134,3 +1134,35 @@ audio {
   color: green;
   transition: opacity 1s;
 }
+.support-section {
+  padding: 50px;
+  background-color: #f7f9fc;
+  text-align: center;
+}
+
+.support-section h2 {
+  color: #1e7d55;
+}
+
+.support-section form {
+  max-width: 500px;
+  margin: auto;
+}
+
+.support-section input,
+.support-section textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.support-section button {
+  background-color: #1e7d55;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
