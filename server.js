@@ -145,7 +145,6 @@ app.post('/api/deposit', (req, res) => {
     );
 });
 
-
 // View deposit history
 app.get('/api/deposits', (req, res) => {
     const userId = req.query.userId;
