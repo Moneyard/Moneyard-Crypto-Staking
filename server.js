@@ -117,27 +117,34 @@ app.post('/api/login', (req, res) => {
 
 // Deposit Funds
 app.post('/api/deposit', (req, res) => {
-    const { userId, amount, network, txId } = req.body;
-    if (!userId || !amount || !network || !txId) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
+    const { userId, amount, network, txId } = req.body;
+    if (!userId || !amount || !network || !txId) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
 
-    const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-    db.run(`
-        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
-        [userId, amount, network, txId, now],
-        function (err) {
-            if (err) return res.status(500).json({ error: 'Deposit failed' });
+    db.run(`
+        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
+        [userId, amount, network, txId, now],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Deposit failed' });
 
-            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
-                if (err) return res.status(500).json({ error: 'Failed to update balance' });
-                res.json({ success: true, message: 'Deposit confirmed and balance updated' });
-            });
-        }
-    );
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update balance' });
+
+                // Fetch updated balance after deposit
+                db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
+                    if (err || !row) return res.status(500).json({ error: 'Failed to retrieve updated balance' });
+
+                    res.json({ success: true, message: 'Deposit confirmed and balance updated', updatedBalance: row.balance });
+                });
+            });
+        }
+    );
 });
+
 
 // View deposit history
 app.get('/api/deposits', (req, res) => {
