@@ -148,25 +148,16 @@
     <span style="color: white; font-size: 22px; font-weight: bold;">Moneyard</span>
   </div>
 
-  <!-- Top-right menu links -->
-  <div class="menu">
-    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Home</a>
-    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">About</a>
-    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Support</a>
-  <div id="supportModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000;">
-  <div style="background: #fff; max-width: 500px; margin: 100px auto; padding: 30px; border-radius: 10px; position: relative;">
-    <span onclick="closeSupportModal()" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px;">&times;</span>
-    <h2>Support Center</h2>
-    <p>Need help with your account or a transaction? Contact us below.</p>
-    <form id="supportForm">
-      <input type="text" name="name" placeholder="Your Name" required style="width: 100%; padding: 10px; margin-bottom: 10px;" />
-      <input type="email" name="email" placeholder="Your Email" required style="width: 100%; padding: 10px; margin-bottom: 10px;" />
-      <textarea name="message" placeholder="Your Message" required style="width: 100%; padding: 10px; height: 120px;"></textarea>
-      <br />
-      <button type="submit" style="padding: 10px 20px; background-color: #1e7d55; color: white; border: none; border-radius: 5px;">Submit</button>
-    </form>
-  </div>
+  
+  
+  <!-- Top-right menu links -->
+  <div class="menu">
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Home</a>
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">About</a>
+    <a href="#" style="color: white; margin: 0 12px; font-size: 15px;">Support</a>
+  </div>
 </div>
+
   <!-- Top-Right Menu Bar -->
   <div class="top-menu">
     <button id="menuToggle" class="menu-button">☰</button>
@@ -524,21 +515,6 @@
       toggle.textContent = "+"; // Change "−" back to "+"
     }
   }
-  function openSupportModal() {
-    document.getElementById("supportModal").style.display = "block";
-  }
-
-  function closeSupportModal() {
-    document.getElementById("supportModal").style.display = "none";
-  }
-
-  // Optional: Close modal when clicking outside the modal box
-  window.onclick = function (event) {
-    const modal = document.getElementById("supportModal");
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
 </script>
 </body>
 </html>
