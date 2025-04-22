@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Financial Markets Master Course</title>
+    <title>Complete Financial Markets Course</title>
     <style>
         :root {
             --beginner: #4a89dc;
@@ -182,6 +182,7 @@
         .nav-btn:hover {
             background: #e0e0e0;
         }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -256,106 +257,54 @@
         <div class="lesson beginner hidden" id="beginner-2">
             <span class="badge beginner-badge">BEGINNER</span>
             <span class="lesson-counter">Lesson 2/12</span>
-            <h2>Order Types Explained</h2>
+            <h2>Mastering Order Types</h2>
             
             <div class="key-concept">
                 <h4>Core Concept</h4>
-                <p>Different order types allow traders to specify how and when their trades should be executed.</p>
+                <p>Different order types allow control over trade execution price and timing, each with distinct advantages.</p>
             </div>
             
             <div class="diagram">
-                ORDER TYPE HIERARCHY
+                ORDER TYPE DECISION TREE
                 │
-                ├── MARKET ORDERS
-                │   ├── Execute immediately
-                │   ├── No price guarantee
-                │   └── Best for liquidity
+                ├── Need immediate execution?
+                │   ├── Yes → MARKET ORDER
+                │   └── No → Continue
                 │
-                ├── LIMIT ORDERS
-                │   ├── Set price boundary
-                │   ├── Buy limit ≤ target
-                │   └── Sell limit ≥ target
+                ├── Want price protection?
+                │   ├── Yes → LIMIT ORDER
+                │   │   ├── Buy: Set max price
+                │   │   └── Sell: Set min price
+                │   └── No → Continue
                 │
-                └── STOP ORDERS
-                    ├── Triggered by price
-                    ├── Stop-loss: Limit losses
-                    └── Stop-buy: Enter breakouts
+                └── Need activation trigger?
+                    ├── Yes → STOP ORDER
+                    │   ├── Stop-loss: Limit losses
+                    │   └── Stop-buy: Catch breakouts
+                    └── No → Use market/limit
             </div>
             
-            <h3>Practical Examples</h3>
-            <p><strong>Scenario 1:</strong> You want to buy AAPL now at whatever price is available → <em>Market order</em></p>
-            <p><strong>Scenario 2:</strong> You'll only buy AAPL if it drops to $150 → <em>Buy limit order at $150</em></p>
-            <p><strong>Scenario 3:</strong> You want to sell if AAPL falls below $145 → <em>Stop-loss at $145</em></p>
+            <h3>Real-World Scenarios</h3>
+            <p><strong>Day Trading:</strong> Market orders for fast entries/exits</p>
+            <p><strong>Value Investing:</strong> Limit orders to buy at target prices</p>
+            <p><strong>Risk Management:</strong> Stop-orders to protect positions</p>
             
             <div class="quiz">
                 <h3>Order Selection</h3>
-                <p>Which order type guarantees execution but not price?</p>
-                <div class="quiz-option" onclick="checkAnswer(this, true)">Market Order</div>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">Limit Order</div>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">Stop Order</div>
+                <p>Which order type should you use to buy a stock only if it drops to $50?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Market Order</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Buy Limit Order @ $50</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Stop-Market Order</div>
                 
-                <p style="margin-top: 20px;">What's the main risk of stop orders?</p>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">They might not execute</div>
-                <div class="quiz-option" onclick="checkAnswer(this, true)">Slippage in volatile markets</div>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">Higher commissions</div>
+                <p style="margin-top: 20px;">What's the main risk of market orders during volatility?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Slippage (unexpected fill price)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Order might not execute</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Higher commission fees</div>
             </div>
             
             <div class="lesson-nav">
                 <button class="nav-btn" onclick="navigateLesson('beginner', 1)">← Previous</button>
                 <button class="nav-btn" onclick="navigateLesson('beginner', 3)">Next →</button>
-<div class="lesson beginner" id="beginner-2">
-    <span class="badge beginner-badge">BEGINNER</span>
-    <span class="lesson-counter">Lesson 2/12</span>
-    <h2>Mastering Order Types</h2>
-    
-    <div class="key-concept">
-        <h4>Core Concept</h4>
-        <p>Different order types allow control over trade execution price and timing, each with distinct advantages.</p>
-    </div>
-    
-    <div class="diagram">
-        ORDER TYPE DECISION TREE
-        │
-        ├── Need immediate execution?
-        │   ├── Yes → MARKET ORDER
-        │   └── No → Continue
-        │
-        ├── Want price protection?
-        │   ├── Yes → LIMIT ORDER
-        │   │   ├── Buy: Set max price
-        │   │   └── Sell: Set min price
-        │   └── No → Continue
-        │
-        └── Need activation trigger?
-            ├── Yes → STOP ORDER
-            │   ├── Stop-loss: Limit losses
-            │   └── Stop-buy: Catch breakouts
-            └── No → Use market/limit
-    </div>
-    
-    <h3>Real-World Scenarios</h3>
-    <p><strong>Day Trading:</strong> Market orders for fast entries/exits</p>
-    <p><strong>Value Investing:</strong> Limit orders to buy at target prices</p>
-    <p><strong>Risk Management:</strong> Stop-orders to protect positions</p>
-    
-    <div class="quiz">
-        <h3>Order Selection</h3>
-        <p>Which order type should you use to buy a stock only if it drops to $50?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Market Order</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Buy Limit Order @ $50</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Stop-Market Order</div>
-        
-        <p style="margin-top: 20px;">What's the main risk of market orders during volatility?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Slippage (unexpected fill price)</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Order might not execute</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Higher commission fees</div>
-    </div>
-    
-    <div class="lesson-nav">
-        <button class="nav-btn" onclick="navigateLesson('beginner', 1)">← Previous</button>
-        <button class="nav-btn" onclick="navigateLesson('beginner', 3)">Next →</button>
-    </div>
-</div>
             </div>
         </div>
 
@@ -363,11 +312,11 @@
         <div class="lesson beginner hidden" id="beginner-3">
             <span class="badge beginner-badge">BEGINNER</span>
             <span class="lesson-counter">Lesson 3/12</span>
-            <h2>Stocks vs Bonds</h2>
+            <h2>Stocks vs Bonds: Core Differences</h2>
             
             <div class="key-concept">
                 <h4>Core Concept</h4>
-                <p>Stocks represent ownership, while bonds represent debt - fundamental differences every investor must understand.</p>
+                <p>Stocks represent ownership stakes while bonds are debt instruments - understanding their distinct characteristics is essential for portfolio construction.</p>
             </div>
             
             <div class="diagram">
@@ -375,52 +324,56 @@
                 │
                 ├── STOCKS (Equity)
                 │   ├── Ownership shares
-                │   ├── Dividends (variable)
+                │   ├── Variable dividends
                 │   ├── Voting rights
-                │   └── Unlimited upside
+                │   └── Unlimited upside potential
+                │       ├── Apple: +58,000% since 1980
+                │       └── Amazon: +175,000% since 1997
                 │
                 └── BONDS (Debt)
                     ├── Loan agreements
-                    ├── Coupon payments (fixed)
+                    ├── Fixed coupon payments
                     ├── Maturity date
-                    └── Priority in bankruptcy
+                    └── Capital preservation
+                        ├── US 10Y Treasury: ~4.5% yield
+                        └── Corporate bonds: +2-5% over Treasuries
             </div>
             
-            <h3>Key Differences</h3>
-            <table style="width:100%; border-collapse: collapse; margin: 15px 0;">
-                <tr style="background: #f5f5f5;">
-                    <th style="padding: 10px; text-align: left;">Feature</th>
-                    <th style="padding: 10px; text-align: left;">Stocks</th>
-                    <th style="padding: 10px; text-align: left;">Bonds</th>
+            <h3>Key Considerations</h3>
+            <table style="width:100%; border-collapse:collapse; margin:15px 0;">
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:10px; text-align:left;">Factor</th>
+                    <th style="padding:10px; text-align:left;">Stocks</th>
+                    <th style="padding:10px; text-align:left;">Bonds</th>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Risk Level</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Higher</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Lower</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Risk Level</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">High</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Low-Medium</td>
                 </tr>
-                <tr style="background: #f9f9f9;">
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Returns</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Variable</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Fixed</td>
+                <tr style="background:#f9f9f9;">
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Returns (Historical)</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">~10% annual</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">~5% annual</td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Duration</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Perpetual</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">Fixed term</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Volatility</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">High (20-40%)</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Low (5-10%)</td>
                 </tr>
             </table>
             
             <div class="quiz">
                 <h3>Security Analysis</h3>
-                <p>Which security has priority in bankruptcy proceedings?</p>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">Common Stock</div>
-                <div class="quiz-option" onclick="checkAnswer(this, true)">Corporate Bonds</div>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">Preferred Stock</div>
+                <p>Which security typically performs better during economic expansions?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Stocks</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Bonds</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">They perform equally</div>
                 
-                <p style="margin-top: 20px;">What happens to bond prices when interest rates rise?</p>
+                <p style="margin-top:20px;">What happens to bond prices when interest rates rise?</p>
                 <div class="quiz-option" onclick="checkAnswer(this, true)">Prices fall</div>
                 <div class="quiz-option" onclick="checkAnswer(this, false)">Prices rise</div>
-                <div class="quiz-option" onclick="checkAnswer(this, false)">No effect</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">No change</div>
             </div>
             
             <div class="lesson-nav">
@@ -429,9 +382,140 @@
             </div>
         </div>
 
-        <!-- Lessons 4-12 would follow the same pattern -->
-        <!-- Actual implementation would include all 12 beginner lessons -->
-        
+        <!-- Lesson 4 -->
+        <div class="lesson beginner hidden" id="beginner-4">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 4/12</span>
+            <h2>Market Indices Explained</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>Indices track baskets of securities to represent market segments, serving as benchmarks and investment vehicles.</p>
+            </div>
+            
+            <div class="diagram">
+                MAJOR GLOBAL INDICES
+                │
+                ├── U.S. MARKETS
+                │   ├── S&P 500 (Large-cap)
+                │   ├── Dow Jones (30 blue chips)
+                │   └── Nasdaq (Tech-heavy)
+                │
+                ├── INTERNATIONAL
+                │   ├── FTSE 100 (UK)
+                │   ├── DAX (Germany)
+                │   └── Nikkei 225 (Japan)
+                │
+                └── SPECIALIZED
+                    ├── Russell 2000 (Small-cap)
+                    └── MSCI World (Global)
+            </div>
+            
+            <h3>Index Construction Methods</h3>
+            <ul>
+                <li><strong>Price-weighted:</strong> Higher-priced stocks have more influence (e.g., Dow Jones)</li>
+                <li><strong>Market-cap weighted:</strong> Larger companies have more weight (e.g., S&P 500)</li>
+                <li><strong>Equal-weighted:</strong> All components have same influence</li>
+            </ul>
+            
+            <div class="quiz">
+                <h3>Index Knowledge</h3>
+                <p>Which index would be most affected by a price change in Apple stock?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Dow Jones</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">S&P 500</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Russell 2000</div>
+                
+                <p style="margin-top:20px;">How do most ETFs track their benchmark indices?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">By buying all components equally</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Through sampling or full replication</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Using derivatives only</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('beginner', 3)">← Previous</button>
+                <button class="nav-btn" onclick="navigateLesson('beginner', 5)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div class="lesson beginner hidden" id="beginner-5">
+            <span class="badge beginner-badge">BEGINNER</span>
+            <span class="lesson-counter">Lesson 5/12</span>
+            <h2>Understanding Dividends</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>Dividends represent company profit distributions to shareholders, affecting stock valuation and total returns.</p>
+            </div>
+            
+            <div class="diagram">
+                DIVIDEND TIMELINE
+                │
+                ├── Declaration Date
+                │   └── Company announces dividend
+                │
+                ├── Ex-Dividend Date
+                │   └── Buyers after this date don't receive dividend
+                │
+                ├── Record Date
+                │   └── Shareholders of record qualify
+                │
+                └── Payment Date
+                    └── Dividends distributed
+            </div>
+            
+            <h3>Key Dividend Metrics</h3>
+            <table style="width:100%; border-collapse:collapse; margin:15px 0;">
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:10px; text-align:left;">Metric</th>
+                    <th style="padding:10px; text-align:left;">Calculation</th>
+                    <th style="padding:10px; text-align:left;">Significance</th>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Dividend Yield</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Annual Dividend / Stock Price</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Income return percentage</td>
+                </tr>
+                <tr style="background:#f9f9f9;">
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Payout Ratio</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Dividends / Earnings</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Sustainability indicator</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Dividend Growth</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Year-over-year % increase</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Company health signal</td>
+                </tr>
+            </table>
+            
+            <div class="quiz">
+                <h3>Dividend Analysis</h3>
+                <p>What typically happens to a stock's price on the ex-dividend date?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Drops by approximately dividend amount</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Rises due to dividend attraction</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Unaffected by dividend events</div>
+                
+                <p style="margin-top:20px;">Which payout ratio range is generally considered sustainable?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">0-20%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">30-60%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">80-100%</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('beginner', 4)">← Previous</button>
+                <button class="nav-btn" onclick="navigateLesson('beginner', 6)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Lessons 6-11 would follow same pattern -->
+        <!-- Placeholder comments for remaining beginner lessons -->
+        <!-- Lesson 6: Fundamental Analysis Basics -->
+        <!-- Lesson 7: Technical Analysis Introduction -->
+        <!-- Lesson 8: ETFs vs Mutual Funds -->
+        <!-- Lesson 9: Risk Management Principles -->
+        <!-- Lesson 10: Market Cycles Overview -->
+        <!-- Lesson 11: Introduction to IPOs -->
+
         <!-- Lesson 12 -->
         <div class="lesson beginner hidden" id="beginner-12">
             <span class="badge beginner-badge">BEGINNER</span>
@@ -483,78 +567,6 @@
             </div>
         </div>
     </div>
-<div class="lesson beginner" id="beginner-3">
-    <span class="badge beginner-badge">BEGINNER</span>
-    <span class="lesson-counter">Lesson 3/12</span>
-    <h2>Stocks vs Bonds: Core Differences</h2>
-    
-    <div class="key-concept">
-        <h4>Core Concept</h4>
-        <p>Stocks represent ownership stakes while bonds are debt instruments - understanding their distinct characteristics is essential for portfolio construction.</p>
-    </div>
-    
-    <div class="diagram">
-        EQUITY VS DEBT COMPARISON
-        │
-        ├── STOCKS (Equity)
-        │   ├── Ownership shares
-        │   ├── Variable dividends
-        │   ├── Voting rights
-        │   └── Unlimited upside potential
-        │       ├── Apple: +58,000% since 1980
-        │       └── Amazon: +175,000% since 1997
-        │
-        └── BONDS (Debt)
-            ├── Loan agreements
-            ├── Fixed coupon payments
-            ├── Maturity date
-            └── Capital preservation
-                ├── US 10Y Treasury: ~4.5% yield
-                └── Corporate bonds: +2-5% over Treasuries
-    </div>
-    
-    <h3>Key Considerations</h3>
-    <table style="width:100%; border-collapse:collapse; margin:15px 0;">
-        <tr style="background:#f5f5f5;">
-            <th style="padding:10px; text-align:left;">Factor</th>
-            <th style="padding:10px; text-align:left;">Stocks</th>
-            <th style="padding:10px; text-align:left;">Bonds</th>
-        </tr>
-        <tr>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Risk Level</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">High</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Low-Medium</td>
-        </tr>
-        <tr style="background:#f9f9f9;">
-            <td style="padding:10px; border-bottom:1px solid #eee;">Returns (Historical)</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">~10% annual</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">~5% annual</td>
-        </tr>
-        <tr>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Volatility</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">High (20-40%)</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Low (5-10%)</td>
-        </tr>
-    </table>
-    
-    <div class="quiz">
-        <h3>Security Analysis</h3>
-        <p>Which security typically performs better during economic expansions?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Stocks</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Bonds</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">They perform equally</div>
-        
-        <p style="margin-top:20px;">What happens to bond prices when interest rates rise?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Prices fall</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Prices rise</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">No change</div>
-    </div>
-    
-    <div class="lesson-nav">
-        <button class="nav-btn" onclick="navigateLesson('beginner', 2)">← Previous</button>
-        <button class="nav-btn" onclick="navigateLesson('beginner', 4)">Next →</button>
-    </div>
-</div>
 
     <!-- INTERMEDIATE LEVEL (12 COMPLETE LESSONS) -->
     <div id="intermediate" class="tab-content">
@@ -605,125 +617,190 @@
             </div>
         </div>
 
-        <!-- Lessons 2-12 would follow similar structure -->
-<div class="lesson intermediate" id="intermediate-2">
-    <span class="badge intermediate-badge">INTERMEDIATE</span>
-    <span class="lesson-counter">Lesson 2/12</span>
-    <h2>Options Spread Strategies</h2>
-    
-    <div class="key-concept">
-        <h4>Core Concept</h4>
-        <p>Spreads combine multiple options to create defined risk/reward profiles for directional or volatility trades.</p>
-    </div>
-    
-    <div class="diagram">
-        COMMON SPREAD TYPES
-        │
-        ├── VERTICAL SPREADS
-        │   ├── Call Spread: Bullish
-        │   │   ├── Buy low strike call
-        │   │   └── Sell high strike call
-        │   └── Put Spread: Bearish
-        │       ├── Buy high strike put
-        │       └── Sell low strike put
-        │
-        └── HORIZONTAL SPREADS
-            ├── Calendar: Sell near-term
-            └── Buy longer-term
-    </div>
-    
-    <h3>Risk/Reward Profiles</h3>
-    <table style="width:100%; border-collapse: collapse;">
-        <tr style="background:#f5f5f5;">
-            <th style="padding:10px;">Spread Type</th>
-            <th style="padding:10px;">Max Profit</th>
-            <th style="padding:10px;">Max Loss</th>
-        </tr>
-        <tr>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Bull Call Spread</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Strike difference - net premium</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Net premium paid</td>
-        </tr>
-        <tr style="background:#f9f9f9;">
-            <td style="padding:10px; border-bottom:1px solid #eee;">Bear Put Spread</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Strike difference - net premium</td>
-            <td style="padding:10px; border-bottom:1px solid #eee;">Net premium paid</td>
-        </tr>
-    </table>
-    
-    <div class="quiz">
-        <h3>Spread Analysis</h3>
-        <p>What's the purpose of selling an option in a spread?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">To increase potential profit</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">To reduce net cost</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">To avoid assignment</div>
-        
-        <p style="margin-top: 20px;">When would a bull call spread reach max profit?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">When both options expire OTM</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">When both options expire ITM</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">At any time before expiration</div>
-    </div>
-    
-    <div class="lesson-nav">
-        <button class="nav-btn" onclick="navigateLesson('intermediate', 1)">← Previous</button>
-        <button class="nav-btn" onclick="navigateLesson('intermediate', 3)">Next →</button>
-    </div>
-</div>
-       <div class="lesson intermediate" id="intermediate-3">
-    <span class="badge intermediate-badge">INTERMEDIATE</span>
-    <span class="lesson-counter">Lesson 3/12</span>
-    <h2>Futures Contracts Deep Dive</h2>
-    
-    <div class="key-concept">
-        <h4>Core Concept</h4>
-        <p>Futures are standardized contracts to buy/sell assets at future dates, used for hedging and speculation with unique leverage characteristics.</p>
-    </div>
-    
-    <div class="diagram">
-        FUTURES MECHANICS
-        │
-        ├── CONTRACT SPECS
-        │   ├── Underlying asset
-        │   ├── Contract size
-        │   ├── Expiration date
-        │   └── Tick size/value
-        │
-        ├── MARGIN REQUIREMENTS
-        │   ├── Initial margin
-        │   └── Maintenance margin
-        │
-        └── DAILY SETTLEMENT
-            ├── Mark-to-market
-            └── Margin calls if equity ↓
-    </div>
-    
-    <h3>Example: E-mini S&P 500 Futures</h3>
-    <ul>
-        <li><strong>Contract Size:</strong> $50 × S&P 500 index</li>
-        <li><strong>Margin:</strong> ~$12,000 per contract</li>
-        <li><strong>Daily Move:</strong> 1pt = $50 profit/loss</li>
-        <li><strong>Leverage:</strong> 20:1 (index at 5,000 → $250k notional)</li>
-    </ul>
-    
-    <div class="quiz">
-        <h3>Futures Knowledge</h3>
-        <p>What triggers a margin call in futures trading?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Price reaching expiration</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Account equity below maintenance</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Volatility increase</div>
-        
-        <p style="margin-top:20px;">Why do futures prices converge to spot at expiration?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Arbitrage forces alignment</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Regulators mandate it</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Brokers adjust prices</div>
-    </div>
-    
-    <div class="lesson-nav">
-        <button class="nav-btn" onclick="navigateLesson('intermediate', 2)">← Previous</button>
-        <button class="nav-btn" onclick="navigateLesson('intermediate', 4)">Next →</button>
-    </div>
-</div>
-<!-- Actual implementation would include all 12 intermediate lessons -->
+        <!-- Lesson 2 -->
+        <div class="lesson intermediate hidden" id="intermediate-2">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 2/12</span>
+            <h2>Options Spread Strategies</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>Spreads combine multiple options to create defined risk/reward profiles for directional or volatility trades.</p>
+            </div>
+            
+            <div class="diagram">
+                COMMON SPREAD TYPES
+                │
+                ├── VERTICAL SPREADS
+                │   ├── Call Spread: Bullish
+                │   │   ├── Buy low strike call
+                │   │   └── Sell high strike call
+                │   └── Put Spread: Bearish
+                │       ├── Buy high strike put
+                │       └── Sell low strike put
+                │
+                └── HORIZONTAL SPREADS
+                    ├── Calendar: Sell near-term
+                    └── Buy longer-term
+            </div>
+            
+            <h3>Risk/Reward Profiles</h3>
+            <table style="width:100%; border-collapse: collapse;">
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:10px;">Spread Type</th>
+                    <th style="padding:10px;">Max Profit</th>
+                    <th style="padding:10px;">Max Loss</th>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Bull Call Spread</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Strike difference - net premium</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Net premium paid</td>
+                </tr>
+                <tr style="background:#f9f9f9;">
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Bear Put Spread</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Strike difference - net premium</td>
+                    <td style="padding:10px; border-bottom:1px solid #eee;">Net premium paid</td>
+                </tr>
+            </table>
+            
+            <div class="quiz">
+                <h3>Spread Analysis</h3>
+                <p>What's the purpose of selling an option in a spread?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">To increase potential profit</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">To reduce net cost</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">To avoid assignment</div>
+                
+                <p style="margin-top: 20px;">When would a bull call spread reach max profit?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">When both options expire OTM</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">When both options expire ITM</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">At any time before expiration</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('intermediate', 1)">← Previous</button>
+                <button class="nav-btn" onclick="navigateLesson('intermediate', 3)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div class="lesson intermediate hidden" id="intermediate-3">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 3/12</span>
+            <h2>Futures Contracts Deep Dive</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>Futures are standardized contracts to buy/sell assets at future dates, used for hedging and speculation with unique leverage characteristics.</p>
+            </div>
+            
+            <div class="diagram">
+                FUTURES MECHANICS
+                │
+                ├── CONTRACT SPECS
+                │   ├── Underlying asset
+                │   ├── Contract size
+                │   ├── Expiration date
+                │   └── Tick size/value
+                │
+                ├── MARGIN REQUIREMENTS
+                │   ├── Initial margin
+                │   └── Maintenance margin
+                │
+                └── DAILY SETTLEMENT
+                    ├── Mark-to-market
+                    └── Margin calls if equity ↓
+            </div>
+            
+            <h3>Example: E-mini S&P 500 Futures</h3>
+            <ul>
+                <li><strong>Contract Size:</strong> $50 × S&P 500 index</li>
+                <li><strong>Margin:</strong> ~$12,000 per contract</li>
+                <li><strong>Daily Move:</strong> 1pt = $50 profit/loss</li>
+                <li><strong>Leverage:</strong> 20:1 (index at 5,000 → $250k notional)</li>
+            </ul>
+            
+            <div class="quiz">
+                <h3>Futures Knowledge</h3>
+                <p>What triggers a margin call in futures trading?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Price reaching expiration</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Account equity below maintenance</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Volatility increase</div>
+                
+                <p style="margin-top:20px;">Why do futures prices converge to spot at expiration?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Arbitrage forces alignment</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Regulators mandate it</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Brokers adjust prices</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('intermediate', 2)">← Previous</button>
+                <button class="nav-btn" onclick="navigateLesson('intermediate', 4)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Lessons 4-11 would follow same pattern -->
+        <!-- Placeholder comments for remaining intermediate lessons -->
+        <!-- Lesson 4: Advanced Technical Indicators -->
+        <!-- Lesson 5: Sector Rotation Strategies -->
+        <!-- Lesson 6: Fixed Income Analytics -->
+        <!-- Lesson 7: Portfolio Optimization -->
+        <!-- Lesson 8: Advanced Options Strategies -->
+        <!-- Lesson 9: Forex Market Mechanics -->
+        <!-- Lesson 10: Commodities Trading -->
+        <!-- Lesson 11: Alternative Investments -->
+
+        <!-- Lesson 12 -->
+        <div class="lesson intermediate hidden" id="intermediate-12">
+            <span class="badge intermediate-badge">INTERMEDIATE</span>
+            <span class="lesson-counter">Lesson 12/12</span>
+            <h2>Quantitative Analysis Basics</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>Quantitative models use mathematical and statistical techniques to identify trading opportunities and manage risk.</p>
+            </div>
+            
+            <div class="diagram">
+                QUANT WORKFLOW
+                │
+                ├── Data Collection
+                │   ├── Price/volume history
+                │   └── Fundamental data
+                │
+                ├── Model Development
+                │   ├── Hypothesis testing
+                │   └── Backtesting
+                │
+                └── Execution
+                    ├── Automated trading
+                    └── Performance monitoring
+            </div>
+            
+            <h3>Common Quantitative Strategies</h3>
+            <ul>
+                <li><strong>Mean reversion:</strong> Betting prices return to historical averages</li>
+                <li><strong>Momentum:</strong> Riding established trends</li>
+                <li><strong>Statistical arbitrage:</strong> Exploiting pricing inefficiencies between correlated assets</li>
+            </ul>
+            
+            <div class="quiz">
+                <h3>Quant Concepts</h3>
+                <p>What's the primary purpose of backtesting?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">To guarantee future profits</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">To evaluate strategy viability</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">To eliminate all risk</div>
+                
+                <p style="margin-top: 20px;">Which metric measures risk-adjusted returns?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Total return</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Sharpe ratio</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Win rate</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('intermediate', 11)">← Previous</button>
+                <button class="nav-btn" onclick="completeLevel('intermediate')">Complete Level</button>
+            </div>
+        </div>
     </div>
 
     <!-- ADVANCED LEVEL (8 COMPLETE LESSONS) -->
@@ -775,108 +852,170 @@
             </div>
         </div>
 
-        <!-- Lessons 2-8 would follow similar structure -->
-<div class="lesson advanced" id="advanced-2">
-    <span class="badge advanced-badge">ADVANCED</span>
-    <span class="lesson-counter">Lesson 2/8</span>
-    <h2>HFT Market Making Algorithms</h2>
-    
-    <div class="key-concept">
-        <h4>Core Concept</h4>
-        <p>High-frequency traders provide liquidity through algorithmic quoting strategies that adapt in microseconds.</p>
-    </div>
-    
-    <div class="diagram">
-        HFT ORDER BOOK MANAGEMENT
-        │
-        ├── QUOTE GENERATION
-        │   ├── Bid: E[fair value] - spread/2
-        │   └── Ask: E[fair value] + spread/2
-        │
-        ├── ADJUSTMENT TRIGGERS
-        │   ├── Large market orders
-        │   ├── News events
-        │   └── Volatility spikes
-        │
-        └── RISK CONTROLS
-            ├── Position limits
-            └── Fat-finger filters
-    </div>
-    
-    <h3>Latency Arbitrage Example</h3>
-    <p><strong>Scenario:</strong> HFT detects large buy order on Exchange A</p>
-    <p><strong>Action:</strong> Instantly raises quotes on Exchange B</p>
-    <p><strong>Result:</strong> Captures spread before market adjusts</p>
-    
-    <div class="quiz">
-        <h3>HFT Mechanics</h3>
-        <p>How do HFTs typically profit?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Long-term investments</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Bid-ask spread capture</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Dividend arbitrage</div>
-        
-        <p style="margin-top: 20px;">What's the key technological requirement?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Sub-millisecond latency</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">High-frequency news scanning</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Blockchain integration</div>
-    </div>
-    
-    <div class="lesson-nav">
-        <button class="nav-btn" onclick="navigateLesson('advanced', 1)">← Previous</button>
-        <button class="nav-btn" onclick="navigateLesson('advanced', 3)">Next →</button>
-    </div>
-</div>
-        <div class="lesson advanced" id="advanced-3">
-    <span class="badge advanced-badge">ADVANCED</span>
-    <span class="lesson-counter">Lesson 3/8</span>
-    <h2>Volatility Smiles & Surfaces</h2>
-    
-    <div class="key-concept">
-        <h4>Core Concept</h4>
-        <p>The volatility smile shows how implied volatility varies with strike price, revealing market expectations and arbitrage opportunities.</p>
-    </div>
-    
-    <div class="diagram">
-        VOLATILITY SURFACE
-                      /\
-                     /  \       ↗ Term structure
-                    /    \    /
-                ___/      \__/
-                ITM      ATM      OTM
+        <!-- Lesson 2 -->
+        <div class="lesson advanced hidden" id="advanced-2">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 2/8</span>
+            <h2>HFT Market Making Algorithms</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>High-frequency traders provide liquidity through algorithmic quoting strategies that adapt in microseconds.</p>
+            </div>
+            
+            <div class="diagram">
+                HFT ORDER BOOK MANAGEMENT
+                │
+                ├── QUOTE GENERATION
+                │   ├── Bid: E[fair value] - spread/2
+                │   └── Ask: E[fair value] + spread/2
+                │
+                ├── ADJUSTMENT TRIGGERS
+                │   ├── Large market orders
+                │   ├── News events
+                │   └── Volatility spikes
+                │
+                └── RISK CONTROLS
+                    ├── Position limits
+                    └── Fat-finger filters
+            </div>
+            
+            <h3>Latency Arbitrage Example</h3>
+            <p><strong>Scenario:</strong> HFT detects large buy order on Exchange A</p>
+            <p><strong>Action:</strong> Instantly raises quotes on Exchange B</p>
+            <p><strong>Result:</strong> Captures spread before market adjusts</p>
+            
+            <div class="quiz">
+                <h3>HFT Mechanics</h3>
+                <p>How do HFTs typically profit?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Long-term investments</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Bid-ask spread capture</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Dividend arbitrage</div>
                 
-        SPX Options Typical Pattern:
-        │
-        ├── OTM puts: High vol (crash fear)
-        ├── ATM: Normal vol
-        └── OTM calls: Moderate vol
-    </div>
-    
-    <h3>Quantitative Implications</h3>
-    <ol>
-        <li><strong>Black-Scholes Failure:</strong> Assumes constant vol across strikes</li>
-        <li><strong>Skew Trading:</strong> Buy cheap wings vs. sell expensive ATM</li>
-        <li><strong>VIX Calculation:</strong> Weighted average of near-term options</li>
-    </ol>
-    
-    <div class="quiz">
-        <h3>Volatility Analysis</h3>
-        <p>What does a steep volatility smile indicate?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">Market expects tail events</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Interest rates will rise</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Liquidity is abundant</div>
-        
-        <p style="margin-top:20px;">How does the volatility surface change pre-earnings?</p>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">Flattens completely</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">ATM vol increases sharply</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">OTM vol decreases</div>
-    </div>
-    
-    <div class="lesson-nav">
-        <button class="nav-btn" onclick="navigateLesson('advanced', 2)">← Previous</button>
-        <button class="nav-btn" onclick="navigateLesson('advanced', 4)">Next →</button>
-    </div>
-</div>
-<!-- Actual implementation would include all 8 advanced lessons -->
+                <p style="margin-top: 20px;">What's the key technological requirement?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Sub-millisecond latency</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">High-frequency news scanning</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Blockchain integration</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('advanced', 1)">← Previous</button>
+                <button class="nav-btn" onclick="navigateLesson('advanced', 3)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div class="lesson advanced hidden" id="advanced-3">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 3/8</span>
+            <h2>Volatility Smiles & Surfaces</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>The volatility smile shows how implied volatility varies with strike price, revealing market expectations and arbitrage opportunities.</p>
+            </div>
+            
+            <div class="diagram">
+                VOLATILITY SURFACE
+                          /\
+                         /  \       ↗ Term structure
+                        /    \    /
+                    ___/      \__/
+                    ITM      ATM      OTM
+                    
+                SPX Options Typical Pattern:
+                │
+                ├── OTM puts: High vol (crash fear)
+                ├── ATM: Normal vol
+                └── OTM calls: Moderate vol
+            </div>
+            
+            <h3>Quantitative Implications</h3>
+            <ol>
+                <li><strong>Black-Scholes Failure:</strong> Assumes constant vol across strikes</li>
+                <li><strong>Skew Trading:</strong> Buy cheap wings vs. sell expensive ATM</li>
+                <li><strong>VIX Calculation:</strong> Weighted average of near-term options</li>
+            </ol>
+            
+            <div class="quiz">
+                <h3>Volatility Analysis</h3>
+                <p>What does a steep volatility smile indicate?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Market expects tail events</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Interest rates will rise</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Liquidity is abundant</div>
+                
+                <p style="margin-top:20px;">How does the volatility surface change pre-earnings?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Flattens completely</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">ATM vol increases sharply</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">OTM vol decreases</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('advanced', 2)">← Previous</button>
+                <button class="nav-btn" onclick="navigateLesson('advanced', 4)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Lessons 4-7 would follow same pattern -->
+        <!-- Placeholder comments for remaining advanced lessons -->
+        <!-- Lesson 4: Exotic Options Pricing -->
+        <!-- Lesson 5: Market Microstructure -->
+        <!-- Lesson 6: Advanced Portfolio Theory -->
+        <!-- Lesson 7: Machine Learning in Trading -->
+
+        <!-- Lesson 8 -->
+        <div class="lesson advanced hidden" id="advanced-8">
+            <span class="badge advanced-badge">ADVANCED</span>
+            <span class="lesson-counter">Lesson 8/8</span>
+            <h2>Advanced Risk Parity Strategies</h2>
+            
+            <div class="key-concept">
+                <h4>Core Concept</h4>
+                <p>Risk parity allocates capital based on risk contribution rather than dollar amounts, optimizing for better risk-adjusted returns.</p>
+            </div>
+            
+            <div class="diagram">
+                RISK PARITY FRAMEWORK
+                │
+                ├── RISK BUDGETING
+                │   ├── Equal risk contribution
+                │   └── Leverage used judiciously
+                │
+                ├── ASSET CLASSES
+                │   ├── Equities
+                │   ├── Bonds
+                │   └── Alternatives
+                │
+                └── OPTIMIZATION
+                    ├── Volatility targeting
+                    └── Correlation analysis
+            </div>
+            
+            <h3>Implementation Challenges</h3>
+            <ul>
+                <li><strong>Leverage costs:</strong> Borrowing expenses impact returns</li>
+                <li><strong>Correlation shifts:</strong> Relationships change during crises</li>
+                <li><strong>Liquidity needs:</strong> Rebalancing requires execution at scale</li>
+            </ul>
+            
+            <div class="quiz">
+                <h3>Risk Parity Concepts</h3>
+                <p>Why might bonds receive higher allocation in risk parity?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">They always outperform</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Lower volatility than equities</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Regulatory requirements</div>
+                
+                <p style="margin-top: 20px;">What's the main benefit of risk parity?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Higher absolute returns</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Better risk-adjusted returns</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Simpler implementation</div>
+            </div>
+            
+            <div class="lesson-nav">
+                <button class="nav-btn" onclick="navigateLesson('advanced', 7)">← Previous</button>
+                <button class="nav-btn" onclick="completeLevel('advanced')">Complete Course</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -947,6 +1086,8 @@
                 openTab('intermediate');
             } else if (level === 'intermediate') {
                 openTab('advanced');
+            } else if (level === 'advanced') {
+                alert('You have completed the entire Financial Markets Master Course!');
             }
         }
 
