@@ -1140,7 +1140,9 @@ audio {
 }
 
 .market-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: orange;
   color: white;
   text-decoration: none;
@@ -1151,8 +1153,14 @@ audio {
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  gap: 8px; /* space between icon and text */
 }
 
 .market-button:hover {
   background-color: darkorange;
+}
+
+.market-button .icon {
+  width: 24px;
+  height: 24px;
 }
