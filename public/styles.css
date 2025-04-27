@@ -1134,3 +1134,25 @@ audio {
   color: green;
   transition: opacity 1s;
 }
+.footer {
+  text-align: center;
+  padding: 20px;
+}
+
+.market-button {
+  display: inline-block;
+  background-color: orange;
+  color: white;
+  text-decoration: none;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.market-button:hover {
+  background-color: darkorange;
+}
