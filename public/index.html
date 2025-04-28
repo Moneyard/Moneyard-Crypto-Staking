@@ -539,15 +539,6 @@
       toggle.textContent = "+"; // Change "−" back to "+"
     }
   }
- document.querySelectorAll('.expand-toggle').forEach(toggle => {
-  toggle.addEventListener('click', () => {
-    const content = toggle.closest('.expand-section').querySelector('.expand-content');
-    const isOpen = content.classList.contains('active');
-    
-    content.classList.toggle('active');
-    toggle.textContent = isOpen ? '+' : '−';
-  });
-});
 </script>
 </body>
 </html>
