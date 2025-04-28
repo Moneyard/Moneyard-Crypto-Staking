@@ -541,6 +541,21 @@
       toggle.textContent = "+"; // Change "−" back to "+"
     }
   }
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.expand-toggle');
+    const content = document.querySelector('.expand-content');
+
+    toggle.addEventListener('click', function() {
+      if (content.style.display === 'block') {
+        content.style.display = 'none';
+        toggle.textContent = '+';
+      } else {
+        content.style.display = 'block';
+        toggle.textContent = '-';
+      }
+    });
+  });
+
 </script>
 </body>
 </html>
