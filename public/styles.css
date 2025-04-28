@@ -1183,3 +1183,36 @@ audio {
   margin: 0 auto 20px auto; /* center the image and add space below */
   border-radius: 12px; /* optional: rounded corners for a nicer look */
 }
+#grow-savings {
+  width: 100%;
+  max-width: 100%;
+  padding: 40px 10px;
+  background-color: #eef7f2;
+  box-sizing: border-box;
+}
+
+.expand-section {
+  width: 100%;
+  max-width: 100%;
+}
+
+.expand-content {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible; /* Allow content to expand */
+}
+
+.scrollable-content {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible; /* Important: don't hide the full image */
+}
+
+.expand-image {
+  width: 100%;
+  height: auto; /* auto keeps natural image height */
+  max-width: 100%;
+  display: block;
+  margin: 0 auto 20px auto;
+  border-radius: 12px;
+}
