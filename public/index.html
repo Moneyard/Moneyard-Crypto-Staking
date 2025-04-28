@@ -550,6 +550,21 @@
       toggle.textContent = content.classList.contains('open') ? '-' : '+';
     });
   });
+function toggleExpand() {
+  const content = document.querySelector('.expand-content');
+  const toggleText = document.querySelector('.expand-toggle');
+  
+  // Toggle between expanded and collapsed state
+  if (content.style.height === '' || content.style.height === '0px') {
+    // Open: Set height to auto
+    content.style.height = content.scrollHeight + 'px';  // Dynamically sets the height based on content
+    toggleText.textContent = '-';  // Change the "+" to "-"
+  } else {
+    // Close: Set height back to 0
+    content.style.height = '0px';
+    toggleText.textContent = '+';  // Change the "-" back to "+"
+  }
+}
 </script>
 </body>
 </html>
