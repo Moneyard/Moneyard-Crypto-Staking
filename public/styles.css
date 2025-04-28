@@ -1201,3 +1201,14 @@ audio {
   margin: 0 auto 20px auto;
   border-radius: 12px;
 }
+.expand-content {
+  display: none; /* Hide by default */
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.5s ease;
+  padding: 0; /* no padding when hidden */
+}
+
+.expand-content.open {
+  display: block;
+  padding: 20px 0; /* Add padding when open */
+}
