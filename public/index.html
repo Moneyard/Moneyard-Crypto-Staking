@@ -232,10 +232,7 @@
     <img src="20250409_162622.jpg" alt="Moneyard Flow" class="feature-image grow-animation" />
   </section>
 <!-- Image Display Section -->
-<section id="image-section" style="text-align: center; padding: 50px 0;">
-  <h2>Our Featured Image</h2>
   <img src="grow-savings.png" alt="Grow Savings" style="max-width: 100%; height: auto; border-radius: 10px;">
-  <p style="font-size: 18px; color: #333;">This is a brief description of the featured image.</p>
 </section>
 
 <section id="grow-savings" style="padding: 40px 20px; background-color: #eef7f2;">
@@ -244,20 +241,20 @@
       <h2>Grow Your Savings</h2>
       <span class="expand-toggle">+</span>
     </div>
-    <div class="expand-content">
-      <div class="scrollable-content">
-        <!-- Add your image here -->
-        <img src="grow-savings.png" alt="Grow Savings" class="expand-image">
 
-        <p><strong>Moneyard High-Yield Savings:</strong> Grow your crypto wealth passively by enabling our flexible or locked savings options. Earn daily interest based on your balance.</p>
-        <p><strong>Flexible Staking:</strong> Withdraw anytime while still earning competitive APY.</p>
-        <p><strong>Locked Staking:</strong> Lock assets for higher returns over fixed periods like 7, 30, or 90 days.</p>
-        <p><strong>Minimum Balance:</strong> Keep at least $15 or equivalent to start earning interest.</p>
-        <p><strong>Platform Options:</strong> You can fund your wallet via P2P, Binance, Coinbase, or any crypto exchange, and then opt-in to earn automatically.</p>
-        <p><strong>Track Your Growth:</strong> Use your dashboard to monitor daily returns, total earnings, and staking history in real-time.</p>
-        <p><strong>Withdraw Anytime:</strong> Use our withdrawal panel to cash out your earnings or reinvest.</p>
-        <p><strong>Security:</strong> All staking operations are protected with two-factor authentication and smart contract security audits.</p>
-      </div>
+    <!-- Image is visible by default -->
+    <img src="https://via.placeholder.com/800x200?text=Grow+Your+Savings" alt="Grow Savings" class="expand-image">
+
+    <!-- Content is hidden until click -->
+    <div class="expand-content">
+      <p><strong>Moneyard High-Yield Savings:</strong> Grow your crypto wealth passively by enabling our flexible or locked savings options. Earn daily interest based on your balance.</p>
+      <p><strong>Flexible Staking:</strong> Withdraw anytime while still earning competitive APY.</p>
+      <p><strong>Locked Staking:</strong> Lock assets for higher returns over fixed periods like 7, 30, or 90 days.</p>
+      <p><strong>Minimum Balance:</strong> Keep at least $15 or equivalent to start earning interest.</p>
+      <p><strong>Platform Options:</strong> You can fund your wallet via P2P, Binance, Coinbase, or any crypto exchange, and then opt-in to earn automatically.</p>
+      <p><strong>Track Your Growth:</strong> Use your dashboard to monitor daily returns, total earnings, and staking history in real-time.</p>
+      <p><strong>Withdraw Anytime:</strong> Use our withdrawal panel to cash out your earnings or reinvest.</p>
+      <p><strong>Security:</strong> All staking operations are protected with two-factor authentication and smart contract security audits.</p>
     </div>
   </div>
 </section>
@@ -547,29 +544,15 @@
       toggle.textContent = "+"; // Change "−" back to "+"
     }
   }
-  document.addEventListener('DOMContentLoaded', function() {
-    const toggle = document.querySelector('.expand-toggle');
-    const content = document.querySelector('.expand-content');
-
-    toggle.addEventListener('click', function() {
-      content.classList.toggle('open');
-      toggle.textContent = content.classList.contains('open') ? '-' : '+';
-    });
+ document.querySelectorAll('.expand-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const content = toggle.closest('.expand-section').querySelector('.expand-content');
+    const isOpen = content.classList.contains('active');
+    
+    content.classList.toggle('active');
+    toggle.textContent = isOpen ? '+' : '−';
   });
-function toggleExpand() {
-  const content = document.querySelector('.expand-content');
-  const toggleText = document.querySelector('.expand-toggle');
-
-  if (content.style.maxHeight === '' || content.style.maxHeight === '0px') {
-    // Open: Set max-height to the scrollHeight of the content
-    content.style.maxHeight = content.scrollHeight + 'px';
-    toggleText.textContent = '-';  // Change the "+" to "-"
-  } else {
-    // Close: Set max-height back to 0
-    content.style.maxHeight = '0px';
-    toggleText.textContent = '+';  // Change the "-" back to "+"
-  }
-}
+});
 </script>
 </body>
 </html>
