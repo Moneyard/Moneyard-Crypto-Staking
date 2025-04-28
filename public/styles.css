@@ -1175,3 +1175,11 @@ audio {
   max-height: 1000px; /* big enough to fit your content */
   padding: 20px 0;
 }
+.expand-image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto 20px auto; /* center the image and add space below */
+  border-radius: 12px; /* optional: rounded corners for a nicer look */
+}
