@@ -1174,6 +1174,7 @@ audio {
 
 .expand-section {
   width: 100%;
+  max-width: 100%;
 }
 
 .expand-header {
@@ -1184,19 +1185,28 @@ audio {
 }
 
 .expand-content {
-  max-height: 0;  /* Initially collapsed */
+  max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease-out;
+  transition: max-height 0.5s ease, padding 0.5s ease;
+  padding: 0 0;
+  width: 100%;
+}
+
+.expand-content.open {
+  max-height: 2000px; /* make it big enough to show all content */
+  padding: 20px 0;
 }
 
 .scrollable-content {
   width: 100%;
   max-width: 100%;
+  overflow: visible; /* allow full image */
 }
 
 .expand-image {
   width: 100%;
   height: auto;
+  max-width: 100%;
   display: block;
   margin: 0 auto 20px auto;
   border-radius: 12px;
