@@ -546,16 +546,10 @@
     const content = document.querySelector('.expand-content');
 
     toggle.addEventListener('click', function() {
-      if (content.style.display === 'block') {
-        content.style.display = 'none';
-        toggle.textContent = '+';
-      } else {
-        content.style.display = 'block';
-        toggle.textContent = '-';
-      }
+      content.classList.toggle('open');
+      toggle.textContent = content.classList.contains('open') ? '-' : '+';
     });
   });
-
 </script>
 </body>
 </html>
