@@ -553,15 +553,14 @@
 function toggleExpand() {
   const content = document.querySelector('.expand-content');
   const toggleText = document.querySelector('.expand-toggle');
-  
-  // Toggle between expanded and collapsed state
-  if (content.style.height === '' || content.style.height === '0px') {
-    // Open: Set height to auto
-    content.style.height = content.scrollHeight + 'px';  // Dynamically sets the height based on content
+
+  if (content.style.maxHeight === '' || content.style.maxHeight === '0px') {
+    // Open: Set max-height to the scrollHeight of the content
+    content.style.maxHeight = content.scrollHeight + 'px';
     toggleText.textContent = '-';  // Change the "+" to "-"
   } else {
-    // Close: Set height back to 0
-    content.style.height = '0px';
+    // Close: Set max-height back to 0
+    content.style.maxHeight = '0px';
     toggleText.textContent = '+';  // Change the "-" back to "+"
   }
 }
