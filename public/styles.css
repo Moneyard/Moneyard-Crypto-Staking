@@ -1165,13 +1165,13 @@ audio {
   height: 24px;
 }
 .expand-content {
-  display: none; /* Hide by default */
+  max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease, padding 0.5s ease;
-  padding: 0; /* no padding when hidden */
+  padding: 0 0;
 }
 
 .expand-content.open {
-  display: block;
-  padding: 20px 0; /* Add padding when open */
+  max-height: 1000px; /* big enough to fit your content */
+  padding: 20px 0;
 }
