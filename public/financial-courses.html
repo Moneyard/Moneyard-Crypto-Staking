@@ -146,18 +146,23 @@
       </form>
     </div>
 
-    <!-- ADVERT (Initially hidden) -->
-    <div class="course-advert" id="courseAdvert">
-      <span class="paid-label">Paid Course</span>
-      <h3>Personal Finance Mastery</h3>
-      <p class="duration-price">Duration: 6 days | Price: $29</p>
-      <p class="trademark">Moneyard Learning</p>
-      <p class="cert-note">Accredited certificate received upon completion</p>
-      <button class="enroll-button" onclick="redirectToLesson('personal-finance.html')">Enroll Now</button>
-      <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
-      <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
-    </div>
-  </div>
+    <!-- Congratulatory Badge Modal -->
+  <div id="badgeContainer" style="display:none; background-color: lightgreen; padding: 10px; text-align: center;">
+    <h3>Congratulations! You've passed the quiz!</h3>
+    <p>Enroll Now for the paid course to get the certificate.</p>
+  </div>
+
+  <!-- Paid Course Advertisement Modal (Original Advert) -->
+  <div id="courseAdContainer" class="course-advert" style="display:none; background-color: #ffeb3b; padding: 10px; text-align: center; border: 2px solid green;">
+    <span class="paid-label">Paid Course</span>
+    <h3>Personal Finance Mastery</h3>
+    <p class="duration-price">Duration: 6 days | Price: $29</p>
+    <p class="trademark">Moneyard Learning</p>
+    <p class="cert-note">Accredited certificate received upon completion</p>
+    <button class="enroll-button" onclick="redirectToLesson('personal-finance.html')">Enroll Now</button>
+    <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
+    <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
+  </div>
 
   <script>
     let current = 1;
@@ -198,6 +203,9 @@
     // Display congratulatory message
     alert("Quiz passed! Enroll Now for the paid course to get the certificate.");
     document.getElementById("badgeContainer").style.display = "block"; // Show badge
+
+    // Display paid course ad
+    document.getElementById("courseAdContainer").style.display = "block"; // Show ad
   } else {
     // Show message for failing
     alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
@@ -207,6 +215,6 @@
 function redirectToLesson(page) {
   window.location.href = page;
 }
-  </script>
+ </script>
 </body>
 </html>
