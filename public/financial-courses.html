@@ -13,17 +13,20 @@
     button { padding: 10px 20px; background-color: #28a745; color: white; border: none; margin: 10px 0; border-radius: 5px; cursor: pointer; }
     button:hover { background-color: #218838; }
     .quiz label { display: block; margin: 8px 0; }
+    .video-container { margin-bottom: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Financial Literacy & Micro Investments Course</h1>
+    <h1>Personal Finance Masterclass: Financial Literacy & Micro Investments</h1>
+
+    <!-- EMBEDDED VIDEO -->
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/vJabNEwZIuc" title="Personal Finance Video" allowfullscreen></iframe>
+    </div>
 
     <!-- LESSONS 1 to 10 -->
-<div style="margin-bottom: 20px;">
-  <iframe width="100%" height="400" src="https://www.youtube.com/embed/vJabNEwZIuc" 
-    title="Course Introduction" frameborder="0" allowfullscreen></iframe>
-</div>
     <div id="lesson1" class="lesson active"><h2>Lesson 1: What is Financial Literacy?</h2><p>It’s the foundation of understanding how money works in the world: budgeting, investing, borrowing, saving, and more.</p><button onclick="nextLesson(2)">Next</button></div>
     <div id="lesson2" class="lesson"><h2>Lesson 2: Budgeting Basics</h2><p>Learn to plan your income and expenses. Use tools like the 50/30/20 rule.</p><button onclick="nextLesson(3)">Next</button></div>
     <div id="lesson3" class="lesson"><h2>Lesson 3: Emergency Funds</h2><p>Start building a safety net for unexpected costs—aim for 3–6 months of expenses.</p><button onclick="nextLesson(4)">Next</button></div>
@@ -88,7 +91,7 @@
       <h2>Congratulations!</h2>
       <p>This certifies that:</p>
       <h3 id="certName">[Your Name]</h3>
-      <p>has successfully completed the Financial Literacy & Micro Investments Course.</p>
+      <p>has successfully completed the Personal Finance Masterclass: Financial Literacy & Micro Investments.</p>
       <p>Date: <span id="certDate"></span></p>
       <p>You can now download your certificate:</p>
       <a href="certificate.png" download="Moneyard_Certificate.png">
