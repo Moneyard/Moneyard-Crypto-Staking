@@ -117,6 +117,31 @@
           <input type="radio" name="question5" value="correct"> Interest earned on both principal and interest
           <input type="radio" name="question5" value="incorrect"> Interest earned only on the principal
         </div>
+        <div>
+          <label for="question6">6. What is a high-yield savings account?</label>
+          <input type="radio" name="question6" value="correct"> A savings account that earns higher interest than a regular savings account
+          <input type="radio" name="question6" value="incorrect"> A type of investment fund that only invests in government bonds
+        </div>
+        <div>
+          <label for="question7">7. What does risk mean in investing?</label>
+          <input type="radio" name="question7" value="correct"> The potential to lose money
+          <input type="radio" name="question7" value="incorrect"> The guaranteed return on an investment
+        </div>
+        <div>
+          <label for="question8">8. What is a credit score?</label>
+          <input type="radio" name="question8" value="correct"> A number that represents your creditworthiness
+          <input type="radio" name="question8" value="incorrect"> A score based on how much you owe on loans
+        </div>
+        <div>
+          <label for="question9">9. What is the purpose of a budget?</label>
+          <input type="radio" name="question9" value="correct"> To track income and expenses to control spending
+          <input type="radio" name="question9" value="incorrect"> To determine how much you can afford to invest
+        </div>
+        <div>
+          <label for="question10">10. What is the main advantage of long-term investing?</label>
+          <input type="radio" name="question10" value="correct"> The potential to ride out market volatility and grow wealth
+          <input type="radio" name="question10" value="incorrect"> The ability to make quick profits with little risk
+        </div>
         <button type="submit">Submit Quiz</button>
       </form>
     </div>
@@ -153,17 +178,35 @@
     }
 
     document.getElementById("quizForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      let score = 0;
-      const answers = document.querySelectorAll("input[type='radio']:checked");
-      answers.forEach(ans => {
-        if (ans.value === "correct") score++;
-      });
-      alert("You scored " + score + "/5!");
+  e.preventDefault();
 
-      // Show the course advert after quiz submission
-      document.getElementById("courseAdvert").style.display = "block";
-    });
+  const answers = document.querySelectorAll('#quizForm input[type="radio"]:checked');
+  let score = 0;
+  
+  // Check if each answer is correct
+  answers.forEach(ans => {
+    if (ans.value === "correct") score++;
+  });
+
+  // Check if the score is 8 or more (passing)
+  if (score >= 8) {
+    // Vibrate and play sound on passing
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+    audio.play();
+
+    // Display congratulatory message
+    alert("Quiz passed! Enroll Now for the paid course to get the certificate.");
+    document.getElementById("badgeContainer").style.display = "block"; // Show badge
+  } else {
+    // Show message for failing
+    alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
+  }
+});
+
+function redirectToLesson(page) {
+  window.location.href = page;
+}
   </script>
 </body>
 </html>
