@@ -7,7 +7,7 @@
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #f7f9fb; padding: 20px; }
     .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-    .lesson, .quiz, .certificate { display: none; }
+    .lesson, .quiz { display: none; }
     .active { display: block; }
     h2 { color: #004d66; }
     button { padding: 10px 20px; background-color: #28a745; color: white; border: none; margin: 10px 0; border-radius: 5px; cursor: pointer; }
@@ -15,6 +15,57 @@
     .quiz label { display: block; margin: 8px 0; }
     .video-container { margin-bottom: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+    .course-advert {
+      margin-top: 30px;
+      padding: 20px;
+      border-top: 2px solid #ccc;
+      background: #f0f9f7;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .paid-label {
+      background: #e63946;
+      color: white;
+      padding: 3px 10px;
+      font-size: 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .duration-price {
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    .trademark {
+      font-size: 14px;
+      color: #888;
+    }
+    .cert-note {
+      font-size: 13px;
+      margin: 5px 0;
+      color: #444;
+    }
+    .enroll-button {
+      background: #0077cc;
+      margin-top: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .enroll-button:hover {
+      background-color: #005fa3;
+    }
+    .overview-arrow {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #0077cc;
+    }
   </style>
 </head>
 <body>
@@ -86,20 +137,18 @@
       </form>
     </div>
 
-    <!-- CERTIFICATE -->
-    <div id="certificate" class="certificate" style="text-align:center; padding:30px; border-top:1px solid #ccc;">
-      <h2>Congratulations!</h2>
-      <p>This certifies that:</p>
-      <h3 id="certName">[Your Name]</h3>
-      <p>has successfully completed the Personal Finance Masterclass: Financial Literacy & Micro Investments.</p>
-      <p>Date: <span id="certDate"></span></p>
-      <p>You can now download your certificate:</p>
-      <a href="certificate.png" download="Moneyard_Certificate.png">
-        <button style="padding: 12px 24px; background-color: #28a745; color: white; font-size: 16px; border: none; border-radius: 5px;">
-          Download Certificate
-        </button>
-      </a>
+    <!-- COURSE ADVERT (Replaces Certificate Section) -->
+    <div class="course-advert">
+      <span class="paid-label">Paid Course</span>
+      <h3>Personal Finance Mastery</h3>
+      <p class="duration-price">Duration: 6 days | Price: $29</p>
+      <p class="trademark">Moneyard Learning</p>
+      <p class="cert-note">Accredited certificate received upon completion</p>
+      <button class="enroll-button" onclick="redirectToLesson('personal-finance.html')">Enroll Now</button>
+      <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
+      <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
     </div>
+
   </div>
 
   <script>
@@ -123,15 +172,15 @@
       answers.forEach(ans => { if (ans.value === "correct") score++; });
 
       if (score >= 8) {
-        const name = prompt("Enter your full name for the certificate:");
-        document.getElementById("quiz").classList.remove("active");
-        document.getElementById("certificate").classList.add("active");
-        document.getElementById("certName").textContent = name;
-        document.getElementById("certDate").textContent = new Date().toLocaleDateString();
+        alert("Quiz passed! You are eligible for the certificate in the paid version.");
       } else {
         alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
       }
     });
+
+    function redirectToLesson(page) {
+      window.location.href = page;
+    }
   </script>
 </body>
 </html>
