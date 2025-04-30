@@ -92,9 +92,31 @@
     <div id="quiz" class="quiz">
       <h2>Final Quiz</h2>
       <form id="quizForm">
-        <!-- 10 Questions -->
-        <!-- ... Questions here ... -->
-
+        <div>
+          <label for="question1">1. What is Financial Literacy?</label>
+          <input type="radio" name="question1" value="correct"> Understanding how money works
+          <input type="radio" name="question1" value="incorrect"> Understanding only how to save money
+        </div>
+        <div>
+          <label for="question2">2. What is an emergency fund?</label>
+          <input type="radio" name="question2" value="correct"> Money set aside for unexpected expenses
+          <input type="radio" name="question2" value="incorrect"> Money used for investing in stocks
+        </div>
+        <div>
+          <label for="question3">3. What is the 50/30/20 rule?</label>
+          <input type="radio" name="question3" value="correct"> A budgeting rule for income distribution
+          <input type="radio" name="question3" value="incorrect"> A rule for calculating investment returns
+        </div>
+        <div>
+          <label for="question4">4. What is diversification in investing?</label>
+          <input type="radio" name="question4" value="correct"> Spreading investments across different assets
+          <input type="radio" name="question4" value="incorrect"> Investing in a single asset to reduce risk
+        </div>
+        <div>
+          <label for="question5">5. What is compound interest?</label>
+          <input type="radio" name="question5" value="correct"> Interest earned on both principal and interest
+          <input type="radio" name="question5" value="incorrect"> Interest earned only on the principal
+        </div>
         <button type="submit">Submit Quiz</button>
       </form>
     </div>
@@ -137,8 +159,8 @@
       answers.forEach(ans => {
         if (ans.value === "correct") score++;
       });
-      alert("You scored " + score + "/10!");
-      
+      alert("You scored " + score + "/5!");
+
       // Show the course advert after quiz submission
       document.getElementById("courseAdvert").style.display = "block";
     });
