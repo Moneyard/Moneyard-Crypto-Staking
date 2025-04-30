@@ -152,50 +152,35 @@
   </div>
 
   <script>
-  // Initialize the current lesson
-  let current = 1;
-
-  // Function to navigate to the next lesson
-  function nextLesson(num) {
-    document.getElementById(`lesson${current}`).classList.remove('active');
-    document.getElementById(`lesson${num}`).classList.add('active');
-    current = num;
-  }
-
-  // Function to start the quiz
-  function startQuiz() {
-    document.getElementById(`lesson${current}`).classList.remove('active');
-    document.getElementById("quiz").classList.add('active');
-  }
-
-  // Handling the quiz form submission
-  document.getElementById("quizForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+  document.getElementById("submitQuiz").addEventListener("click", function () {
     let score = 0;
 
-    // Correct answers object
+    // Define the correct answers for each question
     const correctAnswers = {
-      q1: "b",
+      q1: "a",
       q2: "a",
-      q3: "c",
+      q3: "a",
       q4: "a",
-      q5: "d",
-      q6: "b",
-      q7: "c",
+      q5: "a",
+      q6: "a",
+      q7: "a",
       q8: "a",
-      q9: "d",
-      q10: "b"
+      q9: "a",
+      q10: "a"
     };
 
-    // Checking user answers
+    // Loop through the correct answers and check if the selected answer is correct
     for (let q in correctAnswers) {
+      // Find the selected answer for the current question
       const selected = document.querySelector(`input[name="${q}"]:checked`);
+      
+      // If an answer is selected and it matches the correct answer, increment the score
       if (selected && selected.value === correctAnswers[q]) {
         score++;
       }
     }
 
-    // Display result and handle pass/fail
+    // Display the result
     if (score >= 8) {
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
       const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
@@ -206,7 +191,6 @@
     }
   });
 
-  // Redirect function for lesson navigation
   function redirectToLesson(page) {
     window.location.href = page;
   }
