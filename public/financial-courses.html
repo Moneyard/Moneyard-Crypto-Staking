@@ -15,7 +15,6 @@
     .quiz label { display: block; margin: 8px 0; }
     .video-container { margin-bottom: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-
     .course-advert {
       margin-top: 30px;
       padding: 20px;
@@ -72,12 +71,11 @@
   <div class="container">
     <h1>Personal Finance Masterclass: Financial Literacy & Micro Investments</h1>
 
-    <!-- EMBEDDED VIDEO -->
     <div class="video-container">
       <iframe src="https://www.youtube.com/embed/vJabNEwZIuc" title="Personal Finance Video" allowfullscreen></iframe>
     </div>
 
-    <!-- LESSONS 1 to 10 -->
+    <!-- LESSONS -->
     <div id="lesson1" class="lesson active"><h2>Lesson 1: What is Financial Literacy?</h2><p>It’s the foundation of understanding how money works in the world: budgeting, investing, borrowing, saving, and more.</p><button onclick="nextLesson(2)">Next</button></div>
     <div id="lesson2" class="lesson"><h2>Lesson 2: Budgeting Basics</h2><p>Learn to plan your income and expenses. Use tools like the 50/30/20 rule.</p><button onclick="nextLesson(3)">Next</button></div>
     <div id="lesson3" class="lesson"><h2>Lesson 3: Emergency Funds</h2><p>Start building a safety net for unexpected costs—aim for 3–6 months of expenses.</p><button onclick="nextLesson(4)">Next</button></div>
@@ -93,6 +91,8 @@
     <div id="quiz" class="quiz">
       <h2>Final Quiz</h2>
       <form id="quizForm">
+        <!-- 10 Questions -->
+        <!-- ... Already written in your version ... -->
         <label>1. What does financial literacy help with?</label>
         <input type="radio" name="q1" value="correct"/> Managing money<br/>
         <input type="radio" name="q1" value="wrong"/> Memorizing currency<br/>
@@ -137,7 +137,7 @@
       </form>
     </div>
 
-    <!-- COURSE ADVERT (Replaces Certificate Section) -->
+    <!-- ADVERT -->
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
       <h3>Personal Finance Mastery</h3>
@@ -148,50 +148,35 @@
       <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
       <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
     </div>
-
   </div>
 
   <script>
-  document.getElementById("submitQuiz").addEventListener("click", function () {
-    let score = 0;
+    let current = 1;
 
-    // Define the correct answers for each question
-    const correctAnswers = {
-      q1: "a",
-      q2: "a",
-      q3: "a",
-      q4: "a",
-      q5: "a",
-      q6: "a",
-      q7: "a",
-      q8: "a",
-      q9: "a",
-      q10: "a"
-    };
-
-    // Loop through the correct answers and check if the selected answer is correct
-    for (let q in correctAnswers) {
-      // Find the selected answer for the current question
-      const selected = document.querySelector(`input[name="${q}"]:checked`);
-      
-      // If an answer is selected and it matches the correct answer, increment the score
-      if (selected && selected.value === correctAnswers[q]) {
-        score++;
-      }
+    function nextLesson(num) {
+      document.getElementById(`lesson${current}`).classList.remove('active');
+      document.getElementById(`lesson${num}`).classList.add('active');
+      current = num;
     }
 
-    // Display the result
-    if (score >= 8) {
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-      audio.play();
-      alert("Quiz passed! Enroll Now for the paid course to get the certificate.");
-    } else {
-      alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
+    function startQuiz() {
+      document.getElementById(`lesson${current}`).classList.remove('active');
+      document.getElementById("quiz").classList.add('active');
     }
-  });
 
-  function redirectToLesson(page) {
-    window.location.href = page;
-  }
-</script>
+    function redirectToLesson(url) {
+      window.location.href = url;
+    }
+
+    document.getElementById("quizForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let score = 0;
+      const answers = document.querySelectorAll("input[type='radio']:checked");
+      answers.forEach(ans => {
+        if (ans.value === "correct") score++;
+      });
+      alert("You scored " + score + "/10!");
+    });
+  </script>
+</body>
+</html>
