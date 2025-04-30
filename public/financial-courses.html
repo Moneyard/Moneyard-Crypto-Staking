@@ -5,191 +5,209 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Personal Finance Masterclass: Financial Literacy & Micro Investments</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
-      color: #333;
-    }
-
-    .video-section {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    iframe {
-      max-width: 100%;
-      border: none;
-      border-radius: 10px;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #f7f9fb; padding: 20px; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    .lesson, .quiz { display: none; }
+    .active { display: block; }
+    h2 { color: #004d66; }
+    button { padding: 10px 20px; background-color: #28a745; color: white; border: none; margin: 10px 0; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #218838; }
+    .quiz label { display: block; margin: 8px 0; }
+    .video-container { margin-bottom: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
     .course-advert {
-      background: #ffffff;
+      margin-top: 30px;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      border-top: 2px solid #ccc;
+      background: #f0f9f7;
       text-align: center;
+      border-radius: 8px;
     }
-
     .paid-label {
-      background: #28a745;
+      background: #e63946;
       color: white;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 14px;
+      padding: 3px 10px;
+      font-size: 12px;
+      border-radius: 20px;
       display: inline-block;
       margin-bottom: 10px;
     }
-
     .duration-price {
-      font-size: 16px;
-      color: #555;
-    }
-
-    .cert-note {
-      font-size: 14px;
-      color: #777;
+      font-weight: bold;
       margin: 5px 0;
     }
-
+    .trademark {
+      font-size: 14px;
+      color: #888;
+    }
+    .cert-note {
+      font-size: 13px;
+      margin: 5px 0;
+      color: #444;
+    }
     .enroll-button {
-      background-color: #007bff;
-      color: white;
+      background: #0077cc;
+      margin-top: 10px;
       padding: 10px 20px;
-      font-size: 16px;
+      border-radius: 5px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin: 10px 0;
-    }
-
-    .enroll-button:hover {
-      background-color: #0056b3;
-    }
-
-    .overview-arrow {
-      font-size: 24px;
-      cursor: pointer;
-      color: #333;
-    }
-
-    .quiz-section {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-top: 30px;
-    }
-
-    #badgeContainer {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #badge {
-      background-color: #4CAF50;
       color: white;
-      padding: 20px;
-      font-size: 20px;
-      border-radius: 12px;
-      display: inline-block;
-      animation: popFade 1s ease-out forwards;
+      font-weight: bold;
+      cursor: pointer;
     }
-
-    @keyframes popFade {
-      0% {
-        opacity: 0;
-        transform: scale(0.5);
-      }
-      60% {
-        opacity: 1;
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
+    .enroll-button:hover {
+      background-color: #005fa3;
+    }
+    .overview-arrow {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #0077cc;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Personal Finance Masterclass: Financial Literacy & Micro Investments</h1>
 
-  <div class="video-section">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/vJabNEwZIuc?si=-A5Lk99aLm1QY5Ff"
-      title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>
-  </div>
-
-  <div class="course-advert">
-    <span class="paid-label">Paid Course</span>
-    <h3>Personal Finance Mastery</h3>
-    <p class="duration-price">Duration: 6 days | Price: $29</p>
-    <p class="trademark">Moneyard Learning</p>
-    <p class="cert-note">Accredited certificate received upon completion</p>
-    <button class="enroll-button" onclick="redirectToLesson('personal-finance.html')">Enroll Now</button>
-    <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
-    <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
-  </div>
-
-  <div class="quiz-section">
-    <h2>Final Quiz</h2>
-    <form id="quizForm">
-      <p>1. What is a budget?</p>
-      <label><input type="radio" name="q1" value="a"> A type of bank</label><br>
-      <label><input type="radio" name="q1" value="b"> A plan for managing income and expenses</label><br>
-      <label><input type="radio" name="q1" value="c"> An investment tool</label><br>
-
-      <p>2. What is compound interest?</p>
-      <label><input type="radio" name="q2" value="a"> Interest on principal and accumulated interest</label><br>
-      <label><input type="radio" name="q2" value="b"> Interest paid once a year</label><br>
-      <label><input type="radio" name="q2" value="c"> Tax on savings</label><br>
-
-      <!-- Add more questions similarly... -->
-      <!-- For simplicity only 2 shown, rest would follow the same format -->
-      
-      <button type="button" id="submitQuiz">Submit Quiz</button>
-    </form>
-
-    <div id="badgeContainer">
-      <div id="badge">
-        Congratulations! You've earned a Personal Finance Mastery badge!
-      </div>
+    <!-- EMBEDDED VIDEO -->
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/vJabNEwZIuc" title="Personal Finance Video" allowfullscreen></iframe>
     </div>
+
+    <!-- LESSONS 1 to 10 -->
+    <div id="lesson1" class="lesson active"><h2>Lesson 1: What is Financial Literacy?</h2><p>It’s the foundation of understanding how money works in the world: budgeting, investing, borrowing, saving, and more.</p><button onclick="nextLesson(2)">Next</button></div>
+    <div id="lesson2" class="lesson"><h2>Lesson 2: Budgeting Basics</h2><p>Learn to plan your income and expenses. Use tools like the 50/30/20 rule.</p><button onclick="nextLesson(3)">Next</button></div>
+    <div id="lesson3" class="lesson"><h2>Lesson 3: Emergency Funds</h2><p>Start building a safety net for unexpected costs—aim for 3–6 months of expenses.</p><button onclick="nextLesson(4)">Next</button></div>
+    <div id="lesson4" class="lesson"><h2>Lesson 4: Understanding Credit</h2><p>Credit impacts your ability to borrow. Learn about credit scores, reports, and responsible usage.</p><button onclick="nextLesson(5)">Next</button></div>
+    <div id="lesson5" class="lesson"><h2>Lesson 5: Savings & Compounding</h2><p>Learn how interest works and the power of compounding your savings over time.</p><button onclick="nextLesson(6)">Next</button></div>
+    <div id="lesson6" class="lesson"><h2>Lesson 6: Investing Basics</h2><p>Understand risk vs. reward, and different types of assets: stocks, bonds, crypto, real estate.</p><button onclick="nextLesson(7)">Next</button></div>
+    <div id="lesson7" class="lesson"><h2>Lesson 7: Diversification</h2><p>Diversify to reduce risk: mix of assets, industries, time horizons.</p><button onclick="nextLesson(8)">Next</button></div>
+    <div id="lesson8" class="lesson"><h2>Lesson 8: Crypto Investing</h2><p>Learn the basics of crypto, wallets, network fees, risks and rewards.</p><button onclick="nextLesson(9)">Next</button></div>
+    <div id="lesson9" class="lesson"><h2>Lesson 9: Long-Term Strategy</h2><p>Patience pays. Learn to avoid emotional investing and “FOMO.”</p><button onclick="nextLesson(10)">Next</button></div>
+    <div id="lesson10" class="lesson"><h2>Lesson 10: Micro-Investing</h2><p>Start small, grow big. Apps and tools now allow you to invest with as little as $1.</p><button onclick="startQuiz()">Take Final Quiz</button></div>
+
+    <!-- QUIZ -->
+    <div id="quiz" class="quiz">
+      <h2>Final Quiz</h2>
+      <form id="quizForm">
+        <label>1. What does financial literacy help with?</label>
+        <input type="radio" name="q1" value="correct"/> Managing money<br/>
+        <input type="radio" name="q1" value="wrong"/> Memorizing currency<br/>
+
+        <label>2. The 50/30/20 rule refers to:</label>
+        <input type="radio" name="q2" value="correct"/> Needs/Wants/Savings<br/>
+        <input type="radio" name="q2" value="wrong"/> Expenses only<br/>
+
+        <label>3. Emergency funds are for:</label>
+        <input type="radio" name="q3" value="correct"/> Unplanned expenses<br/>
+        <input type="radio" name="q3" value="wrong"/> Vacation trips<br/>
+
+        <label>4. Credit score affects:</label>
+        <input type="radio" name="q4" value="correct"/> Loan approvals<br/>
+        <input type="radio" name="q4" value="wrong"/> Grocery prices<br/>
+
+        <label>5. Compound interest means:</label>
+        <input type="radio" name="q5" value="correct"/> Earning interest on interest<br/>
+        <input type="radio" name="q5" value="wrong"/> Interest that never grows<br/>
+
+        <label>6. Investing involves:</label>
+        <input type="radio" name="q6" value="correct"/> Risk and reward<br/>
+        <input type="radio" name="q6" value="wrong"/> Guaranteed returns<br/>
+
+        <label>7. Diversification reduces:</label>
+        <input type="radio" name="q7" value="correct"/> Risk<br/>
+        <input type="radio" name="q7" value="wrong"/> Return<br/>
+
+        <label>8. Crypto wallets are used to:</label>
+        <input type="radio" name="q8" value="correct"/> Store and transfer digital assets<br/>
+        <input type="radio" name="q8" value="wrong"/> Print money<br/>
+
+        <label>9. Long-term investing avoids:</label>
+        <input type="radio" name="q9" value="correct"/> Emotional decisions<br/>
+        <input type="radio" name="q9" value="wrong"/> Small profits<br/>
+
+        <label>10. Micro-investing allows:</label>
+        <input type="radio" name="q10" value="correct"/> Investing small amounts regularly<br/>
+        <input type="radio" name="q10" value="wrong"/> Big spending only<br/>
+
+        <button type="submit">Submit Quiz</button>
+      </form>
+    </div>
+
+    <!-- COURSE ADVERT (Replaces Certificate Section) -->
+    <div class="course-advert">
+      <span class="paid-label">Paid Course</span>
+      <h3>Personal Finance Mastery</h3>
+      <p class="duration-price">Duration: 6 days | Price: $29</p>
+      <p class="trademark">Moneyard Learning</p>
+      <p class="cert-note">Accredited certificate received upon completion</p>
+      <button class="enroll-button" onclick="redirectToLesson('personal-finance.html')">Enroll Now</button>
+      <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
+      <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
+    </div>
+
   </div>
 
   <script>
-    document.getElementById("submitQuiz").addEventListener("click", function () {
-      let score = 0;
+    let current = 1;
 
-      const correctAnswers = {
-        q1: "b",
-        q2: "a"
-        // Add remaining correct answers here: q3, q4, ..., q10
-      };
-
-      for (let q in correctAnswers) {
-        const selected = document.querySelector(`input[name="${q}"]:checked`);
-        if (selected && selected.value === correctAnswers[q]) {
-          score++;
-        }
-      }
-
-      if (score >= 8) {
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-        const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-        audio.play();
-        alert("Quiz passed! Enroll Now for the paid course to get the certificate.");
-        document.getElementById("badgeContainer").style.display = "block";
-      } else {
-        alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
-      }
-    });
-
-    function redirectToLesson(page) {
-      window.location.href = page;
+    function nextLesson(num) {
+      document.getElementById(`lesson${current}`).classList.remove('active');
+      document.getElementById(`lesson${num}`).classList.add('active');
+      current = num;
     }
-  </script>
 
+    function startQuiz() {
+      document.getElementById(`lesson${current}`).classList.remove('active');
+      document.getElementById("quiz").classList.add('active');
+    }
+
+    document.getElementById("quizForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const answers = document.querySelectorAll('#quizForm input[type="radio"]:checked');
+      let score = 0;
+      answers.forEach(ans => { if (ans.value === "correct") score++; });
+  document.getElementById("submitQuiz").addEventListener("click", function () {
+    let score = 0;
+
+    // Count correct answers
+    const correctAnswers = {
+      q1: "b",
+      q2: "a",
+      q3: "c",
+      q4: "a",
+      q5: "d",
+      q6: "b",
+      q7: "c",
+      q8: "a",
+      q9: "d",
+      q10: "b"
+    };
+
+    for (let q in correctAnswers) {
+      const selected = document.querySelector(`input[name="${q}"]:checked`);
+      if (selected && selected.value === correctAnswers[q]) {
+        score++;
+      }
+    }
+
+    // Pass condition
+    if (score >= 8) {
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+      audio.play();
+      alert("Quiz passed! Enroll Now for the paid course to get the certificate.");
+    } else {
+      alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
+    }
+  });
+
+  function redirectToLesson(page) {
+    window.location.href = page;
+  }
+</script>
 </body>
 </html>
