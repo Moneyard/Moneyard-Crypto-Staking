@@ -22,6 +22,7 @@
       background: #f0f9f7;
       text-align: center;
       border-radius: 8px;
+      display: none; /* Initially hidden */
     }
     .paid-label {
       background: #e63946;
@@ -92,53 +93,14 @@
       <h2>Final Quiz</h2>
       <form id="quizForm">
         <!-- 10 Questions -->
-        <!-- ... Already written in your version ... -->
-        <label>1. What does financial literacy help with?</label>
-        <input type="radio" name="q1" value="correct"/> Managing money<br/>
-        <input type="radio" name="q1" value="wrong"/> Memorizing currency<br/>
-
-        <label>2. The 50/30/20 rule refers to:</label>
-        <input type="radio" name="q2" value="correct"/> Needs/Wants/Savings<br/>
-        <input type="radio" name="q2" value="wrong"/> Expenses only<br/>
-
-        <label>3. Emergency funds are for:</label>
-        <input type="radio" name="q3" value="correct"/> Unplanned expenses<br/>
-        <input type="radio" name="q3" value="wrong"/> Vacation trips<br/>
-
-        <label>4. Credit score affects:</label>
-        <input type="radio" name="q4" value="correct"/> Loan approvals<br/>
-        <input type="radio" name="q4" value="wrong"/> Grocery prices<br/>
-
-        <label>5. Compound interest means:</label>
-        <input type="radio" name="q5" value="correct"/> Earning interest on interest<br/>
-        <input type="radio" name="q5" value="wrong"/> Interest that never grows<br/>
-
-        <label>6. Investing involves:</label>
-        <input type="radio" name="q6" value="correct"/> Risk and reward<br/>
-        <input type="radio" name="q6" value="wrong"/> Guaranteed returns<br/>
-
-        <label>7. Diversification reduces:</label>
-        <input type="radio" name="q7" value="correct"/> Risk<br/>
-        <input type="radio" name="q7" value="wrong"/> Return<br/>
-
-        <label>8. Crypto wallets are used to:</label>
-        <input type="radio" name="q8" value="correct"/> Store and transfer digital assets<br/>
-        <input type="radio" name="q8" value="wrong"/> Print money<br/>
-
-        <label>9. Long-term investing avoids:</label>
-        <input type="radio" name="q9" value="correct"/> Emotional decisions<br/>
-        <input type="radio" name="q9" value="wrong"/> Small profits<br/>
-
-        <label>10. Micro-investing allows:</label>
-        <input type="radio" name="q10" value="correct"/> Investing small amounts regularly<br/>
-        <input type="radio" name="q10" value="wrong"/> Big spending only<br/>
+        <!-- ... Questions here ... -->
 
         <button type="submit">Submit Quiz</button>
       </form>
     </div>
 
-    <!-- ADVERT -->
-    <div class="course-advert">
+    <!-- ADVERT (Initially hidden) -->
+    <div class="course-advert" id="courseAdvert">
       <span class="paid-label">Paid Course</span>
       <h3>Personal Finance Mastery</h3>
       <p class="duration-price">Duration: 6 days | Price: $29</p>
@@ -176,6 +138,9 @@
         if (ans.value === "correct") score++;
       });
       alert("You scored " + score + "/10!");
+      
+      // Show the course advert after quiz submission
+      document.getElementById("courseAdvert").style.display = "block";
     });
   </script>
 </body>
