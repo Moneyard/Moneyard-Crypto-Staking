@@ -3,19 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Personal Finance Masterclass: Financial Literacy & Micro Investments</title>
+  <title>Personal Finance Masterclass</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #f7f9fb; padding: 20px; }
-    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
     .lesson, .quiz { display: none; }
     .active { display: block; }
-    h2 { color: #004d66; }
-    button { padding: 10px 20px; background-color: #28a745; color: white; border: none; margin: 10px 0; border-radius: 5px; cursor: pointer; }
+    h1, h2 { color: #004d66; }
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      margin: 10px 0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     button:hover { background-color: #218838; }
     .quiz label { display: block; margin: 8px 0; }
-    .video-container { margin-bottom: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
-    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-
+    .video-container {
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
     .course-advert {
       margin-top: 30px;
       padding: 20px;
@@ -56,9 +85,7 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .enroll-button:hover {
-      background-color: #005fa3;
-    }
+    .enroll-button:hover { background-color: #005fa3; }
     .overview-arrow {
       display: inline-block;
       margin-top: 10px;
@@ -72,24 +99,27 @@
   <div class="container">
     <h1>Personal Finance Masterclass: Financial Literacy & Micro Investments</h1>
 
-    <!-- EMBEDDED VIDEO -->
     <div class="video-container">
       <iframe src="https://www.youtube.com/embed/vJabNEwZIuc" title="Personal Finance Video" allowfullscreen></iframe>
     </div>
 
-    <!-- LESSONS 1 to 10 -->
-    <div id="lesson1" class="lesson active"><h2>Lesson 1: What is Financial Literacy?</h2><p>It’s the foundation of understanding how money works in the world: budgeting, investing, borrowing, saving, and more.</p><button onclick="nextLesson(2)">Next</button></div>
-    <div id="lesson2" class="lesson"><h2>Lesson 2: Budgeting Basics</h2><p>Learn to plan your income and expenses. Use tools like the 50/30/20 rule.</p><button onclick="nextLesson(3)">Next</button></div>
-    <div id="lesson3" class="lesson"><h2>Lesson 3: Emergency Funds</h2><p>Start building a safety net for unexpected costs—aim for 3–6 months of expenses.</p><button onclick="nextLesson(4)">Next</button></div>
-    <div id="lesson4" class="lesson"><h2>Lesson 4: Understanding Credit</h2><p>Credit impacts your ability to borrow. Learn about credit scores, reports, and responsible usage.</p><button onclick="nextLesson(5)">Next</button></div>
-    <div id="lesson5" class="lesson"><h2>Lesson 5: Savings & Compounding</h2><p>Learn how interest works and the power of compounding your savings over time.</p><button onclick="nextLesson(6)">Next</button></div>
-    <div id="lesson6" class="lesson"><h2>Lesson 6: Investing Basics</h2><p>Understand risk vs. reward, and different types of assets: stocks, bonds, crypto, real estate.</p><button onclick="nextLesson(7)">Next</button></div>
-    <div id="lesson7" class="lesson"><h2>Lesson 7: Diversification</h2><p>Diversify to reduce risk: mix of assets, industries, time horizons.</p><button onclick="nextLesson(8)">Next</button></div>
-    <div id="lesson8" class="lesson"><h2>Lesson 8: Crypto Investing</h2><p>Learn the basics of crypto, wallets, network fees, risks and rewards.</p><button onclick="nextLesson(9)">Next</button></div>
-    <div id="lesson9" class="lesson"><h2>Lesson 9: Long-Term Strategy</h2><p>Patience pays. Learn to avoid emotional investing and “FOMO.”</p><button onclick="nextLesson(10)">Next</button></div>
-    <div id="lesson10" class="lesson"><h2>Lesson 10: Micro-Investing</h2><p>Start small, grow big. Apps and tools now allow you to invest with as little as $1.</p><button onclick="startQuiz()">Take Final Quiz</button></div>
+    <!-- Lessons -->
+    <div id="lesson1" class="lesson active">
+      <h2>Lesson 1: What is Financial Literacy?</h2>
+      <p>Understanding how money works: budgeting, investing, borrowing, saving, and more.</p>
+      <button onclick="nextLesson(2)">Next</button>
+    </div>
+    <div id="lesson2" class="lesson"><h2>Lesson 2: Budgeting Basics</h2><p>Use tools like the 50/30/20 rule.</p><button onclick="nextLesson(3)">Next</button></div>
+    <div id="lesson3" class="lesson"><h2>Lesson 3: Emergency Funds</h2><p>Build a 3–6 month safety net.</p><button onclick="nextLesson(4)">Next</button></div>
+    <div id="lesson4" class="lesson"><h2>Lesson 4: Understanding Credit</h2><p>Learn about credit scores and reports.</p><button onclick="nextLesson(5)">Next</button></div>
+    <div id="lesson5" class="lesson"><h2>Lesson 5: Savings & Compounding</h2><p>Grow your savings through interest.</p><button onclick="nextLesson(6)">Next</button></div>
+    <div id="lesson6" class="lesson"><h2>Lesson 6: Investing Basics</h2><p>Stocks, bonds, crypto, real estate.</p><button onclick="nextLesson(7)">Next</button></div>
+    <div id="lesson7" class="lesson"><h2>Lesson 7: Diversification</h2><p>Spread risk across different assets.</p><button onclick="nextLesson(8)">Next</button></div>
+    <div id="lesson8" class="lesson"><h2>Lesson 8: Crypto Investing</h2><p>Learn crypto fundamentals.</p><button onclick="nextLesson(9)">Next</button></div>
+    <div id="lesson9" class="lesson"><h2>Lesson 9: Long-Term Strategy</h2><p>Avoid emotional investing.</p><button onclick="nextLesson(10)">Next</button></div>
+    <div id="lesson10" class="lesson"><h2>Lesson 10: Micro-Investing</h2><p>Start small with $1 or less.</p><button onclick="startQuiz()">Take Final Quiz</button></div>
 
-    <!-- QUIZ -->
+    <!-- Quiz -->
     <div id="quiz" class="quiz">
       <h2>Final Quiz</h2>
       <form id="quizForm">
@@ -137,7 +167,7 @@
       </form>
     </div>
 
-    <!-- COURSE ADVERT (Replaces Certificate Section) -->
+    <!-- Paid Course Promotion -->
     <div class="course-advert">
       <span class="paid-label">Paid Course</span>
       <h3>Personal Finance Mastery</h3>
@@ -148,7 +178,6 @@
       <p class="cert-note">Great for: Individuals looking to manage and grow personal wealth</p>
       <span class="overview-arrow" onclick="alert('Overview: Personal Finance Mastery')">&#10148;</span>
     </div>
-
   </div>
 
   <script>
@@ -169,45 +198,15 @@
       e.preventDefault();
       const answers = document.querySelectorAll('#quizForm input[type="radio"]:checked');
       let score = 0;
-      answers.forEach(ans => { if (ans.value === "correct") score++; });
-  document.getElementById("submitQuiz").addEventListener("click", function () {
-    let score = 0;
+      answers.forEach(ans => {
+        if (ans.value === "correct") score++;
+      });
+      alert(`You scored ${score} out of 10!`);
+    });
 
-    // Count correct answers
-    const correctAnswers = {
-      q1: "b",
-      q2: "a",
-      q3: "c",
-      q4: "a",
-      q5: "d",
-      q6: "b",
-      q7: "c",
-      q8: "a",
-      q9: "d",
-      q10: "b"
-    };
-
-    for (let q in correctAnswers) {
-      const selected = document.querySelector(`input[name="${q}"]:checked`);
-      if (selected && selected.value === correctAnswers[q]) {
-        score++;
-      }
+    function redirectToLesson(url) {
+      window.location.href = url;
     }
-
-    // Pass condition
-    if (score >= 8) {
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-      audio.play();
-      alert("Quiz passed! Enroll Now for the paid course to get the certificate.");
-    } else {
-      alert(`You scored ${score}/10. You need 8 or more to pass. Please review lessons and try again.`);
-    }
-  });
-
-  function redirectToLesson(page) {
-    window.location.href = page;
-  }
-</script>
+  </script>
 </body>
 </html>
