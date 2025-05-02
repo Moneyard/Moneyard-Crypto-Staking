@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+..... 
+888<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -139,31 +140,17 @@
     <h4>Micro-Investing</h4>
     <p id="microInvestingValue">$0.00</p>
   </div>
-<div class="assets-tabs">
-  <button class="tab-btn active" onclick="showTab('emergency')">Emergency Fund</button>
-  <button class="tab-btn" onclick="showTab('savings')">High-Yield Savings</button>
-  <button class="tab-btn" onclick="showTab('investing')">Micro-Investing</button>
-</div>
+<!-- Somewhere in assets.html -->
+<p><strong>Emergency Fund:</strong> $<span id="emFund">Loading...</span></p>
 
-<div class="tab-content" id="tab-emergency">
-  <div id="emergency-fund-summary" class="summary-box">
-    <h3>Emergency Fund Summary</h3>
-    <p><strong>Balance:</strong> $<span id="ef-balance">0.00</span></p>
-    <p><strong>Interest Earned:</strong> $<span id="ef-interest">0.00</span></p>
-    <div id="ef-transactions">
-      <h4>Recent Transactions</h4>
-      <ul id="ef-transaction-list"></ul>
-    </div>
-  </div>
-</div>
-
-<div class="tab-content" id="tab-savings" style="display:none;">
-  <p>High-Yield Savings details go here.</p>
-</div>
-
-<div class="tab-content" id="tab-investing" style="display:none;">
-  <p>Micro-Investing data will appear here.</p>
-</div>
+<script>
+  fetch('/api/emergency/balance', {
+    headers: { Authorization: localStorage.getItem('token') }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('emFund').textContent = data.balance.toFixed(2);
+  });
 
   <!-- MODAL SECTIONS (Deposit, Withdraw, Transfer) -->
 
