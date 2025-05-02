@@ -88,6 +88,15 @@
       <ul id="transactionList"></ul>
     </div>
   </div>
+<div id="emergency-fund-summary" class="summary-box">
+  <h3>Emergency Fund Summary</h3>
+  <p><strong>Balance:</strong> $<span id="ef-balance">0.00</span></p>
+  <p><strong>Interest Earned:</strong> $<span id="ef-interest">0.00</span></p>
+  <div id="ef-transactions">
+    <h4>Recent Transactions</h4>
+    <ul id="ef-transaction-list"></ul>
+  </div>
+</div>
 
   <script>
     async function fetchSummary() {
@@ -139,6 +148,24 @@
     });
 
     fetchSummary();
-  </script>
+  function loadEmergencyFundSummary() {
+  fetch('/emergency-fund-summary')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('ef-balance').innerText = data.balance.toFixed(2);
+      document.getElementById('ef-interest').innerText = data.interestEarned.toFixed(2);
+
+      const txList = document.getElementById('ef-transaction-list');
+      txList.innerHTML = '';
+      data.transactions.forEach(tx => {
+        const li = document.createElement('li');
+        li.textContent = `${tx.type.toUpperCase()}: $${tx.amount} (${tx.status}) on ${new Date(tx.created_at).toLocaleDateString()}`;
+        txList.appendChild(li);
+      });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', loadEmergencyFundSummary);
+</script>
 </body>
 </html>
