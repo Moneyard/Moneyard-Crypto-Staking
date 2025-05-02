@@ -52,7 +52,8 @@ db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
     date TEXT
 )`);
 
-db.run(`CREATE TABLE IF NOT EXISTS stakes (
+db.run(`
+  CREATE TABLE IF NOT EXISTS stakes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     plan TEXT,
@@ -60,17 +61,10 @@ db.run(`CREATE TABLE IF NOT EXISTS stakes (
     apy REAL,
     lock_period INTEGER,
     start_date TIMESTAMP,
-    status TEXT DEFAULT 'active'
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS emergency_funds (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    amount REAL,
-    reason TEXT,
-    status TEXT DEFAULT 'pending',
-    date TEXT
-)`);
+    status TEXT DEFAULT 'active',
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -123,30 +117,32 @@ app.post('/api/login', (req, res) => {
 
 // Deposit Funds
 app.post('/api/deposit', (req, res) => {
-    const { userId, amount, network, txId } = req.body;
-    if (!userId || !amount || !network || !txId) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
+    const { userId, amount, network, txId } = req.body;
+    if (!userId || !amount || !network || !txId) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
 
-    const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-    db.run(`
-        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
-        [userId, amount, network, txId, now],
-        function (err) {
-            if (err) return res.status(500).json({ error: 'Deposit failed' });
+    db.run(`
+        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
+        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
+        [userId, amount, network, txId, now],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Deposit failed' });
 
-            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
-                if (err) return res.status(500).json({ error: 'Failed to update balance' });
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update balance' });
 
-                db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
-                    if (err || !row) return res.status(500).json({ error: 'Failed to retrieve updated balance' });
-                    res.json({ success: true, updatedBalance: row.balance });
-                });
-            });
-        }
-    );
+                // Fetch updated balance after deposit
+                db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
+                    if (err || !row) return res.status(500).json({ error: 'Failed to retrieve updated balance' });
+
+                    res.json({ success: true, message: 'Deposit confirmed and balance updated', updatedBalance: row.balance });
+                });
+            });
+        }
+    );
 });
 
 // View deposit history
@@ -184,76 +180,59 @@ app.post('/api/withdraw', (req, res) => {
     }
 
     db.get("SELECT * FROM users WHERE id = ?", [userId], async (err, user) => {
-        if (err || !user) return res.status(400).json({ error: 'User not found' });
+        if (err || !user) return res.status(404).json({ error: 'User not found' });
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) return res.status(400).json({ error: 'Invalid password' });
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) return res.status(401).json({ error: 'Invalid password' });
 
         if (user.balance < amount) return res.status(400).json({ error: 'Insufficient balance' });
 
         const now = new Date().toISOString();
 
-        db.run(`INSERT INTO withdrawals (user_id, amount, wallet_address, password, status, date)
-                VALUES (?, ?, ?, ?, 'pending', ?)`,
-                [userId, amount, walletAddress, password, now],
-                (err) => {
-                    if (err) return res.status(500).json({ error: 'Withdrawal failed' });
+        db.run(`INSERT INTO withdrawals (user_id, amount, wallet_address, password, date) 
+                VALUES (?, ?, ?, ?, ?)`, 
+            [userId, amount, walletAddress, password, now], 
+            function(err) {
+                if (err) return res.status(500).json({ error: 'Withdrawal request failed' });
 
-                    db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [amount, userId]);
-                    res.json({ success: true, message: 'Withdrawal request submitted' });
-                });
+                db.run(`UPDATE users SET balance = balance - ? WHERE id = ?`, 
+                    [amount, userId], 
+                    (err) => {
+                        if (err) return res.status(500).json({ error: 'Balance deduction failed' });
+                        res.json({ success: true, message: 'Withdrawal request submitted' });
+                    }
+                );
+            }
+        );
     });
 });
 
-// EMERGENCY FUNDS: Request
-app.post('/api/emergency/request', (req, res) => {
-    const { userId, amount, reason } = req.body;
-    if (!userId || !amount || !reason) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    const now = new Date().toISOString();
-
-    db.run(`INSERT INTO emergency_funds (user_id, amount, reason, date)
-            VALUES (?, ?, ?, ?)`,
-        [userId, amount, reason, now],
-        function (err) {
-            if (err) return res.status(500).json({ error: 'Failed to submit request' });
-            res.json({ success: true, requestId: this.lastID });
-        }
-    );
-});
-
-// EMERGENCY FUNDS: View User Requests
-app.get('/api/emergency/history', (req, res) => {
+// Get withdrawal history
+app.get('/api/withdrawals', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
-    db.all(`SELECT * FROM emergency_funds WHERE user_id = ? ORDER BY date DESC`, 
-        [userId], 
-        (err, rows) => {
-            if (err) return res.status(500).json({ error: 'Failed to load emergency fund requests' });
-            res.json(rows);
-        }
-    );
+    db.all(`SELECT * FROM withdrawals WHERE user_id = ? ORDER BY date DESC`, [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Failed to fetch withdrawals' });
+        res.json(rows);
+    });
 });
 
-// EMERGENCY FUNDS: Admin Approve/Decline (basic logic)
-app.post('/api/emergency/approve', (req, res) => {
-    const { requestId, status } = req.body;
-    if (!requestId || !['approved', 'declined'].includes(status)) {
-        return res.status(400).json({ error: 'Invalid input' });
-    }
-
-    db.run(`UPDATE emergency_funds SET status = ? WHERE id = ?`, 
-        [status, requestId], 
-        (err) => {
-            if (err) return res.status(500).json({ error: 'Failed to update request status' });
-            res.json({ success: true, message: `Request marked as ${status}` });
-        }
-    );
+// Get stake plans
+app.get('/api/stake-plans', (req, res) => {
+    const plans = [
+        { strategy: 'Stable Growth', apy: 8 },
+        { strategy: 'Yield Farming', apy: 15 },
+        { strategy: 'Liquidity Mining', apy: 22 }
+    ];
+    res.json(plans);
 });
 
+// Serve frontend
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+
+// Start server
 app.listen(PORT, () => {
-    console.log(`Moneyard server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
