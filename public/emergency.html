@@ -1,17 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Emergency Fund Login</title>
+  <title>Emergency Fund</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h2>Emergency Fund System</h2>
+  <h2>Emergency Fund</h2>
+
   <div>
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <button onclick="signup()">Sign Up</button>
+    <p><strong>Balance:</strong> $<span id="balance">Loading...</span></p>
+    <input id="amount" type="number" placeholder="Enter amount" />
+    <button onclick="deposit()">Deposit</button>
+    <button onclick="withdraw()">Withdraw</button>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    const API = location.origin;
+
+    async function getBalance() {
+      const res = await fetch(`${API}/api/emergency/balance`, {
+        headers: { Authorization: localStorage.getItem('token') }
+      });
+      const data = await res.json();
+      document.getElementById('balance').textContent = data.balance.toFixed(2);
+    }
+
+    async function deposit() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (!amount || amount <= 0) return alert("Invalid deposit");
+      const res = await fetch(`${API}/api/emergency/deposit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: localStorage.getItem('token')
+        },
+        body: JSON.stringify({ amount })
+      });
+      const data = await res.json();
+      alert(data.message);
+      getBalance();
+    }
+
+    async function withdraw() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (!amount || amount < 1) return alert("Minimum withdrawal is $1");
+      const res = await fetch(`${API}/api/emergency/withdraw`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: localStorage.getItem('token')
+        },
+        body: JSON.stringify({ amount })
+      });
+      const data = await res.json();
+      alert(data.message);
+      getBalance();
+    }
+
+    getBalance();
+  </script>
 </body>
 </html>
