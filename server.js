@@ -207,6 +207,96 @@ app.post('/api/withdraw', (req, res) => {
     });
 });
 
+// --- Emergency Fund Tables ---
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS emergency_fund (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    balance REAL DEFAULT 0,
+    interest_rate REAL DEFAULT 0.04,
+    last_interest_update DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS emergency_fund_transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    type TEXT,
+    amount REAL,
+    status TEXT DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+});
+
+// Temporary fallback for demo (default user_id = 1)
+const getUserId = () => 1;
+
+// Open Emergency Fund
+app.post('/open-emergency-fund', (req, res) => {
+  const user_id = getUserId();
+  db.get(`SELECT * FROM emergency_fund WHERE user_id = ?`, [user_id], (err, row) => {
+    if (row) return res.json({ message: 'Emergency Fund already opened.' });
+
+    db.run(`INSERT INTO emergency_fund (user_id) VALUES (?)`, [user_id], (err2) => {
+      if (err2) return res.status(500).json({ message: 'Error creating Emergency Fund' });
+      res.json({ message: 'Emergency Fund opened successfully.' });
+    });
+  });
+});
+
+// Deposit to Emergency Fund
+app.post('/deposit-emergency', (req, res) => {
+  const user_id = getUserId();
+  const { amount } = req.body;
+  if (!amount || amount <= 0) return res.status(400).json({ message: 'Invalid amount' });
+
+  db.get(`SELECT * FROM emergency_fund WHERE user_id = ?`, [user_id], (err, fund) => {
+    if (!fund) return res.status(404).json({ message: 'Fund not found' });
+
+    const newBalance = fund.balance + amount;
+    db.run(`UPDATE emergency_fund SET balance = ?, last_interest_update = CURRENT_TIMESTAMP WHERE user_id = ?`,
+      [newBalance, user_id]);
+    db.run(`INSERT INTO emergency_fund_transactions (user_id, type, amount, status) VALUES (?, 'deposit', ?, 'completed')`,
+      [user_id, amount]);
+    res.json({ message: 'Deposit successful' });
+  });
+});
+
+// Withdraw from Emergency Fund
+app.post('/withdraw-emergency', (req, res) => {
+  const user_id = getUserId();
+  const { amount } = req.body;
+  if (!amount || amount <= 0) return res.status(400).json({ message: 'Invalid amount' });
+
+  db.get(`SELECT * FROM emergency_fund WHERE user_id = ?`, [user_id], (err, fund) => {
+    if (!fund || fund.balance < amount) {
+      return res.status(400).json({ message: 'Insufficient balance or fund not found' });
+    }
+
+    db.run(`UPDATE emergency_fund SET balance = balance - ? WHERE user_id = ?`, [amount, user_id]);
+    db.run(`INSERT INTO emergency_fund_transactions (user_id, type, amount, status) VALUES (?, 'withdrawal', ?, 'pending')`,
+      [user_id, amount]);
+    res.json({ message: 'Withdrawal requested. Funds will be released in 24h.' });
+  });
+});
+
+// Emergency Fund Summary
+app.get('/emergency-fund-summary', (req, res) => {
+  const user_id = getUserId();
+
+  db.get(`SELECT * FROM emergency_fund WHERE user_id = ?`, [user_id], (err, fund) => {
+    if (!fund) return res.json({ balance: 0, transactions: [] });
+
+    db.all(`SELECT type, amount, status, created_at FROM emergency_fund_transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT 5`, 
+      [user_id], 
+      (err2, transactions) => {
+        res.json({
+          balance: fund.balance,
+          transactions
+        });
+      }
+    );
+  });
+});
 // Get withdrawal history
 app.get('/api/withdrawals', (req, res) => {
     const userId = req.query.userId;
