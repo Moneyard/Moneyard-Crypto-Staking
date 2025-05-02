@@ -142,15 +142,6 @@
 <!-- Somewhere in assets.html -->
 <p><strong>Emergency Fund:</strong> $<span id="emFund">Loading...</span></p>
 
-<script>
-  fetch('/api/emergency/balance', {
-    headers: { Authorization: localStorage.getItem('token') }
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('emFund').textContent = data.balance.toFixed(2);
-  });
-
   <!-- MODAL SECTIONS (Deposit, Withdraw, Transfer) -->
 
   <div id="deposit-modal" class="modal">
@@ -286,6 +277,13 @@
 
   if (tabId === 'emergency') loadEmergencyFundSummary();
 }
+  fetch('/api/emergency/balance', {
+    headers: { Authorization: localStorage.getItem('token') }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('emFund').textContent = data.balance.toFixed(2);
+  });
 </script>
 </body>
 </html>
