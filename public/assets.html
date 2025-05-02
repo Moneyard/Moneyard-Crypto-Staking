@@ -139,6 +139,31 @@
     <h4>Micro-Investing</h4>
     <p id="microInvestingValue">$0.00</p>
   </div>
+<div class="assets-tabs">
+  <button class="tab-btn active" onclick="showTab('emergency')">Emergency Fund</button>
+  <button class="tab-btn" onclick="showTab('savings')">High-Yield Savings</button>
+  <button class="tab-btn" onclick="showTab('investing')">Micro-Investing</button>
+</div>
+
+<div class="tab-content" id="tab-emergency">
+  <div id="emergency-fund-summary" class="summary-box">
+    <h3>Emergency Fund Summary</h3>
+    <p><strong>Balance:</strong> $<span id="ef-balance">0.00</span></p>
+    <p><strong>Interest Earned:</strong> $<span id="ef-interest">0.00</span></p>
+    <div id="ef-transactions">
+      <h4>Recent Transactions</h4>
+      <ul id="ef-transaction-list"></ul>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-savings" style="display:none;">
+  <p>High-Yield Savings details go here.</p>
+</div>
+
+<div class="tab-content" id="tab-investing" style="display:none;">
+  <p>Micro-Investing data will appear here.</p>
+</div>
 
   <!-- MODAL SECTIONS (Deposit, Withdraw, Transfer) -->
 
@@ -264,7 +289,18 @@
       document.getElementById("transfer-response").innerText = "Transfer of " + amount + " USDT to " + email + " pending.";
       closeTransfer();
     }
-  </script>
+  function showTab(tabId) {
+  const tabs = document.querySelectorAll('.tab-content');
+  const buttons = document.querySelectorAll('.tab-btn');
+  tabs.forEach(tab => tab.style.display = 'none');
+  buttons.forEach(btn => btn.classList.remove('active'));
+
+  document.getElementById('tab-' + tabId).style.display = 'block';
+  event.target.classList.add('active');
+
+  if (tabId === 'emergency') loadEmergencyFundSummary();
+}
+</script>
 
 </body>
 </html>
