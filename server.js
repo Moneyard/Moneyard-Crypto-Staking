@@ -134,18 +134,16 @@ app.post('/api/deposit', (req, res) => {
             db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
                 if (err) return res.status(500).json({ error: 'Failed to update balance' });
 
-                // Fetch updated balance after deposit
                 db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
                     if (err || !row) return res.status(500).json({ error: 'Failed to retrieve updated balance' });
-
-                    res.json({ success: true, message: 'Deposit confirmed and balance updated', updatedBalance: row.balance });
+                    res.json({ success: true, message: 'Deposit confirmed', updatedBalance: row.balance });
                 });
             });
         }
     );
 });
 
-// View deposit history
+// Deposit history
 app.get('/api/deposits', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -172,7 +170,7 @@ app.get('/api/balance', (req, res) => {
     });
 });
 
-// Withdraw Funds
+// Withdraw funds
 app.post('/api/withdraw', (req, res) => {
     const { userId, amount, walletAddress, password } = req.body;
     if (!userId || !amount || !walletAddress || !password) {
@@ -207,7 +205,7 @@ app.post('/api/withdraw', (req, res) => {
     });
 });
 
-// Get withdrawal history
+// Withdrawal history
 app.get('/api/withdrawals', (req, res) => {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
@@ -218,7 +216,7 @@ app.get('/api/withdrawals', (req, res) => {
     });
 });
 
-// Get stake plans
+// Stake plans
 app.get('/api/stake-plans', (req, res) => {
     const plans = [
         { strategy: 'Stable Growth', apy: 8 },
@@ -226,6 +224,16 @@ app.get('/api/stake-plans', (req, res) => {
         { strategy: 'Liquidity Mining', apy: 22 }
     ];
     res.json(plans);
+});
+
+// Dummy market data route (fixes "Failed to load market data")
+app.get('/api/market', (req, res) => {
+    const marketData = [
+        { symbol: 'BTC', price: 65000 },
+        { symbol: 'ETH', price: 3200 },
+        { symbol: 'BNB', price: 500 }
+    ];
+    res.json(marketData);
 });
 
 // Serve frontend
