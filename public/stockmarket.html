@@ -3,88 +3,155 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Live Market – Moneyard</title>
+  <title>Live Market - Stocks & ETFs</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #fff;
+      background: #f4faff;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
+      padding: 0;
     }
+
     header {
-      background: #2a7d5f;
+      background-color: #004d66;
       color: white;
-      padding: 20px;
+      padding: 1rem 2rem;
       text-align: center;
     }
-    .market-section {
-      padding: 30px 20px;
-      max-width: 960px;
-      margin: auto;
+
+    .market-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
     }
-    .market-data-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
+
+    .search-filter {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
-    .market-item {
-      background: #f2fef9;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      text-align: center;
+
+    input[type="text"] {
+      width: 60%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
-    .symbol { font-weight: bold; font-size: 1.1em; }
-    .price { font-size: 1.4em; margin: 8px 0; color: #333; }
-    .change.up { color: green; }
-    .change.down { color: red; }
+
+    select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      background-color: #e6f7ff;
+    }
+
+    .green {
+      color: green;
+    }
+
+    .red {
+      color: red;
+    }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Moneyard Market – Live Stocks & ETFs</h1>
+    <h1>Live Market - Stocks & ETFs</h1>
   </header>
 
-  <section class="market-section">
-    <div class="market-data-container" id="market-container">
-      <p>Loading market data...</p>
+  <div class="market-container">
+    <div class="search-filter">
+      <input type="text" id="searchInput" placeholder="Search ticker or company...">
+      <select id="categorySelect">
+        <option value="all">All</option>
+        <option value="stock">Stocks</option>
+        <option value="etf">ETFs</option>
+      </select>
     </div>
-  </section>
+
+    <table id="marketTable">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Change</th>
+          <th>% Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows will be inserted here -->
+      </tbody>
+    </table>
+  </div>
 
   <script>
-    const symbols = ['AAPL', 'TSLA', 'VOO', 'MSFT', 'SPY'];
+    const mockData = [
+      { ticker: 'AAPL', name: 'Apple Inc.', price: 174.50, change: 1.34, category: 'stock' },
+      { ticker: 'TSLA', name: 'Tesla Inc.', price: 236.21, change: -3.27, category: 'stock' },
+      { ticker: 'VOO', name: 'Vanguard S&P 500 ETF', price: 392.60, change: 0.85, category: 'etf' },
+      { ticker: 'MSFT', name: 'Microsoft Corp.', price: 318.32, change: -2.10, category: 'stock' },
+      { ticker: 'ARKK', name: 'ARK Innovation ETF', price: 42.15, change: 0.50, category: 'etf' }
+    ];
 
-    async function fetchYahooData() {
-      const container = document.getElementById('market-container');
-      container.innerHTML = '';
-      try {
-        const response = await fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(',')}`);
-        const result = await response.json();
-        const quotes = result.quoteResponse.result;
+    const tableBody = document.querySelector('#marketTable tbody');
+    const searchInput = document.getElementById('searchInput');
+    const categorySelect = document.getElementById('categorySelect');
 
-        quotes.forEach(stock => {
-          const change = stock.regularMarketChangePercent;
-          const price = stock.regularMarketPrice;
-          const item = document.createElement('div');
-          item.className = 'market-item';
-          item.innerHTML = `
-            <div class="symbol">${stock.symbol}</div>
-            <div class="price">$${price.toFixed(2)}</div>
-            <div class="change ${change >= 0 ? 'up' : 'down'}">
-              ${change >= 0 ? '+' : ''}${change.toFixed(2)}%
-            </div>
-          `;
-          container.appendChild(item);
-        });
-      } catch (error) {
-        console.error('Market fetch failed', error);
-        container.innerHTML = '<p>Failed to load market data.</p>';
-      }
+    function renderTable(data) {
+      tableBody.innerHTML = '';
+      data.forEach(item => {
+        const changePercent = ((item.change / (item.price - item.change)) * 100).toFixed(2);
+        const row = `
+          <tr>
+            <td>${item.ticker}</td>
+            <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td class="${item.change >= 0 ? 'green' : 'red'}">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}</td>
+            <td class="${item.change >= 0 ? 'green' : 'red'}">${item.change >= 0 ? '+' : ''}${changePercent}%</td>
+          </tr>
+        `;
+        tableBody.insertAdjacentHTML('beforeend', row);
+      });
     }
 
-    fetchYahooData();
-    setInterval(fetchYahooData, 60000); // refresh every 1 min
-  </script>
+    function filterTable() {
+      const keyword = searchInput.value.toLowerCase();
+      const category = categorySelect.value;
 
+      const filtered = mockData.filter(item => {
+        const matchesCategory = category === 'all' || item.category === category;
+        const matchesSearch = item.ticker.toLowerCase().includes(keyword) || item.name.toLowerCase().includes(keyword);
+        return matchesCategory && matchesSearch;
+      });
+
+      renderTable(filtered);
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    categorySelect.addEventListener('change', filterTable);
+
+    // Initial load
+    renderTable(mockData);
+  </script>
 </body>
 </html>
