@@ -1279,43 +1279,23 @@ audio {
 .tab-content {
   margin-top: 20px;
 }
-.promo-section {
-  padding: 40px;
-  text-align: center;
-  background-color: #f9f9f9;
-}
-.promo-section {
-  width: 100%;
-  height: 100vh; /* Full viewport height */
-  overflow: hidden;
-}
-
 .promo-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  margin: 0 auto;
+max-width: 600px;
+margin: 0 auto;
 }
 
 .promo-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ensures full coverage */
-  border-radius: 0;  /* Remove radius for edge-to-edge display */
-  display: block;
+max-width: 100%;
+height: auto;
+border-radius: 10px;
 }
 
 .cta-button {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #007bff;
-  color: white;
-  padding: 14px 28px;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  z-index: 2;
+display: inline-block;
+margin-top: 20px;
+background-color: #007bff;
+color: white;
+padding: 12px 24px;
+text-decoration: none;
+border-radius: 5px;
 }
-
