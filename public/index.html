@@ -105,7 +105,52 @@
       border-radius: 8px;
     }
 
-    .section {
+    .promo-section {
+  background: #f0f8ff;
+  padding: 40px 20px;
+}
+
+.promo-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.promo-image {
+  width: 300px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.promo-text {
+  max-width: 500px;
+  margin: 10px;
+}
+
+.promo-text h2 {
+  font-size: 1.8rem;
+  color: #002d72;
+}
+
+.promo-text p {
+  font-size: 1rem;
+  color: #333;
+  margin: 15px 0;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background-color: #0f9d58;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.section {
       margin: 40px auto;
       max-width: 800px;
       text-align: center;
@@ -261,6 +306,17 @@
     <h2>Simplicity First</h2>
     <p>Start investing in minutes. One-tap deposits, animated guides, and tooltips make it easy for beginners.</p>
   </section>
+<section class="promo-section">
+  <div class="promo-container">
+    <img src="1000056418.png" alt="Crypto Guide" class="promo-image">
+    <div class="promo-text">
+      <h2>Want to Learn Crypto Without Getting Burned?</h2>
+      <p>Our beginner-friendly guide makes crypto simple.<br>
+         Join 5,000+ others learning to invest wisely.</p>
+      <a href="/signup" class="cta-button">Get Started</a>
+    </div>
+  </div>
+</section>
 
   <!-- Security Section -->
   <section class="section animated-section">
