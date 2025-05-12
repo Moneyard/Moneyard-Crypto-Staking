@@ -118,6 +118,23 @@
         flex-direction: column;
       }
     }
+  /* Pop-up Positions */
+    #popup1 { bottom: 10%; right: 5%; }
+    #popup2 { bottom: 30%; left: 5%; }
+    #popup3 { top: 15%; right: 5%; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media screen and (max-width: 600px) {
+      .popup-ad {
+        width: 90%;
+        left: 5% !important;
+        right: 5% !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -208,13 +225,35 @@
   <p>&copy; 2025 Moneyard. All rights reserved.</p>
 </footer>
 
-<!-- Pop-up Ad -->
-<div id="popupAd" class="popup-ad">
+<!-- Popup 1 -->
+<div id="popup1" class="popup-ad">
   <div class="popup-content">
-    <span class="close-btn" onclick="document.getElementById('popupAd').style.display='none'">&times;</span>
-    <img src="1000056418.png" alt="Promo" class="popup-img">
-    <h3>Ready to Start Earning with Crypto?</h3>
-    <p>Explore our staking and savings tools for beginners.</p>
+    <span class="close-btn" onclick="document.getElementById('popup1').style.display='none'">&times;</span>
+    <img src="1000056418.png" alt="Promo 1" class="popup-img">
+    <h3>Earn Crypto Daily!</h3>
+    <p>Staking made easy. Start with as little as $10.</p>
+    <a href="/stake" class="cta-button">Stake Now</a>
+  </div>
+</div>
+
+<!-- Popup 2 -->
+<div id="popup2" class="popup-ad">
+  <div class="popup-content">
+    <span class="close-btn" onclick="document.getElementById('popup2').style.display='none'">&times;</span>
+    <img src="1000056418.png" alt="Promo 2" class="popup-img">
+    <h3>Enroll in Finance Courses</h3>
+    <p>Get certified. Learn how to grow your money.</p>
+    <a href="/courses" class="cta-button">Explore Courses</a>
+  </div>
+</div>
+
+<!-- Popup 3 -->
+<div id="popup3" class="popup-ad">
+  <div class="popup-content">
+    <span class="close-btn" onclick="document.getElementById('popup3').style.display='none'">&times;</span>
+    <img src="1000056418.png" alt="Promo 3" class="popup-img">
+    <h3>Join Africa's Next Big Finance Platform</h3>
+    <p>Moneyard is built for you. Join now and earn rewards.</p>
     <a href="/signup" class="cta-button">Get Started</a>
   </div>
 </div>
