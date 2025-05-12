@@ -3,202 +3,193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us | Moneyard</title>
+  <title>About Moneyard</title>
+  <link rel="stylesheet" href="styles.css"/>
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background-color: #ffffff;
+      padding: 0;
+      background: #ffffff;
       color: #222;
     }
 
-    header {
-      background-color: #0e8c78;
-      padding: 30px 20px;
-      text-align: center;
+    header, footer {
+      background-color: #0f9d58;
       color: white;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 36px;
-    }
-
-    main {
-      padding: 40px 20px;
-      max-width: 960px;
-      margin: auto;
+      text-align: center;
+      padding: 1rem;
     }
 
     section {
-      margin-bottom: 40px;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
     }
 
     h2 {
-      color: #0e8c78;
-      font-size: 24px;
+      color: #0f9d58;
       margin-bottom: 10px;
     }
 
-    p, ul {
-      font-size: 16px;
-      line-height: 1.7;
-      color: #444;
+    .highlight {
+      font-weight: bold;
+      color: #00695c;
     }
 
-    ul {
-      padding-left: 20px;
-    }
-
-    ul.checklist {
+    .offerings-list, .roadmap-list, .team-grid {
       list-style: none;
-      padding-left: 0;
+      padding: 0;
     }
 
-    ul.checklist li::before {
-      content: "✅";
-      margin-right: 8px;
-      color: #0e8c78;
+    .offerings-list li, .roadmap-list li {
+      background: #f0f8ff;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 6px;
     }
 
     .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
-      margin-top: 20px;
     }
 
     .team-member {
-      background-color: #f5f5f5;
+      flex: 1 1 200px;
+      background: #e0f2f1;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .cta-button {
+      background: #0f9d58;
+      color: #fff;
+      padding: 12px 20px;
+      text-decoration: none;
+      display: inline-block;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
+    /* Pop-up Ad */
+    .popup-ad {
+      display: block;
+      position: fixed;
+      bottom: 10%;
+      right: 5%;
+      width: 320px;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 9999;
       border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .popup-content {
       padding: 15px;
       text-align: center;
     }
 
-    .team-member h4 {
-      margin: 10px 0 5px;
-      color: #0e8c78;
+    .popup-img {
+      width: 100%;
+      border-bottom: 1px solid #eee;
     }
 
-    .cta {
-      text-align: center;
-      background-color: #e6f4f2;
-      padding: 30px 20px;
-      border-radius: 10px;
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #333;
     }
 
-    .cta a {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 12px 24px;
-      background-color: #0e8c78;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 5px;
-    }
+    @media screen and (max-width: 600px) {
+      .popup-ad {
+        width: 90%;
+        right: 5%;
+        bottom: 5%;
+      }
 
-    footer {
-      background-color: #0e8c78;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
+      .team-grid {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>About Moneyard</h1>
-    <p>Your crypto-powered path to fast profits + passive income, savings, and financial education</p>
-  </header>
+<header>
+  <h1>About Moneyard</h1>
+</header>
 
-  <main>
-    <section>
-      <h2>Who We Are</h2>
-      <p><strong>Moneyard</strong> is a modern crypto staking and micro-investment platform with a growing financial literacy and online learning arm. Designed for mainstream investors, beginners, and everyday users, our mission is to simplify wealth building through crypto earning, high-yield saving, and education—especially in mobile-first markets across Africa and beyond.</p>
-    </section>
+<section>
+  <h2>Who We Are</h2>
+  <p><strong>Moneyard</strong> is a modern crypto staking and micro-investment platform with a financial literacy learning arm. We’re built for everyday users, first-time investors, and crypto-curious individuals, starting with a special focus on Africa.</p>
+  <p>We offer <span class="highlight">fast profits + passive income</span> through user-friendly tools, expert-led courses, and a simple interface designed for accessibility and trust.</p>
+</section>
 
-    <section>
-      <h2>Our Core Offerings</h2>
-      <ul class="checklist">
-        <li>Crypto staking (TRC20/BEP20)</li>
-        <li>High-yield savings accounts</li>
-        <li>Micro-investing tools</li>
-        <li>Online courses + accredited certificates</li>
-      </ul>
-    </section>
+<section>
+  <h2>Core Offerings</h2>
+  <ul class="offerings-list">
+    <li>✅ Crypto staking (TRC20/BEP20)</li>
+    <li>✅ High-yield savings accounts</li>
+    <li>✅ Micro-investing tools</li>
+    <li>✅ Online Courses + Accredited Certificates</li>
+  </ul>
+</section>
 
-    <section>
-      <h2>Why Choose Moneyard?</h2>
-      <ul>
-        <li>Beginner-friendly and mobile-optimized interface</li>
-        <li>Fast profits + passive income through crypto</li>
-        <li>Financial education to support long-term growth</li>
-        <li>Supports crypto, mobile money, and card deposits</li>
-        <li>Admin-verified deposits and OTP-secured withdrawals</li>
-      </ul>
-    </section>
+<section>
+  <h2>Meet the Team</h2>
+  <div class="team-grid">
+    <div class="team-member">
+      <h4>Mwaba Lewis.</h4>
+      <p>CEO & Product Visionary</p>
+    </div>
+    <div class="team-member">
+      <h4>Grace K.</h4>
+      <p>Head of Education & Curriculum</p>
+    </div>
+    <div class="team-member">
+      <h4>Michael T.</h4>
+      <p>Lead Blockchain Engineer</p>
+    </div>
+  </div>
+</section>
 
-    <section>
-      <h2>Our Vision</h2>
-      <p>To be the go-to platform for secure crypto growth and financial education—starting in Africa, expanding globally. Whether you're saving, staking, investing, or learning, Moneyard is your trusted partner on the journey to financial freedom.</p>
-    </section>
+<section>
+  <h2>Our Roadmap</h2>
+  <ul class="roadmap-list">
+    <li><strong>Q2 2025:</strong> Platform Launch + Staking Plans</li>
+    <li><strong>Q3 2025:</strong> Add High-Yield Savings & Certificates</li>
+    <li><strong>Q4 2025:</strong> Launch Micro-Investing + Mobile App</li>
+    <li><strong>Q1 2026:</strong> Expand Across Africa & Global Partners</li>
+  </ul>
+</section>
 
-    <section>
-      <h2>Business Focus</h2>
-      <ul>
-        <li><strong>Industry:</strong> Fintech, Crypto, Digital Learning</li>
-        <li><strong>Audience:</strong> First-time users, mobile-savvy investors, students</li>
-        <li><strong>Platform:</strong> Web + Mobile App (Crypto-integrated)</li>
-        <li><strong>Innovation:</strong> Web3 tools, micro-investment plans, online education</li>
-        <li><strong>Focus:</strong> Africa-first, expanding to global emerging markets</li>
-      </ul>
-    </section>
+<section style="text-align: center;">
+  <h2>Join Our Journey</h2>
+  <p>Start earning, saving, and learning with Moneyard today.</p>
+  <a href="/signup" class="cta-button">Get Started</a>
+</section>
 
-    <section>
-      <h2>Meet the Team</h2>
-      <div class="team-grid">
-        <div class="team-member">
-          <h4>Jane Doe</h4>
-          <p>CEO & Strategy Lead</p>
-        </div>
-        <div class="team-member">
-          <h4>John Smith</h4>
-          <p>Blockchain Developer</p>
-        </div>
-        <div class="team-member">
-          <h4>Grace Ayo</h4>
-          <p>Community & Education Lead</p>
-        </div>
-        <div class="team-member">
-          <h4>Mark K.</h4>
-          <p>UI/UX & Frontend</p>
-        </div>
-      </div>
-    </section>
+<footer>
+  <p>&copy; 2025 Moneyard. All rights reserved.</p>
+</footer>
 
-    <section>
-      <h2>Company Roadmap</h2>
-      <ul>
-        <li><strong>Q2 2025:</strong> Launch MVP, staking + savings live</li>
-        <li><strong>Q3 2025:</strong> Release learning portal & courses</li>
-        <li><strong>Q4 2025:</strong> Mobile app release, local integrations</li>
-        <li><strong>2026:</strong> Expand to new African markets + certifications</li>
-      </ul>
-    </section>
-
-    <section class="cta">
-      <h2>Ready to grow your money the smart way?</h2>
-      <p>Join thousands of users already staking, saving, and learning on Moneyard.</p>
-      <a href="index.html#signup">Get Started Now</a>
-    </section>
-  </main>
-
-  <footer>
-    &copy; 2025 Moneyard. All rights reserved.
-  </footer>
+<!-- Pop-up Ad -->
+<div id="popupAd" class="popup-ad">
+  <div class="popup-content">
+    <span class="close-btn" onclick="document.getElementById('popupAd').style.display='none'">&times;</span>
+    <img src="1000056418.png" alt="Promo" class="popup-img">
+    <h3>Ready to Start Earning with Crypto?</h3>
+    <p>Explore our staking and savings tools for beginners.</p>
+    <a href="/signup" class="cta-button">Get Started</a>
+  </div>
+</div>
 
 </body>
 </html>
