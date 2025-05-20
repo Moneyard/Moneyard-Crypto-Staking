@@ -260,9 +260,9 @@
   <!-- SCRIPT -->
   <script>
     function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    }
+  localStorage.removeItem("token");
+  window.location.href = "https://moneyard-backend-431ef6895316.herokuapp.com/?form=signup";
+}
 
     function calculateEarnings() {
       const amt = parseFloat(document.getElementById('deposit-input').value);
