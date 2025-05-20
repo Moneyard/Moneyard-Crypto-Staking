@@ -259,40 +259,78 @@
 
   <!-- SCRIPT -->
   <script>
-    function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "https://moneyard-backend-431ef6895316.herokuapp.com/?form=login";
-}
+  document.addEventListener("DOMContentLoaded", async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return window.location.href = "index.html";
+    }
 
-    function calculateEarnings() {
-      const amt = parseFloat(document.getElementById('deposit-input').value);
-      const output = document.getElementById('calculated-earnings');
-      if (amt >= 15 && amt <= 1000) {
-        const earnings = (amt * 0.08).toFixed(2);
-        output.innerText = 'Estimated Daily Earnings: ' + earnings + ' USDT';
-      } else {
-        output.innerText = 'Enter an amount between 15 and 1000 USDT.';
+    try {
+      const res = await fetch("https://moneyard-backend-431ef6895316.herokuapp.com/api/user/summary", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error("Unauthorized");
       }
-    }
 
-    function copyReferralLink() {
-      const input = document.getElementById('referral-code');
-      navigator.clipboard.writeText(input.value)
-        .then(() => alert('Referral link copied to clipboard!'))
-        .catch(() => alert('Failed to copy.'));
-    }
+      const data = await res.json();
+      document.getElementById("userFullName").textContent = data.fullName || "User";
+      document.getElementById("userBalance").textContent = `${data.balance.toFixed(2)} USDT`;
+      document.getElementById("dd-balance").textContent = `$${data.balance.toFixed(2)}`;
+      document.getElementById("dd-available").textContent = `${data.available_to_withdraw.toFixed(2)} USDT`;
+      document.getElementById("total-referrals").textContent = data.totalReferrals || 0;
+      document.getElementById("referral-earnings").textContent = `${(data.referralEarnings || 0).toFixed(2)} USDT`;
 
-    function openReferral() {
-      location.href = "referral.html";
-    }
+      // Update referral code link if available
+      if (data.referralCode) {
+        document.getElementById("referral-code").value = `https://moneyard.com/signup?ref=${data.referralCode}`;
+      }
 
-    function openSettings() {
-      location.href = "settings.html";
+    } catch (err) {
+      console.error(err);
+      alert("Session expired. Please log in again.");
+      localStorage.removeItem("token");
+      window.location.href = "index.html";
     }
+  });
 
-    function openHelp() {
-      alert("Redirecting to Help...");
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+  }
+
+  function calculateEarnings() {
+    const amt = parseFloat(document.getElementById('deposit-input').value);
+    const output = document.getElementById('calculated-earnings');
+    if (amt >= 15 && amt <= 1000) {
+      const earnings = (amt * 0.08).toFixed(2);
+      output.innerText = 'Estimated Daily Earnings: ' + earnings + ' USDT';
+    } else {
+      output.innerText = 'Enter an amount between 15 and 1000 USDT.';
     }
-  </script>
+  }
+
+  function copyReferralLink() {
+    const input = document.getElementById('referral-code');
+    navigator.clipboard.writeText(input.value)
+      .then(() => alert('Referral link copied to clipboard!'))
+      .catch(() => alert('Failed to copy.'));
+  }
+
+  function openReferral() {
+    location.href = "referral.html";
+  }
+
+  function openSettings() {
+    location.href = "settings.html";
+  }
+
+  function openHelp() {
+    alert("Redirecting to Help...");
+  }
+</script>
 </body>
 </html>
