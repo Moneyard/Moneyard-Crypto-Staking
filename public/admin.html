@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Deposit Approval - Moneyard Admin</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
-    h2 { text-align: center; margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; background: #fff; }
+    body { font-family: Arial, sans-serif; background: #f2f2f2; padding: 20px; }
+    h2, h3 { text-align: center; margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; background: #fff; margin-bottom: 30px; }
     th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
     th { background: #00695c; color: white; }
-    button { padding: 5px 10px; margin: 2px; }
-    .approved { background: #4caf50; color: white; }
-    .rejected { background: #f44336; color: white; }
+    button { padding: 6px 12px; margin: 2px; border: none; cursor: pointer; border-radius: 4px; }
+    .approved { background-color: #4caf50; color: white; }
+    .rejected { background-color: #f44336; color: white; }
+    .action-btn { background-color: #2196f3; color: white; }
   </style>
 </head>
 <body>
 
   <h2>Deposit Approval Panel</h2>
-<h3>Deposit History</h3>
-<div id="depositHistory">Loading...</div>
 
   <h3>Pending Deposits</h3>
   <table id="pendingDepositsTable">
     <thead>
       <tr>
-        <th>ID</th><th>User ID</th><th>Amount</th><th>Method</th><th>Transaction ID</th><th>Status</th><th>Actions</th>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Transaction ID</th>
+        <th>Status</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -35,7 +40,12 @@
   <table id="approvedDepositsTable">
     <thead>
       <tr>
-        <th>ID</th><th>User ID</th><th>Amount</th><th>Method</th><th>Transaction ID</th><th>Status</th>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Transaction ID</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody></tbody>
