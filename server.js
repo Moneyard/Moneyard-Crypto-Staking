@@ -11,17 +11,16 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// PostgreSQL pool connection
+// PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false }
 });
 
-// JWT middleware
+// Middleware to verify JWT token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
-
-  const token = authHeader.split(' ')[1];
+  const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ message: 'No token provided' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -37,17 +36,14 @@ app.post('/api/signup', async (req, res) => {
   if (!email || !password) return res.status(400).json({ success: false, message: 'Missing email or password' });
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Check if user exists
     const userCheck = await pool.query('SELECT id FROM users WHERE email=$1', [email]);
     if (userCheck.rows.length > 0) {
       return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    // Insert user
-    const insertUser = await pool.query(
-      'INSERT INTO users (email, password_hash, referral_code) VALUES ($1, $2, $3) RETURNING id',
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(
+      'INSERT INTO users (email, password_hash, referral_code) VALUES ($1, $2, $3)',
       [email, hashedPassword, refCode || null]
     );
 
@@ -65,15 +61,12 @@ app.post('/api/login', async (req, res) => {
 
   try {
     const userRes = await pool.query('SELECT id, password_hash FROM users WHERE email=$1', [email]);
-    if (userRes.rows.length === 0) {
-      return res.status(400).json({ success: false, message: 'Invalid email or password' });
-    }
+    if (userRes.rows.length === 0) return res.status(400).json({ success: false, message: 'Invalid credentials' });
 
     const user = userRes.rows[0];
-    const validPass = await bcrypt.compare(password, user.password_hash);
-    if (!validPass) return res.status(400).json({ success: false, message: 'Invalid email or password' });
+    const valid = await bcrypt.compare(password, user.password_hash);
+    if (!valid) return res.status(400).json({ success: false, message: 'Invalid credentials' });
 
-    // Create JWT
     const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, { expiresIn: '12h' });
     res.json({ success: true, token });
   } catch (err) {
@@ -85,23 +78,18 @@ app.post('/api/login', async (req, res) => {
 // --- Deposit ---
 app.post('/api/deposit', authenticateToken, async (req, res) => {
   const { amount, method, txId } = req.body;
-  if (!amount || !method || !txId) {
-    return res.status(400).json({ success: false, message: 'Missing deposit fields' });
-  }
+  if (!amount || !method || !txId) return res.status(400).json({ success: false, message: 'Missing fields' });
 
   try {
     await pool.query(
-      'INSERT INTO deposits (user_id, amount, method, tx_id) VALUES ($1, $2, $3, $4)',
-      [req.user.id, amount, method, txId]
+      'INSERT INTO deposits (user_id, amount, method, tx_id, status) VALUES ($1, $2, $3, $4, $5)',
+      [req.user.id, amount, method, txId, 'pending']
     );
-
-    // Also insert into transactions table
     await pool.query(
       'INSERT INTO transactions (user_id, type, amount, status) VALUES ($1, $2, $3, $4)',
       [req.user.id, 'deposit', amount, 'pending']
     );
-
-    res.json({ success: true, message: 'Deposit request received' });
+    res.json({ success: true, message: 'Deposit submitted' });
   } catch (err) {
     console.error('Deposit error:', err);
     res.status(500).json({ success: false, message: 'Server error during deposit' });
@@ -111,62 +99,51 @@ app.post('/api/deposit', authenticateToken, async (req, res) => {
 // --- Withdraw ---
 app.post('/api/withdraw', authenticateToken, async (req, res) => {
   const { amount, password } = req.body;
-  if (!amount || !password) return res.status(400).json({ success: false, message: 'Missing withdrawal fields' });
+  if (!amount || !password) return res.status(400).json({ success: false, message: 'Missing fields' });
 
   try {
-    // Verify user password
     const userRes = await pool.query('SELECT password_hash FROM users WHERE id=$1', [req.user.id]);
     if (userRes.rows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
 
     const validPass = await bcrypt.compare(password, userRes.rows[0].password_hash);
     if (!validPass) return res.status(400).json({ success: false, message: 'Invalid password' });
 
-    // Check balance (sum deposits - sum withdrawals)
-    const depositSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM deposits WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
-    const withdrawalSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM withdrawals WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
-    const balance = parseFloat(depositSum.rows[0].total) - parseFloat(withdrawalSum.rows[0].total);
+    const deposits = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM deposits WHERE user_id=$1 AND status=$2', [req.user.id, 'approved']);
+    const withdrawals = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM withdrawals WHERE user_id=$1 AND status=$2', [req.user.id, 'approved']);
+    const balance = parseFloat(deposits.rows[0].total) - parseFloat(withdrawals.rows[0].total);
 
     if (amount > balance) return res.status(400).json({ success: false, message: 'Insufficient balance' });
 
-    // Insert withdrawal request
-    await pool.query(
-      'INSERT INTO withdrawals (user_id, amount) VALUES ($1, $2)',
-      [req.user.id, amount]
-    );
+    await pool.query('INSERT INTO withdrawals (user_id, amount, status) VALUES ($1, $2, $3)', [req.user.id, amount, 'pending']);
+    await pool.query('INSERT INTO transactions (user_id, type, amount, status) VALUES ($1, $2, $3, $4)', [req.user.id, 'withdrawal', amount, 'pending']);
 
-    // Also insert into transactions
-    await pool.query(
-      'INSERT INTO transactions (user_id, type, amount, status) VALUES ($1, $2, $3, $4)',
-      [req.user.id, 'withdrawal', amount, 'pending']
-    );
-
-    res.json({ success: true, message: 'Withdrawal request received' });
+    res.json({ success: true, message: 'Withdrawal submitted' });
   } catch (err) {
     console.error('Withdraw error:', err);
     res.status(500).json({ success: false, message: 'Server error during withdrawal' });
   }
 });
 
-// --- User summary ---
+// --- User Summary ---
 app.get('/api/user/summary', authenticateToken, async (req, res) => {
   try {
-    const depositSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM deposits WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
-    const withdrawalSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM withdrawals WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
-    const balance = parseFloat(depositSum.rows[0].total) - parseFloat(withdrawalSum.rows[0].total);
+    const deposits = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM deposits WHERE user_id=$1 AND status=$2', [req.user.id, 'approved']);
+    const withdrawals = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM withdrawals WHERE user_id=$1 AND status=$2', [req.user.id, 'approved']);
+    const balance = parseFloat(deposits.rows[0].total) - parseFloat(withdrawals.rows[0].total);
 
     res.json({
       success: true,
       balance,
-      totalDeposits: parseFloat(depositSum.rows[0].total),
-      totalWithdrawals: parseFloat(withdrawalSum.rows[0].total)
+      totalDeposits: parseFloat(deposits.rows[0].total),
+      totalWithdrawals: parseFloat(withdrawals.rows[0].total)
     });
   } catch (err) {
-    console.error('User summary error:', err);
+    console.error('Summary error:', err);
     res.status(500).json({ success: false, message: 'Server error fetching summary' });
   }
 });
 
-// --- Transaction history ---
+// --- Transaction History ---
 app.get('/api/transactions', authenticateToken, async (req, res) => {
   try {
     const txs = await pool.query(
@@ -180,48 +157,47 @@ app.get('/api/transactions', authenticateToken, async (req, res) => {
   }
 });
 
-// --- Admin: list withdrawal requests ---
+// --- Admin endpoints (no auth yet) ---
 app.get('/api/admin/withdrawals', async (req, res) => {
-  // In production, add proper admin authentication here
   try {
-    const wds = await pool.query(
-      'SELECT w.id, u.email, w.amount, w.status, w.created_at FROM withdrawals w JOIN users u ON w.user_id = u.id ORDER BY w.created_at DESC'
-    );
-    res.json({ success: true, withdrawals: wds.rows });
+    const result = await pool.query(`
+      SELECT w.id, u.email, w.amount, w.status, w.created_at
+      FROM withdrawals w
+      JOIN users u ON w.user_id = u.id
+      ORDER BY w.created_at DESC
+    `);
+    res.json({ success: true, withdrawals: result.rows });
   } catch (err) {
-    console.error('Admin withdrawals error:', err);
-    res.status(500).json({ success: false, message: 'Server error fetching withdrawals' });
+    console.error('Admin fetch error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
-// --- Admin: approve or reject withdrawal ---
 app.post('/api/admin/withdrawals/:id/approve', async (req, res) => {
-  // Add admin auth in production
   const { id } = req.params;
   try {
     await pool.query('UPDATE withdrawals SET status = $1 WHERE id = $2', ['approved', id]);
-    await pool.query('UPDATE transactions SET status = $1 WHERE id = $2 AND type = $3', ['approved', id, 'withdrawal']);
+    await pool.query('UPDATE transactions SET status = $1 WHERE type = $2 AND user_id = (SELECT user_id FROM withdrawals WHERE id = $3) AND amount = (SELECT amount FROM withdrawals WHERE id = $3)', ['approved', 'withdrawal', id]);
     res.json({ success: true, message: 'Withdrawal approved' });
   } catch (err) {
-    console.error('Approve withdrawal error:', err);
+    console.error('Approve error:', err);
     res.status(500).json({ success: false, message: 'Server error approving withdrawal' });
   }
 });
 
 app.post('/api/admin/withdrawals/:id/reject', async (req, res) => {
-  // Add admin auth in production
   const { id } = req.params;
   try {
     await pool.query('UPDATE withdrawals SET status = $1 WHERE id = $2', ['rejected', id]);
-    await pool.query('UPDATE transactions SET status = $1 WHERE id = $2 AND type = $3', ['rejected', id, 'withdrawal']);
+    await pool.query('UPDATE transactions SET status = $1 WHERE type = $2 AND user_id = (SELECT user_id FROM withdrawals WHERE id = $3) AND amount = (SELECT amount FROM withdrawals WHERE id = $3)', ['rejected', 'withdrawal', id]);
     res.json({ success: true, message: 'Withdrawal rejected' });
   } catch (err) {
-    console.error('Reject withdrawal error:', err);
+    console.error('Reject error:', err);
     res.status(500).json({ success: false, message: 'Server error rejecting withdrawal' });
   }
 });
 
-// --- Server start ---
+// Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
