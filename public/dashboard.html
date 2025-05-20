@@ -358,9 +358,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
   function logout() {
-    // Clear user session
+    // Remove token from localStorage
     localStorage.removeItem("token");
-    // Redirect to homepage (index.html)
+
+    // Optional: clear any other saved user info
+    localStorage.removeItem("email");
+    localStorage.removeItem("user");
+
+    // Redirect to index.html (use exact file path)
     window.location.href = "index.html";
   }
 </script>
