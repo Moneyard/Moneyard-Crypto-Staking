@@ -1,282 +1,338 @@
-// ========== DEPOSIT MODAL HANDLING ==========
-document.getElementById('depositButton')?.addEventListener('click', () => {
-  const modal = document.getElementById('depositModal');
-  if (modal) {
-    modal.style.display = 'block';
-  }
-});
-
-// Close the Deposit modal when the close button is clicked
-document.getElementById('closeDepositModal')?.addEventListener('click', () => {
-  closeDepositModal();
-});
-
-// Close the Deposit Modal function
-function closeDepositModal() {
-  const modal = document.getElementById('depositModal');
-  if (modal) {
-    modal.style.display = 'none';
-  }
+// === Utils ===
+function getToken() {
+  return localStorage.getItem('token');
 }
 
-// Close the modal if user clicks outside of it
-window.addEventListener('click', (event) => {
-  const modal = document.getElementById('depositModal');
-  if (event.target === modal) {
-    closeDepositModal();
-  }
-});
+function setToken(token) {
+  localStorage.setItem('token', token);
+}
 
-// ========== DEPOSIT FORM VALIDATION ==========
-document.getElementById('depositForm')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
+function removeToken() {
+  localStorage.removeItem('token');
+}
 
-  const amount = parseFloat(document.getElementById('depositAmount').value);
-  const network = document.getElementById('depositNetwork').value;
-  const txId = document.getElementById('depositTxId').value;
+function getUserEmail() {
+  return localStorage.getItem('userEmail') || '';
+}
 
-  if (!amount || !network || !txId) {
-    alert('Please fill all fields correctly.');
+function setUserEmail(email) {
+  localStorage.setItem('userEmail', email);
+}
+
+function removeUserEmail() {
+  localStorage.removeItem('userEmail');
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
+// === Signup ===
+async function handleSignup(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value.trim();
+  const refCode = document.getElementById('signupRefCode')?.value.trim() || '';
+
+  if (!email || !password) {
+    alert('Please fill email and password.');
     return;
   }
 
   try {
-    const token = localStorage.getItem('token'); // Assuming login stores token
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password, refCode })
+    });
+    const data = await res.json();
 
-    const response = await fetch('/api/deposit', {
+    if (data.success) {
+      alert('Signup successful! Please login.');
+      toggleForms('login');
+      document.getElementById('loginEmail').value = email;
+    } else {
+      alert(data.message || 'Signup failed.');
+    }
+  } catch (err) {
+    console.error('Signup error:', err);
+    alert('Signup error occurred.');
+  }
+}
+
+// === Login ===
+async function handleLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const rememberMe = document.getElementById('rememberMe')?.checked || false;
+
+  if (!email || !password) {
+    alert('Please enter email and password.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (data.success && data.token) {
+      setToken(data.token);
+
+      if (rememberMe) setUserEmail(email);
+      else removeUserEmail();
+
+      window.location.href = 'dashboard.html'; // Redirect on successful login
+    } else {
+      alert(data.message || 'Login failed.');
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    alert('Login error occurred.');
+  }
+}
+
+// === Logout ===
+function handleLogout() {
+  removeToken();
+  window.location.href = 'index.html';
+}
+
+// === Toggle Signup/Login Forms ===
+function toggleForms(formToShow) {
+  const signupForm = document.getElementById('signupForm');
+  const loginForm = document.getElementById('loginForm');
+
+  if (formToShow === 'signup') {
+    signupForm.style.display = 'block';
+    loginForm.style.display = 'none';
+  } else {
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
+  }
+}
+
+// === Deposit Submit ===
+async function handleDeposit(event) {
+  event.preventDefault();
+
+  const amount = parseFloat(document.getElementById('depositAmount').value);
+  const method = document.getElementById('depositNetwork').value.trim();
+  const txId = document.getElementById('depositTxId').value.trim();
+
+  if (!amount || amount <= 0 || !method || !txId) {
+    alert('Please fill all deposit fields correctly.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/deposit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        ...authHeaders()
       },
-      body: JSON.stringify({
-        amount,
-        method: network,
-        txId
-      })
+      body: JSON.stringify({ amount, method, txId })
     });
-
-    const data = await response.json();
+    const data = await res.json();
 
     if (data.success) {
-      alert('Deposit successful! Balance will be updated.');
-      closeDepositModal();
-      refreshBalance(); // Optional: add this function to refresh balance on dashboard
+      alert('Deposit submitted successfully. Await admin approval.');
+      document.getElementById('depositForm').reset();
+      loadUserBalance();
+      loadTransactionHistory();
     } else {
       alert(data.message || 'Deposit failed.');
     }
-  } catch (error) {
-    console.error('Deposit error:', error);
-    alert('An error occurred while processing your deposit.');
+  } catch (err) {
+    console.error('Deposit error:', err);
+    alert('Deposit error occurred.');
   }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  // ... existing code ...
-  refreshBalance(); // Load balance when dashboard loads
-});
-
-// ========== STAKE PLANS HANDLING ==========
-const stakePlansContainer = document.getElementById("stake-plans");
-if (stakePlansContainer) {
-  // Sample static stake plans (you can later update this dynamically if needed)
-  const stakePlans = [
-    { name: "Flexible", apy: 10, durationDays: 30 },
-    { name: "Locked", apy: 15, durationDays: 90 },
-    { name: "High-Yield", apy: 20, durationDays: 180 }
-  ];
-
-  // Display stake plans in the frontend
-  stakePlans.forEach(plan => {
-    const card = document.createElement("div");
-    card.className = "stake-plan-card";
-    card.innerHTML = `
-      <h3>${plan.name}</h3>
-      <p>APY: ${plan.apy}%</p>
-      <p>Duration: ${plan.durationDays} days</p>
-      <button onclick="selectStakePlan('${plan.name}', ${plan.apy}, ${plan.durationDays})">Choose Plan</button>
-    `;
-    stakePlansContainer.appendChild(card);
-  });
 }
 
-// Select a staking plan and display it in the form
-function selectStakePlan(name, apy, duration) {
-  document.getElementById("selectedPlanName").value = name;
-  document.getElementById("selectedPlanApy").innerText = `APY: ${apy}%`;
-  document.getElementById("selectedPlanDuration").innerText = `Duration: ${duration} days`;
-}
+// === Withdraw Submit ===
+async function handleWithdraw(event) {
+  event.preventDefault();
 
-// ========== STAKE FORM SUBMISSION (Frontend Validation Only) ==========
-document.getElementById('stakeForm')?.addEventListener('submit', (e) => {
-  e.preventDefault();
+  const amount = parseFloat(document.getElementById('withdrawAmount').value);
+  const password = document.getElementById('withdrawPassword').value.trim();
 
-  const amount = parseFloat(document.getElementById('stakeAmount').value);
-  const selectedPlan = document.getElementById('selectedPlanName').value;
-
-  if (!amount || amount < 10) {
-    alert("Minimum stake is 10 USDT.");
+  if (!amount || amount <= 0 || !password) {
+    alert('Please fill all withdrawal fields correctly.');
     return;
   }
 
-  // Simulating staking success
-  alert(`You have successfully staked ${amount} USDT in the ${selectedPlan} plan.`);
-  document.getElementById('stakeForm').reset();
-});
-
-// ========== DOMContentLoaded LOGIC (For UI Animations and Display) ==========
-document.addEventListener('DOMContentLoaded', () => {
-  const sections = document.querySelectorAll('.animated-section');
-  const sectionObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        if (entry.target.id === 'growth-tracker') {
-          animateCounters();
-        }
-      }
+  try {
+    const res = await fetch('/api/withdraw', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders()
+      },
+      body: JSON.stringify({ amount, password })
     });
-  }, { threshold: 0.1 });
+    const data = await res.json();
 
-  sections.forEach(section => sectionObserver.observe(section));
-
-  // Adding an example of an animated counter (growth tracker)
-  function animateCounters() {
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => {
-      const target = +counter.getAttribute('data-target');
-      let current = 0;
-      const increment = target / 100;
-
-      const interval = setInterval(() => {
-        current += increment;
-        counter.textContent = Math.floor(current);
-        if (current >= target) {
-          clearInterval(interval);
-        }
-      }, 30);
-    });
+    if (data.success) {
+      alert('Withdrawal requested successfully. Await admin approval.');
+      document.getElementById('withdrawForm').reset();
+      loadUserBalance();
+      loadTransactionHistory();
+    } else {
+      alert(data.message || 'Withdrawal failed.');
+    }
+  } catch (err) {
+    console.error('Withdrawal error:', err);
+    alert('Withdrawal error occurred.');
   }
-});
-
-// ========== LOAN CALCULATOR ==========
-const ltvSlider = document.getElementById("ltvSlider");
-const ltvValue = document.getElementById("ltvValue");
-if (ltvSlider && ltvValue) {
-  ltvSlider.addEventListener("input", function () {
-    ltvValue.textContent = `${ltvSlider.value}%`;
-  });
 }
 
-const calcLoanBtn = document.getElementById("calculateLoanBtn");
-if (calcLoanBtn) {
-  calcLoanBtn.addEventListener("click", function () {
-    const btcAmount = parseFloat(document.getElementById("btcAmount").value);
-    const ltv = parseInt(ltvSlider.value);
-    const btcPrice = 20000; // Example BTC price
+// === Load User Balance & Summary ===
+async function loadUserBalance() {
+  try {
+    const res = await fetch('/api/user/summary', {
+      headers: authHeaders()
+    });
+    const data = await res.json();
 
-    if (isNaN(btcAmount) || btcAmount <= 0) {
-      alert("Please enter valid BTC amount.");
+    if (data.success) {
+      document.getElementById('balance').textContent = data.balance.toFixed(2);
+      document.getElementById('totalDeposits').textContent = data.totalDeposits.toFixed(2);
+      document.getElementById('totalWithdrawals').textContent = data.totalWithdrawals.toFixed(2);
+    } else {
+      console.warn('Failed to load user summary.');
+    }
+  } catch (err) {
+    console.error('Error loading user summary:', err);
+  }
+}
+
+// === Load Transaction History ===
+async function loadTransactionHistory() {
+  try {
+    const res = await fetch('/api/transactions', {
+      headers: authHeaders()
+    });
+    const txs = await res.json();
+
+    const container = document.getElementById('transactionHistory');
+    container.innerHTML = '';
+
+    if (!txs.length) {
+      container.innerHTML = '<p>No transactions yet.</p>';
       return;
     }
 
-    const loanAmount = btcAmount * btcPrice * (ltv / 100);
-    document.getElementById("loanResult").innerHTML = `
-      <p>Loan Amount Available: <strong>${loanAmount.toFixed(2)} USDT</strong></p>
-    `;
-  });
-}
-
-// ========== NAVIGATION AND MODAL TOGGLES ==========
-function toggleSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  section.style.display = section.style.display === "block" ? "none" : "block";
-}
-
-// Example: Toggle Earnings Section when clicked
-document.getElementById("earningsButton")?.addEventListener("click", function() {
-  toggleSection('earningsSection');
-});
-
-// ========== USER EMAIL STORAGE AND LOGIN FLOW ==========
-window.onload = function() {
-  const savedEmail = localStorage.getItem("userEmail");
-  if (savedEmail) {
-    document.getElementById("loginEmail").value = savedEmail;
-    document.getElementById("rememberMe").checked = true; // Pre-check the "Remember Me" checkbox
+    txs.forEach(tx => {
+      const div = document.createElement('div');
+      div.className = 'transaction';
+      div.innerHTML = `
+        <p>Type: ${tx.type}</p>
+        <p>Amount: ${tx.amount.toFixed(2)}</p>
+        <p>Status: ${tx.status}</p>
+        <p>Date: ${new Date(tx.created_at).toLocaleString()}</p>
+      `;
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error('Error loading transaction history:', err);
   }
+}
+
+// === Admin: Load Pending Deposits ===
+async function loadAdminDeposits() {
+  try {
+    const res = await fetch('/api/admin/deposits', {
+      headers: authHeaders()
+    });
+    const deposits = await res.json();
+
+    const tableBody = document.getElementById('depositTableBody');
+    tableBody.innerHTML = '';
+
+    if (!deposits.length) {
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No pending deposits.</td></tr>';
+      return;
+    }
+
+    deposits.forEach(dep => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${dep.amount.toFixed(2)}</td>
+        <td>${dep.method}</td>
+        <td>${dep.tx_id}</td>
+        <td>${dep.status}</td>
+        <td><button onclick="approveDeposit(${dep.id})">Approve</button></td>
+        <td><button onclick="rejectDeposit(${dep.id})">Reject</button></td>
+      `;
+      tableBody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('Error loading admin deposits:', err);
+  }
+}
+
+async function approveDeposit(id) {
+  try {
+    const res = await fetch(`/api/admin/deposits/${id}/approve`, {
+      method: 'POST',
+      headers: authHeaders()
+    });
+    const data = await res.json();
+    if (data.message) alert(data.message);
+    loadAdminDeposits();
+  } catch (err) {
+    console.error('Error approving deposit:', err);
+  }
+}
+
+async function rejectDeposit(id) {
+  try {
+    const res = await fetch(`/api/admin/deposits/${id}/reject`, {
+      method: 'POST',
+      headers: authHeaders()
+    });
+    const data = await res.json();
+    if (data.message) alert(data.message);
+    loadAdminDeposits();
+  } catch (err) {
+    console.error('Error rejecting deposit:', err);
+  }
+}
+
+// === Page Initialization ===
+window.onload = () => {
+  // Pre-fill login email if remembered
+  document.getElementById('loginEmail').value = getUserEmail();
+
+  // Attach form event listeners
+  document.getElementById('signupForm')?.addEventListener('submit', handleSignup);
+  document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
+  document.getElementById('depositForm')?.addEventListener('submit', handleDeposit);
+  document.getElementById('withdrawForm')?.addEventListener('submit', handleWithdraw);
+
+  // Load user data if on dashboard page
+  if (document.body.id === 'dashboardPage') {
+    loadUserBalance();
+    loadTransactionHistory();
+  }
+
+  // Load admin deposits if on admin page
+  if (document.body.id === 'adminPage') {
+    loadAdminDeposits();
+  }
+
+  // Attach logout button
+  document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
 };
 
-// Handle the login form submission
-function handleLogin(event) {
-  event.preventDefault();
-
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-  const rememberMe = document.getElementById("rememberMe").checked;
-
-  // If "Remember Me" is checked, save the email in localStorage
-  if (rememberMe) {
-    localStorage.setItem("userEmail", email);
-  } else {
-    localStorage.removeItem("userEmail"); // Remove the saved email if "Remember Me" is not checked
-  }
-
-  // Proceed with the login logic (you will likely send the email/password to the backend)
-  // For now, we'll redirect to the dashboard page
-  window.location.href = "dashboard.html"; // Update this as per your flow
-}
-.then(data => {
-  if (data.success) {
-    localStorage.setItem("userEmail", data.email); // Store user email
-    localStorage.setItem("token", data.token); // Store auth token if needed
-    window.location.href = "dashboard.html";
-  } else {
-    alert(data.message);
-  }
-});
-
-// ========== DEPOSIT MANAGEMENT (Admin Panel) ==========
-function openAdminModal() {
-  document.getElementById("adminDepositModal").style.display = "block";
-  loadDepositsToTable();
-}
-
-function closeAdminModal() {
-  document.getElementById("adminDepositModal").style.display = "none";
-}
-
-function loadDepositsToTable() {
-  const tableBody = document.getElementById("depositTableBody");
-  tableBody.innerHTML = "";
-
-  const savedDeposits = JSON.parse(localStorage.getItem("momoDeposits") || "[]");
-
-  if (savedDeposits.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:15px;">No deposits yet.</td></tr>`;
-    return;
-  }
-
-  savedDeposits.forEach((deposit, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${deposit.amount}</td>
-      <td>${deposit.method}</td>
-      <td>${deposit.txId}</td>
-      <td><span class="status">${deposit.status}</span></td>
-      <td><button onclick="approveDeposit(${index})">Approve</button></td>
-      <td><button onclick="rejectDeposit(${index})">Reject</button></td>
-    `;
-    tableBody.appendChild(row);
-  });
-}
-
-function approveDeposit(index) {
-  alert("Deposit approved!");
-  // Handle deposit approval logic
-}
-
-function rejectDeposit(index) {
-  alert("Deposit rejected!");
-  // Handle deposit rejection logic
-}
+// === Form toggling buttons ===
+document.getElementById('showSignupBtn')?.addEventListener('click', () => toggleForms('signup'));
+document.getElementById('showLoginBtn')?.addEventListener('click', () => toggleForms('login'));
