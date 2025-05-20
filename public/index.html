@@ -597,8 +597,12 @@
 window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const formType = urlParams.get('form');
+
   if (formType === 'signup') {
     showAuthForm('signup');
+    document.getElementById('auth-form').scrollIntoView({ behavior: 'smooth' });
+  } else if (formType === 'login') {
+    showAuthForm('login');
     document.getElementById('auth-form').scrollIntoView({ behavior: 'smooth' });
   }
 });
