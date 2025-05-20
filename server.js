@@ -1,172 +1,227 @@
+require('dotenv').config();
 const express = require('express');
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const fs = require('fs');
-const jwt = require('jsonwebtoken'); // 1. Added jwt
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const { Pool } = require('pg');
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key_here_change_this'; // 2. Secret key
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(express.json());
 
-// DB Initialization
-const dbPath = './moneyard.db';
-if (!fs.existsSync(dbPath)) {
-    fs.closeSync(fs.openSync(dbPath, 'w'));
-}
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) return console.error('DB Error:', err);
-    console.log('Connected to SQLite:', dbPath);
+// PostgreSQL pool connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 });
 
-// Tables
-db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE,
-    password TEXT,
-    balance REAL DEFAULT 0,
-    reset_token TEXT,
-    reset_token_expiry INTEGER
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS transactions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    type TEXT,
-    amount REAL,
-    network TEXT,
-    tx_id TEXT,
-    status TEXT,
-    date TEXT
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    amount REAL,
-    wallet_address TEXT,
-    password TEXT,
-    status TEXT DEFAULT 'pending',
-    date TEXT
-)`);
-
-db.run(`CREATE TABLE IF NOT EXISTS stakes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    plan TEXT,
-    amount REAL,
-    apy REAL,
-    lock_period INTEGER,
-    start_date TIMESTAMP,
-    status TEXT DEFAULT 'active',
-    FOREIGN KEY(user_id) REFERENCES users(id)
-)`);
-
-// Middleware to authenticate JWT
+// JWT middleware
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Token missing' });
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
 
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ error: 'Invalid token' });
-        req.user = user;
-        next();
-    });
+  const token = authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token provided' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid token' });
+    req.user = user;
+    next();
+  });
 }
 
-// Signup
+// --- Signup ---
 app.post('/api/signup', async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+  const { email, password, refCode } = req.body;
+  if (!email || !password) return res.status(400).json({ success: false, message: 'Missing email or password' });
 
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,}$/;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({ 
-            error: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number, and be at least 5 characters' 
-        });
+    // Check if user exists
+    const userCheck = await pool.query('SELECT id FROM users WHERE email=$1', [email]);
+    if (userCheck.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (user) return res.status(400).json({ error: 'Email already in use' });
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        db.run("INSERT INTO users (email, password) VALUES (?, ?)", 
-            [email, hashedPassword], 
-            function(err) {
-                if (err) return res.status(500).json({ error: 'Failed to register user' });
-                res.json({ success: true, userId: this.lastID });
-            }
-        );
-    });
-});
-
-// Login with JWT
-app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
-
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-        if (err || !user) return res.status(400).json({ error: 'Invalid email or user not found' });
-
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(400).json({ error: 'Invalid password' });
-
-        const payload = { userId: user.id, email: user.email };
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-
-        res.json({
-            success: true,
-            token,
-            userId: user.id,
-            username: user.email
-        });
-    });
-});
-
-// Protected profile route
-app.get('/api/profile', authenticateToken, (req, res) => {
-    const userId = req.user.userId;
-    db.get("SELECT id, email, balance FROM users WHERE id = ?", [userId], (err, user) => {
-        if (err || !user) return res.status(404).json({ error: 'User not found' });
-        res.json({ user });
-    });
-});
-
-// Deposit Funds
-app.post('/api/deposit', (req, res) => {
-    const { userId, amount, network, txId } = req.body;
-    if (!userId || !amount || !network || !txId) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    const now = new Date().toISOString();
-
-    db.run(`
-        INSERT INTO transactions (user_id, type, amount, network, tx_id, status, date)
-        VALUES (?, 'deposit', ?, ?, ?, 'confirmed', ?)`,
-        [userId, amount, network, txId, now],
-        function (err) {
-            if (err) return res.status(500).json({ error: 'Deposit failed' });
-
-            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [amount, userId], (err) => {
-                if (err) return res.status(500).json({ error: 'Failed to update balance' });
-
-                db.get("SELECT balance FROM users WHERE id = ?", [userId], (err, row) => {
-                    if (err || !row) return res.status(500).json({ error: 'Failed to retrieve updated balance' });
-                    res.json({ success: true, message: 'Deposit confirmed', updatedBalance: row.balance });
-                });
-            });
-        }
+    // Insert user
+    const insertUser = await pool.query(
+      'INSERT INTO users (email, password_hash, referral_code) VALUES ($1, $2, $3) RETURNING id',
+      [email, hashedPassword, refCode || null]
     );
+
+    res.json({ success: true, message: 'Signup successful' });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ success: false, message: 'Server error during signup' });
+  }
 });
 
-// Remaining routes like /api/deposits, /api/withdraw, /api/withdrawals continue unchanged
+// --- Login ---
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ success: false, message: 'Missing email or password' });
+
+  try {
+    const userRes = await pool.query('SELECT id, password_hash FROM users WHERE email=$1', [email]);
+    if (userRes.rows.length === 0) {
+      return res.status(400).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    const user = userRes.rows[0];
+    const validPass = await bcrypt.compare(password, user.password_hash);
+    if (!validPass) return res.status(400).json({ success: false, message: 'Invalid email or password' });
+
+    // Create JWT
+    const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, { expiresIn: '12h' });
+    res.json({ success: true, token });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ success: false, message: 'Server error during login' });
+  }
+});
+
+// --- Deposit ---
+app.post('/api/deposit', authenticateToken, async (req, res) => {
+  const { amount, method, txId } = req.body;
+  if (!amount || !method || !txId) {
+    return res.status(400).json({ success: false, message: 'Missing deposit fields' });
+  }
+
+  try {
+    await pool.query(
+      'INSERT INTO deposits (user_id, amount, method, tx_id) VALUES ($1, $2, $3, $4)',
+      [req.user.id, amount, method, txId]
+    );
+
+    // Also insert into transactions table
+    await pool.query(
+      'INSERT INTO transactions (user_id, type, amount, status) VALUES ($1, $2, $3, $4)',
+      [req.user.id, 'deposit', amount, 'pending']
+    );
+
+    res.json({ success: true, message: 'Deposit request received' });
+  } catch (err) {
+    console.error('Deposit error:', err);
+    res.status(500).json({ success: false, message: 'Server error during deposit' });
+  }
+});
+
+// --- Withdraw ---
+app.post('/api/withdraw', authenticateToken, async (req, res) => {
+  const { amount, password } = req.body;
+  if (!amount || !password) return res.status(400).json({ success: false, message: 'Missing withdrawal fields' });
+
+  try {
+    // Verify user password
+    const userRes = await pool.query('SELECT password_hash FROM users WHERE id=$1', [req.user.id]);
+    if (userRes.rows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const validPass = await bcrypt.compare(password, userRes.rows[0].password_hash);
+    if (!validPass) return res.status(400).json({ success: false, message: 'Invalid password' });
+
+    // Check balance (sum deposits - sum withdrawals)
+    const depositSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM deposits WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
+    const withdrawalSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM withdrawals WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
+    const balance = parseFloat(depositSum.rows[0].total) - parseFloat(withdrawalSum.rows[0].total);
+
+    if (amount > balance) return res.status(400).json({ success: false, message: 'Insufficient balance' });
+
+    // Insert withdrawal request
+    await pool.query(
+      'INSERT INTO withdrawals (user_id, amount) VALUES ($1, $2)',
+      [req.user.id, amount]
+    );
+
+    // Also insert into transactions
+    await pool.query(
+      'INSERT INTO transactions (user_id, type, amount, status) VALUES ($1, $2, $3, $4)',
+      [req.user.id, 'withdrawal', amount, 'pending']
+    );
+
+    res.json({ success: true, message: 'Withdrawal request received' });
+  } catch (err) {
+    console.error('Withdraw error:', err);
+    res.status(500).json({ success: false, message: 'Server error during withdrawal' });
+  }
+});
+
+// --- User summary ---
+app.get('/api/user/summary', authenticateToken, async (req, res) => {
+  try {
+    const depositSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM deposits WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
+    const withdrawalSum = await pool.query('SELECT COALESCE(SUM(amount),0) AS total FROM withdrawals WHERE user_id=$1 AND status=\'approved\'', [req.user.id]);
+    const balance = parseFloat(depositSum.rows[0].total) - parseFloat(withdrawalSum.rows[0].total);
+
+    res.json({
+      success: true,
+      balance,
+      totalDeposits: parseFloat(depositSum.rows[0].total),
+      totalWithdrawals: parseFloat(withdrawalSum.rows[0].total)
+    });
+  } catch (err) {
+    console.error('User summary error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching summary' });
+  }
+});
+
+// --- Transaction history ---
+app.get('/api/transactions', authenticateToken, async (req, res) => {
+  try {
+    const txs = await pool.query(
+      'SELECT type, amount, status, created_at FROM transactions WHERE user_id=$1 ORDER BY created_at DESC',
+      [req.user.id]
+    );
+    res.json({ success: true, transactions: txs.rows });
+  } catch (err) {
+    console.error('Transactions error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching transactions' });
+  }
+});
+
+// --- Admin: list withdrawal requests ---
+app.get('/api/admin/withdrawals', async (req, res) => {
+  // In production, add proper admin authentication here
+  try {
+    const wds = await pool.query(
+      'SELECT w.id, u.email, w.amount, w.status, w.created_at FROM withdrawals w JOIN users u ON w.user_id = u.id ORDER BY w.created_at DESC'
+    );
+    res.json({ success: true, withdrawals: wds.rows });
+  } catch (err) {
+    console.error('Admin withdrawals error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching withdrawals' });
+  }
+});
+
+// --- Admin: approve or reject withdrawal ---
+app.post('/api/admin/withdrawals/:id/approve', async (req, res) => {
+  // Add admin auth in production
+  const { id } = req.params;
+  try {
+    await pool.query('UPDATE withdrawals SET status = $1 WHERE id = $2', ['approved', id]);
+    await pool.query('UPDATE transactions SET status = $1 WHERE id = $2 AND type = $3', ['approved', id, 'withdrawal']);
+    res.json({ success: true, message: 'Withdrawal approved' });
+  } catch (err) {
+    console.error('Approve withdrawal error:', err);
+    res.status(500).json({ success: false, message: 'Server error approving withdrawal' });
+  }
+});
+
+app.post('/api/admin/withdrawals/:id/reject', async (req, res) => {
+  // Add admin auth in production
+  const { id } = req.params;
+  try {
+    await pool.query('UPDATE withdrawals SET status = $1 WHERE id = $2', ['rejected', id]);
+    await pool.query('UPDATE transactions SET status = $1 WHERE id = $2 AND type = $3', ['rejected', id, 'withdrawal']);
+    res.json({ success: true, message: 'Withdrawal rejected' });
+  } catch (err) {
+    console.error('Reject withdrawal error:', err);
+    res.status(500).json({ success: false, message: 'Server error rejecting withdrawal' });
+  }
+});
+
+// --- Server start ---
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
