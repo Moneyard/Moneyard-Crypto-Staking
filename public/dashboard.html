@@ -357,6 +357,12 @@ document.addEventListener("DOMContentLoaded", function () {
     calculateEarnings();
   }
 });
+  function logout() {
+    // Clear user session
+    localStorage.removeItem("token");
+    // Redirect to homepage (index.html)
+    window.location.href = "index.html";
+  }
 </script>
 </body>
 </html>
