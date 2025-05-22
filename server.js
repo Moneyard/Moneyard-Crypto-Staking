@@ -197,6 +197,15 @@ app.post('/api/admin/withdrawals/:id/reject', async (req, res) => {
   }
 });
 
+// --- Serve static frontend ---
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- Serve index.html for root ---
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // --- Initialize tables if they don't exist ---
 async function initializeDatabase() {
   try {
@@ -230,20 +239,21 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS transactions (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES users(id),
-        type VARCHAR(20), -- 'deposit' or 'withdrawal'
-        amount NUMERIC(12, 2),
+        type VARCHAR(50) NOT NULL,
+        amount NUMERIC(12, 2) NOT NULL,
         status VARCHAR(20),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('All tables initialized');
+    console.log('Database initialized');
   } catch (err) {
-    console.error('Error initializing database tables:', err);
+    console.error('Database initialization error:', err);
   }
 }
 
-initializeDatabase();
-// Start server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Start the server
+initializeDatabase().then(() => {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 });
