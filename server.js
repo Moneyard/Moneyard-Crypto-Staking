@@ -29,7 +29,6 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-
 // --- Signup ---
 app.post('/api/signup', async (req, res) => {
   const { email, password, refCode } = req.body;
@@ -206,9 +205,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 // --- Serve dashboard.html ---
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard', authenticateToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
+
 // --- Initialize tables if they don't exist ---
 async function initializeDatabase() {
   try {
