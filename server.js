@@ -205,7 +205,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
+// --- Serve dashboard.html ---
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
 // --- Initialize tables if they don't exist ---
 async function initializeDatabase() {
   try {
