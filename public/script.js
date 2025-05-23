@@ -44,7 +44,7 @@ async function handleSignup(event) {
   try {
     const res = await fetch('/api/signup', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, refCode })
     });
     const data = await res.json();
@@ -78,18 +78,16 @@ async function handleLogin(event) {
   try {
     const res = await fetch('/api/login', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
 
     if (data.success && data.token) {
       setToken(data.token);
-
       if (rememberMe) setUserEmail(email);
       else removeUserEmail();
-
-      window.location.href = 'dashboard.html'; // Redirect on successful login
+      window.location.href = 'dashboard.html';
     } else {
       alert(data.message || 'Login failed.');
     }
@@ -97,6 +95,40 @@ async function handleLogin(event) {
     console.error('Login error:', err);
     alert('Login error occurred.');
   }
+}
+
+// === Token-based login (raw version for compatibility) ===
+function legacyLogin(email, password) {
+  fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+      window.location.href = '/dashboard.html';
+    } else {
+      alert('Login failed');
+    }
+  });
+}
+
+// === Auth check on dashboard load ===
+function checkDashboardAuth() {
+  fetch('/dashboard', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+  })
+  .then(res => {
+    if (res.status !== 200) {
+      alert('Unauthorized. Please log in.');
+      window.location.href = '/index.html';
+    }
+  });
 }
 
 // === Logout ===
@@ -309,30 +341,20 @@ async function rejectDeposit(id) {
 
 // === Page Initialization ===
 window.onload = () => {
-  // Pre-fill login email if remembered
   document.getElementById('loginEmail').value = getUserEmail();
 
-  // Attach form event listeners
   document.getElementById('signupForm')?.addEventListener('submit', handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
   document.getElementById('depositForm')?.addEventListener('submit', handleDeposit);
   document.getElementById('withdrawForm')?.addEventListener('submit', handleWithdraw);
 
-  // Load user data if on dashboard page
   if (document.body.id === 'dashboardPage') {
+    checkDashboardAuth();
     loadUserBalance();
     loadTransactionHistory();
   }
 
-  // Load admin deposits if on admin page
   if (document.body.id === 'adminPage') {
     loadAdminDeposits();
   }
-
-  // Attach logout button
-  document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
 };
-
-// === Form toggling buttons ===
-document.getElementById('showSignupBtn')?.addEventListener('click', () => toggleForms('signup'));
-document.getElementById('showLoginBtn')?.addEventListener('click', () => toggleForms('login'));
