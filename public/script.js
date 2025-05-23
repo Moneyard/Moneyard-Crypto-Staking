@@ -358,23 +358,29 @@ window.onload = () => {
     loadAdminDeposits();
   }
 };
-function handleLogin(event) {
-  event.preventDefault();
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
+// Example login code in script.js
+async function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
 
-  fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success && data.token) {
-      localStorage.setItem('token', data.token); // Save JWT token
-      window.location.href = 'dashboard.html';
-    } else {
-      alert(data.message || 'Login failed');
-    }
-  });
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      // Save token before redirecting
+      localStorage.setItem('token', data.token);
+      window.location.href = '/dashboard';
+    } else {
+      alert(data.message || 'Login failed');
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    alert('Login failed');
+  }
 }
