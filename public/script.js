@@ -384,3 +384,8 @@ async function handleLogin(event) {
     alert('Login failed');
   }
 }
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('token'); // Remove JWT token
+  localStorage.removeItem('email'); // Optional
+  window.location.href = 'https://moneyard-backend-431ef6895316.herokuapp.com/?form=login'; // Redirect to login
+});
