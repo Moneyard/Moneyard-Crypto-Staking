@@ -606,6 +606,26 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('auth-form').scrollIntoView({ behavior: 'smooth' });
   }
 });
+async function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+
+  const res = await fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (data.token) {
+    localStorage.setItem('token', data.token); // Save token here
+    window.location.href = 'dashboard.html';   // Redirect to dashboard
+  } else {
+    alert('Login failed');
+  }
+}
 </script>
 </body>
 </html>
