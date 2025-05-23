@@ -356,6 +356,35 @@ window.onload = function() {
     console.log(data);
   });
 }
+const token = localStorage.getItem('token');
+if (!token) {
+  window.location.href = '/';
+}
+
+// Use it in fetch requests
+fetch('/api/user/summary', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+})
+  .then(res => {
+    if (res.status === 401 || res.status === 403) {
+      window.location.href = '/'; // force logout if invalid token
+    }
+    return res.json();
+  })
+  .then(data => {
+    if (data.success) {
+      // render data
+    }
+  })
+  .catch(err => {
+    console.error('Error loading summary:', err);
+  });
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/';
+  }
 </script>
 </body>
 </html>
