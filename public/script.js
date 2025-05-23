@@ -358,3 +358,23 @@ window.onload = () => {
     loadAdminDeposits();
   }
 };
+function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success && data.token) {
+      localStorage.setItem('token', data.token); // Save JWT token
+      window.location.href = 'dashboard.html';
+    } else {
+      alert(data.message || 'Login failed');
+    }
+  });
+}
