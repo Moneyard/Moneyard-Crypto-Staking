@@ -626,6 +626,30 @@ async function handleLogin(event) {
     alert('Login failed');
   }
 }
+  function handleLogin(event) {
+    event.preventDefault(); // Prevent form from submitting normally
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Login successful!');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(data.message || 'Login failed. Please try again.');
+      }
+    })
+    .catch(err => {
+      console.error('Login error:', err);
+      alert('An error occurred during login.');
+    });
+  }
 </script>
 </body>
 </html>
