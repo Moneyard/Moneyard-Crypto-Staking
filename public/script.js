@@ -384,8 +384,15 @@ async function handleLogin(event) {
     alert('Login failed');
   }
 }
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('token'); // Remove JWT token
-  localStorage.removeItem('email'); // Optional
-  window.location.href = 'https://moneyard-backend-431ef6895316.herokuapp.com/?form=login'; // Redirect to login
+document.addEventListener('DOMContentLoaded', function () {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function () {
+      localStorage.removeItem('token');
+      localStorage.removeItem('email');
+      window.location.href = 'https://moneyard-backend-431ef6895316.herokuapp.com/?form=login';
+    });
+  } else {
+    console.error('Logout button not found!');
+  }
 });
