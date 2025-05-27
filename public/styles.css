@@ -1303,28 +1303,28 @@ border-radius: 5px;
   text-align: center;
   padding: 30px 20px;
 }
-.feature-section {
-  text-align: center;
-  padding: 30px 20px;
+
+.image-container {
+  display: inline-block;
 }
 
-.tagline-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
+.feature-image {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tagline-below {
+  margin-top: 12px;
   font-size: 1.6em;
-  font-weight: 600;
-  color: #2e8b57; /* adjust to match your theme */
-  flex-wrap: wrap;
+  color: #2e8b57; /* or match your theme */
+  font-weight: bold;
+  animation: fadeIn 1s ease-out;
 }
 
-.feature-image-inline {
-  height: 60px;
-  width: auto;
-  border-radius: 8px;
-  vertical-align: middle;
-}
-
-.tagline-suffix {
-  white-space: nowrap;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
