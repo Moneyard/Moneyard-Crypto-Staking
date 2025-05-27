@@ -1299,3 +1299,10 @@ padding: 12px 24px;
 text-decoration: none;
 border-radius: 5px;
 }
+.tagline {
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 15px;
+  color: #2e8b57; /* dark green */
+  font-weight: bold;
+}
