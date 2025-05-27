@@ -1299,10 +1299,33 @@ padding: 12px 24px;
 text-decoration: none;
 border-radius: 5px;
 }
-.tagline {
+.feature-section {
   text-align: center;
-  font-size: 1.5em;
-  margin-top: 15px;
-  color: #2e8b57; /* dark green */
-  font-weight: bold;
+  padding: 30px 20px;
+}
+
+.feature-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tagline {
+  margin-top: 20px;
+  font-size: 1.8em;
+  color: #2e8b57; /* or use #007bff for blue */
+  font-weight: 600;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
