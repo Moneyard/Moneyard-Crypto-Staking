@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiquiBoost Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f8fa;
+      padding: 20px;
+      color: #04245c;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+    }
+    h2 {
+      text-align: center;
+      font-weight: 700;
+    }
+    .liquiboost {
+      color: red;
+    }
+    .liquiboost + span {
+      color: #00a86b;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 12px;
+      border: 2px solid #ddd;
+      flex: 1 1 400px;
+    }
+    .cash {
+      background: #fff4f4;
+      border-color: red;
+    }
+    .float {
+      background: #e6f4ea;
+      border-color: #00a86b;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>
+      How <span class="liquiboost">Liqui</span><span>Boost</span> Supports Agents
+    </h2>
+
+    <label for="amount">Enter Desired Amount (ZMW):</label><br />
+    <input type="number" id="amount" value="3000" min="100" step="100" />
+
+    <div class="row">
+      <div class="card cash">
+        <h3>💵 <span class="liquiboost">Liqui</span><span>Boost</span> Cash</h3>
+        <ul>
+          <li>Service Fee: 20%</li>
+          <li>Daily Commission: <strong id="cashDaily">K150</strong></li>
+          <li>Total Repayment: <strong id="cashRepay">K3,600</strong></li>
+          <li>Profit Estimate: <strong id="cashProfit">K450</strong></li>
+        </ul>
+      </div>
+
+      <div class="card float">
+        <h3>📱 <span class="liquiboost">Liqui</span><span>Boost</span> Float</h3>
+        <ul>
+          <li>Service Fee: 15%</li>
+          <li>Daily Commission: <strong id="floatDaily">K50</strong></li>
+          <li>Total Repayment: <strong id="floatRepay">K3,450</strong></li>
+          <li>Profit Estimate: <strong id="floatProfit">K150</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const amountInput = document.getElementById("amount");
+    const cashDaily = document.getElementById("cashDaily");
+    const cashRepay = document.getElementById("cashRepay");
+    const cashProfit = document.getElementById("cashProfit");
+    const floatDaily = document.getElementById("floatDaily");
+    const floatRepay = document.getElementById("floatRepay");
+    const floatProfit = document.getElementById("floatProfit");
+
+    function calculate() {
+      const amount = parseFloat(amountInput.value) || 0;
+
+      const cashComm = 150 * (amount / 3000);
+      const cashRepayment = amount * 1.2;
+      const cashProfitValue = (cashComm * 14) - (cashRepayment - amount);
+
+      const floatComm = 50 * (amount / 3000);
+      const floatRepayment = amount * 1.15;
+      const floatProfitValue = (floatComm * 14) - (floatRepayment - amount);
+
+      cashDaily.textContent = "K" + cashComm.toFixed(2);
+      cashRepay.textContent = "K" + cashRepayment.toFixed(2);
+      cashProfit.textContent = "K" + cashProfitValue.toFixed(2);
+
+      floatDaily.textContent = "K" + floatComm.toFixed(2);
+      floatRepay.textContent = "K" + floatRepayment.toFixed(2);
+      floatProfit.textContent = "K" + floatProfitValue.toFixed(2);
+    }
+
+    amountInput.addEventListener("input", calculate);
+    calculate();
+  </script>
+</body>
+</html>
