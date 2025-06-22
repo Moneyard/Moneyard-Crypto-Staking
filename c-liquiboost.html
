@@ -1,133 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>LiquiBoost Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f6f8fa;
+      max-width: 600px;
+      margin: 40px auto;
       padding: 20px;
-      color: #04245c;
+      color: #04245C;
+      background: #f9f9f9;
+      border-radius: 10px;
+      border: 1px solid #ddd;
     }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
-    }
-    h2 {
-      text-align: center;
-      font-weight: 700;
-    }
-    .liquiboost {
-      color: red;
-    }
-    .liquiboost + span {
-      color: #00a86b;
-    }
-    input {
-      padding: 10px;
-      font-size: 16px;
+    h2 span.red { color: red; }
+    h2 span.green { color: green; }
+    input, select {
       width: 100%;
-      max-width: 300px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      margin: 10px 0;
       border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
-    .card {
-      background: #fff;
-      padding: 20px;
-      margin: 10px;
-      border-radius: 12px;
-      border: 2px solid #ddd;
-      flex: 1 1 400px;
-    }
-    .cash {
-      background: #fff4f4;
-      border-color: red;
-    }
-    .float {
+    .output {
       background: #e6f4ea;
-      border-color: #00a86b;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-    ul {
-      padding-left: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>
-      How <span class="liquiboost">Liqui</span><span>Boost</span> Supports Agents
-    </h2>
+  <h2><span class="red">Liqui</span><span class="green">Boost</span> Earnings Calculator</h2>
+  <label>Enter Desired Amount (ZMW):</label>
+  <input type="number" id="amount" value="3000" />
 
-    <label for="amount">Enter Desired Amount (ZMW):</label><br />
-    <input type="number" id="amount" value="3000" min="100" step="100" />
+  <label>Select Type:</label>
+  <select id="type">
+    <option value="cash">Cash Support (20% service fee)</option>
+    <option value="float">Float Support (15% service fee)</option>
+  </select>
 
-    <div class="row">
-      <div class="card cash">
-        <h3>💵 <span class="liquiboost">Liqui</span><span>Boost</span> Cash</h3>
-        <ul>
-          <li>Service Fee: 20%</li>
-          <li>Daily Commission: <strong id="cashDaily">K150</strong></li>
-          <li>Total Repayment: <strong id="cashRepay">K3,600</strong></li>
-          <li>Profit Estimate: <strong id="cashProfit">K450</strong></li>
-        </ul>
-      </div>
-
-      <div class="card float">
-        <h3>📱 <span class="liquiboost">Liqui</span><span>Boost</span> Float</h3>
-        <ul>
-          <li>Service Fee: 15%</li>
-          <li>Daily Commission: <strong id="floatDaily">K50</strong></li>
-          <li>Total Repayment: <strong id="floatRepay">K3,450</strong></li>
-          <li>Profit Estimate: <strong id="floatProfit">K150</strong></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <div class="output" id="results"></div>
 
   <script>
-    const amountInput = document.getElementById("amount");
-    const cashDaily = document.getElementById("cashDaily");
-    const cashRepay = document.getElementById("cashRepay");
-    const cashProfit = document.getElementById("cashProfit");
-    const floatDaily = document.getElementById("floatDaily");
-    const floatRepay = document.getElementById("floatRepay");
-    const floatProfit = document.getElementById("floatProfit");
-
     function calculate() {
-      const amount = parseFloat(amountInput.value) || 0;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const type = document.getElementById('type').value;
 
-      const cashComm = 150 * (amount / 3000);
-      const cashRepayment = amount * 1.2;
-      const cashProfitValue = (cashComm * 14) - (cashRepayment - amount);
+      if (isNaN(amount) || amount <= 0) {
+        document.getElementById('results').innerHTML = 'Please enter a valid amount.';
+        return;
+      }
 
-      const floatComm = 50 * (amount / 3000);
-      const floatRepayment = amount * 1.15;
-      const floatProfitValue = (floatComm * 14) - (floatRepayment - amount);
+      let fee = type === 'cash' ? 0.20 : 0.15;
+      let dailyProfit = type === 'cash' ? 150 : 50;
+      let repayAmount = amount * (1 + fee);
 
-      cashDaily.textContent = "K" + cashComm.toFixed(2);
-      cashRepay.textContent = "K" + cashRepayment.toFixed(2);
-      cashProfit.textContent = "K" + cashProfitValue.toFixed(2);
-
-      floatDaily.textContent = "K" + floatComm.toFixed(2);
-      floatRepay.textContent = "K" + floatRepayment.toFixed(2);
-      floatProfit.textContent = "K" + floatProfitValue.toFixed(2);
+      document.getElementById('results').innerHTML = `
+        <strong>Support Type:</strong> ${type === 'cash' ? 'Cash Support' : 'Float Support'}<br>
+        <strong>Requested:</strong> ZMW ${amount.toFixed(2)}<br>
+        <strong>Estimated Commission/Day:</strong> ZMW ${dailyProfit.toFixed(2)}<br>
+        <strong>Total Repayment (14 days):</strong> ZMW ${repayAmount.toFixed(2)}
+      `;
     }
 
-    amountInput.addEventListener("input", calculate);
-    calculate();
+    document.getElementById('amount').addEventListener('input', calculate);
+    document.getElementById('type').addEventListener('change', calculate);
+    window.onload = calculate;
   </script>
 </body>
 </html>
